@@ -11,6 +11,7 @@
     "dev": "pnpm --filter @sulba/web dev",
     "build": "pnpm --recursive build",
     "typecheck": "pnpm --recursive typecheck",
+    "test": "pnpm --recursive test",
     "lint": "biome check",
     "lint:fix": "biome check --write"
   },
