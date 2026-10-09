@@ -1,0 +1,10 @@
+{
+  "name": "sulba",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": ">=24"
+  }
+}
