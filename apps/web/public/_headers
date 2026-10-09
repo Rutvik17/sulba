@@ -1,0 +1,3 @@
+# Keeps the site out of search results until launch (Phase 5). Preview addresses keep it after that.
+/*
+  X-Robots-Tag: noindex

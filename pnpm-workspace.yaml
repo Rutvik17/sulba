@@ -2,3 +2,7 @@ packages:
   - apps/*
 
 savePrefix: ''
+
+allowBuilds:
+  esbuild: true
+  workerd: true

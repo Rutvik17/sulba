@@ -8,6 +8,9 @@
     "node": ">=24"
   },
   "scripts": {
+    "dev": "pnpm --filter @sulba/web dev",
+    "build": "pnpm --recursive build",
+    "typecheck": "pnpm --recursive typecheck",
     "lint": "biome check",
     "lint:fix": "biome check --write"
   },
