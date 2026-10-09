@@ -51,8 +51,8 @@ jobs:
             url=https://sulba.dev
           else
             # An alias is lowercase letters, digits and dashes, starts with a letter, and fits a
-            # 63-character DNS label together with "-sulba".
-            alias=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^[^a-z]+//' | cut -c 1-57 | sed -E 's/-+$//')
+            # 63-character DNS label together with "-web".
+            alias=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^[^a-z]+//' | cut -c 1-59 | sed -E 's/-+$//')
             pnpm exec wrangler versions upload --preview-alias "${alias:-preview}" --message "$GITHUB_SHA"
             url=$(jq -r 'select(.type == "version-upload") | .preview_alias_url // .preview_url' "$WRANGLER_OUTPUT_FILE_PATH")
           fi

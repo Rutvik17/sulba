@@ -26,7 +26,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 
 ## How the project is set up
 
-- `apps/web` is Astro 7 on the Cloudflare Worker `sulba` (`wrangler.jsonc`). Pages are built ahead of time; a route renders on the server only when it must (decision record 1).
+- `apps/web` is Astro 7 on the Cloudflare Worker `web` (`wrangler.jsonc`). Pages are built ahead of time; a route renders on the server only when it must (decision record 1).
 - Astro sessions are off and images are optimised at build time, so a deploy creates no KV namespace and no Images binding.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview and workers.dev addresses keep it.
 - CI runs on every push. When it passes, `main` deploys to sulba.dev and other branches get a preview address. Branches named `renovate/*` are tested but not deployed.

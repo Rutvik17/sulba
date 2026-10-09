@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "sulba",
+  "name": "web",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-10-06",
   "assets": {
