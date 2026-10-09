@@ -12,5 +12,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [6. Use CodeMirror 6 with language servers](0006-use-codemirror-with-language-servers.md) | Accepted |
 | [7. Keep course content as validated files with permanent ids](0007-keep-course-content-as-validated-files.md) | Accepted |
 | [8. Monitor with free services, each with one job](0008-monitor-with-free-services.md) | Accepted |
+| [9. Keep branch previews behind Cloudflare Access](0009-keep-previews-behind-cloudflare-access.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
