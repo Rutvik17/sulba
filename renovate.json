@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices", ":semanticCommitsDisabled", "group:allNonMajor"],
+  "timezone": "America/Toronto",
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "description": "@astrojs/check supports TypeScript 5 and 6 only",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "Major @types/node updates move with the Node version in .node-version",
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
+}
