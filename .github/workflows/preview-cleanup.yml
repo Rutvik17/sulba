@@ -1,0 +1,42 @@
+name: Delete preview
+
+on:
+  delete:
+
+permissions:
+  contents: read
+
+jobs:
+  delete:
+    name: Delete the branch's preview
+    # Dependency update branches never get a preview.
+    if: github.event.ref_type == 'branch' && !startsWith(github.event.ref, 'renovate/')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      WRANGLER_SEND_METRICS: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      # No dependency cache in a job that holds deploy credentials: a poisoned cache could read them.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - run: pnpm install --frozen-lockfile
+      - name: Delete the preview
+        working-directory: apps/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: ${{ github.event.ref }}
+        run: |
+          name=$(bash "$GITHUB_WORKSPACE/.github/scripts/preview-name.sh" "$BRANCH")
+          if ! output=$(pnpm exec wrangler preview delete --name "$name" --skip-confirmation 2>&1); then
+            printf '%s\n' "$output"
+            # A branch deleted before its first deploy has no preview, which is fine.
+            grep -q 'was not found' <<< "$output" || exit 1
+          fi
+          printf '%s\n' "$output"

@@ -29,7 +29,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - `apps/web` is Astro 7 on the Cloudflare Worker `web` (`wrangler.jsonc`). Pages are built ahead of time; a route renders on the server only when it must (decision record 1).
 - Astro sessions are off and images are optimised at build time, so a deploy creates no KV namespace and no Images binding.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview addresses keep it.
-- CI runs on every push. When it passes, `main` deploys to sulba.dev, the site's only address, and other branches get a preview address on workers.dev. Branches named `renovate/*` are tested but not deployed.
+- CI runs on every push. When it passes, `main` deploys to sulba.dev, the site's only address, and every other branch gets a Worker Preview on workers.dev, which `preview-cleanup.yml` deletes when the branch is deleted. Branches named `renovate/*` are tested but not deployed.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.

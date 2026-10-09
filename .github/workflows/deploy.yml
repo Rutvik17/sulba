@@ -50,10 +50,9 @@ jobs:
             pnpm exec wrangler deploy --message "$GITHUB_SHA"
             url=https://sulba.dev
           else
-            # An alias is lowercase letters, digits and dashes, starts with a letter, and fits a
-            # 63-character DNS label together with "-web".
-            alias=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^[^a-z]+//' | cut -c 1-59 | sed -E 's/-+$//')
-            pnpm exec wrangler versions upload --preview-alias "${alias:-preview}" --message "$GITHUB_SHA"
-            url=$(jq -r 'select(.type == "version-upload") | .preview_alias_url // .preview_url' "$WRANGLER_OUTPUT_FILE_PATH")
+            # One Preview per branch; preview-cleanup.yml deletes it with the branch.
+            name=$(bash "$GITHUB_WORKSPACE/.github/scripts/preview-name.sh" "$BRANCH")
+            pnpm exec wrangler preview --name "$name" --message "$GITHUB_SHA"
+            url=$(jq -r 'select(.type == "preview") | .preview_urls[0]' "$WRANGLER_OUTPUT_FILE_PATH")
           fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
