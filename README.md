@@ -39,7 +39,7 @@ Every push runs the checks. When they pass, `main` deploys to sulba.dev and ever
 ## Licences
 
 - Code: [GNU Affero General Public License v3.0 only](LICENSE)
-- Course content in `courses/`: [Creative Commons Attribution-NonCommercial-ShareAlike 4.0](courses/LICENSE)
+- Course content in `courses/`: [all rights reserved](courses/LICENSE)
 - The Sulba name and logo are not licensed for reuse.
 
 ## Contributing and security

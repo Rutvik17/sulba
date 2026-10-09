@@ -32,4 +32,4 @@ pnpm test:e2e
 
 ## Licensing
 
-Contributions are accepted under the licence of the files they change: AGPL-3.0-only for code, and CC BY-NC-SA 4.0 for course content.
+Code contributions are accepted under AGPL-3.0-only. Course content in `courses/` is all rights reserved and doesn't take outside contributions; to report a mistake in a lesson, open an issue.
