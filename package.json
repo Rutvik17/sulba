@@ -6,5 +6,12 @@
   "packageManager": "pnpm@12.10.1",
   "engines": {
     "node": ">=24"
+  },
+  "scripts": {
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15"
   }
 }
