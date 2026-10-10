@@ -1,0 +1,84 @@
+---
+// A test's status: a ring while idle, a spinner while it runs, then a tick or a cross. The element
+// that holds it carries data-state: idle, running, pass or fail.
+---
+
+<span class="status" aria-hidden="true">
+  <svg class="spin" viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M7 1.6a5.4 5.4 0 0 1 5.4 5.4" />
+  </svg>
+  <svg class="tick" viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M4.2 7.3l1.9 1.9 3.8-4.3" />
+  </svg>
+  <svg class="cross" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 5l4 4M9 5l-4 4" /></svg>
+</span>
+
+<style>
+.status {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  border: 1.25px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+.status svg {
+  position: absolute;
+  inset: -1.25px;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+.spin path {
+  transform-origin: 7px 7px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  animation: spin 700ms linear infinite;
+}
+
+.tick path,
+.cross path {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:global([data-state="running"]) > .status {
+  border-color: transparent;
+}
+
+:global([data-state="running"]) > .status .spin,
+:global([data-state="pass"]) > .status .tick,
+:global([data-state="fail"]) > .status .cross {
+  opacity: 1;
+}
+
+:global([data-state="pass"]) > .status {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+
+:global([data-state="fail"]) > .status {
+  border-color: var(--bad);
+  background: var(--bad);
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin path {
+    animation: none;
+  }
+}
+</style>

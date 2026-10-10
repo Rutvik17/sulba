@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { describe, expect, test } from 'vitest';
-import { at, edits, failure, finished, frameAt, injection, LOOP, select } from './session-clip';
+import { at, checkLines, checks, END, edits, frameAt, injection, select } from './session-clip';
 
 // The clip's claims, checked against a real SQLite database. Python's sqlite3 runs the same engine
 // and gives the same results: checked with Python 3.12 and SQLite 3.42 on 9 October 2026.
@@ -26,28 +26,35 @@ function orders() {
 }
 
 describe('what the clip claims is what SQLite does', () => {
-  test('the draft returns every order for the injected name, and the fix returns none', () => {
-    const { count, draft, fixed } = orders();
-
-    expect(draft(injection)).toHaveLength(count);
-    expect(fixed(injection)).toEqual([]);
-    expect(failure.message).toBe('Returned every order in the table, expected none');
-  });
-
-  test('the draft breaks on a name with an apostrophe, and the fix finds the order', () => {
-    const { draft, fixed } = orders();
-
-    expect(() => draft("o'brien")).toThrow('near "brien": syntax error');
-    expect(fixed("o'brien")).toHaveLength(1);
-  });
-
-  test('both versions find a customer and return nothing for an unknown one', () => {
+  test("the assistant's tests pass before and after the fix", () => {
     const { draft, fixed } = orders();
 
     expect(draft('ada')).toHaveLength(2);
     expect(fixed('ada')).toHaveLength(2);
     expect(draft('zoe')).toEqual([]);
     expect(fixed('zoe')).toEqual([]);
+  });
+
+  test('the draft treats a name as SQL, and the fix treats it as text', () => {
+    const { count, draft, fixed } = orders();
+
+    expect(draft(injection)).toHaveLength(count);
+    expect(() => draft("o'brien")).toThrow('near "brien": syntax error');
+    expect(fixed(injection)).toEqual([]);
+    expect(fixed("o'brien")).toHaveLength(1);
+  });
+
+  test('both versions return only ids and totals', () => {
+    const { draft, fixed } = orders();
+
+    expect(Object.keys(draft('ada')[0] ?? {})).toEqual(['id', 'total']);
+    expect(Object.keys(fixed('ada')[0] ?? {})).toEqual(['id', 'total']);
+  });
+
+  test('so one of the two checks fails on the draft and both pass on the fix', () => {
+    expect(checks).toHaveLength(2);
+    expect(checkLines.some).toBe('1 of 2 pass');
+    expect(checkLines.all).toBe('2 of 2 pass');
   });
 
   test('the edits turn the draft into the fix', () => {
@@ -61,21 +68,21 @@ describe('what the clip claims is what SQLite does', () => {
   });
 });
 
-describe('the session plays in order', () => {
+describe('the session plays once, in order', () => {
   test('nothing has run at the start', () => {
     const frame = frameAt(0);
 
-    expect(frame.tests).toEqual(['idle', 'idle', 'idle', 'idle']);
-    expect(frame.summary).toBe('idle');
+    expect(frame.tests).toEqual(['idle', 'idle']);
+    expect(frame.checks).toBe('idle');
     expect(frame.edits.a.removed).toBe(false);
   });
 
-  test('the first run fails the attack and apostrophe tests', () => {
-    const frame = frameAt(at.failed + 100);
+  test("the first run passes the assistant's tests and one of the two checks", () => {
+    const frame = frameAt(at.checked1 + 200);
 
-    expect(frame.tests).toEqual(['pass', 'fail', 'fail', 'pass']);
-    expect(frame.summary).toBe('fail');
-    expect(frame.failNote).toBe(true);
+    expect(frame.tests).toEqual(['pass', 'pass']);
+    expect(frame.checks).toBe('some');
+    expect(frame.hiddenNote).toBe(true);
   });
 
   test('the f goes, the quoted name is selected and replaced, and the name becomes a parameter', () => {
@@ -86,28 +93,22 @@ describe('the session plays in order', () => {
     expect(frameAt(at.press2).edits.c.typed).toBe(edits.c.insert.length);
   });
 
-  test('the second run passes every test and the session is done', () => {
+  test('the second run passes both checks and the review is done', () => {
     const frame = frameAt(at.done + 100);
 
-    expect(frame.tests).toEqual(['pass', 'pass', 'pass', 'pass']);
-    expect(frame.summary).toBe('pass');
-    expect(frame.failNote).toBe(false);
+    expect(frame.tests).toEqual(['pass', 'pass']);
+    expect(frame.checks).toBe('all');
+    expect(frame.hiddenNote).toBe(false);
     expect(frame.done).toBe(true);
   });
 
-  test('the finished frame shown for reduced motion has every edit made and every test passed', () => {
-    const frame = frameAt(finished);
+  test('it rests on the last frame: every edit made and both checks passing', () => {
+    const frame = frameAt(END);
 
-    expect(frame).toMatchObject({ summary: 'pass', done: true, hidden: false });
+    expect(frame).toMatchObject({ checks: 'all', done: true, away: false });
     expect(frame.edits.a.removed && frame.edits.b.removed).toBe(true);
     expect(frame.edits.c.typed).toBe(edits.c.insert.length);
-  });
-
-  test('the loop resets behind a fade and starts again from nothing', () => {
-    expect(frameAt(at.fadeOut).hidden).toBe(true);
-    expect(frameAt(at.reset)).toMatchObject({ summary: 'idle', done: false, hidden: true });
-    expect(frameAt(at.reset).edits.b.removed).toBe(false);
-    expect(frameAt(LOOP - 1)).toMatchObject({ summary: 'idle', hidden: false });
+    expect(frameAt(END + 60_000)).toEqual(frame);
   });
 });
 

@@ -1,0 +1,422 @@
+---
+// One stage of the lab in "How every lab runs", drawn in its finished state. On a wide screen with
+// motion allowed, LabScroll's script rewinds it and plays it with the scroll.
+import { build, catchStage, type Line, type StageId, ship } from '../lib/lab-scroll';
+import TestStatus from './TestStatus.astro';
+
+interface Props {
+  stage: StageId;
+}
+
+const { stage } = Astro.props;
+// The breadcrumb: on a phone-wide frame the course name drops out.
+const course = 'AI Engineering';
+const lesson = 'Beginner / Learning from data';
+const label = { build: 'Build', catch: 'Catch', ship: 'Ship' }[stage];
+const file = { build: build.file, catch: catchStage.file, ship: ship.file }[stage];
+
+// The code is written as one string: inside <pre>, every space and line break would show, so no
+// formatter may rearrange it.
+const esc = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const indent = (line: Line) => '    '.repeat(line.indent);
+const runs = (line: Line, typed: boolean) =>
+  line.runs
+    .map((run) => {
+      const names = [run.kind, run.keep && 'keep'].filter(Boolean).join(' ');
+      return `<span${names ? ` class="${names}"` : ''}${typed ? ` data-full="${esc(run.text)}"` : ''}>${esc(run.text)}</span>`;
+    })
+    .join('');
+// A typed line keeps an invisible copy of its finished text, which holds its height while it types
+// and wraps where the finished line will.
+const row = (n: number, line: Line, typed?: number, extra = '') =>
+  `<span class="ln${extra}" data-n="${n}"><span class="src" style="--indent: ${line.indent}">` +
+  (typed === undefined ? '' : `<span class="ghost">${indent(line)}${runs(line, false)}</span>`) +
+  `<span class="live"${typed === undefined ? '' : ` data-typed="${typed}"`}>${indent(line)}${runs(line, typed !== undefined)}</span></span></span>`;
+
+const code = {
+  build: [build.head, ...build.body]
+    .map((line, i) => row(i + 1, line, i === 0 ? undefined : i - 1))
+    .join(''),
+  // The fix line has one long run with no spaces; on a narrow frame it wraps after a "(".
+  catch:
+    catchStage.lines.map((line, i) => row(i + 1, line)).join('') +
+    `<span class="ln fix" data-n="3"><span class="src" style="--indent: 1"><span class="live">${esc(catchStage.before)}<span class="rm"><span class="picked"></span><span class="kept"></span></span>${esc(catchStage.after).replaceAll('(', '(<wbr>')}</span></span></span>` +
+    row(4, catchStage.last),
+  ship:
+    row(1, ship.head) +
+    `<span class="swap"><span class="block old gone">${ship.slow.map((line, i) => row(i + 2, line)).join('')}</span>` +
+    `<span class="block new">${ship.fast.map((line, i) => row(i + 2, line, i)).join('')}</span></span>`,
+}[stage];
+---
+
+<div class="scene" data-scene={stage}>
+  <div class="chrome">
+    <span class="crumbs"><span class="course">{course} / </span>{lesson}</span>
+    <span class="tag">{label}</span>
+  </div>
+  <div class="panes">
+    <div class="pane">
+      <div class="head">
+        <span class="file">{file}</span>
+        {stage === 'catch' && <span class="draft">Assistant draft</span>}
+      </div>
+      <pre class="editor"><code set:html={code} /></pre>
+    </div>
+
+    <div class="pane">
+      <div class="head">
+        <span class="tag">Tests</span>
+        <span class="run">
+          <svg viewBox="0 0 8 10" aria-hidden="true"><path d="M0 0 L8 5 L0 10 Z" /></svg>
+          Run tests
+        </span>
+      </div>
+      {stage === 'build' && (
+        <div>
+          <ol class="results">
+            {build.tests.map((name) => (
+              <li data-state="pass">
+                <TestStatus />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="summary" data-state="pass">
+            {build.tests.length} of {build.tests.length} pass
+          </p>
+        </div>
+      )}
+      {stage === 'catch' && (
+        <div>
+          <p class="group">The assistant's tests</p>
+          <ol class="results">
+            {catchStage.tests.map((name) => (
+              <li data-state="pass">
+                <TestStatus />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="group">Production checks</p>
+          <p class="checks" data-state="fail">
+            <TestStatus />
+            <span class="line">1 of {catchStage.checks} pass</span>
+          </p>
+        </div>
+      )}
+      {stage === 'ship' && (
+        <div>
+          <p class="group">Hidden tests</p>
+          <p class="checks hidden-tests" data-state="pass">
+            <TestStatus />
+            <span class="line">
+              {ship.hidden} of {ship.hidden} pass
+            </span>
+          </p>
+          <p class="group">Before it ships</p>
+          <ol class="results">
+            {ship.checks.map((name) => (
+              <li data-state="pass">
+                <TestStatus />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="summary ready" data-state="pass">
+            Ready to ship
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+/* The scene fills its frame, however tall the tallest stage makes it. */
+.scene {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  container-type: inline-size;
+  background: var(--surface);
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: 36px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.crumbs,
+.tag,
+.draft,
+.group {
+  font: 500 var(--text-xs) / 1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.crumbs {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag {
+  flex: none;
+  color: var(--dim);
+}
+
+.chrome .tag {
+  color: var(--fg);
+}
+
+/* Code beside its tests when the longest line fits; otherwise the tests go under the code. */
+.panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+}
+
+.pane {
+  min-width: 0;
+}
+
+.pane + .pane {
+  border-left: 1px solid var(--line);
+}
+
+@container (max-width: 834px) {
+  .panes {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .pane + .pane {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: 44px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.file {
+  font: 400 var(--text-sm) / 1 var(--font-mono);
+}
+
+.draft {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding-inline: var(--space-2);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-full);
+  color: var(--dim);
+  font-size: 10px;
+}
+
+/* Where stages take turns in one frame, --code-lines makes every editor as tall as the longest. */
+.editor {
+  min-height: calc(var(--code-lines, 0) * 1.75em + 2 * var(--space-4));
+  margin: 0;
+  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  font: 400 12px / 1.75 var(--font-mono);
+}
+
+/* The code is set as HTML, so its parts are styled from the editor down. */
+.editor :global(code) {
+  display: grid;
+}
+
+.editor :global(.ln) {
+  display: grid;
+  grid-template-columns: var(--number-width, 36px) minmax(0, 1fr);
+}
+
+.editor :global(.ln)::before {
+  content: attr(data-n);
+  padding-right: var(--space-3);
+  color: var(--dim);
+  text-align: right;
+}
+
+/* A typed line keeps the height of its finished text, so nothing below it moves while it types.
+   Long lines wrap with a hanging indent; code never scrolls sideways. */
+.editor :global(.src) {
+  display: grid;
+  min-height: 1.75em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.editor :global(.ghost),
+.editor :global(.live) {
+  grid-area: 1 / 1;
+  padding-left: calc((var(--indent, 0) * 4 + 4) * 1ch);
+  text-indent: calc((var(--indent, 0) * 4 + 4) * -1ch);
+}
+
+.editor :global(.ghost) {
+  visibility: hidden;
+}
+
+.editor :global(.live[data-typing])::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 1.2em;
+  margin-right: -1.5px;
+  vertical-align: -0.2em;
+  border-left: 1.5px solid var(--fg);
+}
+
+.editor :global(.kw) {
+  color: var(--accent);
+}
+
+.editor :global(.fn) {
+  font-weight: 600;
+}
+
+.editor :global(.str) {
+  color: var(--dim);
+}
+
+.editor :global(.keep) {
+  white-space: nowrap;
+}
+
+.editor :global(.picked) {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.editor :global(.fix .live) {
+  border-radius: 3px;
+  transition: background-color 600ms var(--ease);
+}
+
+.editor :global(.fix[data-fresh] .live) {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.editor :global(.swap) {
+  display: grid;
+}
+
+.editor :global(.block) {
+  display: grid;
+  grid-area: 1 / 1;
+  align-content: start;
+  transition: opacity 240ms var(--ease);
+}
+
+.editor :global(.old.selected .live) {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.editor :global(.old.gone) {
+  opacity: 0;
+}
+
+/* Until the slow loop goes, only its line numbers show, and the caret waits. */
+.editor :global(.swap:has(.old:not(.gone)) .new .ln)::before,
+.editor :global(.swap:has(.old:not(.gone)) .new .live)::after {
+  visibility: hidden;
+}
+
+.run {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.run svg {
+  width: 8px;
+  height: 10px;
+  fill: currentColor;
+}
+
+.group {
+  margin: var(--space-4) var(--space-4) 0;
+  color: var(--dim);
+}
+
+.results {
+  margin: 0;
+  padding: var(--space-1) 0;
+  list-style: none;
+}
+
+.results li,
+.checks {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  column-gap: var(--space-3);
+  align-items: start;
+  padding: 6px var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.checks[data-state="fail"] .line {
+  color: var(--bad);
+}
+
+.checks[data-state="pass"] .line {
+  color: var(--ok);
+}
+
+.summary {
+  margin: var(--space-2) var(--space-4) var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--line-2);
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.3 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.summary[data-state="pass"] {
+  color: var(--ok);
+}
+
+/* A phone-wide frame: the breadcrumb drops the course, and the code gets smaller. */
+@container (max-width: 480px) {
+  .course {
+    display: none;
+  }
+
+  .editor {
+    --number-width: 30px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor :global(.fix .live),
+  .editor :global(.block) {
+    transition: none;
+  }
+}
+</style>

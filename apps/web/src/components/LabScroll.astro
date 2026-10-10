@@ -1,0 +1,459 @@
+---
+// "How every lab runs": the stage names beside one lab frame. On a wide screen with motion allowed,
+// the frame is pinned while the section scrolls by, and each stage plays forwards and backwards
+// with the scroll; it never moves by itself. With reduced motion the names switch between finished
+// stages, and on a phone the stages stand one under another, finished.
+import { mostLines, stages } from '../lib/lab-scroll';
+import Frame from './Frame.astro';
+import LabScene from './LabScene.astro';
+---
+
+<div class="lab" data-lab data-mode="still">
+  <div class="track">
+    <div class="pin">
+      <ol class="names">
+        {stages.map((stage, i) => (
+          <li data-active={i === 0 ? '' : undefined}>
+            <h3>
+              <button type="button" data-stage={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+                <span class="number">{String(i + 1).padStart(2, '0')}</span>
+                {stage.name}
+              </button>
+            </h3>
+            <p>{stage.text}</p>
+            <span class="bar" aria-hidden="true" />
+          </li>
+        ))}
+      </ol>
+      <div class="view" aria-hidden="true">
+        <Frame>
+          <div class="scenes" style={`--code-lines: ${mostLines}`}>
+            {stages.map((stage, i) => (
+              <div class="layer" data-active={i === 0 ? '' : undefined}>
+                <LabScene stage={stage.id} />
+              </div>
+            ))}
+          </div>
+        </Frame>
+      </div>
+    </div>
+  </div>
+
+  <ol class="stills">
+    {stages.map((stage, i) => (
+      <li>
+        <h3>
+          <span class="number">{String(i + 1).padStart(2, '0')}</span>
+          {stage.name}
+        </h3>
+        <p>{stage.text}</p>
+        <div aria-hidden="true">
+          <Frame>
+            <LabScene stage={stage.id} />
+          </Frame>
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<script>
+import {
+  build,
+  buildAt,
+  catchAt,
+  catchStage,
+  shipAt,
+  stageAt,
+  stageStart,
+  type TestState,
+} from '../lib/lab-scroll';
+
+function must<T>(value: T | null | undefined, what: string): T {
+  if (value === null || value === undefined) throw new Error(`The lab section has no ${what}`);
+  return value;
+}
+
+const setState = (el: HTMLElement | null | undefined, state: string) => {
+  if (el && el.dataset.state !== state) el.dataset.state = state;
+};
+
+// Typed text, spread over a scene's typed lines in order. The caret sits on the first line that
+// isn't finished, and goes once everything is typed.
+function typeInto(lines: HTMLElement[], count: number) {
+  let left = count;
+  let caret: HTMLElement | null = null;
+  for (const line of lines) {
+    let full = 0;
+    let shown = 0;
+    for (const run of line.querySelectorAll<HTMLElement>('[data-full]')) {
+      const text = run.dataset.full ?? '';
+      const n = Math.max(0, Math.min(text.length, left));
+      if (run.textContent !== text.slice(0, n)) run.textContent = text.slice(0, n);
+      left -= n;
+      full += text.length;
+      shown += n;
+    }
+    if (!caret && shown < full) caret = line;
+  }
+  for (const line of lines) line.toggleAttribute('data-typing', line === caret);
+}
+
+function setUp(root: HTMLElement) {
+  const find = <T extends Element>(selector: string) =>
+    must(root.querySelector<T>(selector), selector);
+  const track = find<HTMLElement>('.track');
+  const pin = find<HTMLElement>('.pin');
+  const items = [...root.querySelectorAll<HTMLElement>('.names li')];
+  const buttons = [...root.querySelectorAll<HTMLButtonElement>('.names button')];
+  const layers = [...root.querySelectorAll<HTMLElement>('.scenes .layer')];
+  const scene = (id: string) => find<HTMLElement>(`.scenes [data-scene="${id}"]`);
+
+  const b = scene('build');
+  const buildParts = {
+    lines: [...b.querySelectorAll<HTMLElement>('.live[data-typed]')],
+    tests: [...b.querySelectorAll<HTMLElement>('.results li')],
+    summary: b.querySelector<HTMLElement>('.summary'),
+  };
+  const c = scene('catch');
+  const catchParts = {
+    tests: [...c.querySelectorAll<HTMLElement>('.results li')],
+    checks: c.querySelector<HTMLElement>('.checks'),
+    line: c.querySelector<HTMLElement>('.checks .line'),
+    picked: c.querySelector<HTMLElement>('.picked'),
+    kept: c.querySelector<HTMLElement>('.kept'),
+    fix: c.querySelector<HTMLElement>('.fix'),
+  };
+  const s = scene('ship');
+  const shipParts = {
+    hidden: s.querySelector<HTMLElement>('.hidden-tests'),
+    hiddenLine: s.querySelector<HTMLElement>('.hidden-tests .line'),
+    checks: [...s.querySelectorAll<HTMLElement>('.results li')],
+    old: s.querySelector<HTMLElement>('.old'),
+    lines: [...s.querySelectorAll<HTMLElement>('.new .live[data-typed]')],
+    ready: s.querySelector<HTMLElement>('.ready'),
+  };
+
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const wide = matchMedia('(min-width: 861px)');
+  let current = 0;
+
+  function show(stage: number, local: number) {
+    if (stage !== current) {
+      layers[current]?.removeAttribute('data-active');
+      items[current]?.removeAttribute('data-active');
+      current = stage;
+    }
+    layers[stage]?.setAttribute('data-active', '');
+    items[stage]?.setAttribute('data-active', '');
+    for (const [i, item] of items.entries()) {
+      item.style.setProperty('--local', String(i < stage ? 1 : i === stage ? local : 0));
+    }
+    // While scrolling, the names mark where the reader is; otherwise they switch the frame.
+    const scrolling = root.dataset.mode === 'scroll';
+    buttons.forEach((button, i) => {
+      if (scrolling) {
+        button.removeAttribute('aria-pressed');
+        if (i === stage) button.setAttribute('aria-current', 'step');
+        else button.removeAttribute('aria-current');
+      } else {
+        button.removeAttribute('aria-current');
+        button.setAttribute('aria-pressed', String(i === stage));
+      }
+    });
+  }
+
+  function drawBuild(local: number) {
+    const frame = buildAt(local);
+    typeInto(buildParts.lines, frame.typed);
+    for (const [i, state] of frame.tests.entries()) setState(buildParts.tests[i], state);
+    const summary = buildParts.summary;
+    if (summary) {
+      setState(summary, frame.done ? 'pass' : 'idle');
+      const text = frame.done
+        ? `${build.tests.length} of ${build.tests.length} pass`
+        : 'Not run yet';
+      if (summary.textContent !== text) summary.textContent = text;
+    }
+  }
+
+  function drawCatch(local: number) {
+    const frame = catchAt(local);
+    for (const [i, state] of frame.tests.entries()) setState(catchParts.tests[i], state);
+    const state: TestState =
+      frame.checks === 'idle' ? 'idle' : frame.checks === 'running' ? 'running' : 'fail';
+    setState(catchParts.checks, state);
+    const text =
+      frame.checks === 'idle'
+        ? 'Not run yet'
+        : frame.checks === 'running'
+          ? 'Running…'
+          : `${frame.checks === 'one' ? 1 : 0} of ${catchStage.checks} pass`;
+    if (catchParts.line && catchParts.line.textContent !== text) catchParts.line.textContent = text;
+    const removed = catchStage.removed;
+    if (catchParts.picked && catchParts.kept) {
+      catchParts.picked.textContent = frame.removed ? '' : removed.slice(0, frame.selected);
+      catchParts.kept.textContent = frame.removed ? '' : removed.slice(frame.selected);
+    }
+    catchParts.fix?.toggleAttribute('data-fresh', frame.removed && local < 0.8);
+  }
+
+  function drawShip(local: number) {
+    const frame = shipAt(local);
+    setState(shipParts.hidden, frame.hidden);
+    const hiddenText =
+      frame.hidden === 'idle'
+        ? 'Not run yet'
+        : frame.hidden === 'running'
+          ? 'Running…'
+          : '6 of 6 pass';
+    if (shipParts.hiddenLine && shipParts.hiddenLine.textContent !== hiddenText)
+      shipParts.hiddenLine.textContent = hiddenText;
+    for (const [i, state] of frame.checks.entries()) setState(shipParts.checks[i], state);
+    shipParts.old?.classList.toggle('selected', frame.selected);
+    shipParts.old?.classList.toggle('gone', frame.removed);
+    typeInto(shipParts.lines, frame.typed);
+    shipParts.ready?.classList.toggle('shown', frame.ready);
+  }
+
+  const draws = [drawBuild, drawCatch, drawShip];
+
+  // Progress through the track: 0 when the frame pins, 1 when it lets go.
+  function progress() {
+    const box = track.getBoundingClientRect();
+    const pinTop = Number.parseFloat(getComputedStyle(pin).top) || 0;
+    const travel = box.height - pin.offsetHeight;
+    return travel > 0 ? (pinTop - box.top) / travel : 0;
+  }
+
+  let queued = false;
+  function onScroll() {
+    if (root.dataset.mode !== 'scroll' || queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      const { stage, local } = stageAt(progress());
+      show(stage, local);
+      draws[stage]?.(local);
+    });
+  }
+
+  function choose() {
+    const mode = !motion.matches && wide.matches ? 'scroll' : 'still';
+    root.dataset.mode = mode;
+    if (mode === 'still') {
+      // Every stage finished; the names switch between them.
+      for (const draw of draws) draw(1);
+      show(current, 1);
+    } else {
+      // Stages the reader hasn't reached start at their beginning.
+      for (const draw of draws) draw(0);
+      onScroll();
+    }
+  }
+
+  buttons.forEach((button, i) => {
+    button.addEventListener('click', () => {
+      if (root.dataset.mode === 'scroll') {
+        const box = track.getBoundingClientRect();
+        const pinTop = Number.parseFloat(getComputedStyle(pin).top) || 0;
+        const travel = box.height - pin.offsetHeight;
+        window.scrollTo({
+          top: scrollY + box.top - pinTop + stageStart(i) * travel,
+          behavior: 'smooth',
+        });
+      } else {
+        show(i, 1);
+      }
+    });
+  });
+
+  // The track's length follows the pinned block's height.
+  new ResizeObserver(() => {
+    root.style.setProperty('--pin-height', `${pin.offsetHeight}px`);
+    onScroll();
+  }).observe(pin);
+
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  motion.addEventListener('change', choose);
+  wide.addEventListener('change', choose);
+  choose();
+}
+
+for (const root of document.querySelectorAll<HTMLElement>('[data-lab]')) setUp(root);
+</script>
+
+<style>
+.lab {
+  --stage-scroll: 80vh;
+}
+
+.pin {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.32fr) minmax(0, 1fr);
+  gap: var(--space-12);
+  align-items: center;
+}
+
+/* While scrolling, the frame and the names stay put; each stage gets about a screen of scrolling. */
+.lab[data-mode="scroll"] .track {
+  height: calc(var(--pin-height, 420px) + 3 * var(--stage-scroll));
+}
+
+.lab[data-mode="scroll"] .pin {
+  position: sticky;
+  top: calc(50vh - var(--pin-height, 420px) / 2);
+}
+
+.names {
+  display: grid;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.names li {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  padding-left: var(--space-5);
+}
+
+.names li::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  width: 1px;
+  background: var(--line-2);
+}
+
+/* The active stage's rule fills as its few seconds play. */
+.bar {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  width: 1px;
+  background: var(--fg);
+  transform: scaleY(var(--local, 0));
+  transform-origin: top;
+}
+
+.lab[data-mode="still"] .bar {
+  display: none;
+}
+
+.lab[data-mode="still"] li[data-active]::before {
+  background: var(--fg);
+}
+
+.names h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.names button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dim);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--duration-quick) var(--ease);
+}
+
+.names li[data-active] button,
+.names button:hover {
+  color: var(--fg);
+}
+
+.names p {
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.number {
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+}
+
+.scenes {
+  display: grid;
+}
+
+/* The stages share one cell, so the frame keeps the tallest stage's height throughout. */
+.layer {
+  display: grid;
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 220ms var(--ease),
+    visibility 0s linear 220ms;
+}
+
+.layer[data-active] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 220ms var(--ease),
+    visibility 0s;
+}
+
+/* While scrolling, "Ready to ship" waits for the end of Ship. */
+.lab[data-mode="scroll"] :global(.ready:not(.shown)) {
+  visibility: hidden;
+}
+
+.stills {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* On a phone: the three stages one under another, each finished. */
+@media (max-width: 860px) {
+  .track {
+    display: none;
+  }
+
+  .stills {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  .stills li {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .stills h3 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: 600;
+  }
+
+  .stills p {
+    color: var(--dim);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer,
+  .layer[data-active],
+  .names button {
+    transition: none;
+  }
+}
+</style>
