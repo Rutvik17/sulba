@@ -13,6 +13,7 @@
     "typecheck": "pnpm --recursive typecheck",
     "test": "pnpm --recursive test",
     "test:e2e": "pnpm --filter @sulba/web test:e2e",
+    "brand": "pnpm --filter @sulba/web brand",
     "lint": "biome check",
     "lint:fix": "biome check --write"
   },

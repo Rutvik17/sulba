@@ -22,6 +22,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm typecheck` | Type-checks the code |
 | `pnpm test` | Runs the unit tests |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium |
+| `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
 Before the first `pnpm test:e2e`, install the browser with `pnpm --filter @sulba/web exec playwright install chromium`.
 
@@ -30,6 +31,7 @@ Before the first `pnpm test:e2e`, install the browser with `pnpm --filter @sulba
 | Path | Contents |
 | --- | --- |
 | `apps/web` | The site: Astro on Cloudflare Workers |
+| `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content |
 | `docs/decisions` | Architecture decision records |
 | `.github/workflows` | CI and deploys |

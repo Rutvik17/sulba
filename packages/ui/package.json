@@ -5,7 +5,8 @@
   "exports": {
     "./tokens.css": "./src/tokens.css",
     "./base.css": "./src/base.css",
-    "./mark": "./src/mark.ts"
+    "./mark": "./src/mark.ts",
+    "./shapes": "./src/shapes.ts"
   },
   "scripts": {
     "typecheck": "tsc",
