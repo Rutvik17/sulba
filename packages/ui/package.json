@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css"
   },
   "scripts": {
     "typecheck": "tsc",

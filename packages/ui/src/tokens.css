@@ -60,6 +60,21 @@
   }
 
   :root {
+    --font-sans: ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --font-display: Georgia, "Times New Roman", serif;
+
+    --text-xs: 0.6875rem;
+    --text-sm: 0.8125rem;
+    --text-md: 0.9375rem;
+    --text-lg: 1.0625rem;
+    --text-xl: 1.375rem;
+    --text-2xl: 1.75rem;
+    --text-display: clamp(3rem, 7.4vw, 6rem);
+    --leading-tight: 1.1;
+    --leading: 1.55;
+    --tracking-label: 0.08em;
+
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
