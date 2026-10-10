@@ -11,7 +11,7 @@ pnpm install
 pnpm dev
 ```
 
-The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production.
+The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
 
 | Command | What it does |
 | --- | --- |

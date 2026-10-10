@@ -1,0 +1,238 @@
+---
+// The contact form. Turnstile, Cloudflare's check that the writer isn't a bot, loads when the form
+// is first used, so reading the page asks nothing of any other site. The server side is
+// src/pages/api/contact.ts.
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { limits } from '../lib/contact';
+---
+
+<form class="contact" data-contact data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}>
+  <div class="field">
+    <label for="contact-name">Name</label>
+    <input id="contact-name" name="name" autocomplete="name" required maxlength={limits.name}>
+  </div>
+  <div class="field">
+    <label for="contact-email">Email</label>
+    <input
+      id="contact-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      maxlength={limits.email}
+    >
+  </div>
+  <div class="field">
+    <label for="contact-message">Message</label>
+    <textarea
+      id="contact-message"
+      name="message"
+      rows="8"
+      required
+      maxlength={limits.message}
+    ></textarea>
+  </div>
+  <div class="check" data-check></div>
+  <div class="actions">
+    <button type="submit">Send</button>
+    <p class="status" role="status" data-status></p>
+  </div>
+  <noscript><p class="status">Sending a message needs JavaScript.</p></noscript>
+</form>
+
+<script>
+import type { Problem } from '../lib/contact';
+
+interface Turnstile {
+  render(container: HTMLElement, options: Record<string, unknown>): string;
+  reset(widget: string): void;
+}
+
+declare global {
+  interface Window {
+    turnstile?: Turnstile;
+  }
+}
+
+const SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+// How long to wait for Turnstile's token before saying the check didn't finish.
+const PATIENCE = 30_000;
+
+const problems: Record<Problem, string> = {
+  invalid: 'Check each field and send it again.',
+  check: "We couldn't confirm you're not a bot. Try again.",
+  unavailable: "Messages can't be sent right now. Try again later.",
+  failed: "Your message wasn't sent. Try again.",
+};
+
+function loadScript(src: string) {
+  return new Promise<Turnstile>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.onload = () =>
+      window.turnstile ? resolve(window.turnstile) : reject(new Error('no Turnstile'));
+    script.onerror = () => reject(new Error('Turnstile did not load'));
+    document.head.append(script);
+  });
+}
+
+function must<T extends Element>(form: HTMLFormElement, selector: string) {
+  const element = form.querySelector<T>(selector);
+  if (!element) throw new Error(`The contact form has no ${selector}`);
+  return element;
+}
+
+function setUp(form: HTMLFormElement) {
+  const status = must<HTMLParagraphElement>(form, '[data-status]');
+  const check = must<HTMLDivElement>(form, '[data-check]');
+  const button = must<HTMLButtonElement>(form, 'button');
+  const say = (text: string, tone?: 'ok' | 'bad') => {
+    status.textContent = text;
+    if (tone) status.dataset.tone = tone;
+    else delete status.dataset.tone;
+  };
+
+  // Turnstile renews its token before it expires; each token can be used once.
+  let token: string | undefined;
+  let waiting: ((value: string) => void)[] = [];
+  let started: Promise<{ turnstile: Turnstile; widget: string }> | undefined;
+  const start = () => {
+    started ??= loadScript(SCRIPT).then((turnstile) => ({
+      turnstile,
+      widget: turnstile.render(check, {
+        sitekey: form.dataset.sitekey,
+        appearance: 'interaction-only',
+        size: 'flexible',
+        'response-field': false,
+        callback: (value: string) => {
+          token = value;
+          for (const resolve of waiting) resolve(value);
+          waiting = [];
+        },
+        'expired-callback': () => {
+          token = undefined;
+        },
+      }),
+    }));
+    return started;
+  };
+  const nextToken = () =>
+    new Promise<string>((resolve, reject) => {
+      if (token) return resolve(token);
+      waiting.push(resolve);
+      setTimeout(() => reject(new Error('Turnstile took too long')), PATIENCE);
+    });
+
+  form.addEventListener('focusin', () => void start().catch(() => undefined), { once: true });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const fields = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    button.disabled = true;
+    say('Sending…');
+    let used = false;
+    try {
+      await start();
+      const value = await nextToken().catch(() => undefined);
+      if (!value) return say(problems.check, 'bad');
+      used = true;
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...fields, token: value }),
+      });
+      if (response.ok) {
+        form.reset();
+        return say(`Sent. We'll reply to ${fields.email}.`, 'ok');
+      }
+      const { problem } = (await response.json().catch(() => ({}))) as { problem?: Problem };
+      say(problems[problem ?? 'failed'] ?? problems.failed, 'bad');
+    } catch {
+      say(problems.failed, 'bad');
+    } finally {
+      button.disabled = false;
+      if (used && started) {
+        token = undefined;
+        const { turnstile, widget } = await started;
+        turnstile.reset(widget);
+      }
+    }
+  });
+}
+
+for (const form of document.querySelectorAll<HTMLFormElement>('[data-contact]')) setUp(form);
+</script>
+
+<style>
+.contact {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 560px;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.check:empty {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+}
+
+button {
+  height: 44px;
+  padding-inline: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.status {
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.status[data-tone="ok"] {
+  color: var(--ok);
+}
+
+.status[data-tone="bad"] {
+  color: var(--bad);
+}
+</style>

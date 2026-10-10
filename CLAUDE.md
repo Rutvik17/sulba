@@ -31,6 +31,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - Astro sessions are off and images are optimised at build time, so a deploy creates no KV namespace and no Images binding.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview addresses keep it.
 - CI runs once for every pull request and every push to `main`. When it passes, `main` deploys to sulba.dev, the site's only address, and a pull request from this repository gets a Worker Preview on workers.dev, which `preview-cleanup.yml` deletes when its branch is deleted. Dependency updates (`renovate/*`) and pull requests from forks are tested but not deployed.
+- The contact form posts to `/api/contact`, which checks the Turnstile token and sends the message with Resend (decision record 12). Its four secrets are Worker secrets; without them it answers 503. Tests stand in for `/api/contact` and Turnstile, so no test ever sends mail.
 - Cloudflare Access ("Previews only", set in the dashboard) puts every preview address behind sign-in, and sulba.dev stays public (decision record 9). Worker Previews need `preview_urls` on. Never turn it on in a Cloudflare account without that Access policy: it brings back every old preview address, and those can't be deleted.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.

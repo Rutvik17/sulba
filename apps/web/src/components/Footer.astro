@@ -1,5 +1,8 @@
 ---
-const links = [{ href: '/about/', text: 'About' }] as const;
+const links = [
+  { href: '/about/', text: 'About' },
+  { href: '/contact/', text: 'Contact' },
+] as const;
 
 // The same page with or without its trailing slash.
 const here = Astro.url.pathname.replace(/\/?$/, '/');
