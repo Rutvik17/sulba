@@ -3,6 +3,31 @@ import Page from '../layouts/Page.astro';
 ---
 
 <Page title="Page not found · Sulba">
-  <h1>Page not found</h1>
-  <p><a href="/">Go to the home page</a></p>
+  <section class="missing">
+    <h1>Page not found</h1>
+    <p>There's nothing at this address.</p>
+    <p><a href="/">Go to the home page</a></p>
+  </section>
 </Page>
+
+<style>
+.missing {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-16);
+}
+
+h1 {
+  margin-bottom: var(--space-2);
+  font: 400 clamp(2.5rem, 5vw, 4rem) / 1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+p {
+  color: var(--dim);
+}
+
+a {
+  color: var(--fg);
+}
+</style>
