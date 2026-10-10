@@ -1,6 +1,6 @@
 # Sulba
 
-Sulba is the school of the AI era. Engineers learn the fundamentals by hand, then build with AI: they design the system, direct the assistant and review what it writes. Each session is checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
+Sulba is the school of the AI era. Engineers learn the fundamentals by hand, then catch what an AI assistant gets wrong and ship code that works in real use. Every lab runs as Build, Catch and Ship, each stage checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
 
 ## Run it locally
 
