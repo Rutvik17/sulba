@@ -1,27 +1,23 @@
-// Fig. 1 on the landing: an assistant wrote the order-lookup tool a support agent calls, and pasted
-// the customer's name into its SQL. Two of four tests fail; the learner turns the query into a
-// parameterised one, and all four pass. Every frame is a function of one clock, so the player can
-// pause, hold the last frame for reduced motion, and be tested.
+// Fig. 1 on the landing, a Catch stage: an assistant wrote the order-lookup tool a support agent
+// calls. Its own two tests pass, but it pastes the customer's name into its SQL, so one of two
+// production checks fails. The learner turns the query into a parameterised one, and both checks
+// pass. Every frame is a function of one clock, so the player can pause, replay, hold the last
+// frame for reduced motion, and be tested. It plays once and rests on its last frame.
 
 /** The tool's query, up to where the customer's name goes. */
 export const select = 'SELECT id, total FROM orders WHERE customer = ';
 
-/** The name the attack test sends: it closes the quote and adds a condition that is always true. */
+/** A name that closes the quote and adds a condition that is always true. */
 export const injection = "x' OR '1'='1";
 
-export const tests = [
+/** The tests the assistant wrote. Both pass, before and after the fix. */
+export const assistantTests = [
   "Finds a customer's orders",
-  'Treats the name as text, not SQL',
-  'Handles names with an apostrophe',
   'Returns nothing for an unknown name',
 ] as const;
 
-/** The first failing test, as the clip shows it. */
-export const failure = {
-  test: tests[1],
-  input: `name = "${injection}"`,
-  message: 'Returned every order in the table, expected none',
-};
+/** The production checks. Hidden while the learner reviews; the first fails until the fix. */
+export const checks = ['Treats a name as text, not SQL', 'Returns only ids and totals'] as const;
 
 /**
  * The learner's three edits, in order: delete the f that makes the query an f-string, replace the
@@ -36,16 +32,15 @@ export const edits = {
 export type EditId = keyof typeof edits;
 export type Place = 'rest' | 'run' | 'a' | 'a-end' | 'b' | 'b-sel' | 'b-end' | 'c' | 'c-end';
 export type TestState = 'idle' | 'running' | 'pass' | 'fail';
-export type Summary = 'idle' | 'running' | 'fail' | 'pass';
+export type Checks = 'idle' | 'running' | 'some' | 'all';
 
-export const LOOP = 13_000;
 const CHAR = 55;
 
-// Milliseconds from the start of the loop.
+// Milliseconds from the start.
 export const at = {
   press1: 1500,
   results1: 1700,
-  failed: 2560,
+  checked1: 2440,
   clickA: 3800,
   deleteA: 4050,
   pressB: 4900,
@@ -54,17 +49,12 @@ export const at = {
   typeC: 6650,
   press2: 8400,
   results2: 8600,
-  passed: 9320,
+  checked2: 9320,
   done: 9600,
-  fadeOut: 12_200,
-  reset: 12_500,
-  fadeIn: 12_560,
 } as const;
 
-/** The moment reduced motion shows: the session finished, all four tests passed. */
-export const finished = 11_000;
-
-const firstRun: readonly TestState[] = ['pass', 'fail', 'fail', 'pass'];
+/** Where the clip ends and rests: the review done, both checks passing, the pointer still. */
+export const END = 10_800;
 
 // The pointer's journey in straight lines: [start, end, from, to]. After typing it comes back
 // where the typing ended, as if the hand had followed the caret.
@@ -94,11 +84,11 @@ const typing: readonly (readonly [number, number])[] = [
   [at.typeC, 7700],
 ];
 
-export const summaries: Record<Summary, string> = {
+export const checkLines: Record<Checks, string> = {
   idle: 'Not run yet',
   running: 'Running…',
-  fail: '2 failed · 2 passed',
-  pass: '4 passed',
+  some: `1 of ${checks.length} pass`,
+  all: `${checks.length} of ${checks.length} pass`,
 };
 
 export interface EditFrame {
@@ -119,15 +109,14 @@ export interface Frame {
   blink: boolean;
   away: boolean;
   tests: TestState[];
-  summary: Summary;
-  failNote: boolean;
+  checks: Checks;
+  /** The note that the failing check stays hidden until the review is finished. */
+  hiddenNote: boolean;
   done: boolean;
   /** The Run tests button is held down. */
   down: boolean;
   /** The mouse button is down. */
   press: boolean;
-  /** Between loops, the stage fades out and back in. */
-  hidden: boolean;
   pointer: { from: Place; to: Place; k: number };
 }
 
@@ -144,7 +133,7 @@ function pointerAt(t: number): Frame['pointer'] {
 }
 
 export function frameAt(clock: number): Frame {
-  const t = clock >= at.reset ? -1 : clock;
+  const t = Math.min(clock, END);
   const pointer = pointerAt(t);
   const second = t >= at.press2 + 120;
   const typed = (start: number, text: string) =>
@@ -156,6 +145,7 @@ export function frameAt(clock: number): Frame {
       : dragging
         ? Math.round(edits.b.remove.length * pointer.k)
         : edits.b.remove.length;
+  const run = second ? at.results2 : at.results1;
 
   return {
     edits: {
@@ -187,28 +177,23 @@ export function frameAt(clock: number): Frame {
       within(t, [at.typeC, at.typeC + edits.c.insert.length * CHAR]),
     blink: Math.floor(t / 530) % 2 === 0,
     away: typing.some((span) => within(t, span)),
-    tests: firstRun.map((first, i) => {
-      if (second) {
-        const start = at.results2 + i * 180;
-        return t < start ? 'idle' : t < start + 160 ? 'running' : 'pass';
-      }
-      const start = at.results1 + i * 220;
-      return t < start ? 'idle' : t < start + 200 ? 'running' : first;
+    tests: assistantTests.map((_, i) => {
+      const start = run + i * 220;
+      return t < start ? 'idle' : t < start + 200 ? 'running' : 'pass';
     }),
-    summary: second
-      ? t >= at.passed
-        ? 'pass'
+    checks: second
+      ? t >= at.checked2
+        ? 'all'
         : 'running'
-      : t >= at.failed
-        ? 'fail'
+      : t >= at.checked1
+        ? 'some'
         : t >= at.press1 + 120
           ? 'running'
           : 'idle',
-    failNote: t >= at.failed + 40 && !second,
+    hiddenNote: t >= at.checked1 + 120 && !second,
     done: t >= at.done,
     down: [at.press1, at.press2].some((press) => within(t, [press, press + 120])),
     press: presses.some((span) => within(t, span)),
-    hidden: clock >= at.fadeOut && clock < at.fadeIn,
     pointer,
   };
 }

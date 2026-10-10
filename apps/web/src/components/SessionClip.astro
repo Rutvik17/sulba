@@ -1,7 +1,8 @@
 ---
 import { cordPath, pegs } from '@sulba/ui/mark';
-import { edits, failure, select, tests } from '../lib/session-clip';
+import { assistantTests, checkLines, edits, select } from '../lib/session-clip';
 import Frame from './Frame.astro';
+import TestStatus from './TestStatus.astro';
 ---
 
 <figure class="clip" data-session>
@@ -9,7 +10,7 @@ import Frame from './Frame.astro';
     <div
       class="window"
       role="img"
-      aria-label="A session in AI Engineering. An assistant's order-lookup tool, written with a mistake on purpose, pastes the customer's name into its SQL query, and two of four tests fail. The learner makes the query take the name as a parameter, and all four tests pass."
+      aria-label="A Catch stage in AI Engineering. An assistant's order-lookup tool passes its own two tests but only one of two production checks, because it pastes the customer's name into its SQL query. The learner makes the query take the name as a parameter, and both checks pass."
     >
       <div class="chrome">
         <span class="crumbs">AI Engineering <i>/</i> Intermediate <i>/</i> Agents</span>
@@ -21,12 +22,12 @@ import Frame from './Frame.astro';
 
       <div class="stage panes">
         <div class="pane brief">
-          <div class="head"><span class="tag">Brief</span><span class="tag">Session 3</span></div>
+          <div class="head"><span class="tag">Brief</span><span class="tag">Catch</span></div>
           <div class="body">
             <h3>Look up a customer's orders</h3>
             <p>
-              An assistant wrote the lookup tool your support agent calls, and made a mistake on
-              purpose. Run the tests, then find and fix it.
+              An assistant wrote the lookup tool your support agent calls, and its own tests pass.
+              Review it before it goes live.
             </p>
             <dl>
               <dt class="tag">Function</dt>
@@ -58,37 +59,30 @@ import Frame from './Frame.astro';
               Run tests
             </span>
           </div>
+          <p class="group">The assistant's tests</p>
           <ol class="results">
-            {tests.map((name) => (
+            {assistantTests.map((name) => (
               <li data-state="idle">
-                <span class="status">
-                  <svg class="spin" viewBox="0 0 14 14" aria-hidden="true">
-                    <path d="M7 1.6a5.4 5.4 0 0 1 5.4 5.4" />
-                  </svg>
-                  <svg class="tick" viewBox="0 0 14 14" aria-hidden="true">
-                    <path d="M4.2 7.3l1.9 1.9 3.8-4.3" />
-                  </svg>
-                  <svg class="cross" viewBox="0 0 14 14" aria-hidden="true">
-                    <path d="M5 5l4 4M9 5l-4 4" />
-                  </svg>
-                </span>
+                <TestStatus />
                 <span>{name}</span>
               </li>
             ))}
           </ol>
-          <p class="summary" data-state="idle">Not run yet</p>
+          <p class="group">Production checks</p>
+          <p class="checks" data-state="idle">
+            <TestStatus />
+            <span class="line">{checkLines.idle}</span>
+          </p>
           <div class="notes">
-            <p class="note fail-note">
-              <span class="title">{failure.test}</span>
-              <span>{failure.input}</span>
-              <span>{failure.message}</span>
+            <p class="note hidden-note">
+              Which check fails stays hidden until you finish the review.
             </p>
             <p class="note done-note">
               <svg viewBox="0 0 14 14" aria-hidden="true">
                 <circle cx="7" cy="7" r="7" />
                 <path d="M4.2 7.3l1.9 1.9 3.8-4.3" />
               </svg>
-              Done <span>· Review in 3 days</span>
+              Done <span>· Nothing missed</span>
             </p>
           </div>
         </div>
@@ -113,15 +107,20 @@ import Frame from './Frame.astro';
   <figcaption>
     <span class="number">Fig. 1</span>
     <span class="text"
-      >A session in AI Engineering. The tests catch an assistant's mistake, and you fix it.</span
+      >A Catch stage in AI Engineering. The assistant's tests pass, a production check doesn't, and
+      you fix the code.</span
     >
-    <button class="pause" type="button">
+    <button class="pause" type="button" data-mode="playing">
       <svg class="icon-pause" viewBox="0 0 9 9" aria-hidden="true">
         <rect x="1" y="0.5" width="2.4" height="8" />
         <rect x="5.6" y="0.5" width="2.4" height="8" />
       </svg>
       <svg class="icon-play" viewBox="0 0 9 9" aria-hidden="true">
         <path d="M1.5 0.5 L8.5 4.5 L1.5 8.5 Z" />
+      </svg>
+      <svg class="icon-replay" viewBox="0 0 9 9" aria-hidden="true">
+        <path d="M7.6 5.2 A3.3 3.3 0 1 1 6.4 2.1" />
+        <path class="head" d="M5.2 0.6 L8.2 1.6 L6.2 4 Z" />
       </svg>
       <span class="label">Pause</span>
     </button>
@@ -130,19 +129,28 @@ import Frame from './Frame.astro';
 
 <script>
 import {
+  type Checks,
+  checkLines,
   type EditId,
+  END,
   edits,
-  finished,
   frameAt,
-  LOOP,
   type Place,
-  summaries,
+  type TestState,
 } from '../lib/session-clip';
 
 function must<T>(value: T | null | undefined, what: string): T {
   if (value === null || value === undefined) throw new Error(`Fig. 1 has no ${what}`);
   return value;
 }
+
+// The checks line wears the same marks as a test: a cross while one fails, a tick when both pass.
+const checkState: Record<Checks, TestState> = {
+  idle: 'idle',
+  running: 'running',
+  some: 'fail',
+  all: 'pass',
+};
 
 function play(figure: HTMLElement) {
   const find = <T extends Element>(selector: string) =>
@@ -163,10 +171,12 @@ function play(figure: HTMLElement) {
   });
   const edit = { a: parts('a'), b: parts('b'), c: parts('c') };
   const rows = [...figure.querySelectorAll<HTMLElement>('.results li')];
-  const summary = find<HTMLElement>('.summary');
-  const failNote = find<HTMLElement>('.fail-note');
+  const checks = find<HTMLElement>('.checks');
+  const checksLine = find<HTMLElement>('.checks .line');
+  const hiddenNote = find<HTMLElement>('.hidden-note');
   const doneNote = find<HTMLElement>('.done-note');
   const toggle = find<HTMLButtonElement>('.pause');
+  const label = find<HTMLElement>('.pause .label');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
   // Where the pointer goes, measured from the page so it follows the layout at any width. The
@@ -222,14 +232,14 @@ function play(figure: HTMLElement) {
       const row = rows[i];
       if (row && row.dataset.state !== state) row.dataset.state = state;
     });
-    if (summary.dataset.state !== frame.summary) {
-      summary.dataset.state = frame.summary;
-      summary.textContent = summaries[frame.summary];
+    const state = checkState[frame.checks];
+    if (checks.dataset.state !== state) {
+      checks.dataset.state = state;
+      checksLine.textContent = checkLines[frame.checks];
     }
-    failNote.classList.toggle('on', frame.failNote);
+    hiddenNote.classList.toggle('on', frame.hiddenNote);
     doneNote.classList.toggle('on', frame.done);
     run.classList.toggle('down', frame.down);
-    stage.classList.toggle('hidden', frame.hidden);
 
     const from = point(frame.pointer.from);
     const to = point(frame.pointer.to);
@@ -248,28 +258,41 @@ function play(figure: HTMLElement) {
   function lockHeight() {
     stage.style.minHeight = '';
     let tallest = 0;
-    for (const moment of [0, 2900, 4500, finished]) {
+    for (const moment of [0, 2900, 4500, END]) {
       draw(moment);
       tallest = Math.max(tallest, stage.getBoundingClientRect().height);
     }
     stage.style.minHeight = `${Math.ceil(tallest)}px`;
-    draw(reduce.matches ? finished : clock);
+    draw(reduce.matches ? END : clock);
   }
 
+  // It plays once while it's on screen, rests on its last frame, and replays on request.
+  type Mode = 'playing' | 'paused' | 'ended';
+  let mode: Mode = 'playing';
   let previous: number | null = null;
   let frame = 0;
-  let paused = false;
   let onScreen = false;
 
+  function show(next: Mode) {
+    mode = next;
+    toggle.dataset.mode = next;
+    label.textContent = next === 'playing' ? 'Pause' : next === 'paused' ? 'Play' : 'Replay';
+  }
+
   function tick(now: number) {
-    if (previous !== null) clock = (clock + Math.min(now - previous, 64)) % LOOP;
+    if (previous !== null) clock = Math.min(END, clock + Math.min(now - previous, 64));
     previous = now;
     draw(clock);
+    if (clock >= END) {
+      frame = 0;
+      show('ended');
+      return;
+    }
     frame = requestAnimationFrame(tick);
   }
 
   function update() {
-    const playing = !paused && onScreen && !document.hidden && !reduce.matches;
+    const playing = mode === 'playing' && onScreen && !document.hidden && !reduce.matches;
     if (playing && !frame) {
       previous = null;
       frame = requestAnimationFrame(tick);
@@ -278,13 +301,15 @@ function play(figure: HTMLElement) {
       frame = 0;
     }
     toggle.hidden = reduce.matches;
-    if (reduce.matches) draw(finished);
+    if (reduce.matches) draw(END);
   }
 
   toggle.addEventListener('click', () => {
-    paused = !paused;
-    find<HTMLElement>('.pause .label').textContent = paused ? 'Play' : 'Pause';
-    toggle.toggleAttribute('data-paused', paused);
+    if (mode === 'ended') {
+      clock = 0;
+      draw(clock);
+    }
+    show(mode === 'playing' ? 'paused' : 'playing');
     update();
   });
   document.addEventListener('visibilitychange', update);
@@ -335,6 +360,7 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
 .crumbs,
 .tag,
 .draft,
+.group,
 .number,
 .pause {
   font: 500 var(--text-xs) / 1 var(--font-mono);
@@ -412,11 +438,6 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
 .brief p {
   color: var(--dim);
   font-size: var(--text-sm);
-}
-
-.brief code {
-  color: var(--fg);
-  font-size: 0.95em;
 }
 
 .brief dl {
@@ -556,13 +577,19 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
   scale: 0.96;
 }
 
+.group {
+  margin: var(--space-4) var(--space-5) 0;
+  color: var(--dim);
+}
+
 .results {
   margin: 0;
-  padding: var(--space-2) 0;
+  padding: var(--space-1) 0;
   list-style: none;
 }
 
-.results li {
+.results li,
+.checks {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
   column-gap: var(--space-3);
@@ -571,82 +598,20 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
   font-size: var(--text-sm);
 }
 
-.status {
-  position: relative;
-  width: 14px;
-  height: 14px;
-  margin-top: 3px;
-  border: 1.25px solid var(--line-strong);
-  border-radius: 50%;
+.checks {
+  padding-bottom: var(--space-3);
 }
 
-.status svg {
-  position: absolute;
-  inset: -1.25px;
-  width: 14px;
-  height: 14px;
-  opacity: 0;
-}
-
-.spin path {
-  transform-origin: 7px 7px;
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  animation: spin 700ms linear infinite;
-}
-
-.tick path,
-.cross path {
-  fill: none;
-  stroke: var(--bg);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-li[data-state="running"] .status {
-  border-color: transparent;
-}
-
-li[data-state="running"] .spin,
-li[data-state="pass"] .tick,
-li[data-state="fail"] .cross {
-  opacity: 1;
-}
-
-li[data-state="pass"] .status {
-  border-color: var(--ok);
-  background: var(--ok);
-}
-
-li[data-state="fail"] .status {
-  border-color: var(--bad);
-  background: var(--bad);
-}
-
-.summary {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  margin-inline: var(--space-5);
-  border-top: 1px dashed var(--line-2);
-  color: var(--dim);
-  font: 500 var(--text-xs) / 1.3 var(--font-mono);
-  letter-spacing: 0.04em;
-}
-
-.summary[data-state="fail"] {
+.checks[data-state="fail"] .line {
   color: var(--bad);
 }
 
-.summary[data-state="pass"] {
+.checks[data-state="pass"] .line {
   color: var(--ok);
 }
 
-/* One cell under the summary holds the failure's detail, then "Done", so the figure never changes
-   height while it plays. */
+/* One cell under the checks holds the note about hidden checks, then "Done", so the figure never
+   changes height while it plays. */
 .notes {
   display: grid;
   margin: var(--space-1) var(--space-5) var(--space-5);
@@ -671,17 +636,8 @@ li[data-state="fail"] .status {
   translate: 0 0;
 }
 
-.fail-note {
-  display: grid;
-  gap: 2px;
-  color: var(--bad);
-  font: 400 var(--text-xs) / 1.5 var(--font-mono);
-}
-
-.fail-note .title {
-  margin-bottom: 2px;
-  color: var(--fg);
-  font: 500 var(--text-sm) / 1.4 var(--font-sans);
+.hidden-note {
+  color: var(--dim);
 }
 
 .done-note {
@@ -709,14 +665,6 @@ li[data-state="fail"] .status {
 
 .done-note span {
   color: var(--dim);
-}
-
-.stage {
-  transition: opacity 280ms var(--ease);
-}
-
-.stage.hidden {
-  opacity: 0;
 }
 
 .pointer {
@@ -808,16 +756,23 @@ figcaption {
   fill: currentColor;
 }
 
-.pause[hidden],
-.pause[data-paused] .icon-pause,
-.pause:not([data-paused]) .icon-play {
-  display: none;
+.pause .icon-replay {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
 }
 
-@keyframes spin {
-  to {
-    rotate: 360deg;
-  }
+.pause .icon-replay .head {
+  fill: currentColor;
+  stroke: none;
+}
+
+.pause[hidden],
+.pause:not([data-mode="playing"]) .icon-pause,
+.pause:not([data-mode="paused"]) .icon-play,
+.pause:not([data-mode="ended"]) .icon-replay {
+  display: none;
 }
 
 /* On a phone the whole session fits on one screen: the brief keeps its title and task, and every
@@ -869,17 +824,17 @@ figcaption {
     min-height: 1.7em;
   }
 
+  .group {
+    margin: var(--space-3) var(--space-4) 0;
+  }
+
   .results {
     padding-block: var(--space-1);
   }
 
-  .results li {
+  .results li,
+  .checks {
     padding: 6px var(--space-4);
-  }
-
-  .summary {
-    min-height: 36px;
-    margin-inline: var(--space-4);
   }
 
   .notes {
@@ -900,15 +855,10 @@ figcaption {
     display: none;
   }
 
-  .stage,
   .note,
   .ins,
   .run {
     transition: none;
-  }
-
-  .spin path {
-    animation: none;
   }
 }
 </style>

@@ -1,28 +1,8 @@
 ---
-import Frame from '../components/Frame.astro';
+import LabScroll from '../components/LabScroll.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SessionClip from '../components/SessionClip.astro';
-import TeachArt from '../components/TeachArt.astro';
 import Page from '../layouts/Page.astro';
-
-// Every lab runs in this order, and each stage builds on the one before.
-const steps = [
-  {
-    kind: 'build',
-    name: 'Build',
-    text: 'Write the core of each system by hand, so you know how it works underneath.',
-  },
-  {
-    kind: 'catch',
-    name: 'Catch',
-    text: "An assistant's code that uses yours passes its own tests. Find and fix what it would get wrong in real use.",
-  },
-  {
-    kind: 'ship',
-    name: 'Ship',
-    text: 'Put your code to work on a real decision. It ships when hidden tests and production checks pass.',
-  },
-] as const;
 
 const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
 ---
@@ -59,22 +39,7 @@ const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
 
   <section aria-labelledby="steps">
     <SectionHeading id="steps" text="How every lab runs" />
-    <ol class="steps">
-      {steps.map(({ kind, name, text }, i) => (
-        <li>
-          <Frame>
-            <div class="plate">
-              <TeachArt kind={kind} />
-            </div>
-          </Frame>
-          <h3>
-            <span class="number">{String(i + 1).padStart(2, '0')}</span>
-            {name}
-          </h3>
-          <p>{text}</p>
-        </li>
-      ))}
-    </ol>
+    <LabScroll />
   </section>
 
   <section aria-labelledby="courses">
@@ -138,7 +103,6 @@ h1 {
 }
 
 dt,
-.number,
 .pill,
 .levels span {
   font: 500 var(--text-xs) / 1.2 var(--font-mono);
@@ -185,43 +149,12 @@ section + section {
   color: var(--fg);
 }
 
-.steps,
 .levels {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
-}
-
-.steps li {
-  display: grid;
-  gap: var(--space-3);
-  align-content: start;
-}
-
-.plate {
-  aspect-ratio: 3 / 2;
-}
-
-.steps h3 {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-  font-size: var(--text-lg);
-  font-weight: 600;
-}
-
-.number {
-  color: var(--dim);
-}
-
-.steps p,
 .course p,
 .companies {
   color: var(--dim);
@@ -285,16 +218,6 @@ section + section {
   .intro,
   .course {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 720px) {
-  .steps {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .plate {
-    aspect-ratio: 2 / 1;
   }
 }
 </style>
