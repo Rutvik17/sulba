@@ -5,7 +5,13 @@ import SessionClip from '../components/SessionClip.astro';
 import TeachArt from '../components/TeachArt.astro';
 import Page from '../layouts/Page.astro';
 
-const teach = [
+// Each module runs in this order.
+const steps = [
+  {
+    kind: 'sketch',
+    name: 'Sketch',
+    text: "Sketch how you'd solve the module's real problem before it's taught, and get feedback on your approach.",
+  },
   {
     kind: 'build',
     name: 'Build it yourself',
@@ -61,10 +67,10 @@ const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
     </p>
   </section>
 
-  <section aria-labelledby="teach">
-    <SectionHeading id="teach" text="What Sulba teaches" />
-    <ul class="teach">
-      {teach.map(({ kind, name, text }, i) => (
+  <section aria-labelledby="steps">
+    <SectionHeading id="steps" text="How each module runs" />
+    <ol class="steps">
+      {steps.map(({ kind, name, text }, i) => (
         <li>
           <Frame>
             <div class="plate">
@@ -72,13 +78,13 @@ const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
             </div>
           </Frame>
           <h3>
-            <span class="number">Fig. {i + 2}</span>
+            <span class="number">{String(i + 1).padStart(2, '0')}</span>
             {name}
           </h3>
           <p>{text}</p>
         </li>
       ))}
-    </ul>
+    </ol>
   </section>
 
   <section aria-labelledby="courses">
@@ -188,20 +194,20 @@ section + section {
   color: var(--fg);
 }
 
-.teach,
+.steps,
 .levels {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.teach {
+.steps {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-6);
 }
 
-.teach li {
+.steps li {
   display: grid;
   gap: var(--space-3);
   align-content: start;
@@ -211,7 +217,7 @@ section + section {
   aspect-ratio: 3 / 2;
 }
 
-.teach h3 {
+.steps h3 {
   display: flex;
   align-items: baseline;
   gap: var(--space-3);
@@ -224,7 +230,7 @@ section + section {
   color: var(--dim);
 }
 
-.teach p,
+.steps p,
 .course p,
 .companies {
   color: var(--dim);
@@ -279,9 +285,9 @@ section + section {
   font-size: var(--text-lg);
 }
 
-@media (max-width: 1080px) {
-  .teach {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 1180px) {
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-10) var(--space-6);
   }
 }
@@ -293,8 +299,8 @@ section + section {
   }
 }
 
-@media (max-width: 560px) {
-  .teach {
+@media (max-width: 720px) {
+  .steps {
     grid-template-columns: minmax(0, 1fr);
   }
 

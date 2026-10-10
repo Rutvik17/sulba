@@ -1,13 +1,26 @@
 ---
 // Line drawings for what Sulba teaches, in fixed geometry on a 300 by 200 grid.
 interface Props {
-  kind: 'build' | 'with-ai' | 'review' | 'design';
+  kind: 'sketch' | 'build' | 'design' | 'with-ai' | 'review';
 }
 
 const { kind } = Astro.props;
 ---
 
 <svg class="art" viewBox="0 0 300 200" aria-hidden="true">
+  {kind === 'sketch' && (
+    <>
+      <path class="draft" d="M100 68 L115 68 L115 100 L130 100 M100 132 L115 132 L115 100" />
+      <rect class="draft" x="40" y="50" width="60" height="36" />
+      <rect class="draft" x="40" y="114" width="60" height="36" />
+      <rect class="draft" x="130" y="82" width="60" height="36" />
+      <path class="soft" d="M190 100 L204 100 L204 82 L218 82" />
+      <rect class="accent" x="218" y="60" width="56" height="44" />
+      <path d="M228 74 L262 74 M228 88 L250 88" />
+      <circle class="dot" cx="190" cy="100" r="2.5" />
+      <circle class="dot" cx="218" cy="82" r="2.5" />
+    </>
+  )}
   {kind === 'build' && (
     <>
       <path class="fill" d="M60 118 L150 73 L240 118 L240 128 L150 173 L60 128 Z" />
@@ -91,6 +104,11 @@ const { kind } = Astro.props;
 
 .accent {
   stroke: var(--accent);
+}
+
+/* A first take, not yet the design. */
+.draft {
+  stroke-dasharray: 4 3;
 }
 
 .fill {
