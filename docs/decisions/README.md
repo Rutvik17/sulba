@@ -14,5 +14,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [8. Monitor with free services, each with one job](0008-monitor-with-free-services.md) | Accepted |
 | [9. Keep branch previews behind Cloudflare Access](0009-keep-previews-behind-cloudflare-access.md) | Accepted |
 | [10. Reserve all rights to course content](0010-reserve-all-rights-to-course-content.md) | Accepted |
+| [11. Build the interface on tokens, CSS and React Aria Components](0011-build-the-interface-on-tokens-css-and-react-aria.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
