@@ -1,0 +1,43 @@
+---
+import Mark from './Mark.astro';
+---
+
+<header class="bar">
+  <div class="inner">
+    <a class="brand" href="/">
+      <Mark />
+      <span>Sulba</span>
+    </a>
+  </div>
+</header>
+
+<style>
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: 60px;
+  max-width: var(--sheet);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+</style>

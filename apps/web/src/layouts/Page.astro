@@ -2,6 +2,8 @@
 import '@sulba/ui/tokens.css';
 import '@sulba/ui/base.css';
 import { Font } from 'astro:assets';
+import Footer from '../components/Footer.astro';
+import TopBar from '../components/TopBar.astro';
 
 interface Props {
   title: string;
@@ -21,8 +23,44 @@ const { title } = Astro.props;
     <Font cssVariable="--font-display" />
   </head>
   <body>
-    <main>
+    <a class="skip" href="#main">Skip to content</a>
+    <TopBar />
+    <main id="main">
       <slot />
     </main>
+    <Footer />
   </body>
 </html>
+
+<style>
+html {
+  scroll-padding-top: 76px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.skip {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 30;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 500;
+  text-decoration: none;
+  translate: 0 -200%;
+}
+
+.skip:focus-visible {
+  translate: none;
+}
+</style>

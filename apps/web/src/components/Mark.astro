@@ -1,0 +1,26 @@
+---
+import { cordPath, pegs } from '@sulba/ui/mark';
+---
+
+<svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+  <path d={cordPath} />
+  {pegs.map(([x, y]) => <circle cx={x} cy={y} r="7" />)}
+</svg>
+
+<style>
+.mark {
+  width: 22px;
+  height: 22px;
+}
+
+path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 7;
+  stroke-linejoin: round;
+}
+
+circle {
+  fill: currentColor;
+}
+</style>

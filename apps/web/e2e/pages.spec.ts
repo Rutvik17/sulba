@@ -17,6 +17,26 @@ test('an unknown address shows the not-found page with a 404 status', async ({ p
   await expect(page).toHaveURL('/');
 });
 
+test('a keyboard user can skip past the top bar to the content', async ({ page }) => {
+  await page.goto('/');
+
+  await page.keyboard.press('Tab');
+  const skip = page.getByRole('link', { name: 'Skip to content' });
+  await expect(skip).toBeFocused();
+  await expect(skip).toBeInViewport();
+  await page.keyboard.press('Enter');
+
+  await expect(page).toHaveURL(/#main$/);
+});
+
+test('every page links to the source code, as the AGPL asks', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(
+    page.getByRole('contentinfo').getByRole('link', { name: 'Source code' }),
+  ).toHaveAttribute('href', 'https://github.com/Rutvik17/sulba');
+});
+
 test('the home page loads nothing from other sites', async ({ page }) => {
   const origins = new Set<string>();
   page.on('request', (request) => origins.add(new URL(request.url()).origin));

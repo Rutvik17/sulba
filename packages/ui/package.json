@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     "./tokens.css": "./src/tokens.css",
-    "./base.css": "./src/base.css"
+    "./base.css": "./src/base.css",
+    "./mark": "./src/mark.ts"
   },
   "scripts": {
     "typecheck": "tsc",

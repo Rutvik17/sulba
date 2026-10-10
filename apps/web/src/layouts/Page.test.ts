@@ -8,7 +8,7 @@ test('Page puts its title in the document head and marks the page as English', a
   const html = await container.renderToString(Page, { props: { title: 'Lesson one · Sulba' } });
 
   expect(html).toContain('<title>Lesson one · Sulba</title>');
-  expect(html).toContain('<html lang="en">');
+  expect(html).toMatch(/<html lang="en"[\s>]/);
 });
 
 test('Page renders its content inside the main landmark', async () => {
@@ -19,5 +19,14 @@ test('Page renders its content inside the main landmark', async () => {
     slots: { default: '<p>Session content</p>' },
   });
 
-  expect(html).toMatch(/<main>\s*<p>Session content<\/p>\s*<\/main>/);
+  expect(html).toMatch(/<main id="main"[^>]*>\s*<p>Session content<\/p>\s*<\/main>/);
+});
+
+test('Page starts with a link that skips past the top bar to the content', async () => {
+  const container = await AstroContainer.create();
+
+  const html = await container.renderToString(Page, { props: { title: 'Sulba' } });
+  const body = html.slice(html.indexOf('<body'));
+
+  expect(body).toMatch(/^<body[^>]*>\s*<a [^>]*href="#main"[^>]*>Skip to content<\/a>/);
 });
