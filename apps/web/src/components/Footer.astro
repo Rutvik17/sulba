@@ -1,7 +1,23 @@
+---
+const links = [
+  { href: '/about/', text: 'About' },
+  { href: 'https://github.com/Rutvik17/sulba', text: 'Source code' },
+] as const;
+
+// The same page with or without its trailing slash.
+const here = Astro.url.pathname.replace(/\/?$/, '/');
+---
+
 <footer class="foot">
   <div class="inner">
     <span>© 2026 Sulba</span>
-    <a href="https://github.com/Rutvik17/sulba">Source code</a>
+    <nav aria-label="Footer">
+      {links.map(({ href, text }) => (
+        <a href={href} aria-current={href === here ? 'page' : undefined}>
+          {text}
+        </a>
+      ))}
+    </nav>
   </div>
 </footer>
 
@@ -23,7 +39,14 @@
   font-size: var(--text-sm);
 }
 
-a:hover {
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+a:hover,
+a[aria-current="page"] {
   color: var(--fg);
 }
 </style>

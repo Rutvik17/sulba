@@ -25,6 +25,41 @@ test('the home page lists how a module runs and the first course', async ({ page
   ]);
 });
 
+test('the about page says what Sulba is, where its name comes from, what it values and who makes it', async ({
+  page,
+}) => {
+  const response = await page.goto('/about/');
+
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveTitle('About · Sulba');
+  await expect(page.getByRole('heading', { level: 1, name: 'About Sulba' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'The name' })).toContainText(
+    'A cord of 12 equal lengths, pegged into sides of 3, 4 and 5, makes a right angle, because 3² + 4² = 5².',
+  );
+  await expect(
+    page.getByRole('region', { name: 'What we value' }).getByRole('heading', { level: 3 }),
+  ).toHaveText([
+    'Fundamentals first',
+    'Real problems',
+    'Review every line',
+    'Correct before complete',
+  ]);
+  await expect(page.getByRole('region', { name: 'Team' }).getByRole('listitem')).toHaveText([
+    /Rutvik Patel\s*Founder/,
+  ]);
+});
+
+test('the footer leads to the about page and marks it as the page you are on', async ({ page }) => {
+  await page.goto('/');
+  const about = page.getByRole('contentinfo').getByRole('link', { name: 'About' });
+
+  await expect(about).not.toHaveAttribute('aria-current');
+  await about.click();
+
+  await expect(page).toHaveURL('/about/');
+  await expect(about).toHaveAttribute('aria-current', 'page');
+});
+
 test('an unknown address shows the not-found page with a 404 status', async ({ page }) => {
   const response = await page.goto('/no-such-page/');
 

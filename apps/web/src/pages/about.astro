@@ -1,0 +1,240 @@
+---
+import { sides } from '@sulba/ui/mark';
+import CordFigure from '../components/CordFigure.astro';
+import Frame from '../components/Frame.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Page from '../layouts/Page.astro';
+
+const [up, across, back] = sides;
+const lengths = up + across + back;
+
+const values = [
+  {
+    name: 'Fundamentals first',
+    text: 'You write the core of every system by hand before an assistant writes any of it.',
+  },
+  {
+    name: 'Real problems',
+    text: 'Every module is built around a problem engineers meet at work.',
+  },
+  {
+    name: 'Review every line',
+    text: "An assistant's code is a draft until someone who understands it has reviewed it.",
+  },
+  {
+    name: 'Correct before complete',
+    text: "We'd rather publish less than publish something wrong.",
+  },
+] as const;
+
+const team = [{ name: 'Rutvik Patel', role: 'Founder' }] as const;
+---
+
+<Page title="About · Sulba">
+  <section class="hero">
+    <h1>About Sulba</h1>
+    <p class="lede">
+      Sulba is the school of the AI era. Engineers learn the fundamentals by hand, then build with
+      AI: they design the system, direct the assistant and review what it writes.
+    </p>
+  </section>
+
+  <section aria-labelledby="name">
+    <SectionHeading id="name" text="The name" />
+    <div class="name">
+      <div class="story">
+        <p>
+          Śulba is Sanskrit for a cord. The Śulba Sūtras, written in India more than 2,000 years
+          ago, are among the oldest mathematics that survives from India. They lay out altars on the
+          ground with poles and a single cord, used as both ruler and compass.
+        </p>
+        <p>
+          A cord of {lengths} equal lengths, pegged into sides of {up}, {across} and {back}, makes a
+          right angle, because <span class="equation">{up}² + {across}² = {back}²</span>. The
+          Āpastamba Śulba Sūtra uses this triangle, scaled up, to set out the corners of an altar.
+          Our mark is the same cord on its three pegs.
+        </p>
+      </div>
+      <figure>
+        <Frame>
+          <div class="plate"><CordFigure /></div>
+        </Frame>
+        <figcaption>
+          <span class="number">Fig. 1</span>
+          <span>The cord on its three pegs, with sides of {up}, {across} and {back}.</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="values">
+    <SectionHeading id="values" text="What we value" />
+    <ol class="values">
+      {values.map(({ name, text }, i) => (
+        <li>
+          <div class="value">
+            <span class="number">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{name}</h3>
+          </div>
+          <p>{text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section aria-labelledby="team">
+    <SectionHeading id="team" text="Team" />
+    <ul class="team">
+      {team.map(({ name, role }) => (
+        <li>
+          <p class="person">{name}</p>
+          <p class="role">{role}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Page>
+
+<style>
+.hero {
+  padding-block: var(--space-16) var(--space-12);
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  max-width: 54ch;
+  margin-top: var(--space-6);
+  font-size: var(--text-lg);
+  color: var(--dim);
+}
+
+section + section {
+  margin-top: var(--space-24);
+}
+
+.name {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8) var(--space-16);
+  align-items: start;
+}
+
+.story {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 58ch;
+  font-size: var(--text-lg);
+  color: var(--dim);
+}
+
+.equation {
+  white-space: nowrap;
+}
+
+figure {
+  max-width: 520px;
+  margin: 0;
+}
+
+.plate {
+  aspect-ratio: 4 / 3;
+  padding: var(--space-6);
+}
+
+figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.number,
+.role {
+  font: 500 var(--text-xs) / 1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+figcaption .number {
+  color: var(--fg);
+}
+
+.values,
+.team {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.values {
+  border-bottom: 1px solid var(--line);
+}
+
+/* Each value's text starts where the figure above starts. */
+.values li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-16);
+  align-items: baseline;
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.value {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.values .number,
+.role {
+  color: var(--dim);
+}
+
+.values h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.values p {
+  color: var(--dim);
+}
+
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-8) var(--space-6);
+}
+
+.person {
+  font: 400 var(--text-2xl) / 1.1 var(--font-display);
+}
+
+.role {
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 820px) {
+  .name {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .values li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .value {
+    grid-template-columns: 3rem minmax(0, 1fr);
+  }
+
+  .values p {
+    padding-left: 3rem;
+  }
+}
+</style>

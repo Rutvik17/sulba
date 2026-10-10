@@ -1,0 +1,93 @@
+---
+// The mark drawn large: the cord on its three pegs, its knots marking the 12 equal lengths, each
+// side labelled with its length and the right angle marked. Every position comes from the mark.
+import { cordPath, knots, pegs, sides } from '@sulba/ui/mark';
+
+type Point = (typeof pegs)[number];
+
+const [top, corner, end] = pegs;
+const [up, across, back] = sides;
+const unit = (corner[1] - top[1]) / up;
+
+// How far outside the middle of its side a length is written.
+const GAP = 7;
+
+const label = (from: Point, to: Point, opposite: Point, text: number) => {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const middle = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2] as const;
+  const normal = [(to[1] - from[1]) / length, (from[0] - to[0]) / length] as const;
+  // The normal that points away from the opposite peg points out of the triangle.
+  const out =
+    (opposite[0] - middle[0]) * normal[0] + (opposite[1] - middle[1]) * normal[1] > 0 ? -1 : 1;
+  return { text, x: middle[0] + normal[0] * GAP * out, y: middle[1] + normal[1] * GAP * out };
+};
+
+const labels = [
+  label(top, corner, end, up),
+  label(corner, end, top, across),
+  label(end, top, corner, back),
+];
+
+// The right angle's square, inside the corner.
+const side = unit / 2;
+const square = `M${corner[0]} ${corner[1] - side} H${corner[0] + side} V${corner[1]}`;
+
+// A dot is a path of no length with round caps, so it keeps its size at any scale.
+const dot = ([x, y]: Point) => `M${x} ${y} h0`;
+---
+
+<svg class="cord" viewBox="-7 10 108 88" aria-hidden="true">
+  <path class="square" d={square} />
+  <path class="line" d={cordPath} />
+  {knots.map((point) => <path class="knot" d={dot(point)} />)}
+  {pegs.map((point) => <path class="peg" d={dot(point)} />)}
+  {labels.map(({ text, x, y }) => (
+    <text x={x} y={y}>
+      {text}
+    </text>
+  ))}
+</svg>
+
+<style>
+.cord {
+  width: 100%;
+  height: 100%;
+}
+
+.cord path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.line {
+  stroke: var(--fg);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.square {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+
+.knot,
+.peg {
+  stroke: var(--fg);
+  stroke-linecap: round;
+}
+
+.knot {
+  stroke-width: 4.5;
+}
+
+.peg {
+  stroke-width: 11;
+}
+
+text {
+  fill: var(--dim);
+  font: 500 5px var(--font-mono);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+</style>
