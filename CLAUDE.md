@@ -35,6 +35,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.
+- The pictures in `brand` are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
 - One course at a time: AI Engineering is built end to end before any other course starts. A language's editor support and Docker image arrive with the first session that uses it.
 
 ## Correctness
