@@ -81,12 +81,10 @@ test('a keyboard user can skip past the top bar to the content', async ({ page }
   await expect(page).toHaveURL(/#main$/);
 });
 
-test('every page links to the source code, as the AGPL asks', async ({ page }) => {
+test('pages never link to the repository', async ({ page }) => {
   await page.goto('/');
 
-  await expect(
-    page.getByRole('contentinfo').getByRole('link', { name: 'Source code' }),
-  ).toHaveAttribute('href', 'https://github.com/Rutvik17/sulba');
+  await expect(page.locator('a[href*="github.com/Rutvik17/sulba"]')).toHaveCount(0);
 });
 
 test('the home page loads nothing from other sites', async ({ page }) => {

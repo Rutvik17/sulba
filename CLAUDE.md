@@ -53,7 +53,7 @@ Wrong content is worse than no content. Never claim certainty you don't have. Th
 - Every number a learner sees can be traced to its inputs on the same screen.
 - No referral schemes of any kind.
 - Data and API providers may be credited where their terms ask; teaching sources are not.
-- The site's footer links to this repository's source, as the AGPL asks of a network service.
+- The site never says its code is open source, and it doesn't link to this repository.
 
 ## Documentation
 
