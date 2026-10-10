@@ -43,7 +43,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          BRANCH: ${{ github.ref_name }}
+          # A pull request's own branch, or main on a push.
+          BRANCH: ${{ github.head_ref || github.ref_name }}
           WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.json
         run: |
           if [ "$BRANCH" = main ]; then

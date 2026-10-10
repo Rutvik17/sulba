@@ -1,15 +1,17 @@
 name: CI
 
+# One run per commit: every pull request, and every push to main. Required checks then always come
+# from a run that happened, never from a skipped duplicate.
 on:
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
@@ -18,8 +20,6 @@ env:
 jobs:
   checks:
     name: Lint, types, unit tests and build
-    # Branches in this repository are checked on push; pull requests only need a run from forks.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -39,7 +39,6 @@ jobs:
 
   e2e:
     name: End-to-end and accessibility tests
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -64,8 +63,12 @@ jobs:
   deploy:
     name: Deploy
     needs: [checks, e2e]
-    # Dependency update branches are tested but not deployed.
-    if: github.event_name == 'push' && !startsWith(github.ref_name, 'renovate/')
+    # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
+    # updates and pull requests from forks, which have no access to secrets, are tested only.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      !startsWith(github.head_ref, 'renovate/'))
     uses: ./.github/workflows/deploy.yml
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
