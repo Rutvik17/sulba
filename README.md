@@ -34,7 +34,7 @@ Before the first `pnpm test:e2e`, install the browser with `pnpm --filter @sulba
 | `docs/decisions` | Architecture decision records |
 | `.github/workflows` | CI and deploys |
 
-Every push runs the checks. When they pass, `main` deploys to sulba.dev and every other branch gets its own private preview address.
+Every pull request runs the checks, and so does every push to `main`. When they pass, `main` deploys to sulba.dev and each pull request gets its own private preview address.
 
 ## Licences
 
