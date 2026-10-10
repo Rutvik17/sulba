@@ -1,0 +1,94 @@
+/*
+  Sulba's design tokens: every colour, length and timing the interface uses. Components read
+  these and define none of their own (decision record 11).
+
+  Each colour has a dark and a light value. The page follows the device's setting until the
+  learner picks a theme, which sets data-theme on <html>.
+*/
+@layer tokens {
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0e0e0e;
+    --surface: #151515;
+    --raise: #1d1d1c;
+    --fg: #ecebe8;
+    --dim: #9c9b97;
+    /* Rules, ticks and marks only: too faint for text. */
+    --faint: #62615e;
+    --line: rgb(255 255 255 / 0.09);
+    --line-2: rgb(255 255 255 / 0.18);
+    /* The edge of a control, at 3:1 or more against every ground. */
+    --line-strong: rgb(255 255 255 / 0.4);
+    --accent: #8e99ff;
+    --ok: #7fc89d;
+    --bad: #ef8b74;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #fafaf8;
+    --surface: #f2f2ef;
+    --raise: #e9e9e5;
+    --fg: #121212;
+    --dim: #63625e;
+    --faint: #a4a39e;
+    --line: rgb(0 0 0 / 0.09);
+    --line-2: rgb(0 0 0 / 0.2);
+    --line-strong: rgb(0 0 0 / 0.48);
+    --accent: #2d43d4;
+    --ok: #1a7442;
+    --bad: #b33a22;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+      --bg: #fafaf8;
+      --surface: #f2f2ef;
+      --raise: #e9e9e5;
+      --fg: #121212;
+      --dim: #63625e;
+      --faint: #a4a39e;
+      --line: rgb(0 0 0 / 0.09);
+      --line-2: rgb(0 0 0 / 0.2);
+      --line-strong: rgb(0 0 0 / 0.48);
+      --accent: #2d43d4;
+      --ok: #1a7442;
+      --bad: #b33a22;
+    }
+  }
+
+  :root {
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-24: 96px;
+
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 14px;
+    --radius-full: 999px;
+
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+    --duration-quick: 120ms;
+    --duration: 200ms;
+
+    --sheet: 1320px;
+    --gutter: clamp(16px, 4vw, 48px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-quick: 0ms;
+      --duration: 0ms;
+    }
+  }
+}
