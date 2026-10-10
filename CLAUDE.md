@@ -59,7 +59,8 @@ Wrong content is worse than no content. Never claim certainty you don't have. Th
 
 - Each document has one purpose and one home: rules in this file, running and contributing in the README and CONTRIBUTING, decisions in `docs/decisions`. A fact lives in one place; other documents link to it.
 - Documents cover the app, its architecture, principles and rules. Research notes, session history and explorations stay out; research appears only as a decision record's sources.
-- When code changes what a document says, the document changes in the same commit, and what no longer applies is deleted. Accepted decision records are the exception: they are superseded.
+- Documents state what is decided, not what was ruled out. Options that were weighed appear only in the decision record that compared them.
+- When the code or a decision changes, every document that mentions it changes in the same commit, and what no longer applies is deleted. Accepted decision records are the exception: they are superseded.
 - A document is written when the thing it describes exists.
 
 ## On Windows
