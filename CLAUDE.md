@@ -54,6 +54,13 @@ Wrong content is worse than no content. Never claim certainty you don't have. Th
 - Data and API providers may be credited where their terms ask; teaching sources are not.
 - The site's footer links to this repository's source, as the AGPL asks of a network service.
 
+## Documentation
+
+- Each document has one purpose and one home: rules in this file, running and contributing in the README and CONTRIBUTING, decisions in `docs/decisions`. A fact lives in one place; other documents link to it.
+- Documents cover the app, its architecture, principles and rules. Research notes, session history and explorations stay out; research appears only as a decision record's sources.
+- When code changes what a document says, the document changes in the same commit, and what no longer applies is deleted. Accepted decision records are the exception: they are superseded.
+- A document is written when the thing it describes exists.
+
 ## On Windows
 
 - Edit files with the editor tools, never by round-tripping text through PowerShell, which corrupts UTF-8.
