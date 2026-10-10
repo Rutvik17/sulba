@@ -1,6 +1,6 @@
 # Sulba
 
-Sulba is an online school for software engineers. Each session is a coding task checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
+Sulba is the school of the AI era. Engineers learn the fundamentals by hand, then build with AI: they design the system, direct the assistant and review what it writes. Each session is checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
 
 ## Run it locally
 
