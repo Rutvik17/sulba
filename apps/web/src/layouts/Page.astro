@@ -18,6 +18,15 @@ const { title } = Astro.props;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{title}</title>
+    <script is:inline>
+    // A saved theme applies before the first paint, so the page never flashes the other one.
+    try {
+      const theme = localStorage.getItem('sulba:theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch {
+      // Storage is blocked: the page follows the device's setting.
+    }
+    </script>
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
     <Font cssVariable="--font-display" />

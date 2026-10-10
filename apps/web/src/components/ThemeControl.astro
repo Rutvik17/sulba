@@ -1,0 +1,123 @@
+<button class="toggle" type="button" popovertarget="theme-panel" aria-label="Theme">
+  <svg viewBox="0 0 26 26" aria-hidden="true">
+    <circle cx="13" cy="13" r="11.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+    <path d="M13 1.5a11.5 11.5 0 0 1 0 23z" fill="currentColor" />
+  </svg>
+</button>
+<div class="panel" id="theme-panel" popover>
+  <fieldset>
+    <legend>Theme</legend>
+    <div class="choices">
+      <label><input type="radio" name="theme" value="system" checked>System</label>
+      <label><input type="radio" name="theme" value="light">Light</label>
+      <label><input type="radio" name="theme" value="dark">Dark</label>
+    </div>
+  </fieldset>
+</div>
+
+<script>
+// Page.astro's inline script applies a saved choice before the first paint; this keeps the
+// radio buttons in step with it and saves new choices.
+const root = document.documentElement;
+const saved = root.dataset.theme ?? 'system';
+
+for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="theme"]')) {
+  radio.checked = radio.value === saved;
+  radio.addEventListener('change', () => {
+    if (radio.value === 'system') delete root.dataset.theme;
+    else root.dataset.theme = radio.value;
+    try {
+      if (radio.value === 'system') localStorage.removeItem('sulba:theme');
+      else localStorage.setItem('sulba:theme', radio.value);
+    } catch {
+      // Storage is blocked: the choice lasts until the page is left.
+    }
+  });
+}
+</script>
+
+<style>
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  cursor: pointer;
+}
+
+.toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.panel {
+  inset: auto;
+  top: 68px;
+  right: max(var(--gutter), calc((100vw - var(--sheet)) / 2 + var(--gutter)));
+  margin: 0;
+  width: min(320px, calc(100vw - 2 * var(--gutter)));
+  padding: var(--space-5);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.28);
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+  font: 500 var(--text-xs) / 1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+
+label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  border-radius: 5px;
+  font-size: var(--text-sm);
+  color: var(--dim);
+}
+
+label:has(:checked) {
+  background: var(--raise);
+  color: var(--fg);
+}
+
+label:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The radio button itself covers its segment, unseen, so a click on the segment lands on it. */
+input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+</style>
