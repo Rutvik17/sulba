@@ -1,26 +1,13 @@
 ---
-// Line drawings for what Sulba teaches, in fixed geometry on a 300 by 200 grid.
+// Line drawings for the stages of a lab, in fixed geometry on a 300 by 200 grid.
 interface Props {
-  kind: 'sketch' | 'build' | 'design' | 'with-ai' | 'review';
+  kind: 'build' | 'catch' | 'ship';
 }
 
 const { kind } = Astro.props;
 ---
 
 <svg class="art" viewBox="0 0 300 200" aria-hidden="true">
-  {kind === 'sketch' && (
-    <>
-      <path class="draft" d="M100 68 L115 68 L115 100 L130 100 M100 132 L115 132 L115 100" />
-      <rect class="draft" x="40" y="50" width="60" height="36" />
-      <rect class="draft" x="40" y="114" width="60" height="36" />
-      <rect class="draft" x="130" y="82" width="60" height="36" />
-      <path class="soft" d="M190 100 L204 100 L204 82 L218 82" />
-      <rect class="accent" x="218" y="60" width="56" height="44" />
-      <path d="M228 74 L262 74 M228 88 L250 88" />
-      <circle class="dot" cx="190" cy="100" r="2.5" />
-      <circle class="dot" cx="218" cy="82" r="2.5" />
-    </>
-  )}
   {kind === 'build' && (
     <>
       <path class="fill" d="M60 118 L150 73 L240 118 L240 128 L150 173 L60 128 Z" />
@@ -37,23 +24,7 @@ const { kind } = Astro.props;
       <circle class="dot" cx="150" cy="173" r="2.5" />
     </>
   )}
-  {kind === 'with-ai' && (
-    <>
-      <rect x="36" y="58" width="96" height="84" />
-      <path d="M48 76 L56 82 L48 88 M64 82 L112 82 M48 102 L104 102" />
-      <path class="soft" d="M48 118 L92 118" />
-      <rect x="168" y="40" width="100" height="120" />
-      <path d="M182 60 L238 60 M182 76 L254 76 M196 92 L250 92 M196 108 L232 108 M182 124 L224 124" />
-      <path class="accent" d="M196 140 L246 140" />
-      <path d="M132 74 L150 74 L150 64 L168 64" />
-      <path class="soft" d="M168 136 L150 136 L150 126 L132 126" />
-      <circle class="dot" cx="150" cy="74" r="2.5" />
-      <circle class="dot" cx="150" cy="126" r="2.5" />
-      <circle class="dot" cx="168" cy="64" r="2.5" />
-      <circle class="dot" cx="132" cy="126" r="2.5" />
-    </>
-  )}
-  {kind === 'review' && (
+  {kind === 'catch' && (
     <>
       <rect x="40" y="32" width="150" height="136" />
       <path class="soft" d="M40 52 L190 52" />
@@ -68,19 +39,27 @@ const { kind } = Astro.props;
       <circle class="dot" cx="218" cy="72" r="2.5" />
     </>
   )}
-  {kind === 'design' && (
+  {kind === 'ship' && (
     <>
+      <rect x="32" y="56" width="88" height="88" />
+      <path d="M44 76 L96 76 M44 92 L108 92 M56 108 L100 108 M44 124 L84 124" />
       <path
         class="soft"
-        d="M90 100 L110 100 L110 55 L125 55 M110 100 L110 145 L125 145 M175 55 L190 55 L190 100 L210 100 M175 145 L190 145 L190 100"
+        d="M120 100 L136 100 M136 64 L136 136 M136 64 L148 64 M136 100 L148 100 M136 136 L148 136"
       />
-      <rect x="40" y="85" width="50" height="30" />
-      <rect x="125" y="40" width="50" height="30" />
-      <rect x="125" y="130" width="50" height="30" />
-      <rect class="accent" x="210" y="85" width="50" height="30" />
-      <rect class="accent" x="214" y="89" width="42" height="22" />
-      <circle class="dot" cx="110" cy="100" r="2.5" />
-      <circle class="dot" cx="190" cy="100" r="2.5" />
+      <rect x="148" y="52" width="36" height="24" />
+      <rect x="148" y="88" width="36" height="24" />
+      <rect x="148" y="124" width="36" height="24" />
+      <path d="M158 64 L164 70 L174 58 M158 100 L164 106 L174 94 M158 136 L164 142 L174 130" />
+      <path
+        class="soft"
+        d="M184 64 L196 64 M184 100 L196 100 M184 136 L196 136 M196 64 L196 136 M196 100 L212 100"
+      />
+      <rect class="accent" x="212" y="72" width="56" height="56" />
+      <path d="M224 90 L256 90 M224 104 L248 104" />
+      <circle class="dot" cx="136" cy="100" r="2.5" />
+      <circle class="dot" cx="196" cy="100" r="2.5" />
+      <circle class="dot" cx="212" cy="100" r="2.5" />
     </>
   )}
 </svg>
@@ -104,11 +83,6 @@ const { kind } = Astro.props;
 
 .accent {
   stroke: var(--accent);
-}
-
-/* A first take, not yet the design. */
-.draft {
-  stroke-dasharray: 4 3;
 }
 
 .fill {

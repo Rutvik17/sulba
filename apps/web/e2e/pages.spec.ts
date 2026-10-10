@@ -10,12 +10,12 @@ test('the home page loads', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('the home page lists how a module runs and the first course', async ({ page }) => {
+test('the home page lists how a lab runs and the first course', async ({ page }) => {
   await page.goto('/');
 
   await expect(
-    page.getByRole('region', { name: 'How each module runs' }).getByRole('heading', { level: 3 }),
-  ).toHaveText([/Sketch/, /Build it yourself/, /Design/, /Build with AI/, /Review/]);
+    page.getByRole('region', { name: 'How every lab runs' }).getByRole('heading', { level: 3 }),
+  ).toHaveText([/Build/, /Catch/, /Ship/]);
   await expect(page.getByRole('region', { name: 'Courses' }).getByRole('listitem')).toHaveText([
     /Beginner/,
     /Intermediate/,
