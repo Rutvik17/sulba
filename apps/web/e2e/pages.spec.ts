@@ -17,6 +17,15 @@ test('an unknown address shows the not-found page with a 404 status', async ({ p
   await expect(page).toHaveURL('/');
 });
 
+test('the home page loads nothing from other sites', async ({ page }) => {
+  const origins = new Set<string>();
+  page.on('request', (request) => origins.add(new URL(request.url()).origin));
+
+  await page.goto('/', { waitUntil: 'networkidle' });
+
+  expect([...origins]).toEqual([new URL(page.url()).origin]);
+});
+
 test('pages ask search engines not to index them before launch', async ({ request }) => {
   const response = await request.get('/');
 

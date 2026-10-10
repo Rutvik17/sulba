@@ -60,6 +60,8 @@
   }
 
   :root {
+    /* Stand-ins: pages load Geist, Geist Mono and Instrument Serif, and Astro sets these
+       variables to them (apps/web/astro.config.ts). */
     --font-sans: ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --font-display: Georgia, "Times New Roman", serif;

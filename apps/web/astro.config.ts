@@ -1,5 +1,6 @@
 import cloudflare from '@astrojs/cloudflare';
 import { defineConfig } from 'astro/config';
+import { fonts } from './fonts';
 
 export default defineConfig({
   site: 'https://sulba.dev',
@@ -7,4 +8,5 @@ export default defineConfig({
   adapter: cloudflare({ imageService: 'compile' }),
   // Sign-in lives in Supabase, so Astro sessions and the KV namespace they create stay off.
   session: false,
+  fonts,
 });

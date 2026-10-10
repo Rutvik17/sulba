@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.3.4",
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "@fontsource/instrument-serif": "5.3.0",
     "@sulba/ui": "workspace:*",
     "astro": "7.3.7"
   },
