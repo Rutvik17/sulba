@@ -1,14 +1,7 @@
 ---
 import { cordPath, pegs } from '@sulba/ui/mark';
-import { FIX, failure } from '../lib/session-clip';
+import { edits, failure, select, tests } from '../lib/session-clip';
 import Frame from './Frame.astro';
-
-const tests = [
-  'Keeps the shape',
-  'Each column has mean 0',
-  'Each column has standard deviation 1',
-  'Leaves the input unchanged',
-];
 ---
 
 <figure class="clip" data-session>
@@ -16,10 +9,10 @@ const tests = [
     <div
       class="window"
       role="img"
-      aria-label={`A session in AI Engineering. An assistant's standardize function, written with a mistake on purpose, fails two of four tests. The learner adds ${FIX} to the mean and the standard deviation, and all four tests pass.`}
+      aria-label="A session in AI Engineering. An assistant's order-lookup tool, written with a mistake on purpose, pastes the customer's name into its SQL query, and two of four tests fail. The learner makes the query take the name as a parameter, and all four tests pass."
     >
       <div class="chrome">
-        <span class="crumbs">AI Engineering <i>/</i> Beginner <i>/</i> Data</span>
+        <span class="crumbs">AI Engineering <i>/</i> Intermediate <i>/</i> Agents</span>
         <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
           <path d={cordPath} />
           {pegs.map(([x, y]) => <circle cx={x} cy={y} r="8" />)}
@@ -30,29 +23,30 @@ const tests = [
         <div class="pane brief">
           <div class="head"><span class="tag">Brief</span><span class="tag">Session 3</span></div>
           <div class="body">
-            <h3>Standardize the features</h3>
+            <h3>Look up a customer's orders</h3>
             <p>
-              An assistant wrote <code>standardize</code> and made a mistake on purpose. Run the
-              tests, then find and fix it.
+              An assistant wrote the lookup tool your support agent calls, and made a mistake on
+              purpose. Run the tests, then find and fix it.
             </p>
             <dl>
               <dt class="tag">Function</dt>
-              <dd>standardize(X)</dd>
+              <dd>find_orders(db, name)</dd>
             </dl>
           </div>
         </div>
 
         <div class="pane code">
           <div class="head">
-            <span class="file">prep.py</span><span class="draft">Assistant draft</span>
+            <span class="file">tools.py</span><span class="draft">Assistant draft</span>
           </div>
           <pre class="editor"><code>
-<span class="ln" data-n="1"><span class="src"><span class="kw">import</span> numpy <span class="kw">as</span> np</span></span>
+<span class="ln" data-n="1"><span class="src"><span class="kw">import</span> sqlite3</span></span>
 <span class="ln" data-n="2"><span class="src"></span></span>
 <span class="ln" data-n="3"><span class="src"></span></span>
-<span class="ln" data-n="4"><span class="src"><span class="kw">def</span> <span class="fn">standardize</span>(X: np.ndarray) -&gt; np.ndarray:</span></span>
-<span class="ln" data-n="5"><span class="src in">    <span class="doc">"""Scale each column to mean 0 and standard deviation 1."""</span></span></span>
-<span class="ln" data-n="6"><span class="src in">    <span class="kw">return</span> (X - X.mean(<span class="ins" data-ins="a"></span><span class="caret" data-caret="a"></span>)) / X.std(<span class="ins" data-ins="b"></span><span class="caret" data-caret="b"></span>)</span></span>
+<span class="ln" data-n="4"><span class="src"><span class="kw">def</span> <span class="fn">find_orders</span>(db: sqlite3.Connection, name: str) -&gt; list[tuple]:</span></span>
+<span class="ln" data-n="5"><span class="src in">    <span class="doc">"""Look up a customer's orders for the support agent."""</span></span></span>
+<span class="ln" data-n="6"><span class="src in">    query = <span class="rm" data-rm="a"><span class="picked"></span><span class="kept">{edits.a.remove}</span></span><span class="ins" data-ins="a"></span><span class="caret" data-caret="a"></span>"{select}<span class="rm" data-rm="b"><span class="picked"></span><span class="kept">{edits.b.remove}</span></span><span class="ins" data-ins="b"></span><span class="caret" data-caret="b"></span>"</span></span>
+<span class="ln" data-n="7"><span class="src in">    <span class="kw">return</span> db.execute(query<span class="ins" data-ins="c"></span><span class="caret" data-caret="c"></span>).fetchall()</span></span>
 </code></pre>
         </div>
 
@@ -85,7 +79,7 @@ const tests = [
           <p class="summary" data-state="idle">Not run yet</p>
           <div class="notes">
             <p class="note fail-note">
-              <span class="title">{tests[1]}</span>
+              <span class="title">{failure.test}</span>
               <span>{failure.input}</span>
               <span>{failure.message}</span>
             </p>
@@ -135,7 +129,15 @@ const tests = [
 </figure>
 
 <script>
-import { FIX, finished, frameAt, LOOP, type Place, summaries } from '../lib/session-clip';
+import {
+  type EditId,
+  edits,
+  finished,
+  frameAt,
+  LOOP,
+  type Place,
+  summaries,
+} from '../lib/session-clip';
 
 function must<T>(value: T | null | undefined, what: string): T {
   if (value === null || value === undefined) throw new Error(`Fig. 1 has no ${what}`);
@@ -151,11 +153,15 @@ function play(figure: HTMLElement) {
   const run = find<HTMLElement>('[data-run]');
   const editor = find<HTMLElement>('.editor');
   const tests = find<HTMLElement>('.tests');
-  const ins = { a: find<HTMLElement>('[data-ins="a"]'), b: find<HTMLElement>('[data-ins="b"]') };
-  const carets = {
-    a: find<HTMLElement>('[data-caret="a"]'),
-    b: find<HTMLElement>('[data-caret="b"]'),
-  };
+  const ids: readonly EditId[] = ['a', 'b', 'c'];
+  const parts = (id: EditId) => ({
+    picked: figure.querySelector<HTMLElement>(`[data-rm="${id}"] .picked`),
+    kept: figure.querySelector<HTMLElement>(`[data-rm="${id}"] .kept`),
+    removal: figure.querySelector<HTMLElement>(`[data-rm="${id}"]`),
+    insertion: find<HTMLElement>(`[data-ins="${id}"]`),
+    caret: find<HTMLElement>(`[data-caret="${id}"]`),
+  });
+  const edit = { a: parts('a'), b: parts('b'), c: parts('c') };
   const rows = [...figure.querySelectorAll<HTMLElement>('.results li')];
   const summary = find<HTMLElement>('.summary');
   const failNote = find<HTMLElement>('.fail-note');
@@ -175,10 +181,14 @@ function play(figure: HTMLElement) {
       const r = tests.getBoundingClientRect();
       return { x: r.right - box.left - 40, y: r.bottom - box.top - 18 };
     }
-    // In the code: where an edit starts, or where its typing ended.
-    const edit = place === 'a' || place === 'a-end' ? ins.a : ins.b;
-    const r = edit.getBoundingClientRect();
-    const x = place.endsWith('-end') ? r.right : r.left;
+    // In the code. a: just after the f. b: the start of the quoted name, b-sel its end.
+    // An -end place is where that edit's typing finished; c is where its insertion goes.
+    const target =
+      place === 'a' || place === 'b' || place === 'b-sel'
+        ? must(edit[place === 'a' ? 'a' : 'b'].removal, place)
+        : edit[place === 'a-end' ? 'a' : place === 'b-end' ? 'b' : 'c'].insertion;
+    const r = target.getBoundingClientRect();
+    const x = place === 'b' || place === 'c' ? r.left : r.right;
     return { x: x - box.left + 1, y: r.top - box.top + r.height * 0.55 };
   }
 
@@ -196,12 +206,18 @@ function play(figure: HTMLElement) {
 
   function draw(clock: number) {
     const frame = frameAt(clock);
-    ins.a.textContent = FIX.slice(0, frame.typedA);
-    ins.b.textContent = FIX.slice(0, frame.typedB);
-    ins.a.classList.toggle('fresh', frame.freshA);
-    ins.b.classList.toggle('fresh', frame.freshB);
-    carets.a.classList.toggle('on', frame.caret === 'a' && (frame.typing || frame.blink));
-    carets.b.classList.toggle('on', frame.caret === 'b' && (frame.typing || frame.blink));
+    for (const id of ids) {
+      const state = frame.edits[id];
+      const { remove, insert } = edits[id];
+      const { picked, kept, insertion, caret } = edit[id];
+      if (picked && kept) {
+        picked.textContent = state.removed ? '' : remove.slice(0, state.selected);
+        kept.textContent = state.removed ? '' : remove.slice(state.selected);
+      }
+      insertion.textContent = insert.slice(0, state.typed);
+      insertion.classList.toggle('fresh', state.fresh);
+      caret.classList.toggle('on', frame.caret === id && (frame.typing || frame.blink));
+    }
     frame.tests.forEach((state, i) => {
       const row = rows[i];
       if (row && row.dataset.state !== state) row.dataset.state = state;
@@ -232,7 +248,7 @@ function play(figure: HTMLElement) {
   function lockHeight() {
     stage.style.minHeight = '';
     let tallest = 0;
-    for (const moment of [0, 2900, finished]) {
+    for (const moment of [0, 2900, 4500, finished]) {
       draw(moment);
       tallest = Math.max(tallest, stage.getBoundingClientRect().height);
     }
@@ -355,7 +371,7 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
 
 .panes {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.9fr) minmax(0, 1.05fr);
 }
 
 .pane {
@@ -491,6 +507,11 @@ for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) p
 
 .ins.fresh {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.picked {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 34%, transparent);
 }
 
 .caret {

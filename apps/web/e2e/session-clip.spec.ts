@@ -19,9 +19,11 @@ test('the clip fails two tests, then passes all four', async ({ page }) => {
   await page.clock.runFor(2700);
   await expect(summary(page)).toHaveText('2 failed · 2 passed');
   await expect(note(page, 'fail')).toHaveCSS('opacity', '1');
-  await expect(note(page, 'fail')).toContainText('Column means are [-0.84, 0.84], expected [0, 0]');
+  await expect(note(page, 'fail')).toContainText(
+    'Returned every order in the table, expected none',
+  );
 
-  await page.clock.runFor(5300);
+  await page.clock.runFor(7200);
   await expect(summary(page)).toHaveText('4 passed');
   await expect(note(page, 'done')).toHaveCSS('opacity', '1');
   await expect(note(page, 'fail')).toHaveCSS('opacity', '0');
@@ -31,7 +33,7 @@ test('the clip never changes height while it plays', async ({ page }) => {
   await open(page);
 
   const heights = new Set<number>();
-  for (const step of [0, 2700, 1300, 1400, 1600, 800, 600, 2000]) {
+  for (const step of [0, 2700, 1400, 1100, 1300, 1500, 1200, 1500, 1700]) {
     await page.clock.runFor(step);
     const box = await clip(page).boundingBox();
     heights.add(Math.round(box?.height ?? 0));
