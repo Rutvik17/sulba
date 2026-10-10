@@ -1,0 +1,893 @@
+---
+import { cordPath, pegs } from '@sulba/ui/mark';
+import { FIX, failure } from '../lib/session-clip';
+import Frame from './Frame.astro';
+
+const tests = [
+  'Keeps the shape',
+  'Each column has mean 0',
+  'Each column has standard deviation 1',
+  'Leaves the input unchanged',
+];
+---
+
+<figure class="clip" data-session>
+  <Frame>
+    <div
+      class="window"
+      role="img"
+      aria-label={`A session in AI Engineering. An assistant's standardize function, written with a mistake on purpose, fails two of four tests. The learner adds ${FIX} to the mean and the standard deviation, and all four tests pass.`}
+    >
+      <div class="chrome">
+        <span class="crumbs">AI Engineering <i>/</i> Beginner <i>/</i> Data</span>
+        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+          <path d={cordPath} />
+          {pegs.map(([x, y]) => <circle cx={x} cy={y} r="8" />)}
+        </svg>
+      </div>
+
+      <div class="stage panes">
+        <div class="pane brief">
+          <div class="head"><span class="tag">Brief</span><span class="tag">Session 3</span></div>
+          <div class="body">
+            <h3>Standardize the features</h3>
+            <p>
+              An assistant wrote <code>standardize</code> and made a mistake on purpose. Run the
+              tests, then find and fix it.
+            </p>
+            <dl>
+              <dt class="tag">Function</dt>
+              <dd>standardize(X)</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="pane code">
+          <div class="head">
+            <span class="file">prep.py</span><span class="draft">Assistant draft</span>
+          </div>
+          <pre class="editor"><code>
+<span class="ln" data-n="1"><span class="src"><span class="kw">import</span> numpy <span class="kw">as</span> np</span></span>
+<span class="ln" data-n="2"><span class="src"></span></span>
+<span class="ln" data-n="3"><span class="src"></span></span>
+<span class="ln" data-n="4"><span class="src"><span class="kw">def</span> <span class="fn">standardize</span>(X: np.ndarray) -&gt; np.ndarray:</span></span>
+<span class="ln" data-n="5"><span class="src in">    <span class="doc">"""Scale each column to mean 0 and standard deviation 1."""</span></span></span>
+<span class="ln" data-n="6"><span class="src in">    <span class="kw">return</span> (X - X.mean(<span class="ins" data-ins="a"></span><span class="caret" data-caret="a"></span>)) / X.std(<span class="ins" data-ins="b"></span><span class="caret" data-caret="b"></span>)</span></span>
+</code></pre>
+        </div>
+
+        <div class="pane tests">
+          <div class="head">
+            <span class="tag">Tests</span>
+            <span class="run" data-run>
+              <svg viewBox="0 0 8 10" aria-hidden="true"><path d="M0 0 L8 5 L0 10 Z" /></svg>
+              Run tests
+            </span>
+          </div>
+          <ol class="results">
+            {tests.map((name) => (
+              <li data-state="idle">
+                <span class="status">
+                  <svg class="spin" viewBox="0 0 14 14" aria-hidden="true">
+                    <path d="M7 1.6a5.4 5.4 0 0 1 5.4 5.4" />
+                  </svg>
+                  <svg class="tick" viewBox="0 0 14 14" aria-hidden="true">
+                    <path d="M4.2 7.3l1.9 1.9 3.8-4.3" />
+                  </svg>
+                  <svg class="cross" viewBox="0 0 14 14" aria-hidden="true">
+                    <path d="M5 5l4 4M9 5l-4 4" />
+                  </svg>
+                </span>
+                <span>{name}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="summary" data-state="idle">Not run yet</p>
+          <div class="notes">
+            <p class="note fail-note">
+              <span class="title">{tests[1]}</span>
+              <span>{failure.input}</span>
+              <span>{failure.message}</span>
+            </p>
+            <p class="note done-note">
+              <svg viewBox="0 0 14 14" aria-hidden="true">
+                <circle cx="7" cy="7" r="7" />
+                <path d="M4.2 7.3l1.9 1.9 3.8-4.3" />
+              </svg>
+              Done <span>· Review in 3 days</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <span class="pointer" data-shape="arrow" aria-hidden="true">
+        <svg class="arrow" viewBox="0 0 18 22" aria-hidden="true">
+          <path d="M2 2 L2 17.5 L6.2 13.6 L9.1 20.2 L11.9 19 L9 12.5 L14.6 12.5 Z" />
+        </svg>
+        <svg class="beam" viewBox="0 0 12 22" aria-hidden="true">
+          <path
+            class="halo"
+            d="M3 2.5C4.6 2.5 6 3.3 6 5C6 3.3 7.4 2.5 9 2.5M6 5V17M3 19.5C4.6 19.5 6 18.7 6 17C6 18.7 7.4 19.5 9 19.5"
+          />
+          <path
+            d="M3 2.5C4.6 2.5 6 3.3 6 5C6 3.3 7.4 2.5 9 2.5M6 5V17M3 19.5C4.6 19.5 6 18.7 6 17C6 18.7 7.4 19.5 9 19.5"
+          />
+        </svg>
+      </span>
+    </div>
+  </Frame>
+  <figcaption>
+    <span class="number">Fig. 1</span>
+    <span class="text"
+      >A session in AI Engineering. The tests catch an assistant's mistake, and you fix it.</span
+    >
+    <button class="pause" type="button">
+      <svg class="icon-pause" viewBox="0 0 9 9" aria-hidden="true">
+        <rect x="1" y="0.5" width="2.4" height="8" />
+        <rect x="5.6" y="0.5" width="2.4" height="8" />
+      </svg>
+      <svg class="icon-play" viewBox="0 0 9 9" aria-hidden="true">
+        <path d="M1.5 0.5 L8.5 4.5 L1.5 8.5 Z" />
+      </svg>
+      <span class="label">Pause</span>
+    </button>
+  </figcaption>
+</figure>
+
+<script>
+import { FIX, finished, frameAt, LOOP, type Place, summaries } from '../lib/session-clip';
+
+function must<T>(value: T | null | undefined, what: string): T {
+  if (value === null || value === undefined) throw new Error(`Fig. 1 has no ${what}`);
+  return value;
+}
+
+function play(figure: HTMLElement) {
+  const find = <T extends Element>(selector: string) =>
+    must(figure.querySelector<T>(selector), selector);
+  const win = find<HTMLElement>('.window');
+  const stage = find<HTMLElement>('.stage');
+  const pointer = find<HTMLElement>('.pointer');
+  const run = find<HTMLElement>('[data-run]');
+  const editor = find<HTMLElement>('.editor');
+  const tests = find<HTMLElement>('.tests');
+  const ins = { a: find<HTMLElement>('[data-ins="a"]'), b: find<HTMLElement>('[data-ins="b"]') };
+  const carets = {
+    a: find<HTMLElement>('[data-caret="a"]'),
+    b: find<HTMLElement>('[data-caret="b"]'),
+  };
+  const rows = [...figure.querySelectorAll<HTMLElement>('.results li')];
+  const summary = find<HTMLElement>('.summary');
+  const failNote = find<HTMLElement>('.fail-note');
+  const doneNote = find<HTMLElement>('.done-note');
+  const toggle = find<HTMLButtonElement>('.pause');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Where the pointer goes, measured from the page so it follows the layout at any width. The
+  // point is its hot spot: the arrow's tip, or the middle of the I-beam.
+  function point(place: Place) {
+    const box = win.getBoundingClientRect();
+    if (place === 'run') {
+      const r = run.getBoundingClientRect();
+      return { x: r.left - box.left + r.width * 0.55, y: r.top - box.top + r.height * 0.62 };
+    }
+    if (place === 'rest') {
+      const r = tests.getBoundingClientRect();
+      return { x: r.right - box.left - 40, y: r.bottom - box.top - 18 };
+    }
+    // In the code: where an edit starts, or where its typing ended.
+    const edit = place === 'a' || place === 'a-end' ? ins.a : ins.b;
+    const r = edit.getBoundingClientRect();
+    const x = place.endsWith('-end') ? r.right : r.left;
+    return { x: x - box.left + 1, y: r.top - box.top + r.height * 0.55 };
+  }
+
+  // Over the code the pointer is an I-beam, as in an editor.
+  function overCode(x: number, y: number) {
+    const box = win.getBoundingClientRect();
+    const r = editor.getBoundingClientRect();
+    return (
+      x >= r.left - box.left &&
+      x <= r.right - box.left &&
+      y >= r.top - box.top &&
+      y <= r.bottom - box.top
+    );
+  }
+
+  function draw(clock: number) {
+    const frame = frameAt(clock);
+    ins.a.textContent = FIX.slice(0, frame.typedA);
+    ins.b.textContent = FIX.slice(0, frame.typedB);
+    ins.a.classList.toggle('fresh', frame.freshA);
+    ins.b.classList.toggle('fresh', frame.freshB);
+    carets.a.classList.toggle('on', frame.caret === 'a' && (frame.typing || frame.blink));
+    carets.b.classList.toggle('on', frame.caret === 'b' && (frame.typing || frame.blink));
+    frame.tests.forEach((state, i) => {
+      const row = rows[i];
+      if (row && row.dataset.state !== state) row.dataset.state = state;
+    });
+    if (summary.dataset.state !== frame.summary) {
+      summary.dataset.state = frame.summary;
+      summary.textContent = summaries[frame.summary];
+    }
+    failNote.classList.toggle('on', frame.failNote);
+    doneNote.classList.toggle('on', frame.done);
+    run.classList.toggle('down', frame.down);
+    stage.classList.toggle('hidden', frame.hidden);
+
+    const from = point(frame.pointer.from);
+    const to = point(frame.pointer.to);
+    const { k } = frame.pointer;
+    const x = from.x + (to.x - from.x) * k;
+    const y = from.y + (to.y - from.y) * k;
+    pointer.dataset.shape = overCode(x, y) ? 'text' : 'arrow';
+    pointer.style.translate = `${x}px ${y}px`;
+    pointer.style.scale = frame.press ? '0.86' : '1';
+    pointer.style.opacity = frame.away ? '0' : '1';
+  }
+
+  let clock = 0;
+
+  // The tallest moment sets the figure's height, so the page below never moves while it plays.
+  function lockHeight() {
+    stage.style.minHeight = '';
+    let tallest = 0;
+    for (const moment of [0, 2900, finished]) {
+      draw(moment);
+      tallest = Math.max(tallest, stage.getBoundingClientRect().height);
+    }
+    stage.style.minHeight = `${Math.ceil(tallest)}px`;
+    draw(reduce.matches ? finished : clock);
+  }
+
+  let previous: number | null = null;
+  let frame = 0;
+  let paused = false;
+  let onScreen = false;
+
+  function tick(now: number) {
+    if (previous !== null) clock = (clock + Math.min(now - previous, 64)) % LOOP;
+    previous = now;
+    draw(clock);
+    frame = requestAnimationFrame(tick);
+  }
+
+  function update() {
+    const playing = !paused && onScreen && !document.hidden && !reduce.matches;
+    if (playing && !frame) {
+      previous = null;
+      frame = requestAnimationFrame(tick);
+    } else if (!playing && frame) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    }
+    toggle.hidden = reduce.matches;
+    if (reduce.matches) draw(finished);
+  }
+
+  toggle.addEventListener('click', () => {
+    paused = !paused;
+    find<HTMLElement>('.pause .label').textContent = paused ? 'Play' : 'Pause';
+    toggle.toggleAttribute('data-paused', paused);
+    update();
+  });
+  document.addEventListener('visibilitychange', update);
+  reduce.addEventListener('change', update);
+
+  lockHeight();
+  document.fonts.ready.then(lockHeight);
+  let width = 0;
+  new ResizeObserver(([entry]) => {
+    if (!entry || Math.abs(entry.contentRect.width - width) < 1) return;
+    width = entry.contentRect.width;
+    lockHeight();
+  }).observe(figure);
+  new IntersectionObserver(
+    ([entry]) => {
+      onScreen = entry?.isIntersecting ?? false;
+      update();
+    },
+    { threshold: 0.2 },
+  ).observe(figure);
+  update();
+}
+
+for (const figure of document.querySelectorAll<HTMLElement>('[data-session]')) play(figure);
+</script>
+
+<style>
+.clip {
+  margin-top: var(--space-12);
+}
+
+.window {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  user-select: none;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.crumbs,
+.tag,
+.draft,
+.number,
+.pause {
+  font: 500 var(--text-xs) / 1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.crumbs {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--dim);
+}
+
+.crumbs i {
+  font-style: normal;
+}
+
+.mark {
+  width: 16px;
+  height: 16px;
+  color: var(--dim);
+}
+
+.mark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 8;
+  stroke-linejoin: round;
+}
+
+.mark circle {
+  fill: currentColor;
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr) minmax(0, 1.05fr);
+}
+
+.pane {
+  min-width: 0;
+}
+
+.pane + .pane {
+  border-left: 1px solid var(--line);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: 48px;
+  padding-inline: var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.tag {
+  color: var(--dim);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.brief h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.brief p {
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.brief code {
+  color: var(--fg);
+  font-size: 0.95em;
+}
+
+.brief dl {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--line-2);
+}
+
+.brief dd {
+  font: 400 var(--text-sm) / 1.5 var(--font-mono);
+}
+
+.code {
+  display: flex;
+  flex-direction: column;
+}
+
+.file {
+  font: 400 var(--text-sm) / 1 var(--font-mono);
+}
+
+.draft {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding-inline: var(--space-2);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-full);
+  color: var(--dim);
+  font-size: 10px;
+}
+
+.editor {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-5) var(--space-5) var(--space-5) 0;
+  font: 400 13px / 1.8 var(--font-mono);
+}
+
+.editor code {
+  display: grid;
+}
+
+.ln {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+}
+
+.ln::before {
+  content: attr(data-n);
+  padding-right: var(--space-4);
+  color: var(--dim);
+  text-align: right;
+}
+
+/* Long lines wrap with a hanging indent; code never scrolls sideways. */
+.src {
+  min-height: 1.8em;
+  padding-left: 4ch;
+  text-indent: -4ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.src.in {
+  padding-left: 8ch;
+  text-indent: -8ch;
+}
+
+.kw {
+  color: var(--accent);
+}
+
+.fn {
+  font-weight: 600;
+}
+
+.doc {
+  color: var(--dim);
+}
+
+.ins {
+  border-radius: 3px;
+  transition: background-color 600ms var(--ease);
+}
+
+.ins.fresh {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 1.25em;
+  margin-right: -1.5px;
+  vertical-align: -0.25em;
+  border-left: 1.5px solid var(--fg);
+  visibility: hidden;
+}
+
+.caret.on {
+  visibility: visible;
+}
+
+.run {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-quick) var(--ease),
+    scale var(--duration-quick) var(--ease);
+}
+
+.run svg {
+  width: 8px;
+  height: 10px;
+  fill: currentColor;
+}
+
+.run.down {
+  background: var(--raise);
+  scale: 0.96;
+}
+
+.results {
+  margin: 0;
+  padding: var(--space-2) 0;
+  list-style: none;
+}
+
+.results li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  column-gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+}
+
+.status {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  border: 1.25px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+.status svg {
+  position: absolute;
+  inset: -1.25px;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+.spin path {
+  transform-origin: 7px 7px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  animation: spin 700ms linear infinite;
+}
+
+.tick path,
+.cross path {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+li[data-state="running"] .status {
+  border-color: transparent;
+}
+
+li[data-state="running"] .spin,
+li[data-state="pass"] .tick,
+li[data-state="fail"] .cross {
+  opacity: 1;
+}
+
+li[data-state="pass"] .status {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+
+li[data-state="fail"] .status {
+  border-color: var(--bad);
+  background: var(--bad);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-inline: var(--space-5);
+  border-top: 1px dashed var(--line-2);
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.3 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.summary[data-state="fail"] {
+  color: var(--bad);
+}
+
+.summary[data-state="pass"] {
+  color: var(--ok);
+}
+
+/* One cell under the summary holds the failure's detail, then "Done", so the figure never changes
+   height while it plays. */
+.notes {
+  display: grid;
+  margin: var(--space-1) var(--space-5) var(--space-5);
+}
+
+.note {
+  grid-area: 1 / 1;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: var(--text-sm);
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 360ms var(--ease),
+    translate 360ms var(--ease);
+}
+
+.note.on {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.fail-note {
+  display: grid;
+  gap: 2px;
+  color: var(--bad);
+  font: 400 var(--text-xs) / 1.5 var(--font-mono);
+}
+
+.fail-note .title {
+  margin-bottom: 2px;
+  color: var(--fg);
+  font: 500 var(--text-sm) / 1.4 var(--font-sans);
+}
+
+.done-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.done-note svg {
+  width: 14px;
+  height: 14px;
+}
+
+.done-note circle {
+  fill: var(--ok);
+}
+
+.done-note path {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.done-note span {
+  color: var(--dim);
+}
+
+.stage {
+  transition: opacity 280ms var(--ease);
+}
+
+.stage.hidden {
+  opacity: 0;
+}
+
+.pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.pointer svg {
+  position: absolute;
+  max-width: none;
+  overflow: visible;
+}
+
+.arrow {
+  top: -2px;
+  left: -2px;
+  width: 18px;
+  height: 22px;
+}
+
+.arrow path {
+  fill: var(--fg);
+  stroke: var(--bg);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+}
+
+.beam {
+  top: -11px;
+  left: -6px;
+  width: 12px;
+  height: 22px;
+}
+
+.beam path {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.beam .halo {
+  stroke: var(--bg);
+  stroke-width: 4;
+}
+
+.pointer[data-shape="arrow"] .beam,
+.pointer[data-shape="text"] .arrow {
+  display: none;
+}
+
+figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.number {
+  color: var(--fg);
+}
+
+.text {
+  flex: 1;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: none;
+  cursor: pointer;
+}
+
+.pause svg {
+  width: 9px;
+  height: 9px;
+  fill: currentColor;
+}
+
+.pause[hidden],
+.pause[data-paused] .icon-pause,
+.pause:not([data-paused]) .icon-play {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* On a phone the whole session fits on one screen: the brief keeps its title and task, and every
+   pane is tighter. */
+@media (max-width: 860px) {
+  .panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pane + .pane {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .head {
+    height: 40px;
+    padding-inline: var(--space-4);
+  }
+
+  .brief .head,
+  .brief dl {
+    display: none;
+  }
+
+  .body {
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+
+  .brief h3 {
+    font-size: var(--text-lg);
+  }
+
+  .editor {
+    padding-block: var(--space-3);
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+
+  .ln {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .ln::before {
+    padding-right: var(--space-3);
+  }
+
+  .src {
+    min-height: 1.7em;
+  }
+
+  .results {
+    padding-block: var(--space-1);
+  }
+
+  .results li {
+    padding: 6px var(--space-4);
+  }
+
+  .summary {
+    min-height: 36px;
+    margin-inline: var(--space-4);
+  }
+
+  .notes {
+    margin: var(--space-1) var(--space-4) var(--space-4);
+  }
+
+  .note {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  figcaption {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer {
+    display: none;
+  }
+
+  .stage,
+  .note,
+  .ins,
+  .run {
+    transition: none;
+  }
+
+  .spin path {
+    animation: none;
+  }
+}
+</style>

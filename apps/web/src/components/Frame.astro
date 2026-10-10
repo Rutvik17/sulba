@@ -1,0 +1,43 @@
+---
+// A plate in a specimen book: a hairline frame with a dot at each corner.
+---
+
+<div class="frame">
+  <slot />
+  <span class="dot top left" aria-hidden="true"></span>
+  <span class="dot top right" aria-hidden="true"></span>
+  <span class="dot bottom left" aria-hidden="true"></span>
+  <span class="dot bottom right" aria-hidden="true"></span>
+</div>
+
+<style>
+.frame {
+  position: relative;
+  border: 1px solid var(--line-2);
+}
+
+.dot {
+  position: absolute;
+  z-index: 2;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+
+.top {
+  top: -3px;
+}
+
+.bottom {
+  bottom: -3px;
+}
+
+.left {
+  left: -3px;
+}
+
+.right {
+  right: -3px;
+}
+</style>

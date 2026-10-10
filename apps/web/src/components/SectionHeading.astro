@@ -1,0 +1,42 @@
+---
+// A section's heading on a rule with a dot at each end.
+interface Props {
+  id: string;
+  text: string;
+}
+
+const { id, text } = Astro.props;
+---
+
+<h2 id={id}>{text}</h2>
+
+<style>
+h2 {
+  position: relative;
+  padding-top: var(--space-5);
+  margin-bottom: var(--space-8);
+  border-top: 1px solid var(--line-2);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h2::before,
+h2::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+
+h2::before {
+  left: -2px;
+}
+
+h2::after {
+  right: -2px;
+}
+</style>

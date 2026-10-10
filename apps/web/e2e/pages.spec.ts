@@ -4,8 +4,25 @@ test('the home page loads', async ({ page }) => {
   const response = await page.goto('/');
 
   expect(response?.status()).toBe(200);
-  await expect(page).toHaveTitle('Sulba');
-  await expect(page.getByRole('heading', { level: 1, name: 'Sulba' })).toBeVisible();
+  await expect(page).toHaveTitle('Sulba · The school of the AI era');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'The school of the AI era' }),
+  ).toBeVisible();
+});
+
+test('the home page lists what Sulba teaches and the first course', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(
+    page.getByRole('region', { name: 'What Sulba teaches' }).getByRole('heading', { level: 3 }),
+  ).toHaveText([/Build it yourself/, /Design/, /Build with AI/, /Review/]);
+  await expect(page.getByRole('region', { name: 'Courses' }).getByRole('listitem')).toHaveText([
+    /Beginner/,
+    /Intermediate/,
+    /Advanced/,
+    /Master/,
+    /Elite/,
+  ]);
 });
 
 test('an unknown address shows the not-found page with a 404 status', async ({ page }) => {
