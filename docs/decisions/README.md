@@ -15,5 +15,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [9. Keep branch previews behind Cloudflare Access](0009-keep-previews-behind-cloudflare-access.md) | Accepted |
 | [10. Reserve all rights to course content](0010-reserve-all-rights-to-course-content.md) | Accepted |
 | [11. Build the interface on tokens, CSS and React Aria Components](0011-build-the-interface-on-tokens-css-and-react-aria.md) | Accepted |
+| [12. Send contact messages through Resend, after a Turnstile check](0012-send-contact-messages-through-resend-after-turnstile.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

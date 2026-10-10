@@ -36,7 +36,13 @@ jobs:
           node-version-file: .node-version
           package-manager-cache: false
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Build
+        env:
+          SITE_KEY: ${{ github.ref_name == 'main' && vars.TURNSTILE_SITE_KEY || '' }}
+        # main gets Turnstile's real site key; previews keep the test key, so they can't send mail.
+        run: |
+          if [ -n "$SITE_KEY" ]; then export PUBLIC_TURNSTILE_SITE_KEY="$SITE_KEY"; fi
+          pnpm build
       - name: Deploy
         id: deploy
         working-directory: apps/web

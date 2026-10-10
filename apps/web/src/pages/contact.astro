@@ -1,0 +1,33 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import Page from '../layouts/Page.astro';
+---
+
+<Page title="Contact · Sulba">
+  <section class="hero">
+    <h1>Contact</h1>
+    <p class="lede">
+      Write to us about the course, or about building a course with your engineering team. We reply
+      by email.
+    </p>
+  </section>
+  <ContactForm />
+</Page>
+
+<style>
+.hero {
+  padding-block: var(--space-16) var(--space-10);
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  max-width: 54ch;
+  margin-top: var(--space-6);
+  font-size: var(--text-lg);
+  color: var(--dim);
+}
+</style>
