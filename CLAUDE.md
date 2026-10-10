@@ -4,7 +4,8 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 
 ## Hard rules
 
-- Never commit, push, open pull requests or rewrite history. The founder reviews and commits every change. Work ends with every check passing and a drafted commit message for each task: one task per commit, an imperative subject under 50 characters, a body only when the reason isn't obvious, and the files that belong to it.
+- Work on a feature branch, never on `main`, and commit to it as you go. When every check passes and the work meets the standard, squash the branch into one commit, push it and open a pull request. One pull request does one task. The founder reviews and merges every pull request: never merge, push to `main` or rewrite its history.
+- Commit messages have an imperative subject under 50 characters and a body only when the reason isn't obvious.
 - Follow best practice without being asked: maintained libraries, strict types, tests for behaviour, no dead code. No filler in code, comments, docs or commit messages.
 - Decide on evidence. A new architectural choice gets a record in `docs/decisions` with the options compared and the sources read. An accepted record is superseded, never rewritten.
 - Secrets never enter the repository, issues or logs. They live in GitHub Actions secrets, Cloudflare Worker secrets, the Supabase dashboard or a gitignored `.dev.vars`. Never read `.dev.vars` or `.env` files.
