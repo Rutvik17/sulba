@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { islandsHydrated } from './islands';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -59,7 +60,7 @@ for (const scheme of ['dark', 'light'] as const) {
     }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto('/gallery/');
-      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await islandsHydrated(page);
       await page.getByRole('button', { name: trigger }).click();
       await expect(page.getByRole(role)).toBeVisible();
       // React Aria marks an overlay data-entering until it has finished sliding or fading in.
