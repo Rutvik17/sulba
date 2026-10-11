@@ -18,6 +18,7 @@
     "@fontsource-variable/geist": "5.3.0",
     "@fontsource-variable/geist-mono": "5.3.0",
     "@fontsource/instrument-serif": "5.3.0",
+    "@sulba/editor": "workspace:*",
     "@sulba/ui": "workspace:*",
     "astro": "7.3.7",
     "react": "19.3.0",

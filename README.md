@@ -35,6 +35,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | --- | --- |
 | `apps/web` | The site: Astro on Cloudflare Workers |
 | `packages/ui` | Design tokens, base styles and components |
+| `packages/editor` | The code editor |
 | `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
 | `packages/content` | Reads and checks the courses |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
