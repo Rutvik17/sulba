@@ -46,6 +46,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm test:python
+      - run: pnpm check:content
       - run: pnpm build
 
   e2e:

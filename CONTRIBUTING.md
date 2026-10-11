@@ -16,6 +16,7 @@ pnpm lint:python
 pnpm typecheck
 pnpm test
 pnpm test:python
+pnpm check:content
 pnpm test:e2e
 ```
 

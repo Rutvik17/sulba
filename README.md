@@ -23,6 +23,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm typecheck` | Type-checks the code |
 | `pnpm test` | Runs the unit tests |
 | `pnpm test:python` | Runs the lab's Python tests in CPython |
+| `pnpm check:content` | Checks every course, and runs every stage in Pyodide and CPython |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
 | `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
@@ -35,8 +36,9 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | `apps/web` | The site: Astro on Cloudflare Workers |
 | `packages/ui` | Design tokens, base styles and components |
 | `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
+| `packages/content` | Reads and checks the courses |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
-| `courses` | Course content |
+| `courses` | Course content, laid out as [its README](courses/README.md) describes |
 | `docs/decisions` | Architecture decision records |
 | `.github/workflows` | CI and deploys |
 

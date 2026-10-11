@@ -1,0 +1,5 @@
+id: stg_demo02
+kind: build
+title: Share
+file: tally.py
+minutes: 10
