@@ -32,6 +32,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview addresses keep it.
 - CI runs once for every pull request and every push to `main`. When it passes, `main` deploys to sulba.dev, the site's only address, and a pull request from this repository gets a Worker Preview on workers.dev, which `preview-cleanup.yml` deletes when its branch is deleted. Dependency updates (`renovate/*`) and pull requests from forks are tested but not deployed.
 - The contact form posts to `/api/contact`, which checks the Turnstile token and sends the message with Resend (decision record 12). Its four secrets are Worker secrets; without them it answers 503. Tests stand in for `/api/contact` and Turnstile, so no test ever sends mail.
+- Cloudflare Web Analytics is on for sulba.dev, set in the dashboard: Cloudflare adds its script to every page, so it's in no file here and local tests never see it. Workers Logs are on too (`observability` in `wrangler.jsonc`).
 - Cloudflare Access ("Previews only", set in the dashboard) puts every preview address behind sign-in, and sulba.dev stays public (decision record 9). Worker Previews need `preview_urls` on. Never turn it on in a Cloudflare account without that Access policy: it brings back every old preview address, and those can't be deleted.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.
@@ -56,6 +57,7 @@ Wrong content is worse than no content. Never claim certainty you don't have. Th
 - No referral schemes of any kind.
 - Data and API providers may be credited where their terms ask; teaching sources are not.
 - The site never says its code is open source, and it doesn't link to this repository.
+- The Privacy Policy and the Terms describe the site as built. A change to what the site collects, keeps in the browser or sends to a provider updates the Privacy Policy, and its date, in the same pull request.
 
 ## Documentation
 
