@@ -70,13 +70,53 @@ test('a message the server turns down keeps what was written and says why', asyn
   await expect(page.getByLabel('Message')).toHaveValue('Hello');
 });
 
-test('an empty form is not sent', async ({ page }) => {
+test('an empty form says under each field what it needs, and sends nothing', async ({ page }) => {
   const sent = await open(page, { status: 200, body: { sent: true } });
 
   await page.getByRole('button', { name: 'Send' }).click();
 
   await expect(page.getByLabel('Name')).toBeFocused();
+  await expect(page.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.getByLabel('Name')).toHaveAccessibleDescription('Enter your name');
+  await expect(page.getByLabel('Email')).toHaveAccessibleDescription('Enter your email address');
+  await expect(page.getByLabel('Message')).toHaveAccessibleDescription('Enter a message');
+  await expect(page.getByText('Enter your name')).toBeVisible();
   expect(sent).toEqual([]);
+});
+
+test('spaces alone count as empty, and an email address has to look like one', async ({ page }) => {
+  const sent = await open(page, { status: 200, body: { sent: true } });
+
+  await page.getByLabel('Name').fill('   ');
+  await page.getByLabel('Email').fill('ada@');
+  await page.getByLabel('Message').fill('Hello');
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  await expect(page.getByLabel('Name')).toBeFocused();
+  await expect(page.getByLabel('Name')).toHaveAccessibleDescription('Enter your name');
+  await expect(page.getByLabel('Email')).toHaveAccessibleDescription(
+    'Enter an email address in the correct format, like name@example.com',
+  );
+  await expect(page.getByLabel('Message')).not.toHaveAttribute('aria-invalid');
+  expect(sent).toEqual([]);
+});
+
+test('a message clears as soon as its field is right, and the form then sends', async ({
+  page,
+}) => {
+  const sent = await open(page, { status: 200, body: { sent: true } });
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  await page.getByLabel('Name').fill('Ada Lovelace');
+
+  await expect(page.getByLabel('Name')).not.toHaveAttribute('aria-invalid');
+  await expect(page.getByText('Enter your name')).toBeHidden();
+  await expect(page.getByLabel('Email')).toHaveAttribute('aria-invalid', 'true');
+
+  await write(page);
+
+  await expect(page.getByRole('status')).toHaveText("Sent. We'll reply to ada@example.com.");
+  expect(sent).toHaveLength(1);
 });
 
 test('the landing and the footer lead to the contact page', async ({ page }) => {

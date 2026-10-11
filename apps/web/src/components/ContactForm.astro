@@ -1,15 +1,17 @@
 ---
 // The contact form. Turnstile, Cloudflare's check that the writer isn't a bot, loads when the form
-// is first used, so reading the page asks nothing of any other site. The server side is
-// src/pages/api/contact.ts.
+// is first used, so reading the page asks nothing of any other site. The script checks each field
+// as the server does (checkFields) and says under it what it needs, so the browser's own bubbles
+// are turned off. The server side is src/pages/api/contact.ts.
 import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { limits } from '../lib/contact';
 ---
 
-<form class="contact" data-contact data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}>
+<form class="contact" data-contact data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} novalidate>
   <div class="field">
     <label for="contact-name">Name</label>
     <input id="contact-name" name="name" autocomplete="name" required maxlength={limits.name}>
+    <p class="error" id="contact-name-error" data-error="name" hidden></p>
   </div>
   <div class="field">
     <label for="contact-email">Email</label>
@@ -18,9 +20,11 @@ import { limits } from '../lib/contact';
       name="email"
       type="email"
       autocomplete="email"
+      spellcheck="false"
       required
       maxlength={limits.email}
     >
+    <p class="error" id="contact-email-error" data-error="email" hidden></p>
   </div>
   <div class="field">
     <label for="contact-message">Message</label>
@@ -31,6 +35,7 @@ import { limits } from '../lib/contact';
       required
       maxlength={limits.message}
     ></textarea>
+    <p class="error" id="contact-message-error" data-error="message" hidden></p>
   </div>
   <div class="check" data-check></div>
   <div class="actions">
@@ -41,7 +46,14 @@ import { limits } from '../lib/contact';
 </form>
 
 <script>
-import type { Problem } from '../lib/contact';
+import {
+  checkFields,
+  type Field,
+  type FieldProblem,
+  fields,
+  limits,
+  type Problem,
+} from '../lib/contact';
 
 interface Turnstile {
   render(container: HTMLElement, options: Record<string, unknown>): string;
@@ -63,6 +75,23 @@ const problems: Record<Problem, string> = {
   check: "We couldn't confirm you're not a bot. Try again.",
   unavailable: "Messages can't be sent right now. Try again later.",
   failed: "Your message wasn't sent. Try again.",
+};
+
+// What each field needs, said as an instruction.
+const needs: Record<Field, Partial<Record<FieldProblem, string>>> = {
+  name: {
+    missing: 'Enter your name',
+    long: `Name must be ${limits.name} characters or less`,
+  },
+  email: {
+    missing: 'Enter your email address',
+    long: `Email address must be ${limits.email} characters or less`,
+    format: 'Enter an email address in the correct format, like name@example.com',
+  },
+  message: {
+    missing: 'Enter a message',
+    long: `Message must be ${limits.message.toLocaleString('en')} characters or less`,
+  },
 };
 
 function loadScript(src: string) {
@@ -92,6 +121,46 @@ function setUp(form: HTMLFormElement) {
     if (tone) status.dataset.tone = tone;
     else delete status.dataset.tone;
   };
+
+  const inputs = {} as Record<Field, HTMLInputElement | HTMLTextAreaElement>;
+  const errors = {} as Record<Field, HTMLParagraphElement>;
+  for (const field of fields) {
+    inputs[field] = must(form, `[name="${field}"]`);
+    errors[field] = must(form, `[data-error="${field}"]`);
+  }
+  const values = () =>
+    Object.fromEntries(fields.map((field) => [field, inputs[field].value])) as Record<
+      Field,
+      string
+    >;
+  const marked = (field: Field) => inputs[field].getAttribute('aria-invalid') === 'true';
+
+  // A field's message sits under it and is its description, so it's read out with the field.
+  function mark(field: Field, problem: FieldProblem | undefined) {
+    const input = inputs[field];
+    const error = errors[field];
+    const text = problem ? needs[field][problem] : undefined;
+    error.textContent = text ?? '';
+    error.hidden = !text;
+    if (text) {
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', error.id);
+    } else {
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+    }
+  }
+
+  // A marked field's message goes as soon as the field is right, and changes only when the writer
+  // moves on, so it doesn't change with every key.
+  for (const field of fields) {
+    inputs[field].addEventListener('input', () => {
+      if (marked(field) && !checkFields(values())[field]) mark(field, undefined);
+    });
+    inputs[field].addEventListener('blur', () => {
+      if (marked(field)) mark(field, checkFields(values())[field]);
+    });
+  }
 
   // Turnstile renews its token before it expires; each token can be used once.
   let token: string | undefined;
@@ -128,8 +197,16 @@ function setUp(form: HTMLFormElement) {
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!form.reportValidity()) return;
-    const fields = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    // Every field that needs something says so at once, and the first one takes the cursor.
+    const found = checkFields(values());
+    for (const field of fields) mark(field, found[field]);
+    const first = fields.find((field) => found[field]);
+    if (first) {
+      say('');
+      inputs[first].focus();
+      return;
+    }
+    const written = values();
     button.disabled = true;
     say('Sending…');
     let used = false;
@@ -141,11 +218,11 @@ function setUp(form: HTMLFormElement) {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...fields, token: value }),
+        body: JSON.stringify({ ...written, token: value }),
       });
       if (response.ok) {
         form.reset();
-        return say(`Sent. We'll reply to ${fields.email}.`, 'ok');
+        return say(`Sent. We'll reply to ${written.email.trim()}.`, 'ok');
       }
       const { problem } = (await response.json().catch(() => ({}))) as { problem?: Problem };
       say(problems[problem ?? 'failed'] ?? problems.failed, 'bad');
@@ -189,6 +266,18 @@ textarea {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--surface);
+}
+
+/* A field that needs something keeps its message under it, and a red edge as a second cue. */
+[aria-invalid="true"] {
+  border-color: var(--bad);
+  box-shadow: inset 0 0 0 1px var(--bad);
+}
+
+.error {
+  color: var(--bad);
+  font-size: var(--text-sm);
+  font-weight: 500;
 }
 
 textarea {
