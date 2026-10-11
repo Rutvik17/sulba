@@ -1,0 +1,104 @@
+---
+// A legal document: its title, the date it last changed, then its sections. The words are in each
+// page, and they describe the site as it's built (CLAUDE.md).
+import Page from './Page.astro';
+
+interface Props {
+  title: string;
+  updated: string;
+}
+
+const { title, updated } = Astro.props;
+---
+
+<Page title={`${title} · Sulba`}>
+  <section class="hero">
+    <h1>{title}</h1>
+    <p class="updated">Last updated {updated}</p>
+  </section>
+  <div class="doc"><slot /></div>
+</Page>
+
+<style>
+.hero {
+  padding-block: var(--space-16) var(--space-10);
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.updated {
+  margin-top: var(--space-4);
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+/* The document's own elements come from the page, so they're styled from here down. */
+.doc {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 68ch;
+  color: var(--dim);
+}
+
+.doc :global(.lede) {
+  color: var(--fg);
+  font-size: var(--text-lg);
+}
+
+.doc :global(h2) {
+  margin-top: var(--space-8);
+  color: var(--fg);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.doc :global(strong) {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.doc :global(a) {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.doc :global(ul) {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.doc :global(code) {
+  font: 0.9em var(--font-mono);
+}
+
+.doc :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.doc :global(th),
+.doc :global(td) {
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc :global(th) {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.doc :global(.caps) {
+  font-size: var(--text-sm);
+}
+</style>
