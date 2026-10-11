@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./runs": "./src/runs.ts"
   },
   "scripts": {
     "check": "pnpm --filter @sulba/lab pyodide && node scripts/check.ts ../../courses",

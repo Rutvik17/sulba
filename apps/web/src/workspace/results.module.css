@@ -1,0 +1,112 @@
+/* The results of a run: a line that sums them up, then one entry per test. */
+.results {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.note {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.summary {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.problem {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--bad);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.problem p {
+  margin: 0;
+}
+
+.tests {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.test {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.name {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.pass [role="img"] {
+  color: var(--ok);
+}
+
+.fail [role="img"] {
+  color: var(--bad);
+}
+
+.detail {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: var(--space-5);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.detail p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.values dd {
+  margin: 0;
+  color: var(--fg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.where {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.output {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

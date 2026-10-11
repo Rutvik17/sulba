@@ -10,7 +10,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
   modules/<module>/
     module.yaml             id, title, and its labs in order
     labs/<lab>/
-      lab.yaml              id, title, datasets with their credit, and its stages in order
+      lab.yaml              id, title, summary, datasets with their credit, and its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
         stage.yaml          id, kind, title, the file the learner works in, packages, minutes

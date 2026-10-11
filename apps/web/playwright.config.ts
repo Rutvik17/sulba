@@ -20,10 +20,11 @@ export default defineConfig({
     { name: 'chromium phone', use: { ...devices['Pixel 7'] } },
     { name: 'webkit phone', use: { ...devices['iPhone 15'] } },
   ],
-  // The built site served by workerd, the runtime Cloudflare uses in production.
+  // The built site served by workerd, the runtime Cloudflare uses in production, with the gallery
+  // and the content package's fixture course, whose lab the lab page tests use.
   webServer: {
     command: `pnpm build && pnpm preview --port ${port}`,
-    env: { SULBA_GALLERY: 'on' },
+    env: { SULBA_GALLERY: 'on', SULBA_COURSES: '../../packages/content/fixtures/courses' },
     url: `http://localhost:${port}`,
     reuseExistingServer: !isCI,
     timeout: 120_000,

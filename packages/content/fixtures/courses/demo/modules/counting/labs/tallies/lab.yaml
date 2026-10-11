@@ -1,5 +1,6 @@
 id: lab_demo01
 title: Tallies
+summary: Count the votes in a small poll, then work out each choice's share.
 data:
   - file: votes.csv
     title: Votes

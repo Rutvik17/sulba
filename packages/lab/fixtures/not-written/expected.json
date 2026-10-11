@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "id": "tst_todo01",
+      "name": "The mean of three numbers",
+      "status": "error",
+      "message": "NotImplementedError",
+      "expected": null,
+      "actual": null,
+      "location": {
+        "file": "stats.py",
+        "line": 3
+      },
+      "output": ""
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

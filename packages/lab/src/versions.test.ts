@@ -3,7 +3,7 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { expect, test } from 'vitest';
-import { pythonPackages } from './protocol.ts';
+import { pyodideVersion, pythonPackages } from './protocol.ts';
 
 const lock = JSON.parse(
   await readFile(createRequire(import.meta.url).resolve('pyodide/pyodide-lock.json'), 'utf8'),
@@ -27,4 +27,11 @@ test('every package in both has the same version', () => {
   const shared = [...pinned].filter(([name]) => name in lock.packages);
   expect(shared.length).toBeGreaterThan(0);
   for (const [name, version] of shared) expect(version, name).toBe(lock.packages[name]?.version);
+});
+
+test('the site serves the Pyodide release the npm package holds', async () => {
+  const { version } = JSON.parse(
+    await readFile(createRequire(import.meta.url).resolve('pyodide/package.json'), 'utf8'),
+  ) as { version: string };
+  expect(pyodideVersion).toBe(version);
 });

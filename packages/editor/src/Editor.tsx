@@ -31,6 +31,8 @@ export interface EditorHandle {
   code(): string;
   /** Replace the code, as a reset to the starter does. Undo brings the old code back. */
   replace(code: string): void;
+  /** Put the cursor at the start of a line, counted from 1, and focus the editor. */
+  goTo(line: number): void;
 }
 
 export interface EditorProps {
@@ -39,6 +41,8 @@ export interface EditorProps {
   /** The editor's name for screen readers, such as the file's name. */
   readonly label: string;
   readonly onChange?: (code: string) => void;
+  /** Called on Ctrl+Enter, or Cmd+Enter on a Mac. */
+  readonly onRun?: () => void;
   readonly palette?: Palette;
   readonly readOnly?: boolean;
   readonly ref?: Ref<EditorHandle>;
@@ -75,6 +79,7 @@ export function Editor({
   defaultValue,
   label,
   onChange,
+  onRun,
   palette = sulba,
   readOnly = false,
   ref,
@@ -84,6 +89,8 @@ export function Editor({
   const theme = useRef(new Compartment());
   const changed = useRef(onChange);
   changed.current = onChange;
+  const run = useRef(onRun);
+  run.current = onRun;
   const [status, setStatus] = useState<Status>({ line: 1, column: 1, errors: 0, warnings: 0 });
 
   // The editor is made once. Its theme changes in place; its text changes only through it.
@@ -111,6 +118,13 @@ export function Editor({
           // Code that can't be changed, such as a solution, is shown without Ruff's marks.
           readOnly ? [] : [ruffLint, lintGutter()],
           keymap.of([
+            {
+              key: 'Mod-Enter',
+              run: () => {
+                run.current?.();
+                return run.current !== undefined;
+              },
+            },
             { key: 'Shift-Alt-f', run: formatCode },
             ...closeBracketsKeymap,
             ...defaultKeymap,
@@ -121,7 +135,9 @@ export function Editor({
             indentWithTab,
           ]),
           EditorState.readOnly.of(readOnly),
-          EditorView.contentAttributes.of({ 'aria-label': label }),
+          // The code area takes focus already; the tabindex says so to checkers such as axe, which
+          // otherwise see the scrolling area around it as one a keyboard can't reach.
+          EditorView.contentAttributes.of({ 'aria-label': label, tabindex: '0' }),
           theme.current.of(paletteTheme(palette)),
           EditorView.updateListener.of((update) => {
             if (update.docChanged) changed.current?.(update.state.doc.toString());
@@ -147,6 +163,13 @@ export function Editor({
       const editor = view.current;
       if (!editor) return;
       editor.dispatch({ changes: { from: 0, to: editor.state.doc.length, insert: code } });
+    },
+    goTo(line) {
+      const editor = view.current;
+      if (!editor) return;
+      const { from } = editor.state.doc.line(Math.min(Math.max(line, 1), editor.state.doc.lines));
+      editor.dispatch({ selection: { anchor: from }, scrollIntoView: true });
+      editor.focus();
     },
   }));
 
