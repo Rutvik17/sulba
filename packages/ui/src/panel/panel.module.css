@@ -1,0 +1,74 @@
+/*
+  A side panel: a dialog that slides in from the right edge over a veiled page, full width on a
+  phone. React Aria keeps the focus inside it while it's open and returns it to the button that
+  opened it.
+*/
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+}
+
+.panel {
+  position: fixed;
+  inset-block: 0;
+  right: 0;
+  width: min(440px, 100%);
+  overflow-y: auto;
+  border-left: 1px solid var(--line-2);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.overlay[data-entering] {
+  animation: veil var(--duration) var(--ease);
+}
+
+.overlay[data-exiting] {
+  animation: veil var(--duration) var(--ease) reverse;
+}
+
+.panel[data-entering] {
+  animation: slide var(--duration) var(--ease);
+}
+
+.panel[data-exiting] {
+  animation: slide var(--duration) var(--ease) reverse;
+}
+
+@keyframes veil {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide {
+  from {
+    translate: 100% 0;
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  min-height: 100%;
+  padding: calc(var(--space-6) + env(safe-area-inset-top, 0px)) var(--space-8)
+    calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  outline: none;
+}
+
+.header {
+  display: flex;
+  align-self: stretch;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.title {
+  font: 400 2.5rem / 1 var(--font-display);
+  letter-spacing: -0.01em;
+}

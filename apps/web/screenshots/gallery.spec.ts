@@ -33,7 +33,22 @@ const sections: { id: string; name: string; states: (page: Page) => Promise<void
       await page.getByRole('tab', { name: 'Tests' }).hover();
     },
   },
+  {
+    id: 'slider',
+    name: 'Slider',
+    states: async (page) => {
+      await page.getByRole('slider', { name: 'Learning rate' }).focus();
+      await page.keyboard.press('ArrowRight');
+      await page.keyboard.press('Tab');
+    },
+  },
 ];
+
+/** The overlays, pictured open: the side panel, and the menu with its first item focused. */
+const overlays = [
+  { id: 'panel', trigger: 'Open the review', role: 'dialog', keys: [] },
+  { id: 'menu', trigger: 'Session', role: 'menu', keys: ['ArrowDown'] },
+] as const;
 
 for (const { id, name, states } of sections) {
   for (const scheme of ['dark', 'light'] as const) {
@@ -44,6 +59,22 @@ for (const { id, name, states } of sections) {
       if (!isMobile) await states(page);
 
       await expect(page.getByRole('region', { name })).toHaveScreenshot(`${id}-${scheme}.png`);
+    });
+  }
+}
+
+for (const { id, trigger, role, keys } of overlays) {
+  for (const scheme of ['dark', 'light'] as const) {
+    test(`the open ${id} in the ${scheme} theme`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/gallery/');
+      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await page.getByRole('button', { name: trigger }).click();
+      for (const key of keys) await page.keyboard.press(key);
+
+      // The element that holds the overlay's edge: the panel or the menu's card.
+      const overlay = page.getByRole(role).locator('xpath=..');
+      await expect(overlay).toHaveScreenshot(`${id}-${scheme}.png`);
     });
   }
 }

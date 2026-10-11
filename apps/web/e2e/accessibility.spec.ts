@@ -49,4 +49,25 @@ for (const scheme of ['dark', 'light'] as const) {
 
     expect(results.violations).toEqual([]);
   });
+
+  for (const [what, trigger, role] of [
+    ['side panel', 'Open the review', 'dialog'],
+    ['menu', 'Session', 'menu'],
+  ] as const) {
+    test(`the gallery's open ${what} has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/gallery/');
+      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await page.getByRole('button', { name: trigger }).click();
+      await expect(page.getByRole(role)).toBeVisible();
+      // React Aria marks an overlay data-entering until it has finished sliding or fading in.
+      await expect(page.locator('[data-entering]')).toHaveCount(0);
+
+      const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+      expect(results.violations).toEqual([]);
+    });
+  }
 }

@@ -5,8 +5,11 @@ import { buttonClass } from '@sulba/ui/button';
 import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
+import MenuDemo from './MenuDemo';
+import PanelDemo from './PanelDemo';
 import PressCount from './PressCount';
 import SegmentedDemo from './SegmentedDemo';
+import SliderDemo from './SliderDemo';
 import TabsDemo from './TabsDemo';
 
 const buttons = [
@@ -90,6 +93,36 @@ const buttons = [
       </div>
     </div>
   </section>
+
+  <section aria-labelledby="slider">
+    <SectionHeading id="slider" text="Slider" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="sliders">
+        <SliderDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="panel">
+    <SectionHeading id="panel" text="Side panel" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <PanelDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="menu">
+    <SectionHeading id="menu" text="Menu" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <MenuDemo client:load />
+      </div>
+    </div>
+  </section>
 </Page>
 
 <style>
@@ -165,6 +198,12 @@ h3 {
 .wide {
   min-width: 0;
   max-width: 640px;
+}
+
+.sliders {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 360px;
 }
 
 .native {
