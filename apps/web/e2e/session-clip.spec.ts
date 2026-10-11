@@ -6,6 +6,19 @@ async function open(page: Page) {
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(1000);
   await page.goto('/');
+  // The clip starts when its IntersectionObserver finds it on screen, at the browser's next
+  // rendering update, which a busy machine can deliver after the test has run the clock. An
+  // observer made now reports in that same update, after the clip's own, so the clock runs only
+  // once the clip is playing.
+  await page.locator('[data-session]').evaluate(
+    (clip) =>
+      new Promise<void>((resolve) => {
+        new IntersectionObserver((_, observer) => {
+          observer.disconnect();
+          resolve();
+        }).observe(clip);
+      }),
+  );
 }
 
 const clip = (page: Page) => page.locator('[data-session]');
