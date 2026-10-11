@@ -1,3 +1,13 @@
+---
+import { segmentedClass } from '@sulba/ui/segmented';
+
+const choices = [
+  { value: 'system', label: 'System' },
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+] as const;
+---
+
 <button class="toggle" type="button" popovertarget="theme-panel" aria-label="Theme">
   <svg viewBox="0 0 26 26" aria-hidden="true">
     <circle cx="13" cy="13" r="11.5" fill="none" stroke="currentColor" stroke-width="1.5" />
@@ -7,10 +17,13 @@
 <div class="panel" id="theme-panel" popover>
   <fieldset>
     <legend>Theme</legend>
-    <div class="choices">
-      <label><input type="radio" name="theme" value="system" checked>System</label>
-      <label><input type="radio" name="theme" value="light">Light</label>
-      <label><input type="radio" name="theme" value="dark">Dark</label>
+    <div class:list={[segmentedClass.group, 'choices']}>
+      {choices.map(({ value, label }) => (
+        <label class={segmentedClass.segment}>
+          <input type="radio" name="theme" value={value} checked={value === 'system'}>
+          {label}
+        </label>
+      ))}
     </div>
   </fieldset>
 </div>
@@ -83,41 +96,8 @@ legend {
   color: var(--dim);
 }
 
+/* The choice spans the panel. */
 .choices {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-}
-
-label {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 36px;
-  border-radius: 5px;
-  font-size: var(--text-sm);
-  color: var(--dim);
-}
-
-label:has(:checked) {
-  background: var(--raise);
-  color: var(--fg);
-}
-
-label:has(:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* The radio button itself covers its segment, unseen, so a click on the segment lands on it. */
-input {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
 }
 </style>

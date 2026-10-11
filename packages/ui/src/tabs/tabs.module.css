@@ -1,0 +1,68 @@
+/*
+  Tabs: a row of labels over a rule, the chosen one in full colour and underlined. The row scrolls
+  sideways when it's wider than its place, as it is on a phone.
+*/
+.tabs {
+  display: grid;
+  min-width: 0;
+}
+
+/* The rule is drawn inside the row, because a row that scrolls clips anything over its edge, and
+   the chosen tab's underline lies on the rule. */
+.list {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  box-shadow: inset 0 -1px 0 var(--line);
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 44px;
+  padding-inline: var(--space-3);
+  border-bottom: 2px solid transparent;
+  color: var(--dim);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--duration-quick) var(--ease),
+    border-color var(--duration-quick) var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .tab:hover:not([aria-disabled="true"]) {
+    color: var(--fg);
+  }
+}
+
+.tab[aria-selected="true"] {
+  border-bottom-color: var(--fg);
+  color: var(--fg);
+}
+
+.tab[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* The row clips anything outside it, so the ring sits inside the tab. */
+.tab:focus-visible {
+  outline-offset: -4px;
+}
+
+.panel {
+  padding-block: var(--space-6);
+}
+
+.panel:focus-visible {
+  outline-offset: 4px;
+}

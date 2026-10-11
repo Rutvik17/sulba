@@ -7,7 +7,9 @@
     "./base.css": "./src/base.css",
     "./mark": "./src/mark.ts",
     "./shapes": "./src/shapes.ts",
-    "./button": "./src/button/Button.tsx"
+    "./button": "./src/button/Button.tsx",
+    "./segmented": "./src/segmented/SegmentedChoice.tsx",
+    "./tabs": "./src/tabs/Tabs.tsx"
   },
   "scripts": {
     "typecheck": "tsc",

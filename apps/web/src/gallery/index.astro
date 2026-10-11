@@ -2,9 +2,12 @@
 // Every component in each of its states, for building and reviewing the interface. The route
 // exists only in development and in builds that ask for it (astro.config.ts).
 import { buttonClass } from '@sulba/ui/button';
+import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 import PressCount from './PressCount';
+import SegmentedDemo from './SegmentedDemo';
+import TabsDemo from './TabsDemo';
 
 const buttons = [
   { variant: 'primary', name: 'Primary', label: 'Run tests' },
@@ -50,6 +53,40 @@ const buttons = [
       <h3>In a React island</h3>
       <div class="island">
         <PressCount client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="segmented">
+    <SectionHeading id="segmented" text="Segmented choice" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <SegmentedDemo client:load />
+      </div>
+    </div>
+    <div class="row">
+      <h3>Native radio buttons</h3>
+      <fieldset class="native">
+        <legend>Theme</legend>
+        <div class={segmentedClass.group}>
+          {['System', 'Light', 'Dark'].map((label, i) => (
+            <label class={segmentedClass.segment}>
+              <input type="radio" name="gallery-theme" value={label} checked={i === 0}>
+              {label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+  </section>
+
+  <section aria-labelledby="tabs">
+    <SectionHeading id="tabs" text="Tabs" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="wide">
+        <TabsDemo client:load />
       </div>
     </div>
   </section>
@@ -123,6 +160,24 @@ h3 {
   gap: var(--space-4);
   color: var(--dim);
   font-size: var(--text-sm);
+}
+
+.wide {
+  min-width: 0;
+  max-width: 640px;
+}
+
+.native {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.native legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+  color: var(--dim);
+  font-size: var(--text-xs);
 }
 
 @media (max-width: 640px) {
