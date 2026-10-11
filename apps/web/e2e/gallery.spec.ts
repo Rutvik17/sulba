@@ -1,9 +1,10 @@
 import { expect, type Page, test } from '@playwright/test';
+import { islandsHydrated } from './islands';
 
-/** Opens the gallery once React has taken over every island; Astro then drops each ssr attribute. */
+/** Opens the gallery once React has taken over every island. */
 async function openGallery(page: Page) {
   await page.goto('/gallery/');
-  await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+  await islandsHydrated(page);
 }
 
 test('a button in a React island takes presses from a pointer and from the keyboard', async ({
@@ -214,9 +215,12 @@ function editor(page: Page) {
 /** Puts the cursor at the end of the editor's code, or with `start`, at its start. */
 async function focusCode(page: Page, where: 'start' | 'end' = 'end') {
   const { code } = editor(page);
-  await code.focus();
+  const lines = code.locator('.cm-line');
+  // A click on the line, then Home or End: the same keys on every platform. Moving to the start
+  // or end of the whole file takes Command on the iPhone project and Control elsewhere.
+  await (where === 'start' ? lines.first() : lines.last()).click();
   await expect(code).toBeFocused();
-  await page.keyboard.press(where === 'start' ? 'ControlOrMeta+Home' : 'ControlOrMeta+End');
+  await page.keyboard.press(where === 'start' ? 'Home' : 'End');
 }
 
 // The phone projects stand in for touch screens, which have no keyboard shortcuts. The iPhone one
