@@ -19,6 +19,8 @@ const here = Astro.url.pathname.replace(/\/?$/, '/');
           {text}
         </a>
       ))}
+      {/* Shown by AnalyticsChoice when the site asks to count visits. */}
+      <button type="button" class="ask" data-analytics-ask hidden>Privacy choices</button>
     </nav>
   </div>
 </footer>
@@ -48,7 +50,24 @@ nav {
 }
 
 a:hover,
-a[aria-current="page"] {
+a[aria-current="page"],
+.ask:hover {
   color: var(--fg);
+}
+
+/* A button, because it asks a question rather than going anywhere, set like the links beside it. */
+.ask {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.ask[hidden] {
+  display: none;
 }
 </style>

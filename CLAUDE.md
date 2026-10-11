@@ -9,7 +9,7 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 - Follow best practice without being asked: maintained libraries, strict types, tests for behaviour, no dead code. No filler in code, comments, docs or commit messages.
 - Decide on evidence. A new architectural choice gets a record in `docs/decisions` with the options compared and the sources read. An accepted record is superseded, never rewritten.
 - Secrets never enter the repository, issues or logs. They live in GitHub Actions secrets, Cloudflare Worker secrets, the Supabase dashboard or a gitignored `.dev.vars`. Never read `.dev.vars` or `.env` files.
-- Only public keys reach the browser: the Supabase publishable key and the Turnstile site key.
+- Only public keys reach the browser: the Supabase publishable key, the Turnstile site key and the Web Analytics token.
 - Learner data lives in Supabase, never in GitHub.
 
 ## Commands
@@ -32,7 +32,7 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview addresses keep it.
 - CI runs once for every pull request and every push to `main`. When it passes, `main` deploys to sulba.dev, the site's only address, and a pull request from this repository gets a Worker Preview on workers.dev, which `preview-cleanup.yml` deletes when its branch is deleted. Dependency updates (`renovate/*`) and pull requests from forks are tested but not deployed.
 - The contact form posts to `/api/contact`, which checks the Turnstile token and sends the message with Resend (decision record 12). Its four secrets are Worker secrets; without them it answers 503. Tests stand in for `/api/contact` and Turnstile, so no test ever sends mail.
-- Cloudflare Web Analytics is on for sulba.dev, set in the dashboard: Cloudflare adds its script to every page, so it's in no file here and local tests never see it. Workers Logs are on too (`observability` in `wrangler.jsonc`).
+- Cloudflare Web Analytics counts a visit only after the visitor allows it (decision record 13). The dashboard is set to install its script by hand, and `AnalyticsChoice.astro` loads it after Allow, with the public token from the `WEB_ANALYTICS_TOKEN` repository variable. Only main gets the token, so development and previews never ask. Workers Logs are on too (`observability` in `wrangler.jsonc`).
 - Cloudflare Access ("Previews only", set in the dashboard) puts every preview address behind sign-in, and sulba.dev stays public (decision record 9). Worker Previews need `preview_urls` on. Never turn it on in a Cloudflare account without that Access policy: it brings back every old preview address, and those can't be deleted.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.

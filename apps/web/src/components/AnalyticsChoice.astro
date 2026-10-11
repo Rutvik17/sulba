@@ -1,0 +1,148 @@
+---
+// Visits are counted with Cloudflare Web Analytics only after the visitor allows it (decision
+// record 13). The answer is kept in the browser, and Privacy choices in the footer asks again.
+// Without the site's token, which only main has, no one is asked and nothing loads.
+import { PUBLIC_WEB_ANALYTICS_TOKEN } from 'astro:env/client';
+---
+
+{PUBLIC_WEB_ANALYTICS_TOKEN && (
+  <section
+    class="choice"
+    aria-labelledby="choice-title"
+    data-analytics
+    data-token={PUBLIC_WEB_ANALYTICS_TOKEN}
+    hidden
+  >
+    <p class="text">
+      <strong id="choice-title">Can we count your visit?</strong>
+      Cloudflare Web Analytics tells us which pages are read. It sets no cookies and doesn't track
+      you across sites. <a href="/privacy/">Privacy Policy</a>
+    </p>
+    <div class="answers">
+      <button type="button" data-answer="allow">
+        Allow
+      </button>
+      <button type="button" data-answer="deny">
+        Don't allow
+      </button>
+    </div>
+  </section>
+)}
+
+<script>
+const KEY = 'sulba:analytics';
+const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js';
+
+// Storage can be blocked; then the visitor is asked on each page and nothing is counted until
+// they allow it.
+function answered() {
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    return null;
+  }
+}
+
+function keep(answer: 'allow' | 'deny') {
+  try {
+    localStorage.setItem(KEY, answer);
+  } catch {
+    // Not kept: the visitor is asked again on the next page.
+  }
+}
+
+function count(token: string) {
+  if (document.querySelector(`script[src="${BEACON}"]`)) return;
+  const script = document.createElement('script');
+  script.defer = true;
+  script.src = BEACON;
+  script.dataset.cfBeacon = JSON.stringify({ token });
+  document.body.append(script);
+}
+
+const panel = document.querySelector<HTMLElement>('[data-analytics]');
+if (panel) {
+  const token = panel.dataset.token ?? '';
+  const answer = answered();
+  if (answer === 'allow') count(token);
+  else if (answer !== 'deny') panel.hidden = false;
+
+  for (const button of panel.querySelectorAll<HTMLButtonElement>('[data-answer]')) {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.answer === 'allow' ? 'allow' : 'deny';
+      keep(choice);
+      panel.hidden = true;
+      if (choice === 'allow') count(token);
+    });
+  }
+
+  // A new answer holds from the next page: a script already running on this one keeps running.
+  for (const ask of document.querySelectorAll<HTMLButtonElement>('[data-analytics-ask]')) {
+    ask.hidden = false;
+    ask.addEventListener('click', () => {
+      panel.hidden = false;
+      panel.querySelector('button')?.focus();
+    });
+  }
+}
+</script>
+
+<style>
+.choice {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--space-4);
+  z-index: 20;
+  display: grid;
+  gap: var(--space-4);
+  width: min(420px, calc(100vw - 2 * var(--gutter)));
+  padding: var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+
+.choice[hidden] {
+  display: none;
+}
+
+.text {
+  color: var(--dim);
+}
+
+strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--fg);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Allowing and not allowing are the same size and weight, so neither is the easier choice. */
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+button {
+  height: 40px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--fg);
+}
+</style>

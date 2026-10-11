@@ -7,7 +7,7 @@ const providers = [
   {
     name: 'Cloudflare, Inc.',
     href: 'https://www.cloudflare.com/privacypolicy/',
-    does: 'Hosts the site, counts visits, runs the bot check, and passes your message to Resend',
+    does: 'Hosts the site, counts visits if you allow it, runs the bot check, and passes your message to Resend',
     where: "Cloudflare's network, around the world",
   },
   {
@@ -27,8 +27,9 @@ const providers = [
 
 <Legal title="Privacy Policy" updated="10 October 2026">
   <p class="lede">
-    You can read all of Sulba without telling us who you are. Sulba sets no cookies and shows no
-    ads. If you write to us, we use what you send only to answer you.
+    You can read all of Sulba without telling us who you are. Sulba sets no cookies, shows no ads,
+    and counts your visits only if you allow it. If you write to us, we use what you send only to
+    answer you.
   </p>
 
   <h2>Who is responsible</h2>
@@ -47,18 +48,22 @@ const providers = [
       error to Cloudflare.
     </li>
     <li>
-      <strong>Visit counts.</strong>{' '}
-      Cloudflare Web Analytics counts visits for us. For each page view it records the page, the
-      page you came from, your country, your browser, your operating system, your type of device,
-      and how quickly the page loaded. It doesn't use cookies or other storage in your browser to
-      track you, it doesn't fingerprint you, and it doesn't record the part of a web address after a
-      question mark. We see only totals.
+      <strong>Visit counts, only if you allow them.</strong>{' '}
+      On your first visit we ask whether we can count your visits, and nothing is counted until you
+      choose Allow. If you do, Cloudflare Web Analytics counts them for us. For each page view it
+      records the page, the page you came from, your country, your browser, your operating system,
+      your type of device, and how quickly the page loaded. It doesn't use cookies or other storage
+      in your browser to track you, it doesn't fingerprint you, and it doesn't record the part of a
+      web address after a question mark. We see only totals. You can change your answer at any time
+      with Privacy choices at the bottom of every page, and the new answer holds from the next page
+      you open.
     </li>
     <li>
-      <strong>Your theme.</strong>{' '}
-      If you choose Light or Dark, your browser keeps that choice (as{' '}
-      <code>sulba:theme</code>) so the next page opens in it. It stays on your device, and choosing
-      System removes it.
+      <strong>What your browser keeps.</strong>{' '}
+      Your answer about visit counts (as{' '}
+      <code>sulba:analytics</code>) and, if you choose Light or Dark, your theme (as{' '}
+      <code>sulba:theme</code>), so the next page follows them. Both stay on your device, and
+      choosing System removes the theme.
     </li>
     <li><strong>Fonts.</strong> The site's fonts come from sulba.dev itself.</li>
   </ul>
@@ -128,11 +133,18 @@ const providers = [
       you asked us to, and we have a legitimate interest in answering.
     </li>
     <li>
-      <strong>Visit counts, the bot check and the record of requests:</strong>{' '}
-      our legitimate interest in running a secure site and knowing how it's used.
+      <strong>Visit counts:</strong>{' '}
+      your consent, which you give by choosing Allow and can withdraw with Privacy choices.
+    </li>
+    <li>
+      <strong>The bot check and the record of requests:</strong>{' '}
+      our legitimate interest in running a secure site.
     </li>
   </ul>
-  <p>In Canada, you consent to what's described here when you write to us.</p>
+  <p>
+    In Canada, you consent to visit counts by choosing Allow, and to the rest of what's described
+    here when you write to us.
+  </p>
 
   <h2>Where it's kept</h2>
   <p>

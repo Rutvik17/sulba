@@ -18,6 +18,13 @@ export default defineConfig({
         access: 'public',
         default: '1x00000000000000000000AA',
       }),
+      // Cloudflare Web Analytics' site token is public: it sits in its script tag. Only main sets it,
+      // so development and previews never ask a visitor or count a visit (decision record 13).
+      PUBLIC_WEB_ANALYTICS_TOKEN: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
       // The contact form's secrets are Worker secrets, read when a message is sent. Without all
       // four the form answers that it can't send, and never sends unchecked.
       RESEND_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),

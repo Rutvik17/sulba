@@ -2,6 +2,7 @@
 import '@sulba/ui/tokens.css';
 import '@sulba/ui/base.css';
 import { Font } from 'astro:assets';
+import AnalyticsChoice from '../components/AnalyticsChoice.astro';
 import Footer from '../components/Footer.astro';
 import TopBar from '../components/TopBar.astro';
 
@@ -38,6 +39,7 @@ const { title } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <AnalyticsChoice />
   </body>
 </html>
 

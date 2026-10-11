@@ -39,9 +39,12 @@ jobs:
       - name: Build
         env:
           SITE_KEY: ${{ github.ref_name == 'main' && vars.TURNSTILE_SITE_KEY || '' }}
+          ANALYTICS_TOKEN: ${{ github.ref_name == 'main' && vars.WEB_ANALYTICS_TOKEN || '' }}
         # main gets Turnstile's real site key; previews keep the test key, so they can't send mail.
+        # main also gets the Web Analytics token, so only sulba.dev asks to count a visit.
         run: |
           if [ -n "$SITE_KEY" ]; then export PUBLIC_TURNSTILE_SITE_KEY="$SITE_KEY"; fi
+          if [ -n "$ANALYTICS_TOKEN" ]; then export PUBLIC_WEB_ANALYTICS_TOKEN="$ANALYTICS_TOKEN"; fi
           pnpm build
       - name: Deploy
         id: deploy
