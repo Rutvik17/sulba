@@ -21,10 +21,10 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm lint:fix` | Fixes formatting and safe lint issues |
 | `pnpm typecheck` | Type-checks the code |
 | `pnpm test` | Runs the unit tests |
-| `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium |
+| `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
 | `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
-Before the first `pnpm test:e2e`, install the browser with `pnpm --filter @sulba/web exec playwright install chromium`.
+Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulba/web exec playwright install chromium firefox webkit`.
 
 ## Repository
 

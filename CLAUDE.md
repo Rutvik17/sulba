@@ -20,7 +20,7 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | `pnpm lint` / `pnpm lint:fix` | Biome: formatting, lint rules, import order |
 | `pnpm typecheck` | `astro check` at TypeScript's strictest settings |
 | `pnpm test` | Vitest unit tests |
-| `pnpm test:e2e` | Playwright end-to-end and axe accessibility tests, desktop and phone |
+| `pnpm test:e2e` | Playwright end-to-end and axe accessibility tests in Chromium, Firefox and WebKit, on desktop and phone |
 | `pnpm build` | Builds the site |
 
 Run lint, typecheck, test and test:e2e before calling work done.
