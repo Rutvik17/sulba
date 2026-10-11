@@ -117,7 +117,11 @@ test('an unknown address shows the not-found page with a 404 status', async ({ p
   await expect(page).toHaveURL('/');
 });
 
-test('a keyboard user can skip past the top bar to the content', async ({ page }) => {
+test('a keyboard user can skip past the top bar to the content', async ({ page, browserName }) => {
+  test.skip(
+    browserName === 'webkit',
+    "WebKit's Tab key skips links, as Safari's does until the user turns on Press Tab to highlight each item",
+  );
   await page.goto('/');
 
   await page.keyboard.press('Tab');
