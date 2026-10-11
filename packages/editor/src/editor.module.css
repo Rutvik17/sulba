@@ -1,0 +1,89 @@
+/*
+  The editor: the code fills its frame and scrolls inside it, over a status bar in the manner of
+  a desktop editor. The frame takes its height from its place, so a workspace sets it.
+*/
+.editor {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.editor:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.code {
+  min-height: 0;
+}
+
+.code :global(.cm-editor) {
+  height: 100%;
+  font-size: var(--text-md);
+}
+
+/* The frame shows focus, so the code area draws no outline of its own. */
+.code :global(.cm-editor.cm-focused) {
+  outline: none;
+}
+
+.code :global(.cm-scroller) {
+  font-family: var(--font-mono);
+  line-height: var(--leading);
+}
+
+.code :global(.cm-gutters) {
+  margin-right: var(--space-2);
+}
+
+.code :global(.cm-lineNumbers .cm-gutterElement) {
+  padding: 0 var(--space-2) 0 var(--space-3);
+}
+
+.code :global(.cm-tooltip) {
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+.code :global(.cm-tooltip-autocomplete > ul) {
+  font-family: var(--font-mono);
+}
+
+.code :global(.cm-diagnostic) {
+  padding: var(--space-2) var(--space-3);
+}
+
+.code :global(.cm-diagnosticSource) {
+  opacity: 0.75;
+}
+
+/* Code that does nothing, such as an import that is never used, gets a dotted line instead of a
+   wavy one. It keeps its colour, so it stays as readable as the code around it. */
+.code :global(.cm-lintRange-unnecessary) {
+  background-image: none;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  align-items: center;
+  min-height: 28px;
+  padding: var(--space-1) var(--space-3);
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}

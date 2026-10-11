@@ -9,7 +9,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [3. Host on Cloudflare Workers](0003-host-on-cloudflare-workers.md) | Accepted |
 | [4. Keep learner data and sign-in in Supabase](0004-keep-learner-data-and-sign-in-in-supabase.md) | Accepted |
 | [5. Run learners' code in the browser and on their machine](0005-run-learner-code-in-the-browser-and-on-their-machine.md) | Accepted |
-| [6. Use CodeMirror 6 with language servers](0006-use-codemirror-with-language-servers.md) | Accepted |
+| [6. Use CodeMirror 6 with language servers](0006-use-codemirror-with-language-servers.md) | Superseded by 14 |
 | [7. Keep course content as validated files with permanent ids](0007-keep-course-content-as-validated-files.md) | Accepted |
 | [8. Monitor with free services, each with one job](0008-monitor-with-free-services.md) | Accepted |
 | [9. Keep branch previews behind Cloudflare Access](0009-keep-previews-behind-cloudflare-access.md) | Accepted |
@@ -17,5 +17,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [11. Build the interface on tokens, CSS and React Aria Components](0011-build-the-interface-on-tokens-css-and-react-aria.md) | Accepted |
 | [12. Send contact messages through Resend, after a Turnstile check](0012-send-contact-messages-through-resend-after-turnstile.md) | Accepted |
 | [13. Leave the EEA, the UK and Switzerland out of visit counts](0013-leave-the-eea-uk-and-switzerland-out-of-visit-counts.md) | Accepted |
+| [14. Use CodeMirror 6, with each language's own browser build](0014-use-codemirror-with-each-languages-own-browser-build.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

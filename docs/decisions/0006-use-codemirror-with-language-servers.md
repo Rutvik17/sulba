@@ -1,6 +1,6 @@
 # 6. Use CodeMirror 6 with language servers
 
-- Status: accepted
+- Status: superseded by [14. Use CodeMirror 6, with each language's own browser build](0014-use-codemirror-with-each-languages-own-browser-build.md)
 - Date: 2026-10-08
 
 ## Context

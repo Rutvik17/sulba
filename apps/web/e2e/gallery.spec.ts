@@ -204,3 +204,111 @@ test('a menu closes with Escape, gives the focus back, and skips an item that is
   await expect(page.getByRole('menu')).toBeHidden();
   await expect(trigger).toBeFocused();
 });
+
+/** The editable editor in the gallery, and its code area. */
+function editor(page: Page) {
+  const section = page.getByRole('region', { name: 'Code editor' });
+  return { section, code: section.getByRole('textbox', { name: 'model.py' }) };
+}
+
+/** Puts the cursor at the end of the editor's code, or with `start`, at its start. */
+async function focusCode(page: Page, where: 'start' | 'end' = 'end') {
+  const { code } = editor(page);
+  await code.focus();
+  await expect(code).toBeFocused();
+  await page.keyboard.press(where === 'start' ? 'ControlOrMeta+Home' : 'ControlOrMeta+End');
+}
+
+// The phone projects stand in for touch screens, which have no keyboard shortcuts. The iPhone one
+// would also need Command, which Playwright presses only on a Mac.
+const shortcuts = 'Keyboard shortcuts need a keyboard';
+
+test('the editor marks a name Python cannot find, and counts it', async ({ page }) => {
+  await openGallery(page);
+  const { section } = editor(page);
+
+  await expect(section.locator('.cm-lintRange-error')).toHaveText('bias');
+  await expect(section.getByText('1 error, 0 warnings')).toBeVisible();
+});
+
+test('the editor offers the names in the file as one is typed', async ({ page }) => {
+  await openGallery(page);
+  const { code } = editor(page);
+
+  await focusCode(page);
+  await page.keyboard.type('\n\nsig');
+  // The editor ignores Enter for a moment after the list opens, so a press can't pick by accident.
+  await page.getByRole('option').filter({ hasText: 'sigmoid' }).click();
+
+  await expect(code.locator('.cm-line').last()).toHaveText('sigmoid');
+});
+
+test('Ctrl+/ comments a line out and back in', async ({ page, isMobile }) => {
+  test.skip(isMobile, shortcuts);
+  await openGallery(page);
+  const first = editor(page).code.locator('.cm-line').first();
+
+  await focusCode(page, 'start');
+  await page.keyboard.press('ControlOrMeta+/');
+  await expect(first).toHaveText('# import math');
+  await page.keyboard.press('ControlOrMeta+/');
+  await expect(first).toHaveText('import math');
+});
+
+test('Shift+Alt+F formats the code in Ruff’s style', async ({ page, isMobile }) => {
+  test.skip(isMobile, shortcuts);
+  await openGallery(page);
+  const { code } = editor(page);
+
+  await focusCode(page);
+  await page.keyboard.type('\nx=[1,2]');
+  await page.keyboard.press('Shift+Alt+F');
+
+  await expect(code.locator('.cm-line', { hasText: 'x = [1, 2]' })).toBeVisible();
+});
+
+test('Tab indents the code, and Escape then Tab leaves the editor', async ({ page, isMobile }) => {
+  test.skip(isMobile, shortcuts);
+  await openGallery(page);
+  const { code } = editor(page);
+
+  await focusCode(page);
+  await page.keyboard.press('Tab');
+  // toHaveText would trim the spaces away, so the line's text is read as it is.
+  await expect.poll(() => code.locator('.cm-line').last().textContent()).toBe('    ');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Tab');
+
+  await expect(code).not.toBeFocused();
+});
+
+test('choosing a colour theme repaints the editor', async ({ page }) => {
+  await openGallery(page);
+  const { section } = editor(page);
+
+  await section.getByRole('button', { name: 'Theme: Sulba' }).click();
+  await page.getByRole('menuitem', { name: 'Dracula' }).click();
+
+  await expect(section.locator('.cm-editor').first()).toHaveCSS(
+    'background-color',
+    'rgb(40, 42, 54)',
+  );
+});
+
+test('a read-only editor can be read but not changed', async ({ page }) => {
+  await openGallery(page);
+  const solution = page.getByRole('textbox', { name: 'Solution' });
+  const before = await solution.textContent();
+
+  await solution.click();
+  await page.keyboard.type('x');
+
+  await expect(solution).toHaveText(before ?? '');
+});
+
+test('the gallery fits the screen without scrolling sideways', async ({ page }) => {
+  await openGallery(page);
+  const width = await page.evaluate(() => document.documentElement.scrollWidth);
+
+  expect(width).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
+});

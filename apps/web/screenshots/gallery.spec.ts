@@ -2,9 +2,15 @@ import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Each gallery section, and how a desktop test shows its transient states: one control with
- * keyboard focus and the pointer over another, so a single picture holds both.
+ * keyboard focus and the pointer over another, so a single picture holds both. `ready` waits for
+ * anything that draws after React takes over.
  */
-const sections: { id: string; name: string; states: (page: Page) => Promise<void> }[] = [
+const sections: {
+  id: string;
+  name: string;
+  states: (page: Page) => Promise<void>;
+  ready?: (page: Page) => Promise<void>;
+}[] = [
   {
     id: 'button',
     name: 'Button',
@@ -42,6 +48,16 @@ const sections: { id: string; name: string; states: (page: Page) => Promise<void
       await page.keyboard.press('Tab');
     },
   },
+  {
+    id: 'editor',
+    name: 'Code editor',
+    ready: (page) => expect(page.locator('.cm-lintRange-error')).toHaveText('bias'),
+    states: async (page) => {
+      await page.getByRole('button', { name: 'Theme: Sulba' }).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+    },
+  },
 ];
 
 /** The overlays, pictured open: the side panel, and the menu with its first item focused. */
@@ -50,12 +66,13 @@ const overlays = [
   { id: 'menu', trigger: 'Session', role: 'menu', keys: ['ArrowDown'] },
 ] as const;
 
-for (const { id, name, states } of sections) {
+for (const { id, name, states, ready } of sections) {
   for (const scheme of ['dark', 'light'] as const) {
     test(`${name} in the ${scheme} theme`, async ({ page, isMobile }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto('/gallery/');
       await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await ready?.(page);
       if (!isMobile) await states(page);
 
       await expect(page.getByRole('region', { name })).toHaveScreenshot(`${id}-${scheme}.png`);

@@ -5,9 +5,11 @@ import { buttonClass } from '@sulba/ui/button';
 import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
+import EditorDemo from './EditorDemo';
 import MenuDemo from './MenuDemo';
 import PanelDemo from './PanelDemo';
 import PressCount from './PressCount';
+import ReadOnlyEditorDemo from './ReadOnlyEditorDemo';
 import SegmentedDemo from './SegmentedDemo';
 import SliderDemo from './SliderDemo';
 import TabsDemo from './TabsDemo';
@@ -123,6 +125,22 @@ const buttons = [
       </div>
     </div>
   </section>
+
+  <section aria-labelledby="editor">
+    <SectionHeading id="editor" text="Code editor" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="code">
+        <EditorDemo client:load />
+      </div>
+    </div>
+    <div class="row">
+      <h3>Read only</h3>
+      <div class="code">
+        <ReadOnlyEditorDemo client:load />
+      </div>
+    </div>
+  </section>
 </Page>
 
 <style>
@@ -204,6 +222,27 @@ h3 {
   display: grid;
   gap: var(--space-6);
   max-width: 360px;
+}
+
+.code {
+  min-width: 0;
+  max-width: 720px;
+}
+
+.code :global(.editor-demo) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.code :global(.editor-frame) {
+  width: 100%;
+  height: 320px;
+}
+
+.code :global(.editor-frame.fit) {
+  height: auto;
 }
 
 .native {
