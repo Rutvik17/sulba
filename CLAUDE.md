@@ -18,7 +18,7 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | --- | --- |
 | `pnpm dev` | Runs the site at http://localhost:4321 in workerd |
 | `pnpm lint` / `pnpm lint:fix` | Biome: formatting, lint rules, import order |
-| `pnpm lint:python` | Ruff on the Python code |
+| `pnpm lint:python` | Ruff on the Python code: the lab's, the courses' and the tools' |
 | `pnpm typecheck` | `astro check` at TypeScript's strictest settings |
 | `pnpm test` | Vitest unit tests |
 | `pnpm test:python` | The lab's Python tests, in CPython through uv |

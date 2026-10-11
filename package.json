@@ -18,7 +18,7 @@
     "brand": "pnpm --filter @sulba/web brand",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "lint:python": "uv run --directory packages/lab/python ruff check && uv run --directory packages/lab/python ruff format --check"
+    "lint:python": "uv run --directory packages/lab/python ruff check . ../../../courses ../../../tools && uv run --directory packages/lab/python ruff format --check . ../../../courses ../../../tools"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15"

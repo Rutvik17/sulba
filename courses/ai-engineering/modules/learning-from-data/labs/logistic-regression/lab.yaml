@@ -1,0 +1,17 @@
+id: lab_aqoic8
+title: Logistic regression
+summary: >-
+  Build a classifier in NumPy that takes measurements of the cell nuclei in a sample from a
+  breast mass and gives the probability that the mass is malignant.
+data:
+  - file: breast-cancer.csv
+    title: Breast Cancer Wisconsin (Diagnostic)
+    creators: [William Wolberg, Olvi Mangasarian, Nick Street, W. Street]
+    url: https://doi.org/10.24432/C5DW2B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Split into a training set and a test set, with malignant coded as 1 and each column
+      named.
+stages: [the-model]

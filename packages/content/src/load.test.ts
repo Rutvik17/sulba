@@ -1,9 +1,9 @@
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, expect, test } from 'vitest';
-import { loadCourse } from './load.ts';
+import { courseSlugs, loadCourse } from './load.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const stages = 'demo/modules/counting/labs/tallies/stages';
@@ -49,6 +49,18 @@ test("a stage's version changes when any of its files does", async () => {
   const after = course?.levels[0]?.modules[0]?.labs[0];
   expect(after?.stages[0]?.version).toBe(before?.stages[0]?.version);
   expect(after?.stages[1]?.version).not.toBe(before?.stages[1]?.version);
+});
+
+test('hidden files and folders, such as a tool cache, are not part of a course', async () => {
+  let root = '';
+  const { problems } = await loadChanged(async (copy) => {
+    root = copy;
+    await mkdir(join(copy, '.ruff_cache/0.16.10'), { recursive: true });
+    await mkdir(join(copy, stages, 'count/.pytest_cache'));
+    await writeFile(join(copy, stages, '.DS_Store'), '');
+  });
+  expect(problems).toEqual([]);
+  expect(await courseSlugs(root)).toEqual(['demo']);
 });
 
 test.each([
