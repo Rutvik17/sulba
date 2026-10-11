@@ -3,6 +3,7 @@ export { drawnCharacters, italicOf } from './glyphs.ts';
 export { idPattern, prefixes } from './ids.ts';
 export {
   type Course,
+  courseSlugs,
   type Dataset,
   type Lab,
   type Level,

@@ -1,0 +1,6 @@
+id: stg_l5gxcl
+kind: build
+title: The model
+file: model.py
+packages: [numpy]
+minutes: 40

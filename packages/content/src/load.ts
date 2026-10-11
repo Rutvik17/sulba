@@ -302,9 +302,12 @@ class Reader {
       .map((entry) => entry.name);
   }
 
+  /** A folder's entries, leaving out hidden ones such as a tool's cache. */
   async list(folder: string) {
     try {
-      return await readdir(folder, { withFileTypes: true });
+      return (await readdir(folder, { withFileTypes: true })).filter(
+        (entry) => !hidden(entry.name),
+      );
     } catch {
       return null;
     }
@@ -313,6 +316,19 @@ class Reader {
   problem(path: string, message: string) {
     this.problems.push({ path: relative(this.root, path).split(sep).join('/'), message });
   }
+}
+
+/** A name starting with a dot, such as a tool's cache or a system's own file. */
+function hidden(name: string): boolean {
+  return name.startsWith('.');
+}
+
+/** The courses in the folder of courses: each folder in it that isn't hidden. */
+export async function courseSlugs(root: string): Promise<string[]> {
+  return (await readdir(root, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory() && !hidden(entry.name))
+    .map((entry) => entry.name)
+    .sort();
 }
 
 function hash(files: Record<string, string>): string {

@@ -2,11 +2,11 @@
 // loader in Node when it builds or starts, and pages read what it stored, since pages are
 // prerendered in workerd, which can't read the repository's files.
 
-import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
   type Course,
   computeFigures,
+  courseSlugs,
   duplicateIds,
   type Lab,
   loadCourse,
@@ -108,9 +108,8 @@ async function loadAll(root: string): Promise<Course[]> {
   // Courses are checked in full by `pnpm check:content`; the site won't build with a problem.
   const courses: Course[] = [];
   const problems: string[] = [];
-  for (const entry of await readdir(root, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const loaded = await loadCourse(root, entry.name);
+  for (const slug of await courseSlugs(root)) {
+    const loaded = await loadCourse(root, slug);
     problems.push(...loaded.problems.map(({ path, message }) => `${path}: ${message}`));
     if (loaded.course) courses.push(loaded.course);
   }

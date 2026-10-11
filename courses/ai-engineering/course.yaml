@@ -1,0 +1,7 @@
+id: crs_tjdsas
+title: AI Engineering
+levels:
+  - id: lvl_pzzgpg
+    slug: beginner
+    title: Beginner
+    modules: [learning-from-data]

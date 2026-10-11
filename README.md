@@ -19,7 +19,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm build` | Builds the site |
 | `pnpm lint` | Checks formatting and lint rules with Biome |
 | `pnpm lint:fix` | Fixes formatting and safe lint issues |
-| `pnpm lint:python` | Checks the Python code with Ruff |
+| `pnpm lint:python` | Checks the Python code, course code included, with Ruff |
 | `pnpm typecheck` | Type-checks the code |
 | `pnpm test` | Runs the unit tests |
 | `pnpm test:python` | Runs the lab's Python tests in CPython |
@@ -40,6 +40,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | `packages/content` | Reads and checks the courses |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content, laid out as [its README](courses/README.md) describes |
+| `tools` | Scripts that build course data |
 | `docs/decisions` | Architecture decision records |
 | `.github/workflows` | CI and deploys |
 

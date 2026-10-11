@@ -23,7 +23,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
         figures.py          optional: computes the numbers the stage's prose shows
 ```
 
-A folder's name is its address in the URL. Order comes from the YAML files, which must list every folder there is and nothing else. A file the course doesn't use is an error.
+A folder's name is its address in the URL. Order comes from the YAML files, which must list every folder there is and nothing else. A file the course doesn't use is an error. Hidden files and folders, whose names start with a dot, are left out.
 
 ## Ids
 
@@ -61,6 +61,14 @@ Numbers are never typed. `figures.py` defines `figures()`, which returns each nu
 - a figure the prose names that `figures.py` doesn't give, or one it gives that the prose never shows;
 - figures that differ between Pyodide and CPython;
 - a character in a formula that the math font has no glyph for.
+
+## Data
+
+A lab's data file is built by a script in `tools/datasets` from the provider's own file, checked by its sha256, and `lab.yaml` credits it with what was changed. A dataset is used only under a licence that allows a paid course, such as CC BY 4.0, read on the provider's own page.
+
+## Code style
+
+Course code follows the rules and style the editor applies to learners' code (`ruff.toml`), and `pnpm lint:python` checks it.
 
 ## Licence
 

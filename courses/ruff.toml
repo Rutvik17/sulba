@@ -1,0 +1,14 @@
+# Course code follows the rules and style the editor applies to learners' code
+# (packages/editor/src/ruff-settings.ts).
+line-length = 88
+indent-width = 4
+target-version = "py314"
+# Ruff would keep its cache beside this file, inside the folder of courses.
+cache-dir = "../node_modules/.cache/ruff-courses"
+
+[lint]
+select = ["E4", "E7", "E9", "F"]
+
+[lint.per-file-ignores]
+# A starter imports what the learner will need before any code uses it.
+"**/starter/*.py" = ["F401"]

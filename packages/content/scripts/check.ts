@@ -1,12 +1,12 @@
 // Checks every course in a folder: its files against their schemas, every stage in Pyodide and in
 // CPython, and every stage's prose with the numbers its figures.py gives in each. Prints each
 // problem and fails if there is one.
-import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { figuresInCPython, pyodideEngine, runInCPython } from '@sulba/lab/node';
 import {
   type Course,
   computeFigures,
+  courseSlugs,
   duplicateIds,
   loadCourse,
   type Problem,
@@ -18,9 +18,8 @@ import { mathFontCharacters } from '../src/math-font.ts';
 const root = resolve(process.argv[2] ?? '.');
 const courses: Course[] = [];
 const problems: Problem[] = [];
-for (const entry of await readdir(root, { withFileTypes: true })) {
-  if (!entry.isDirectory()) continue;
-  const loaded = await loadCourse(root, entry.name);
+for (const slug of await courseSlugs(root)) {
+  const loaded = await loadCourse(root, slug);
   problems.push(...loaded.problems);
   if (loaded.course) courses.push(loaded.course);
 }
