@@ -17,6 +17,18 @@ pnpm test
 pnpm test:e2e
 ```
 
+## Screenshots
+
+The gallery at `/gallery/` shows every component in each of its states. CI's Screenshots job compares it with the pictures in `apps/web/screenshots`. Browsers draw text a little differently on every system, so those pictures are taken only in Playwright's Linux image, in CI, and the job doesn't run on your machine.
+
+When a change alters the look, the job fails and attaches the new screenshots to the run as the `screenshots` artifact, with a report that shows each difference. If the change is intended, download them into the app and commit them:
+
+```sh
+gh run download <run id> --name screenshots --dir apps/web
+```
+
+The pull request then shows each changed picture beside the old one.
+
 ## Commits
 
 - One task per commit.
