@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { limits, type Message, readMessage, type Settings, send } from './contact';
+import { checkFields, limits, type Message, readMessage, type Settings, send } from './contact';
 
 const message: Message = {
   name: 'Ada Lovelace',
@@ -26,6 +26,23 @@ function network(turnstile: Response | Error, resend: Response | Error = json({ 
     return answer;
   });
 }
+
+test('each field says what it needs, and spaces alone count as empty', () => {
+  const ok = { name: 'Ada Lovelace', email: 'ada@example.com', message: 'Hello' };
+
+  expect(checkFields(ok)).toEqual({});
+  expect(checkFields({ name: '', email: '', message: '' })).toEqual({
+    name: 'missing',
+    email: 'missing',
+    message: 'missing',
+  });
+  expect(checkFields({ ...ok, name: '   ', message: '\n\t' })).toEqual({
+    name: 'missing',
+    message: 'missing',
+  });
+  expect(checkFields({ ...ok, email: 'ada@' })).toEqual({ email: 'format' });
+  expect(checkFields({ ...ok, name: 'x'.repeat(limits.name + 1) })).toEqual({ name: 'long' });
+});
 
 test('a message needs every field, each within its limit, and an email address', () => {
   expect(readMessage({ ...message, name: '  Ada Lovelace  ' })).toEqual(message);

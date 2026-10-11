@@ -13,6 +13,13 @@ export interface Message {
   token: string;
 }
 
+/** The fields a writer fills in. */
+export const fields = ['name', 'email', 'message'] as const;
+export type Field = (typeof fields)[number];
+
+/** What's wrong with a field: it's empty (spaces alone count), it's too long, or it isn't an email address. */
+export type FieldProblem = 'missing' | 'long' | 'format';
+
 export interface Settings {
   resendKey: string | undefined;
   to: string | undefined;
@@ -28,6 +35,18 @@ export type Outcome = { sent: true } | { sent: false; problem: Problem };
 const emailShape = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TIMEOUT = 10_000;
 
+/** Each field's problem, if it has one. The form and the server check a message the same way. */
+export function checkFields(values: Record<Field, string>): Partial<Record<Field, FieldProblem>> {
+  const found: Partial<Record<Field, FieldProblem>> = {};
+  for (const field of fields) {
+    const value = values[field].trim();
+    if (!value) found[field] = 'missing';
+    else if (value.length > limits[field]) found[field] = 'long';
+    else if (field === 'email' && !emailShape.test(value)) found[field] = 'format';
+  }
+  return found;
+}
+
 /** The message in a request's JSON body, or undefined if a field is missing or out of bounds. */
 export function readMessage(body: unknown): Message | undefined {
   if (typeof body !== 'object' || body === null) return undefined;
@@ -41,10 +60,8 @@ export function readMessage(body: unknown): Message | undefined {
     message: field('message'),
     token: field('token'),
   };
-  const fits = (Object.keys(limits) as (keyof Message)[]).every(
-    (key) => message[key].length > 0 && message[key].length <= limits[key],
-  );
-  return fits && emailShape.test(message.email) ? message : undefined;
+  const tokenFits = message.token.length > 0 && message.token.length <= limits.token;
+  return tokenFits && Object.keys(checkFields(message)).length === 0 ? message : undefined;
 }
 
 export async function send(
