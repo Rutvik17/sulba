@@ -1,0 +1,12 @@
+id: lab_demo01
+title: Tallies
+data:
+  - file: votes.csv
+    title: Votes
+    creators: [Sulba]
+    url: https://example.com/votes
+    licence:
+      name: CC0 1.0
+      url: https://creativecommons.org/publicdomain/zero/1.0/
+    changes: Made up for these tests.
+stages: [count, share]

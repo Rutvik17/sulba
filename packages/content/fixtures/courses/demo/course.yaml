@@ -1,0 +1,7 @@
+id: crs_demo01
+title: Demo
+levels:
+  - id: lvl_demo01
+    slug: first
+    title: First
+    modules: [counting]
