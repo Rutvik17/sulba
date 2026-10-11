@@ -83,6 +83,14 @@ h1 {
   letter-spacing: -0.02em;
 }
 
+/* Past a laptop's width the title keeps growing with the screen, from where it was, until it
+   nearly fills the sheet. */
+@media (min-width: 1441px) {
+  h1 {
+    font-size: clamp(6.5rem, 7.22vw, 9.5rem);
+  }
+}
+
 .intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
