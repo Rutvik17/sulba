@@ -1,0 +1,162 @@
+---
+// What the site collects, where it goes and why. Every statement is true of the site as built:
+// change this page in the same pull request as anything it describes (CLAUDE.md).
+import Legal from '../layouts/Legal.astro';
+
+const providers = [
+  {
+    name: 'Cloudflare, Inc.',
+    href: 'https://www.cloudflare.com/privacypolicy/',
+    does: 'Hosts the site, counts visits, runs the bot check, and passes your message to Resend',
+    where: "Cloudflare's network, around the world",
+  },
+  {
+    name: 'Resend (Plus Five Five, Inc.)',
+    href: 'https://resend.com/legal/privacy-policy',
+    does: 'Delivers your message to our mailbox',
+    where: 'United States',
+  },
+  {
+    name: 'Apple Inc.',
+    href: 'https://www.apple.com/legal/privacy/',
+    does: 'Hosts our mailbox (iCloud Mail), where your message is kept',
+    where: 'United States',
+  },
+] as const;
+---
+
+<Legal title="Privacy Policy" updated="10 October 2026">
+  <p class="lede">
+    You can read all of Sulba without telling us who you are. Sulba sets no cookies and shows no
+    ads. If you write to us, we use what you send only to answer you.
+  </p>
+
+  <h2>Who is responsible</h2>
+  <p>
+    Sulba, based in Toronto, Ontario, Canada, decides how the information described here is used and
+    is responsible for it. To reach us, use the <a href="/contact/">contact page</a>.
+  </p>
+
+  <h2>When you read the site</h2>
+  <ul>
+    <li>
+      <strong>Hosting.</strong>{' '}
+      Sulba runs on Cloudflare's network. Like any web host, Cloudflare receives the details every
+      browser sends with a request, such as your IP address and browser, and uses them to deliver
+      the site and protect it from attacks. If a page fails to load, your browser may report the
+      error to Cloudflare.
+    </li>
+    <li>
+      <strong>Visit counts.</strong>{' '}
+      Cloudflare Web Analytics counts visits for us. For each page view it records the page, the
+      page you came from, your country, your browser, your operating system, your type of device,
+      and how quickly the page loaded. It doesn't use cookies or other storage in your browser to
+      track you, it doesn't fingerprint you, and it doesn't record the part of a web address after a
+      question mark. We see only totals.
+    </li>
+    <li>
+      <strong>Your theme.</strong>{' '}
+      If you choose Light or Dark, your browser keeps that choice (as{' '}
+      <code>sulba:theme</code>) so the next page opens in it. It stays on your device, and choosing
+      System removes it.
+    </li>
+    <li><strong>Fonts.</strong> The site's fonts come from sulba.dev itself.</li>
+  </ul>
+
+  <h2>When you write to us</h2>
+  <p>The contact form sends us your name, your email address and your message.</p>
+  <ul>
+    <li>
+      <strong>The bot check.</strong>{' '}
+      Before your message is sent, Cloudflare Turnstile checks that you're not a bot. It starts when
+      you first use the form and runs in a frame from{' '}
+      <code>challenges.cloudflare.com</code>. It sends Cloudflare your IP address and technical
+      details of your browser and connection, and usually passes without asking you anything.
+      Cloudflare says it uses this only to detect bots and to improve Turnstile, not to identify or
+      profile anyone (<a href="https://www.cloudflare.com/turnstile-privacy-policy/"
+        >Turnstile's privacy terms</a
+      >). When you press Send, our server asks Cloudflare to confirm the check and passes on your IP
+      address. We receive only whether it passed.
+    </li>
+    <li>
+      <strong>Delivery.</strong>{' '}
+      Resend delivers your message to our mailbox as an email, with your address as the one to reply
+      to. Our mailbox is hosted by Apple (iCloud Mail).
+    </li>
+    <li>
+      <strong>A record of the request.</strong>{' '}
+      Cloudflare keeps a record of the request that sends your message, such as when it was made and
+      the address it went to, for 3 days.
+    </li>
+  </ul>
+  <p>We use what you send only to answer you, and keep it as long as we need to.</p>
+
+  <h2>Who handles it for us</h2>
+  <p>
+    Each provider uses your information only to provide its service to us, under its own privacy
+    terms:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Provider</th>
+        <th scope="col">What it does</th>
+        <th scope="col">Where</th>
+      </tr>
+    </thead>
+    <tbody>
+      {providers.map(({ name, href, does, where }) => (
+        <tr>
+          <td>
+            <a href={href}>{name}</a>
+          </td>
+          <td>{does}</td>
+          <td>{where}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    We don't sell your information or share it for advertising. We'd disclose it only if the law
+    required us to, or to protect the safety of people or of the site.
+  </p>
+
+  <h2>Our legal basis</h2>
+  <ul>
+    <li>
+      <strong>Answering you:</strong>{' '}
+      you asked us to, and we have a legitimate interest in answering.
+    </li>
+    <li>
+      <strong>Visit counts, the bot check and the record of requests:</strong>{' '}
+      our legitimate interest in running a secure site and knowing how it's used.
+    </li>
+  </ul>
+  <p>In Canada, you consent to what's described here when you write to us.</p>
+
+  <h2>Where it's kept</h2>
+  <p>
+    Your message is processed in the United States by Resend and kept there by Apple, and requests
+    pass through Cloudflare's network. Information kept outside Canada may be accessible to the
+    courts and authorities of the country where it's kept.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    Depending on where you live, you can ask to see the information we hold about you, to correct it
+    or to delete it, and you can object to how we use it. To ask, use the{' '}
+    <a href="/contact/">contact page</a>. We'll answer within 30 days, and it costs nothing. You can
+    also complain to a privacy authority: in Canada, the{' '}
+    <a href="https://www.priv.gc.ca/">Office of the Privacy Commissioner of Canada</a>; in the
+    European Union or the United Kingdom, your local one.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    We don't knowingly collect information from children under 13. If a child under 13 has written
+    to us, tell us through the <a href="/contact/">contact page</a> and we'll delete the message.
+  </p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we change what we collect or how we use it, we'll update this page and its date.</p>
+</Legal>
