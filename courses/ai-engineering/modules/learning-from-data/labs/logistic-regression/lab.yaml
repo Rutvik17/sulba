@@ -14,4 +14,4 @@ data:
     changes: >-
       Split into a training set and a test set, with malignant coded as 1 and each column
       named.
-stages: [the-model]
+stages: [the-model, loss-and-gradient]

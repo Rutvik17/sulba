@@ -1,0 +1,6 @@
+id: stg_15neci
+kind: build
+title: Loss and gradient
+file: model.py
+packages: [numpy]
+minutes: 45
