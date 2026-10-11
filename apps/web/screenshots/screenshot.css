@@ -1,0 +1,6 @@
+/* Applied while a screenshot is taken. The top bar stays at the top of the window as the page
+   scrolls, so a tall section would pass under it. */
+header {
+  /* biome-ignore lint/complexity/noImportantStyles: it has to win over the page's own styles. */
+  position: static !important;
+}

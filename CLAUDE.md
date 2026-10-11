@@ -37,7 +37,8 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.
 - Components live in `packages/ui`, a folder each: a CSS Module for the look, and a React component that takes its behaviour from React Aria Components (decision record 11). Astro pages put a component's classes on native elements and load no JavaScript; only a page with a React island loads React.
-- The gallery at `/gallery/` shows every component in each of its states. `astro dev`, the end-to-end tests and previews have it; sulba.dev doesn't (`apps/web/gallery.ts`). A new component, or a new state, joins the gallery in the same pull request.
+- The gallery at `/gallery/` shows every component in each of its states. `astro dev`, the end-to-end tests and previews have it; sulba.dev doesn't (`apps/web/gallery.ts`). A new component, or a new state, joins the gallery and its screenshot tests in the same pull request.
+- CI's Screenshots job compares the gallery with the pictures in `apps/web/screenshots`, taken in Playwright's Linux image; they never run on Windows. When the look changes on purpose, commit the new screenshots the failed job attaches (CONTRIBUTING.md).
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.
 - The pictures in `brand` are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
 - One course at a time: AI Engineering is built end to end before any other course starts. A language's editor support and Docker image arrive with the first session that uses it.
