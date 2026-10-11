@@ -77,6 +77,20 @@ test('the solution opens after the first run', async ({ page }) => {
   );
 });
 
+test('the explanation shows its formulas, with the numbers its figures.py computes', async ({
+  page,
+}) => {
+  await openLab(page);
+
+  await page.getByRole('tab', { name: 'Explanation' }).click();
+
+  const panel = page.getByRole('tabpanel', { name: 'Explanation' });
+  await expect(panel.locator('math[display="block"]')).toContainText('count');
+  await expect(panel.locator('math[display="block"] munderover')).toContainText('∑');
+  await expect(panel).toContainText('The poll has 3 votes');
+  await expect(panel.locator('math').last()).toContainText('2');
+});
+
 test('hints open one at a time', async ({ page }) => {
   await openLab(page);
   await page.getByRole('tab', { name: 'Hints' }).click();

@@ -1,9 +1,19 @@
-// Checks every course in a folder: its files against their schemas, and every stage in Pyodide
-// and in CPython. Prints each problem and fails if there is one.
+// Checks every course in a folder: its files against their schemas, every stage in Pyodide and in
+// CPython, and every stage's prose with the numbers its figures.py gives in each. Prints each
+// problem and fails if there is one.
 import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { pyodideEngine, runInCPython } from '@sulba/lab/node';
-import { type Course, duplicateIds, loadCourse, type Problem, prove } from '../src/index.ts';
+import { figuresInCPython, pyodideEngine, runInCPython } from '@sulba/lab/node';
+import {
+  type Course,
+  computeFigures,
+  duplicateIds,
+  loadCourse,
+  type Problem,
+  proseProblems,
+  prove,
+} from '../src/index.ts';
+import { mathFontCharacters } from '../src/math-font.ts';
 
 const root = resolve(process.argv[2] ?? '.');
 const courses: Course[] = [];
@@ -16,11 +26,16 @@ for (const entry of await readdir(root, { withFileTypes: true })) {
 }
 problems.push(...duplicateIds(courses));
 
-// Stages run only once every file is well formed.
+// Stages and figures run only once every file is well formed.
 if (problems.length === 0) {
   const engine = await pyodideEngine();
   problems.push(...(await prove(courses, async (requests) => requests.map(engine.run), 'Pyodide')));
   problems.push(...(await prove(courses, runInCPython, 'CPython')));
+  const { figures, problems: found } = await computeFigures(courses, {
+    Pyodide: async (fileSets) => fileSets.map(engine.figures),
+    CPython: figuresInCPython,
+  });
+  problems.push(...found, ...proseProblems(courses, figures, mathFontCharacters()));
 }
 
 const stages = courses.flatMap((course) =>

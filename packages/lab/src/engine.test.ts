@@ -5,6 +5,7 @@ import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beforeAll, expect, test } from 'vitest';
 import type { Engine } from './engine.ts';
+import { counted } from './figures.fixture.ts';
 import { pyodideEngine } from './node.ts';
 import { pythonPackages, type RunResult } from './protocol.ts';
 
@@ -55,4 +56,19 @@ test('a second run uses the new code', async () => {
   const second = engine.run({ ...request, files });
   expect(first.tests.map((test) => test.status)).toEqual(['pass', 'fail', 'error']);
   expect(second.tests.map((test) => test.status)).toEqual(['fail', 'fail', 'error']);
+});
+
+test("figures are the strings a stage's figures.py returns, read from the lab's data", () => {
+  expect(engine.figures(counted)).toEqual({
+    figures: { yes: '2', share: '0.6667' },
+    problem: null,
+  });
+});
+
+test('figures that fail give the error', () => {
+  const files = { 'figures.py': 'def figures():\n    return {"x": str(1 / 0)}\n' };
+  expect(engine.figures(files)).toEqual({
+    figures: null,
+    problem: 'ZeroDivisionError: division by zero',
+  });
 });

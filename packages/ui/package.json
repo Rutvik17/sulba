@@ -13,7 +13,8 @@
     "./tabs": "./src/tabs/Tabs.tsx",
     "./slider": "./src/slider/Slider.tsx",
     "./panel": "./src/panel/SidePanel.tsx",
-    "./menu": "./src/menu/Menu.tsx"
+    "./menu": "./src/menu/Menu.tsx",
+    "./fonts/noto-sans-math.woff2": "./src/fonts/noto-sans-math/NotoSansMath-Regular.woff2"
   },
   "scripts": {
     "typecheck": "tsc",

@@ -1,11 +1,13 @@
 ---
 // Every component in each of its states, for building and reviewing the interface. The route
 // exists only in development and in builds that ask for it (astro.config.ts).
+import { renderProse } from '@sulba/content/prose';
 import { buttonClass } from '@sulba/ui/button';
 import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 import EditorDemo from './EditorDemo';
+import formulas from './formulas.md?raw';
 import MenuDemo from './MenuDemo';
 import PanelDemo from './PanelDemo';
 import PressCount from './PressCount';
@@ -13,6 +15,9 @@ import ReadOnlyEditorDemo from './ReadOnlyEditorDemo';
 import SegmentedDemo from './SegmentedDemo';
 import SliderDemo from './SliderDemo';
 import TabsDemo from './TabsDemo';
+
+// Formulas as a lab's prose shows them, made by the same renderer when the site is built.
+const prose = renderProse(formulas, {}).html;
 
 const buttons = [
   { variant: 'primary', name: 'Primary', label: 'Run tests' },
@@ -126,6 +131,14 @@ const buttons = [
     </div>
   </section>
 
+  <section aria-labelledby="formulas">
+    <SectionHeading id="formulas" text="Formulas" />
+    <div class="row">
+      <h3>In prose</h3>
+      <div class="prose" set:html={prose} />
+    </div>
+  </section>
+
   <section aria-labelledby="editor">
     <SectionHeading id="editor" text="Code editor" />
     <div class="row">
@@ -227,6 +240,23 @@ h3 {
 .code {
   min-width: 0;
   max-width: 720px;
+}
+
+.prose {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  max-width: 640px;
+  line-height: var(--leading);
+}
+
+.prose :global(:is(article, p)) {
+  margin: 0;
+}
+
+.prose :global(article) {
+  display: grid;
+  gap: var(--space-4);
 }
 
 .code :global(.editor-demo) {

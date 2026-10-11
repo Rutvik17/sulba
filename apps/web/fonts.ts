@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fontProviders } from 'astro/config';
 
-// Fonts come from the Fontsource packages in node_modules and are served from sulba.dev
-// (decision record 11). The files are read from disk, so a build never fetches a font. Each
-// package's own stylesheet lists a file per script with its unicode-range, so a browser downloads
-// only the files for the characters on the page.
+// Fonts come from packages in node_modules and are served from sulba.dev (decision record 11):
+// the text fonts from Fontsource, and the math font from packages/ui. The files are read from
+// disk, so a build never fetches a font. Each Fontsource stylesheet lists a file per script with
+// its unicode-range, so a browser downloads only the files for the characters on the page, and
+// the math font only on a page with a formula.
 const require = createRequire(import.meta.url);
 const local = fontProviders.local();
 
@@ -47,6 +48,16 @@ export function variants(pkg: string, stylesheet: string): [Variant, ...Variant[
   return [head, ...tail];
 }
 
+// One file covers every character the math font has, so it has no unicode-range.
+const mathVariants: [Omit<Variant, 'unicodeRange'>] = [
+  {
+    src: ['@sulba/ui/fonts/noto-sans-math.woff2'],
+    weight: '400',
+    style: 'normal',
+    display: 'swap',
+  },
+];
+
 export const fonts = [
   {
     provider: local,
@@ -61,6 +72,15 @@ export const fonts = [
     cssVariable: '--font-mono',
     fallbacks: ['monospace'],
     options: { variants: variants('@fontsource-variable/geist-mono', 'wght.css') },
+  },
+  {
+    // From Noto Sans Math's v3.000 release, converted to WOFF2 without loss (decision record 15).
+    // It has no Fontsource package with its math glyphs, so packages/ui keeps the file.
+    provider: local,
+    name: 'Noto Sans Math',
+    cssVariable: '--font-math',
+    fallbacks: ['math'],
+    options: { variants: mathVariants },
   },
   {
     provider: local,

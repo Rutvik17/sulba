@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from sulba_runner import run
+from sulba_runner import figures, run
 
 FIXTURES = Path(__file__).parents[2] / "fixtures"
 
@@ -68,3 +68,45 @@ def test_batch_mode_answers_each_line_with_a_result() -> None:
     results = [json.loads(line) for line in done.stdout.splitlines()]
     assert [len(result["tests"]) for result in results] == [2, 0]
     assert results[1]["problem"]["kind"] == "SyntaxError"
+
+
+COUNTED = {
+    "data/votes.csv": "choice\nyes\nno\nyes\n",
+    "figures.py": (
+        "import csv\n\n\n"
+        "def figures():\n"
+        "    with open('data/votes.csv', encoding='utf-8') as file:\n"
+        "        votes = [row['choice'] for row in csv.DictReader(file)]\n"
+        "    return {'yes': str(votes.count('yes')), 'share': f'{votes.count(\"yes\") / 3:.4f}'}\n"
+    ),
+}
+
+
+def test_figures_are_the_strings_figures_py_returns() -> None:
+    answer = json.loads(figures(json.dumps(COUNTED)))
+    assert answer == {"figures": {"yes": "2", "share": "0.6667"}, "problem": None}
+
+
+def test_figures_that_fail_give_the_error() -> None:
+    files = {"figures.py": "def figures():\n    return {'x': str(1 / 0)}\n"}
+    answer = json.loads(figures(json.dumps(files)))
+    assert answer == {"figures": None, "problem": "ZeroDivisionError: division by zero"}
+
+
+def test_figures_must_be_strings() -> None:
+    files = {"figures.py": "def figures():\n    return {'x': 0.5}\n"}
+    answer = json.loads(figures(json.dumps(files)))
+    assert answer == {"figures": None, "problem": "figures() must return names and strings."}
+
+
+def test_batch_mode_answers_a_figures_request() -> None:
+    done = subprocess.run(
+        [sys.executable, "sulba_runner.py"],
+        input=json.dumps({"files": COUNTED, "figures": True}) + "\n",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=Path(__file__).parents[1],
+        check=True,
+    )
+    assert json.loads(done.stdout)["figures"] == {"yes": "2", "share": "0.6667"}

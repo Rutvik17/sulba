@@ -49,6 +49,23 @@ const sections: {
     },
   },
   {
+    id: 'formulas',
+    name: 'Formulas',
+    // The math font loads once a formula is on screen; the picture waits for it.
+    ready: async (page) => {
+      await page.getByRole('region', { name: 'Formulas' }).scrollIntoViewIfNeeded();
+      // Astro adds a hash to each family's name.
+      const loaded = () =>
+        page.evaluate(() =>
+          [...document.fonts].some(
+            (face) => face.family.includes('Noto Sans Math') && face.status === 'loaded',
+          ),
+        );
+      await expect.poll(loaded).toBe(true);
+    },
+    states: async () => {},
+  },
+  {
     id: 'editor',
     name: 'Code editor',
     ready: (page) => expect(page.locator('.cm-lintRange-error')).toHaveText('bias'),
