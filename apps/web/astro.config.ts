@@ -3,12 +3,13 @@ import react from '@astrojs/react';
 import { defineConfig, envField } from 'astro/config';
 import { fonts } from './fonts';
 import { gallery } from './gallery';
+import { pyodide } from './pyodide';
 
 export default defineConfig({
   site: 'https://sulba.dev',
   // Images are optimised at build time, so the Worker needs no Cloudflare Images binding.
   adapter: cloudflare({ imageService: 'compile' }),
-  integrations: [react(), gallery()],
+  integrations: [react(), gallery(), pyodide()],
   // Sign-in lives in Supabase, so Astro sessions and the KV namespace they create stay off.
   session: false,
   fonts,

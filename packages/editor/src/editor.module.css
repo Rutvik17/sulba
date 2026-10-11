@@ -4,6 +4,7 @@
 */
 .editor {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   height: 100%;
   min-width: 0;
@@ -11,6 +12,10 @@
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  /* Phones enlarge long lines of text to fit the screen, which would set the code apart from its
+     line numbers. Code keeps the size it's given. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .editor:focus-within {

@@ -1,0 +1,116 @@
+---
+// A lab: its stages and the workspace learners write their code in. One page per lab, built from
+// the course files.
+import { getCollection } from 'astro:content';
+import Page from '../../../layouts/Page.astro';
+import { labFacts } from '../../../lib/lab-facts';
+import type { LabView } from '../../../lib/labs';
+import Workspace from '../../../workspace/Workspace';
+
+export async function getStaticPaths() {
+  const labs = await getCollection('labs');
+  return labs.map(({ data }) => {
+    const [course, module, lab] = data.path.split('/');
+    return { params: { course, module, lab }, props: { lab: data } };
+  });
+}
+
+const { lab } = Astro.props as { lab: LabView };
+const facts = labFacts(lab);
+---
+
+<Page title={`${lab.title} · Sulba`}>
+  <header class="intro">
+    <p class="label">{lab.level} · {lab.module}</p>
+    <h1>{lab.title}</h1>
+    <p class="lede">{lab.summary}</p>
+  </header>
+
+  <dl class="facts">
+    {facts.map(({ term, value }) => (
+      <div>
+        <dt>{term}</dt>
+        <dd>{value}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <Workspace client:only="react" lab={lab}>
+    <p slot="fallback" class="loading">Loading the workspace…</p>
+  </Workspace>
+
+  {lab.data.length > 0 && (
+    <footer class="credit">
+      {lab.data.map((set) => (
+        <p>
+          Data: <a href={set.url}>{set.title}</a>, by {set.creators.join(', ')},{' '}
+          <a href={set.licence.url}>{set.licence.name}</a>. {set.changes}
+        </p>
+      ))}
+    </footer>
+  )}
+</Page>
+
+<style>
+.intro {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-16) var(--space-8);
+}
+
+.label {
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.4 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+h1 {
+  font: 400 clamp(2.5rem, 5vw, 4rem) / 1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  max-width: 62ch;
+  color: var(--dim);
+  font-size: var(--text-lg);
+  line-height: var(--leading);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-12);
+  margin: 0 0 var(--space-10);
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--line);
+}
+
+.facts dt {
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.4 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.facts dd {
+  margin: var(--space-1) 0 0;
+}
+
+.loading {
+  padding-block: var(--space-16);
+  color: var(--dim);
+  text-align: center;
+}
+
+.credit {
+  margin-block: var(--space-8) var(--space-16);
+  color: var(--dim);
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+}
+
+.credit a {
+  color: inherit;
+}
+</style>

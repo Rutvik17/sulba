@@ -4,16 +4,16 @@ import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { loadPyodide } from 'pyodide';
+import { pyodideFolder } from './assemble.ts';
 import { createEngine, type Engine } from './engine.ts';
 import { pythonPackages, type RunRequest, type RunResult, statusOf } from './protocol.ts';
 
 const python = fileURLToPath(new URL('../python/', import.meta.url));
-const indexURL = fileURLToPath(new URL('../pyodide/', import.meta.url));
 
 /** Pyodide with every package sessions can use already loaded. */
 export async function pyodideEngine(): Promise<Engine> {
   const runner = await readFile(new URL('../python/sulba_runner.py', import.meta.url), 'utf8');
-  const pyodide = await loadPyodide({ indexURL, packageCacheDir: indexURL });
+  const pyodide = await loadPyodide({ indexURL: pyodideFolder, packageCacheDir: pyodideFolder });
   const engine = await createEngine(pyodide, runner);
   await engine.load(pythonPackages);
   return engine;

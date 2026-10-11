@@ -70,4 +70,19 @@ for (const scheme of ['dark', 'light'] as const) {
       expect(results.violations).toEqual([]);
     });
   }
+
+  test(`a lab page, with a run's results, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    // The fixture course's lab (playwright.config.ts).
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/demo/counting/tallies/');
+    await page.getByRole('button', { name: 'Run tests' }).click();
+    // The first run waits for Python to load.
+    await expect(page.getByText('0 of 2 tests pass.')).toBeVisible({ timeout: 60_000 });
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
 }

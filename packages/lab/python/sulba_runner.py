@@ -215,11 +215,12 @@ class Report:
         }
 
     def message(self, error: BaseException, failed: bool) -> str:
-        """The first line of an assertion's message, or the error's type and message."""
+        """The first line of an assertion's message, or the error's type and any message."""
         if failed:
             lines = str(error).strip().splitlines()
             return self.clean(lines[0] if lines else "The check failed.")
-        return self.clean(f"{type(error).__name__}: {error}")
+        said = str(error)
+        return self.clean(f"{type(error).__name__}: {said}" if said else type(error).__name__)
 
     def problem_message(self, error: BaseException) -> str:
         return self.clean(error.msg if isinstance(error, SyntaxError) else str(error))

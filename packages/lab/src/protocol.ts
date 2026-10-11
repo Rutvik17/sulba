@@ -58,6 +58,12 @@ export interface RunResult {
 export const pythonPackages = ['numpy'] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
+/** The Pyodide release sessions run on. A test holds it to the npm package's version. */
+export const pyodideVersion = '314.0.7';
+
+/** Where the site serves Pyodide's files, a folder per release so each can be cached for good. */
+export const pyodidePath = `/pyodide/${pyodideVersion}/`;
+
 /** How long a run may take before it is stopped. A loop that never ends stops here. */
 export const timeLimitMs = 5000;
 

@@ -47,6 +47,8 @@ const dataset = z.strictObject({
 export const labFile = z.strictObject({
   id: id('lab'),
   title,
+  /** What the learner builds, in a sentence or two, under the lab's title. */
+  summary: title,
   data: z.array(dataset).default([]),
   stages: z.array(slug).min(1),
 });

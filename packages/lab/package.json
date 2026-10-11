@@ -5,7 +5,8 @@
   "exports": {
     "./protocol": "./src/protocol.ts",
     "./client": "./src/client.ts",
-    "./node": "./src/node.ts"
+    "./node": "./src/node.ts",
+    "./assemble": "./src/assemble.ts"
   },
   "scripts": {
     "pyodide": "node scripts/pyodide.ts",
