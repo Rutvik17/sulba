@@ -23,6 +23,7 @@ export default defineConfig({
   // The built site served by workerd, the runtime Cloudflare uses in production.
   webServer: {
     command: `pnpm build && pnpm preview --port ${port}`,
+    env: { SULBA_GALLERY: 'on' },
     url: `http://localhost:${port}`,
     reuseExistingServer: !isCI,
     timeout: 120_000,
