@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "id": "tst_pass01",
+      "name": "The mean of whole numbers",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "mean of 3 values\n"
+    },
+    {
+      "id": "tst_pass02",
+      "name": "The mean of fractions",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "mean of 2 values\n"
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

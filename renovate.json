@@ -10,6 +10,12 @@
       "allowedVersions": "<7"
     },
     {
+      "description": "The lab's Python packages move with Pyodide, which ships them for the browser",
+      "matchFileNames": ["packages/lab/python/**"],
+      "matchPackageNames": ["!ruff"],
+      "enabled": false
+    },
+    {
       "description": "Major @types/node updates move with the Node version in .node-version",
       "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"],

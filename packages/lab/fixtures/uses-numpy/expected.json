@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "id": "tst_nump01",
+      "name": "Standardized values have mean 0",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": ""
+    },
+    {
+      "id": "tst_nump02",
+      "name": "Standardized values use the population standard deviation",
+      "status": "fail",
+      "message": "Not equal to tolerance rtol=1e-07, atol=0",
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": ""
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

@@ -1,0 +1,12 @@
+{
+  "tests": [],
+  "problem": {
+    "kind": "SyntaxError",
+    "message": "'(' was never closed",
+    "location": {
+      "file": "stats.py",
+      "line": 2
+    }
+  },
+  "output": ""
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@sulba/lab",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./protocol": "./src/protocol.ts",
+    "./client": "./src/client.ts",
+    "./node": "./src/node.ts"
+  },
+  "scripts": {
+    "pyodide": "node scripts/pyodide.ts",
+    "typecheck": "tsc",
+    "test": "node scripts/pyodide.ts && vitest run"
+  },
+  "dependencies": {
+    "pyodide": "314.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
+  }
+}

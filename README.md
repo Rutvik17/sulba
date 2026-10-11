@@ -4,7 +4,7 @@ Sulba is the school of the AI era. Engineers learn the fundamentals by hand, the
 
 ## Run it locally
 
-You need [Node.js 24](https://nodejs.org/) and [pnpm 12](https://pnpm.io/installation).
+You need [Node.js 24](https://nodejs.org/) and [pnpm 12](https://pnpm.io/installation), and [uv](https://docs.astral.sh/uv/getting-started/installation/) for the Python checks.
 
 ```sh
 pnpm install
@@ -19,8 +19,10 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm build` | Builds the site |
 | `pnpm lint` | Checks formatting and lint rules with Biome |
 | `pnpm lint:fix` | Fixes formatting and safe lint issues |
+| `pnpm lint:python` | Checks the Python code with Ruff |
 | `pnpm typecheck` | Type-checks the code |
 | `pnpm test` | Runs the unit tests |
+| `pnpm test:python` | Runs the lab's Python tests in CPython |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
 | `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
@@ -32,6 +34,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | --- | --- |
 | `apps/web` | The site: Astro on Cloudflare Workers |
 | `packages/ui` | Design tokens, base styles and components |
+| `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content |
 | `docs/decisions` | Architecture decision records |

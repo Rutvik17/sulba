@@ -18,12 +18,14 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | --- | --- |
 | `pnpm dev` | Runs the site at http://localhost:4321 in workerd |
 | `pnpm lint` / `pnpm lint:fix` | Biome: formatting, lint rules, import order |
+| `pnpm lint:python` | Ruff on the Python code |
 | `pnpm typecheck` | `astro check` at TypeScript's strictest settings |
 | `pnpm test` | Vitest unit tests |
+| `pnpm test:python` | The lab's Python tests, in CPython through uv |
 | `pnpm test:e2e` | Playwright end-to-end and axe accessibility tests in Chromium, Firefox and WebKit, on desktop and phone |
 | `pnpm build` | Builds the site |
 
-Run lint, typecheck, test and test:e2e before calling work done.
+Run lint, lint:python, typecheck, test, test:python and test:e2e before calling work done. On Windows, run the Python ones in Docker if uv isn't installed.
 
 ## How the project is set up
 
@@ -39,6 +41,8 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - Components live in `packages/ui`, a folder each: a CSS Module for the look, and a React component that takes its behaviour from React Aria Components (decision record 11). Astro pages put a component's classes on native elements and load no JavaScript; only a page with a React island loads React.
 - The gallery at `/gallery/` shows every component in each of its states. `astro dev`, the end-to-end tests and previews have it; sulba.dev doesn't (`apps/web/gallery.ts`). A new component, or a new state, joins the gallery and its screenshot tests in the same pull request.
 - CI's Screenshots job compares the gallery with the pictures in `apps/web/screenshots`, taken in Playwright's Linux image; they never run on Windows. When the look changes on purpose, commit the new screenshots the failed job attaches (CONTRIBUTING.md).
+- `packages/lab` runs a session's tests and speaks one protocol for every runner (decision record 5): files and tests go in, a result per test comes out. In the browser, Pyodide runs in a Web Worker, and a run past the time limit is stopped by ending the worker. Both Pyodide and CPython call the same pytest plugin (`python/sulba_runner.py`), and the fixtures in `fixtures/` must give the same results in each. Checks outside a browser run requests through `src/node.ts`: in Pyodide, or in CPython through uv.
+- `pnpm --filter @sulba/lab pyodide`, which `pnpm test` runs first, puts Pyodide's files together in `packages/lab/pyodide`: its core from npm, and each package's wheel, checked against the sha256 in Pyodide's lock file. The CPython packages in `packages/lab/python/uv.lock` are pinned to the versions Pyodide ships, and a test fails when they differ, so Renovate leaves them alone.
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.
 - The pictures in `brand` are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
 - One course at a time: AI Engineering is built end to end before any other course starts. A language's editor support and Docker image arrive with the first session that uses it.

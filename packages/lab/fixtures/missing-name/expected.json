@@ -1,0 +1,9 @@
+{
+  "tests": [],
+  "problem": {
+    "kind": "ImportError",
+    "message": "cannot import name 'mean' from 'stats' (stats.py)",
+    "location": null
+  },
+  "output": ""
+}

@@ -1,0 +1,39 @@
+{
+  "tests": [
+    {
+      "id": "tst_fail01",
+      "name": "The mean of three numbers",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": ""
+    },
+    {
+      "id": "tst_fail02",
+      "name": "An even count takes the mean of the two middle values",
+      "status": "fail",
+      "message": "The middle of 1, 2, 3 and 4 is 2.5",
+      "expected": "2.5 ± 2.5e-06",
+      "actual": "3",
+      "location": null,
+      "output": ""
+    },
+    {
+      "id": "tst_fail03",
+      "name": "No values",
+      "status": "error",
+      "message": "ZeroDivisionError: division by zero",
+      "expected": null,
+      "actual": null,
+      "location": {
+        "file": "stats.py",
+        "line": 2
+      },
+      "output": ""
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
