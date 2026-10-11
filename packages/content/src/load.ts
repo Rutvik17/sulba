@@ -36,6 +36,8 @@ export interface Stage extends StageFile {
   readonly solution: string;
   /** Each test file, by its name in `tests/`. */
   readonly tests: Readonly<Record<string, string>>;
+  /** The stage's figures.py, which computes the numbers its prose shows, if it has one. */
+  readonly figures: string | null;
   /** A hash of every file in the stage, so progress can tell when a stage has changed. */
   readonly version: string;
 }
@@ -148,7 +150,12 @@ class Reader {
 
   async stage(folder: string, slug: string): Promise<Stage | null> {
     const file = await this.yaml(join(folder, 'stage.yaml'), stageFile);
-    await this.entries(folder, ['stage.yaml', ...prose], ['starter', 'solution', 'tests']);
+    await this.entries(
+      folder,
+      ['stage.yaml', ...prose],
+      ['starter', 'solution', 'tests'],
+      ['figures.py'],
+    );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
     await this.entries(join(folder, 'solution'), [file.file], []);
@@ -172,6 +179,9 @@ class Reader {
       const text = await this.text(join(folder, 'tests', name));
       if (text !== null) tests[name] = text;
     }
+    const figures = (await this.list(folder))?.some((entry) => entry.name === 'figures.py')
+      ? await this.text(join(folder, 'figures.py'))
+      : null;
     if (brief === null || hints === null || explanation === null) return null;
     if (starter === null || solution === null) return null;
     const hintList = hints.split(/^---$/m).map((hint) => hint.trim());
@@ -185,6 +195,7 @@ class Reader {
       explanation,
       starter,
       solution,
+      ...(figures === null ? {} : { 'figures.py': figures }),
       ...tests,
     });
     return {
@@ -196,6 +207,7 @@ class Reader {
       starter,
       solution,
       tests,
+      figures,
       version,
     };
   }
@@ -219,12 +231,15 @@ class Reader {
     return null;
   }
 
-  /** Prose in Markdoc, with no tags yet: a tag in the text is a mistake. */
+  /**
+   * Prose in Markdoc, with no tags: a tag in the text is a mistake. Its formulas and figures are
+   * checked once figures.py has run (`proseProblems`).
+   */
   async prose(path: string): Promise<string | null> {
     const text = await this.text(path);
     if (text === null) return null;
     for (const { error } of Markdoc.validate(Markdoc.parse(text), {})) {
-      this.problem(path, error.message);
+      if (error.id !== 'variable-undefined') this.problem(path, error.message);
     }
     if (text.trim() === '') this.problem(path, 'This file needs text.');
     return text;
@@ -241,12 +256,17 @@ class Reader {
     }
   }
 
-  /** The folder holds these files and folders and nothing else. */
-  async entries(folder: string, files: readonly string[], folders: readonly string[]) {
+  /** The folder holds these files and folders, may hold the optional files, and nothing else. */
+  async entries(
+    folder: string,
+    files: readonly string[],
+    folders: readonly string[],
+    optional: readonly string[] = [],
+  ) {
     const found = await this.list(folder);
     if (!found) return this.problem(folder, 'Missing.');
     for (const entry of found) {
-      const expected = entry.isDirectory() ? folders : files;
+      const expected = entry.isDirectory() ? folders : [...files, ...optional];
       if (!expected.includes(entry.name)) {
         this.problem(join(folder, entry.name), 'Not part of the course: list it or remove it.');
       }

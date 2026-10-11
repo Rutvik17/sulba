@@ -35,17 +35,43 @@ def run(files_json: str, tests_json: str) -> str:
         config = Path(folder, "pytest.ini")
         config.write_text("[pytest]\n", encoding="utf-8")
         root = Path(folder, "session").resolve()
-        for name, text in files.items():
-            path = root / safe(name)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8", newline="")
-        root.mkdir(exist_ok=True)
+        write(root, files)
         report = Report(root)
         started = time.perf_counter()
         exit_code = within(root, lambda: pytest.main(arguments(tests, config), plugins=[report]))
         result = report.result(int(exit_code))
         result["durationMs"] = round((time.perf_counter() - started) * 1000)
     return json.dumps(result)
+
+
+def figures(files_json: str) -> str:
+    """Call figures() in the session's figures.py, and return the numbers it gives or its error.
+
+    A stage's prose shows numbers from its figures.py rather than typing them, so every number a
+    learner reads is computed, the same way in the browser's Python and in CPython.
+    """
+    files: dict[str, str] = json.loads(files_json)
+    with tempfile.TemporaryDirectory(prefix="sulba-") as folder:
+        root = Path(folder).resolve()
+        write(root, files)
+        try:
+            values = within(root, lambda: importlib.import_module("figures").figures())
+        except Exception as error:
+            return json.dumps({"figures": None, "problem": f"{type(error).__name__}: {error}"})
+    named = isinstance(values, dict) and all(
+        isinstance(name, str) and isinstance(value, str) for name, value in values.items()
+    )
+    if not named:
+        return json.dumps({"figures": None, "problem": "figures() must return names and strings."})
+    return json.dumps({"figures": values, "problem": None})
+
+
+def write(root: Path, files: dict[str, str]) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    for name, text in files.items():
+        path = root / safe(name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8", newline="")
 
 
 def arguments(tests: list[str], config: Path) -> list[str]:
@@ -235,8 +261,13 @@ def clip(text: str) -> str:
 
 
 if __name__ == "__main__":
-    # One request per line of standard input, as {"files": {...}, "tests": [...]}, and its result
-    # on one line of standard output. Checks run many sessions in one process this way.
+    # One request per line of standard input and its answer on one line of standard output, so
+    # checks can run many sessions in one process. A run is {"files": {...}, "tests": [...]}, and
+    # {"files": {...}, "figures": true} asks for figures.py's numbers.
     for line in sys.stdin:
         request = json.loads(line)
-        print(run(json.dumps(request["files"]), json.dumps(request["tests"])), flush=True)
+        files = json.dumps(request["files"])
+        if request.get("figures"):
+            print(figures(files), flush=True)
+        else:
+            print(run(files, json.dumps(request["tests"])), flush=True)

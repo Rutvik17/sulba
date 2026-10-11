@@ -5,7 +5,8 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
-import { pyodideEngine, runInCPython } from './node.ts';
+import { counted } from './figures.fixture.ts';
+import { figuresInCPython, pyodideEngine, runInCPython } from './node.ts';
 import { pythonPackages, type RunRequest, type RunResult } from './protocol.ts';
 
 const hasUv = spawnSync('uv', ['--version']).status === 0;
@@ -35,6 +36,15 @@ test.skipIf(!hasUv)(
     const inPyodide = requests.map(engine.run).map(withoutTimes);
     const inCPython = (await runInCPython(requests)).map(withoutTimes);
     expect(inCPython).toEqual(inPyodide);
+  },
+  180_000,
+);
+
+test.skipIf(!hasUv)(
+  'CPython and Pyodide give the same figures',
+  async () => {
+    const engine = await pyodideEngine();
+    expect(await figuresInCPython([counted])).toEqual([engine.figures(counted)]);
   },
   180_000,
 );

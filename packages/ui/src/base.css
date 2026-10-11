@@ -71,6 +71,15 @@
     font-family: var(--font-mono);
   }
 
+  math {
+    font-family: var(--font-math);
+  }
+
+  /* A formula on its own lines has room above and below. */
+  math[display="block"] {
+    margin-block: var(--space-2);
+  }
+
   a {
     color: inherit;
     text-underline-offset: 0.2em;

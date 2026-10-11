@@ -1,0 +1,88 @@
+import { fileURLToPath } from 'node:url';
+import { pyodideEngine } from '@sulba/lab/node';
+import { beforeAll, expect, test } from 'vitest';
+import { type Course, loadCourse } from './load.ts';
+import { mathFontCharacters } from './math-font.ts';
+import { computeFigures, type FiguresRunner, proseProblems } from './prose-check.ts';
+
+const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
+const count = 'demo/modules/counting/labs/tallies/stages/count';
+let course: Course;
+let pyodide: FiguresRunner;
+
+beforeAll(async () => {
+  const loaded = await loadCourse(fixtures, 'demo');
+  if (!loaded.course) throw new Error(JSON.stringify(loaded.problems));
+  course = loaded.course;
+  const engine = await pyodideEngine();
+  pyodide = async (fileSets) => fileSets.map(engine.figures);
+}, 120_000);
+
+const countStage = () => course.levels[0]?.modules[0]?.labs[0]?.stages[0];
+
+/** The fixture course with one stage's explanation, or figures, replaced. */
+function changed(change: { explanation?: string; figures?: string }): Course {
+  const [level] = course.levels;
+  const [module] = level?.modules ?? [];
+  const [lab] = module?.labs ?? [];
+  if (!level || !module || !lab) throw new Error('The fixture course has no lab.');
+  const [first, ...rest] = lab.stages;
+  if (!first) throw new Error('The fixture lab has no stage.');
+  const stages = [{ ...first, ...change }, ...rest];
+  return {
+    ...course,
+    levels: [{ ...level, modules: [{ ...module, labs: [{ ...lab, stages }] }] }],
+  };
+}
+
+test("the fixture course's figures and prose have no problems", async () => {
+  const { figures, problems } = await computeFigures([course], { Pyodide: pyodide });
+  expect(problems).toEqual([]);
+  expect(figures.get(countStage()?.id ?? '')).toEqual({ total: '3', yes: '2' });
+  expect(proseProblems([course], figures, mathFontCharacters())).toEqual([]);
+});
+
+test('figures that differ between runtimes are a problem', async () => {
+  const other: FiguresRunner = async (fileSets) =>
+    fileSets.map(() => ({ figures: { total: '3', yes: '1' }, problem: null }));
+  const { problems } = await computeFigures([course], { Pyodide: pyodide, Other: other });
+  expect(problems).toEqual([
+    {
+      path: `${count}/figures.py`,
+      message: 'Other gives {"total":"3","yes":"1"}, but Pyodide gives {"total":"3","yes":"2"}.',
+    },
+  ]);
+});
+
+test('a figure the prose never shows is a problem', async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const course2 = changed({ explanation: 'The poll has {% $fig.total %} votes.\n' });
+  expect(proseProblems([course2], figures, mathFontCharacters())).toEqual([
+    { path: `${count}/figures.py`, message: 'The prose never shows yes.' },
+  ]);
+});
+
+test('a character the math font lacks is a problem', async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const font = mathFontCharacters();
+  font.delete(0x2211);
+  expect(proseProblems([course], figures, font)).toEqual([
+    {
+      path: `${count}/explanation.md`,
+      message: 'The math font has no ∑ (U+2211), so it would come from another font.',
+    },
+  ]);
+});
+
+test('a formula that doesn’t render is a problem', async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const broken = changed({
+    explanation: '{% $fig.total %} {% $fig.yes %}\n\n```math\n\\sqrt{2\n```\n',
+  });
+  expect(proseProblems([broken], figures, mathFontCharacters())).toEqual([
+    {
+      path: `${count}/explanation.md`,
+      message: expect.stringMatching(/^The formula \\sqrt\{2 doesn't render: /),
+    },
+  ]);
+});

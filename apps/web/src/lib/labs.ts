@@ -4,8 +4,18 @@
 
 import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import Markdoc from '@markdoc/markdoc';
-import { type Course, duplicateIds, type Lab, loadCourse, type Stage } from '@sulba/content';
+import {
+  type Course,
+  computeFigures,
+  duplicateIds,
+  type Lab,
+  loadCourse,
+  proseProblems,
+  renderProse,
+  type Stage,
+} from '@sulba/content';
+import { mathFontCharacters } from '@sulba/content/math-font';
+import { type Engine, pyodideEngine } from '@sulba/lab/node';
 import type { Loader } from 'astro/loaders';
 
 export interface StageView {
@@ -17,7 +27,10 @@ export interface StageView {
   readonly packages: Stage['packages'];
   readonly minutes: number;
   readonly version: string;
-  /** Prose as HTML, made by Markdoc from files that can hold no HTML of their own. */
+  /**
+   * Prose as HTML, made by Markdoc from files that can hold no HTML of their own, with formulas as
+   * MathML and the numbers from the stage's figures.py.
+   */
   readonly brief: string;
   readonly hints: readonly string[];
   readonly explanation: string;
@@ -41,11 +54,11 @@ export interface LabView {
   readonly stages: readonly StageView[];
 }
 
-function html(text: string): string {
-  return Markdoc.renderers.html(Markdoc.transform(Markdoc.parse(text)));
-}
+type Figures = ReadonlyMap<string, Readonly<Record<string, string>>>;
 
-function stageView(stage: Stage): StageView {
+function stageView(stage: Stage, figures: Figures): StageView {
+  const values = figures.get(stage.id) ?? {};
+  const html = (text: string) => renderProse(text, values).html;
   const tests = Object.fromEntries(
     Object.entries(stage.tests).map(([name, text]) => [`tests/${name}`, text]),
   );
@@ -67,7 +80,7 @@ function stageView(stage: Stage): StageView {
   };
 }
 
-export function labViews(course: Course): LabView[] {
+export function labViews(course: Course, figures: Figures = new Map()): LabView[] {
   return course.levels.flatMap((level) =>
     level.modules.flatMap((module) =>
       module.labs.map((lab) => ({
@@ -80,7 +93,7 @@ export function labViews(course: Course): LabView[] {
         module: module.title,
         data: lab.data.map(({ text: _, ...set }) => ({ ...set, path: `data/${set.file}` })),
         files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
-        stages: lab.stages.map(stageView),
+        stages: lab.stages.map((stage) => stageView(stage, figures)),
       })),
     ),
   );
@@ -92,6 +105,7 @@ function coursesFolder(): string {
 }
 
 async function loadAll(root: string): Promise<Course[]> {
+  // Courses are checked in full by `pnpm check:content`; the site won't build with a problem.
   const courses: Course[] = [];
   const problems: string[] = [];
   for (const entry of await readdir(root, { withFileTypes: true })) {
@@ -105,15 +119,43 @@ async function loadAll(root: string): Promise<Course[]> {
   return courses;
 }
 
+/** Each stage's figures, computed in Pyodide, and its prose checked with them. */
+async function figuresOf(courses: Course[], python: () => Promise<Engine>): Promise<Figures> {
+  const stages = courses.flatMap((course) =>
+    course.levels.flatMap((level) =>
+      level.modules.flatMap((module) => module.labs.flatMap((lab) => lab.stages)),
+    ),
+  );
+  if (!stages.some((stage) => stage.figures !== null)) return new Map();
+  const engine = await python();
+  const { figures, problems } = await computeFigures(courses, {
+    Pyodide: async (fileSets) => fileSets.map(engine.figures),
+  });
+  problems.push(...proseProblems(courses, figures, mathFontCharacters()));
+  if (problems.length) {
+    const listed = problems.map(({ path, message }) => `${path}: ${message}`).join('\n');
+    throw new Error(`The courses' prose has problems:\n${listed}`);
+  }
+  return figures;
+}
+
 export function labsLoader(): Loader {
+  let engine: Promise<Engine> | undefined;
+  const python = () => {
+    engine ??= pyodideEngine();
+    return engine;
+  };
   return {
     name: 'sulba:labs',
     load: async ({ store, watcher }) => {
       const root = coursesFolder();
       const sync = async () => {
+        const courses = await loadAll(root);
+        const figures = await figuresOf(courses, python);
         store.clear();
-        for (const course of await loadAll(root)) {
-          for (const lab of labViews(course)) store.set({ id: lab.path, data: { ...lab } });
+        for (const course of courses) {
+          for (const lab of labViews(course, figures))
+            store.set({ id: lab.path, data: { ...lab } });
         }
       };
       await sync();

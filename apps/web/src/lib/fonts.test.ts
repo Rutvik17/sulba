@@ -41,3 +41,9 @@ test('every font is a file in an installed package, never a web address', () => 
     }
   }
 });
+
+test('the math font is a file in packages/ui, with its licence beside it', () => {
+  const font = require.resolve('@sulba/ui/fonts/noto-sans-math.woff2');
+  expect(existsSync(font)).toBe(true);
+  expect(existsSync(font.replace(/NotoSansMath-Regular\.woff2$/, 'OFL.txt'))).toBe(true);
+});

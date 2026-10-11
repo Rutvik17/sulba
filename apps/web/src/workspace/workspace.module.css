@@ -144,13 +144,16 @@
   margin: 0;
 }
 
-.prose {
+/* Markdoc wraps each file's prose in an article, so the spacing goes between its children. */
+.prose,
+.prose :global(article) {
   display: grid;
   gap: var(--space-4);
+  min-width: 0;
   line-height: var(--leading);
 }
 
-.prose :global(:is(p, ul, ol)) {
+.prose :global(:is(p, ul, ol, math)) {
   margin: 0;
 }
 

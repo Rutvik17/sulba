@@ -85,4 +85,17 @@ for (const scheme of ['dark', 'light'] as const) {
 
     expect(results.violations).toEqual([]);
   });
+
+  test(`a lab's explanation, with its formulas, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/demo/counting/tallies/');
+    await page.getByRole('tab', { name: 'Explanation' }).click();
+    await expect(page.locator('math[display="block"]')).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
 }

@@ -65,6 +65,8 @@
     --font-sans: ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --font-display: Georgia, "Times New Roman", serif;
+    /* Formulas, in a font with the layout tables MathML needs (decision record 15). */
+    --font-math: math;
 
     --text-xs: 0.6875rem;
     --text-sm: 0.8125rem;

@@ -54,6 +54,12 @@ export interface RunResult {
   readonly durationMs: number;
 }
 
+/** The numbers a stage's figures.py gives, by name, or why it gave none. */
+export interface Figures {
+  readonly figures: Readonly<Record<string, string>> | null;
+  readonly problem: string | null;
+}
+
 /** The Python packages sessions can load, from Pyodide's builds. pytest is always loaded. */
 export const pythonPackages = ['numpy'] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
