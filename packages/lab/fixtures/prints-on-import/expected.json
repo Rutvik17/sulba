@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "id": "tst_prnt01",
+      "name": "The mean of three numbers",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": ""
+    }
+  ],
+  "problem": null,
+  "output": "loading stats\n"
+}

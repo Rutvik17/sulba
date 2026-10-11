@@ -7,3 +7,7 @@ dist/
 playwright-report/
 test-results/
 screenshot-report/
+packages/lab/pyodide/
+.venv/
+__pycache__/
+.ruff_cache/

@@ -12,8 +12,10 @@ Run the same checks as CI:
 
 ```sh
 pnpm lint
+pnpm lint:python
 pnpm typecheck
 pnpm test
+pnpm test:python
 pnpm test:e2e
 ```
 

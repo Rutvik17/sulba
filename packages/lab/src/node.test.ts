@@ -1,0 +1,40 @@
+// Every fixture, run in Pyodide and in CPython through runInCPython, gives the same result. CPython
+// needs uv, which CI has; a machine without it skips this file.
+import { spawnSync } from 'node:child_process';
+import { readdir, readFile } from 'node:fs/promises';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { expect, test } from 'vitest';
+import { pyodideEngine, runInCPython } from './node.ts';
+import { pythonPackages, type RunRequest, type RunResult } from './protocol.ts';
+
+const hasUv = spawnSync('uv', ['--version']).status === 0;
+const fixtures = fileURLToPath(new URL('../fixtures/', import.meta.url));
+
+async function request(name: string): Promise<RunRequest> {
+  const folder = join(fixtures, name);
+  const files: Record<string, string> = {};
+  for (const entry of await readdir(folder, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || entry.name === 'expected.json') continue;
+    const path = join(entry.parentPath, entry.name);
+    files[relative(folder, path).split(sep).join('/')] = await readFile(path, 'utf8');
+  }
+  const tests = Object.keys(files).filter((path) => path.startsWith('tests/'));
+  return { files, tests: tests.sort(), packages: pythonPackages };
+}
+
+function withoutTimes({ durationMs: _, tests, ...rest }: RunResult) {
+  return { ...rest, tests: tests.map(({ durationMs: __, ...each }) => each) };
+}
+
+test.skipIf(!hasUv)(
+  'CPython and Pyodide give the same result for every fixture',
+  async () => {
+    const requests = await Promise.all((await readdir(fixtures)).sort().map(request));
+    const engine = await pyodideEngine();
+    const inPyodide = requests.map(engine.run).map(withoutTimes);
+    const inCPython = (await runInCPython(requests)).map(withoutTimes);
+    expect(inCPython).toEqual(inPyodide);
+  },
+  180_000,
+);
