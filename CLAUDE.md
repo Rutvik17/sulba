@@ -36,6 +36,8 @@ Run lint, typecheck, test and test:e2e before calling work done.
 - Cloudflare Access ("Previews only", set in the dashboard) puts every preview address behind sign-in, and sulba.dev stays public (decision record 9). Worker Previews need `preview_urls` on. Never turn it on in a Cloudflare account without that Access policy: it brings back every old preview address, and those can't be deleted.
 - Dependencies are pinned to exact versions. pnpm refuses versions less than a day old and Renovate waits three days. TypeScript stays on 6 until `@astrojs/check` supports 7.
 - GitHub Actions are pinned to commit SHAs with the version in a comment.
+- Components live in `packages/ui`, a folder each: a CSS Module for the look, and a React component that takes its behaviour from React Aria Components (decision record 11). Astro pages put a component's classes on native elements and load no JavaScript; only a page with a React island loads React.
+- The gallery at `/gallery/` shows every component in each of its states. `astro dev`, the end-to-end tests and previews have it; sulba.dev doesn't (`apps/web/gallery.ts`). A new component, or a new state, joins the gallery in the same pull request.
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.
 - The pictures in `brand` are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
 - One course at a time: AI Engineering is built end to end before any other course starts. A language's editor support and Docker image arrive with the first session that uses it.

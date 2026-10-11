@@ -1,0 +1,137 @@
+---
+// Every component in each of its states, for building and reviewing the interface. The route
+// exists only in development and in builds that ask for it (astro.config.ts).
+import { buttonClass } from '@sulba/ui/button';
+import SectionHeading from '../components/SectionHeading.astro';
+import Page from '../layouts/Page.astro';
+import PressCount from './PressCount';
+
+const buttons = [
+  { variant: 'primary', name: 'Primary', label: 'Run tests' },
+  { variant: 'outline', name: 'Outline', label: 'Show a hint' },
+  { variant: 'ghost', name: 'Ghost', label: 'Reset' },
+] as const;
+---
+
+<Page title="Components · Sulba">
+  <header class="intro">
+    <h1>Components</h1>
+    <p>Every component in each of its states. The theme control in the top bar switches themes.</p>
+  </header>
+
+  <section aria-labelledby="button">
+    <SectionHeading id="button" text="Button" />
+    {buttons.map(({ variant, name, label }) => (
+      <div class="row">
+        <h3>{name}</h3>
+        <ul class="states">
+          <li>
+            <button class={buttonClass(variant)} type="button">
+              {label}
+            </button>
+            <span>Regular</span>
+          </li>
+          <li>
+            <button class={buttonClass(variant, 'small')} type="button">
+              {label}
+            </button>
+            <span>Small</span>
+          </li>
+          <li>
+            <button class={buttonClass(variant)} type="button" disabled>
+              {label}
+            </button>
+            <span>Disabled</span>
+          </li>
+        </ul>
+      </div>
+    ))}
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <PressCount client:load />
+      </div>
+    </div>
+  </section>
+</Page>
+
+<style>
+.intro {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-16) var(--space-12);
+}
+
+h1 {
+  font: 400 clamp(2.5rem, 5vw, 4rem) / 1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.intro p {
+  max-width: 60ch;
+  color: var(--dim);
+}
+
+section {
+  margin-bottom: var(--space-16);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: var(--space-4) var(--space-8);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+h3 {
+  padding-top: var(--space-3);
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.4 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--space-6) var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row as tall as a regular button, so every caption sits on one line. */
+.states li {
+  display: grid;
+  grid-template-rows: 40px auto;
+  align-items: center;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+.states span {
+  color: var(--dim);
+  font-size: var(--text-xs);
+}
+
+.island {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  h3 {
+    padding-top: 0;
+  }
+}
+</style>

@@ -39,6 +39,8 @@ jobs:
       - name: Build
         env:
           SITE_KEY: ${{ github.ref_name == 'main' && vars.TURNSTILE_SITE_KEY || '' }}
+          # Previews have the component gallery; sulba.dev doesn't.
+          SULBA_GALLERY: ${{ github.ref_name != 'main' && 'on' || '' }}
         # main gets Turnstile's real site key; previews keep the test key, so they can't send mail.
         run: |
           if [ -n "$SITE_KEY" ]; then export PUBLIC_TURNSTILE_SITE_KEY="$SITE_KEY"; fi

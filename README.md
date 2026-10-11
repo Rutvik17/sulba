@@ -11,7 +11,7 @@ pnpm install
 pnpm dev
 ```
 
-The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
+The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production, and http://localhost:4321/gallery/ shows every component in each of its states. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
 
 | Command | What it does |
 | --- | --- |
@@ -31,6 +31,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | Path | Contents |
 | --- | --- |
 | `apps/web` | The site: Astro on Cloudflare Workers |
+| `packages/ui` | Design tokens, base styles and components |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content |
 | `docs/decisions` | Architecture decision records |

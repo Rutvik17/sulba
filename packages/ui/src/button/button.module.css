@@ -1,0 +1,82 @@
+/*
+  A button: primary for the main action in a place, outline for the others, ghost for quiet ones
+  in a toolbar. States come from native pseudo-classes and ARIA attributes, so a plain <button>
+  on a page with no JavaScript and React Aria's Button in an island look the same. React Aria
+  adds data-pressed, because :active doesn't follow every touch and keyboard press.
+*/
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding-inline: var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--fg);
+  font: 500 var(--text-md) / 1 var(--font-sans);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-quick) var(--ease),
+    border-color var(--duration-quick) var(--ease),
+    color var(--duration-quick) var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.small {
+  height: 32px;
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.primary {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* The edge is --line-strong, at 3:1 or more on every ground (WCAG 1.4.11). */
+.outline {
+  border-color: var(--line-strong);
+}
+
+.ghost {
+  border-radius: var(--radius);
+  color: var(--dim);
+}
+
+@media (hover: hover) {
+  .primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--fg) 86%, var(--bg));
+  }
+
+  .outline:hover:not(:disabled) {
+    border-color: var(--fg);
+  }
+
+  .ghost:hover:not(:disabled) {
+    background: var(--raise);
+    color: var(--fg);
+  }
+}
+
+.primary:is(:active, [data-pressed]):not(:disabled) {
+  background: color-mix(in srgb, var(--fg) 74%, var(--bg));
+}
+
+.outline:is(:active, [data-pressed]):not(:disabled) {
+  border-color: var(--fg);
+  background: var(--raise);
+}
+
+.ghost:is(:active, [data-pressed]):not(:disabled) {
+  background: color-mix(in srgb, var(--fg) 14%, var(--bg));
+  color: var(--fg);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
