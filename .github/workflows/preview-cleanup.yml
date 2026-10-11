@@ -1,4 +1,7 @@
 name: Delete preview
+# GitHub files a branch deletion's run under the default branch, so the run's name says which
+# branch's preview it deletes.
+run-name: Delete the preview of ${{ github.event.ref }}
 
 on:
   delete:
