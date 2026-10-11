@@ -15,6 +15,21 @@ for (const scheme of ['dark', 'light'] as const) {
     });
   }
 
+  test(`the contact form's messages have no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    // Turnstile starts loading when the form is first used; no test reaches Cloudflare.
+    await page.route('https://challenges.cloudflare.com/**', (route) => route.abort());
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/contact/');
+    await page.getByRole('button', { name: 'Send' }).click();
+    await expect(page.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true');
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   test(`the open theme panel has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
   }) => {
