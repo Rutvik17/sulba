@@ -94,6 +94,9 @@
     --radius-lg: 14px;
     --radius-full: 999px;
 
+    /* Lifts a panel or a menu off the page. */
+    --shadow: 0 24px 60px rgb(0 0 0 / 0.28);
+
     --ease: cubic-bezier(0.2, 0, 0, 1);
     --duration-quick: 120ms;
     --duration: 200ms;

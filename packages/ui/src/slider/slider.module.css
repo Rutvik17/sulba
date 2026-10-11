@@ -1,0 +1,76 @@
+/*
+  A slider: its name and value on one line, over a thin rule with a ring to drag. React Aria
+  places the ring and sizes the fill with inline styles; this draws them.
+*/
+.slider {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.label {
+  font-size: var(--text-sm);
+}
+
+.output {
+  color: var(--dim);
+  font: var(--text-xs) / 1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* As tall as the ring, so the whole line can be pressed or dragged. */
+.track {
+  position: relative;
+  height: 24px;
+  cursor: pointer;
+}
+
+.track::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.fill {
+  background: linear-gradient(var(--fg), var(--fg)) 0 50% / 100% 2px no-repeat;
+}
+
+.thumb {
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--fg);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  transition: background-color var(--duration-quick) var(--ease);
+}
+
+.thumb[data-dragging] {
+  background: var(--fg);
+}
+
+/* The ring holds a hidden native input, which takes the keyboard focus. */
+.thumb:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A slider that can't be moved keeps its name and value readable; only its line and ring fade. */
+.slider[data-disabled] .label {
+  color: var(--dim);
+}
+
+.slider[data-disabled] .track {
+  opacity: 0.45;
+  cursor: default;
+}

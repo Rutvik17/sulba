@@ -1,0 +1,51 @@
+/*
+  A menu: a short list of actions in a card that opens under its button. React Aria moves the
+  focus through it as the pointer passes or the arrow keys are pressed, so the focused item is the
+  highlighted one.
+*/
+.popover {
+  min-width: 220px;
+  padding: var(--space-1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.popover[data-entering] {
+  animation: open var(--duration-quick) var(--ease);
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+.menu {
+  outline: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: var(--space-3);
+  border-radius: 5px;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.item:focus {
+  background: var(--raise);
+}
+
+.item:focus-visible {
+  outline-offset: -2px;
+}
+
+.item[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}

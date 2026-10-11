@@ -9,7 +9,10 @@
     "./shapes": "./src/shapes.ts",
     "./button": "./src/button/Button.tsx",
     "./segmented": "./src/segmented/SegmentedChoice.tsx",
-    "./tabs": "./src/tabs/Tabs.tsx"
+    "./tabs": "./src/tabs/Tabs.tsx",
+    "./slider": "./src/slider/Slider.tsx",
+    "./panel": "./src/panel/SidePanel.tsx",
+    "./menu": "./src/menu/Menu.tsx"
   },
   "scripts": {
     "typecheck": "tsc",
