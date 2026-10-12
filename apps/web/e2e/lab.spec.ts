@@ -31,6 +31,8 @@ const summary = (page: Page) =>
 
 // A page's first run waits for Python to load, which takes longer while other tests load it too.
 const loaded = { timeout: 60_000 };
+// So a test may take longer than Playwright's 30 seconds: the loop test loads Python twice.
+test.describe.configure({ timeout: 90_000 });
 
 test('a run lists each test, with the error and the line it came from', async ({ page }) => {
   await openLab(page);
@@ -162,4 +164,136 @@ test('the lab page fits the screen without scrolling sideways', async ({ page })
   const width = await page.evaluate(() => document.documentElement.scrollWidth);
 
   expect(width).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
+});
+
+// The third stage is a Catch stage: an assistant's report.py, which uses the learner's share, with
+// two problems its own tests miss. These tests start there, with the first two stages done.
+const shareSolved = `${solved.count}\n\ndef share(choices, choice):\n    return count(choices, choice) / len(choices)\n`;
+
+const draft = {
+  /** The assistant's report.py with one problem fixed: it no longer sorts the poll's list. */
+  oneFixed:
+    'from tally import share\n\n\ndef report(choices):\n    return [(choice, share(choices, choice)) for choice in sorted(set(choices))]\n',
+  /** Both problems fixed. */
+  fixed:
+    'from tally import share\n\n\ndef report(choices):\n    shares = [(choice, share(choices, choice)) for choice in set(choices)]\n    return sorted(shares, key=lambda pair: -pair[1])\n',
+};
+
+async function openReview(page: Page) {
+  await page.addInitScript((code) => {
+    localStorage.setItem('sulba:passed:stg_demo01', '1');
+    localStorage.setItem('sulba:passed:stg_demo02', '1');
+    localStorage.setItem('sulba:code:stg_demo02', code);
+  }, shareSolved);
+  await page.goto(`${path}?stage=check`);
+  await expect(report(page)).toBeVisible();
+}
+
+function report(page: Page) {
+  return page.getByRole('textbox', { name: 'report.py', exact: true });
+}
+
+/** A Catch run's summary, which leads with the production checks. */
+const checked = (page: Page) => page.getByText(/production checks? (pass|passes|fails)\./);
+
+test('a Catch stage shows the assistant’s tests, and only a count of its production checks', async ({
+  page,
+}) => {
+  await openReview(page);
+  await expect(page.getByRole('tab', { name: 'Solution' })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+  await page.getByRole('tab', { name: 'Explanation' }).click();
+  await expect(page.getByText('Opens when you finish the review.')).toBeVisible();
+
+  await runTests(page);
+
+  await expect(checked(page)).toHaveText(
+    '0 of 2 production checks pass. The assistant’s tests pass.',
+    loaded,
+  );
+  await expect(page.getByText('One line per choice')).toBeVisible();
+  await expect(page.getByText('Most votes first', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('The fewest votes came first', { exact: true })).toHaveCount(0);
+});
+
+test('until the review is finished, a production check’s output doesn’t name the check', async ({
+  page,
+}) => {
+  await openReview(page);
+  await report(page).fill(
+    draft.oneFixed.replace('    return', '    print("reporting")\n    return'),
+  );
+
+  await runTests(page);
+  await expect(checked(page)).toHaveText(
+    '1 of 2 production checks pass. The assistant’s tests pass.',
+    loaded,
+  );
+  await page.getByRole('tab', { name: 'Printed' }).click();
+
+  const printed = page.getByRole('tabpanel', { name: 'Printed' });
+  await expect(printed).toContainText('One line per choice');
+  await expect(printed).toContainText('A production check');
+  await expect(printed).not.toContainText('Most votes first');
+});
+
+test('finishing the review keeps the score, and names each problem with what it costs', async ({
+  page,
+}) => {
+  await openReview(page);
+  await report(page).fill(draft.oneFixed);
+
+  await page.getByRole('button', { name: 'Finish review' }).click();
+  await expect(page.getByText('Finish the review?', { exact: false })).toBeVisible();
+  await page
+    .getByRole('tabpanel', { name: 'Tests' })
+    .getByRole('button', { name: 'Finish review' })
+    .click();
+
+  await expect(page.getByText('Review finished: 1 of 2 problems caught.')).toBeFocused(loaded);
+  await expect(page.getByRole('button', { name: 'Finish review' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Check/ })).toContainText('1 of 2 caught');
+  await page.getByRole('button', { name: 'See each problem' }).click();
+  const explanation = page.getByRole('tabpanel', { name: 'Explanation' });
+  const missed = explanation
+    .getByRole('listitem')
+    .filter({ hasText: 'The fewest votes came first' });
+  await expect(missed).toContainText('Missed');
+  await expect(missed).toContainText('orders the choices by name');
+  await expect(
+    explanation.getByRole('listitem').filter({ hasText: "It reordered the poll's own list" }),
+  ).toContainText('Caught');
+  await expect(page.getByRole('tab', { name: 'Solution' })).not.toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+
+  await page.reload();
+  await expect(page.getByText('Review finished: 1 of 2 problems caught.')).toBeVisible();
+});
+
+test('passing every production check finishes the review by itself', async ({ page }) => {
+  await openReview(page);
+  await report(page).fill(draft.fixed);
+
+  await runTests(page);
+
+  await expect(page.getByText('Review finished: 2 of 2 problems caught.')).toBeVisible(loaded);
+  await expect(
+    page.getByRole('tabpanel', { name: 'Tests' }).getByRole('listitem').filter({
+      hasText: 'The fewest votes came first',
+    }),
+  ).toContainText('✓');
+});
+
+test('Keep reviewing closes the question and goes back to Finish review', async ({ page }) => {
+  await openReview(page);
+
+  await page.getByRole('button', { name: 'Finish review' }).click();
+  await page.getByRole('button', { name: 'Keep reviewing' }).click();
+
+  await expect(page.getByText('Finish the review?', { exact: false })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Finish review' })).toBeFocused();
 });

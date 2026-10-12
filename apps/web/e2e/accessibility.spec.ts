@@ -1,8 +1,22 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from './islands';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
+
+/** The fixture lab's Catch stage, with the two stages before it done (lab.spec.ts). */
+async function openReview(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('sulba:passed:stg_demo01', '1');
+    localStorage.setItem('sulba:passed:stg_demo02', '1');
+    localStorage.setItem(
+      'sulba:code:stg_demo02',
+      'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n\n\ndef share(choices, choice):\n    return count(choices, choice) / len(choices)\n',
+    );
+  });
+  await page.goto('/demo/counting/tallies/?stage=check');
+  await expect(page.getByRole('textbox', { name: 'report.py', exact: true })).toBeVisible();
+}
 
 for (const scheme of ['dark', 'light'] as const) {
   for (const path of [
@@ -81,6 +95,43 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.getByRole('button', { name: 'Run tests' }).click();
     // The first run waits for Python to load.
     await expect(page.getByText('0 of 2 tests pass.')).toBeVisible({ timeout: 60_000 });
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a Catch stage about to finish its review has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await openReview(page);
+    await page.getByRole('button', { name: 'Run tests' }).click();
+    await expect(page.getByText('0 of 2 production checks pass.', { exact: false })).toBeVisible({
+      timeout: 60_000,
+    });
+    await page.getByRole('button', { name: 'Finish review' }).click();
+    await expect(page.getByRole('button', { name: 'Keep reviewing' })).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a finished Catch review has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript(() =>
+      localStorage.setItem('sulba:review:stg_demo03', '{"caught":["tst_demo07"],"total":2}'),
+    );
+    await openReview(page);
+    await page.getByRole('button', { name: 'Run tests' }).click();
+    await expect(page.getByText('0 of 2 production checks pass.', { exact: false })).toBeVisible({
+      timeout: 60_000,
+    });
+    await page.getByRole('button', { name: 'See each problem' }).click();
+    await expect(page.getByText('Missed', { exact: true })).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 

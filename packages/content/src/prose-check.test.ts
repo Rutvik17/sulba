@@ -74,6 +74,30 @@ test('a character the math font lacks is a problem', async () => {
   ]);
 });
 
+test("a formula in a Catch problem's prose is checked like the rest", async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const [level] = course.levels;
+  const [module] = level?.modules ?? [];
+  const [lab] = module?.labs ?? [];
+  const catchStage = lab?.stages[2];
+  if (!level || !module || !lab || !catchStage)
+    throw new Error('The fixture lab has no Catch stage.');
+  const problems = catchStage.problems.map((problem, index) =>
+    index === 0 ? { ...problem, cost: 'The order is `$\\sqrt{2$`.' } : problem,
+  );
+  const stages = lab.stages.map((stage) => (stage === catchStage ? { ...stage, problems } : stage));
+  const broken: Course = {
+    ...course,
+    levels: [{ ...level, modules: [{ ...module, labs: [{ ...lab, stages }] }] }],
+  };
+  expect(proseProblems([broken], figures, mathFontCharacters())).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/stages/check/stage.yaml',
+      message: expect.stringMatching(/^The formula \\sqrt\{2 doesn't render: /),
+    },
+  ]);
+});
+
 test('a formula that doesn’t render is a problem', async () => {
   const { figures } = await computeFigures([course], { Pyodide: pyodide });
   const broken = changed({

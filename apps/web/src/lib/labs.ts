@@ -36,8 +36,28 @@ export interface StageView {
   readonly explanation: string;
   readonly starter: string;
   readonly solution: string;
-  /** Each test file, by its path in a run, such as `tests/test_model.py`. */
+  /**
+   * Each test file, by its path in a run, such as `tests/test_model.py`. In a Catch stage, the
+   * assistant's own tests.
+   */
   readonly tests: Readonly<Record<string, string>>;
+  /**
+   * A Catch stage's hidden checks, by their path in a run, such as `tests/checks/test_screener.py`.
+   * The page has them, so a learner who reads its source can find them: runs in the browser are
+   * practice (decision record 5).
+   */
+  readonly checks: Readonly<Record<string, string>>;
+  /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
+  readonly problems: readonly ProblemView[];
+}
+
+export interface ProblemView {
+  /** The id of the check that finds the problem. */
+  readonly check: string;
+  readonly title: string;
+  /** What the problem would cost, and its fix, as HTML made like the rest of the prose. */
+  readonly cost: string;
+  readonly fix: string;
 }
 
 export interface LabView {
@@ -62,6 +82,9 @@ function stageView(stage: Stage, figures: Figures): StageView {
   const tests = Object.fromEntries(
     Object.entries(stage.tests).map(([name, text]) => [`tests/${name}`, text]),
   );
+  const checks = Object.fromEntries(
+    Object.entries(stage.checks).map(([name, text]) => [`tests/checks/${name}`, text]),
+  );
   return {
     id: stage.id,
     slug: stage.slug,
@@ -77,6 +100,13 @@ function stageView(stage: Stage, figures: Figures): StageView {
     starter: stage.starter,
     solution: stage.solution,
     tests,
+    checks,
+    problems: stage.problems.map(({ check, title, cost, fix }) => ({
+      check,
+      title,
+      cost: html(cost),
+      fix: html(fix),
+    })),
   };
 }
 

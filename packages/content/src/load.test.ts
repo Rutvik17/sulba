@@ -32,13 +32,37 @@ test('the fixture course loads, in the order its files give', async () => {
   const { course, problems } = await loadCourse(fixtures, 'demo');
   expect(problems).toEqual([]);
   const lab = course?.levels[0]?.modules[0]?.labs[0];
-  expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share']);
+  expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share', 'check']);
   expect(lab?.data[0]?.text).toBe('choice\nyes\nno\nyes\n');
   expect(lab?.stages[0]?.hints).toEqual([
     'Compare each choice with the one you are counting.',
     '`sum` adds up a generator of ones.',
   ]);
   expect(Object.keys(lab?.stages[0]?.tests ?? {})).toEqual(['test_tally.py']);
+  expect(lab?.stages[0]?.problems).toEqual([]);
+  expect(lab?.stages[0]?.checks).toEqual({});
+});
+
+test("a Catch stage has the assistant's tests, its hidden checks and its problems", async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const check = course?.levels[0]?.modules[0]?.labs[0]?.stages[2];
+  expect(check?.kind).toBe('catch');
+  expect(Object.keys(check?.tests ?? {})).toEqual(['test_report.py']);
+  expect(Object.keys(check?.checks ?? {})).toEqual(['test_report.py']);
+  expect(check?.problems.map(({ check, title }) => [check, title])).toEqual([
+    ['tst_demo06', 'The fewest votes came first'],
+    ['tst_demo07', "It reordered the poll's own list"],
+  ]);
+  expect(check?.problems[1]?.edit).toEqual({ replace: '    choices.sort()\n', with: '' });
+});
+
+test("a Catch stage's version changes when a check does", async () => {
+  const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
+  const { course } = await loadChanged((root) =>
+    edit(join(root, stages, 'check/checks/test_report.py'), '["yes", "no"]', '["no", "yes"]'),
+  );
+  const after = course?.levels[0]?.modules[0]?.labs[0];
+  expect(after?.stages[2]?.version).not.toBe(before?.stages[2]?.version);
 });
 
 test("a stage's version changes when any of its files does", async () => {
@@ -132,6 +156,81 @@ test.each([
     problem: {
       path: `${stages}/count/starter/other.py`,
       message: 'Not part of the course: list it or remove it.',
+    },
+  },
+  {
+    name: 'hidden checks in a Build stage',
+    change: (root: string) =>
+      cp(join(root, stages, 'check/checks'), join(root, stages, 'count/checks'), {
+        recursive: true,
+      }),
+    problem: {
+      path: `${stages}/count/checks`,
+      message: 'Not part of the course: list it or remove it.',
+    },
+  },
+  {
+    name: 'a Catch stage without checks',
+    change: (root: string) => rm(join(root, stages, 'check/checks'), { recursive: true }),
+    problem: { path: `${stages}/check/checks`, message: 'Missing.' },
+  },
+  {
+    name: 'an edit whose text is not in the starter',
+    change: (root: string) =>
+      edit(join(root, stages, 'check/stage.yaml'), 'replace: "sorted(', 'replace: "sorts('),
+    problem: {
+      path: `${stages}/check/stage.yaml`,
+      message:
+        'problems.0.edit: The text to replace must appear once in the starter, but appears 0 times.',
+    },
+  },
+  {
+    name: "a problem's check that no check file has",
+    change: (root: string) =>
+      edit(join(root, stages, 'check/stage.yaml'), 'check: tst_demo06', 'check: tst_demo09'),
+    problem: {
+      path: `${stages}/check/stage.yaml`,
+      message: 'problems.0.check: No check in checks/ has the id tst_demo09.',
+    },
+  },
+  {
+    name: 'a check that no problem names',
+    change: (root: string) =>
+      edit(join(root, stages, 'check/stage.yaml'), 'check: tst_demo06', 'check: tst_demo09'),
+    problem: {
+      path: `${stages}/check/checks/test_report.py`,
+      message: 'No problem in stage.yaml names the check tst_demo06.',
+    },
+  },
+  {
+    name: "a tag in a problem's prose",
+    change: (root: string) =>
+      edit(
+        join(root, stages, 'check/stage.yaml'),
+        'Leave `choices`',
+        '{% video /%} Leave `choices`',
+      ),
+    problem: {
+      path: `${stages}/check/stage.yaml`,
+      message: "problems.1.fix: Undefined tag: 'video'",
+    },
+  },
+  {
+    name: 'a Catch stage on a file an earlier stage made',
+    change: async (root: string) => {
+      await edit(join(root, stages, 'check/stage.yaml'), 'file: report.py', 'file: tally.py');
+      for (const folder of ['starter', 'solution']) {
+        await cp(
+          join(root, stages, `check/${folder}/report.py`),
+          join(root, stages, `check/${folder}/tally.py`),
+        );
+        await rm(join(root, stages, `check/${folder}/report.py`));
+      }
+    },
+    problem: {
+      path: `${stages}/check/stage.yaml`,
+      message:
+        "file: A Catch stage's file is the assistant's, so no earlier stage may make tally.py.",
     },
   },
 ])('$name is a problem', async ({ change, problem }) => {

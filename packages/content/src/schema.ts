@@ -53,19 +53,40 @@ export const labFile = z.strictObject({
   stages: z.array(slug).min(1),
 });
 
-export const stageFile = z.strictObject({
+const stageFields = {
   id: id('stage'),
-  /** Build: the learner writes the core by hand. Catch and Ship arrive with their first stages. */
-  kind: z.enum(['build']),
   title,
   /** The file the learner works in. A later stage on the same file adds to their code. */
   file: z.string().regex(/^[a-z_][a-z0-9_]*\.py$/),
   packages: z.array(z.enum(pythonPackages)).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),
+};
+
+/** One problem in a Catch stage's code, found by one hidden check. */
+const problem = z.strictObject({
+  /** The id of the check in `checks/` that finds it. */
+  check: id('test'),
+  title,
+  /** What the problem would cost, in Markdoc. */
+  cost: title,
+  /** How to fix it, in Markdoc. */
+  fix: title,
+  /** The smallest change to the starter that fixes this problem and no other. */
+  edit: z.strictObject({ replace: z.string().min(1), with: z.string() }),
 });
+
+/**
+ * Build: the learner writes the core by hand. Catch: the learner reviews an assistant's code that
+ * passes its own tests, and hidden checks find its problems. Ship arrives with its first stage.
+ */
+export const stageFile = z.discriminatedUnion('kind', [
+  z.strictObject({ ...stageFields, kind: z.literal('build') }),
+  z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem).min(1) }),
+]);
 
 export type CourseFile = z.infer<typeof courseFile>;
 export type ModuleFile = z.infer<typeof moduleFile>;
 export type LabFile = z.infer<typeof labFile>;
 export type StageFile = z.infer<typeof stageFile>;
+export type CatchProblem = z.infer<typeof problem>;
