@@ -35,6 +35,17 @@ beforeAll(async () => {
   engine = await pyodideEngine();
 }, 120_000);
 
+// First in the file: a run that imports scikit-learn would leave it imported for later runs.
+test('packages are imported as they load, so a run never waits for an import', () => {
+  const test = 'import sys\n\n\ndef test_imported():\n    assert "sklearn" in sys.modules\n';
+  const result = engine.run({
+    files: { 'tests/test_imported.py': test },
+    tests: ['tests/test_imported.py'],
+    packages: pythonPackages,
+  });
+  expect(result.status).toBe('pass');
+});
+
 test.each((await readdir(fixtures)).sort())('%s gives its expected result', async (name) => {
   const expected = JSON.parse(await readFile(join(fixtures, name, 'expected.json'), 'utf8'));
   expect(withoutTimes(engine.run(await session(name)))).toEqual(expected);

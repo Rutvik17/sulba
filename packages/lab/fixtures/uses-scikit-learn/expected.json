@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "id": "tst_skln01",
+      "name": "Separates two groups",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": ""
+    },
+    {
+      "id": "tst_skln02",
+      "name": "Gives one probability per sample",
+      "status": "fail",
+      "message": "assert (4, 2) == (4,)",
+      "expected": "(4,)",
+      "actual": "(4, 2)",
+      "location": null,
+      "output": ""
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

@@ -28,6 +28,11 @@ export function codeOf(lab: LabView, index: number, kept: Kept): string {
   return stage.starter;
 }
 
+/** The packages a stage's runs load: its own and every earlier stage's, since it runs their code. */
+export function packagesOf(lab: LabView, index: number): RunRequest['packages'] {
+  return [...new Set(lab.stages.slice(0, index + 1).flatMap((each) => each.packages))];
+}
+
 /** A stage's run: the lab's data, the learner's latest code for each earlier file, and the tests. */
 export function runOf(lab: LabView, index: number, code: string, kept: Kept): RunRequest {
   const stage = lab.stages[index];
@@ -37,11 +42,10 @@ export function runOf(lab: LabView, index: number, code: string, kept: Kept): Ru
     const earlier = lab.stages[before];
     if (earlier) files[earlier.file] = codeOf(lab, before, kept);
   }
-  const packages = [...new Set(lab.stages.slice(0, index + 1).flatMap((each) => each.packages))];
   return {
     files: { ...files, ...stage.tests, [stage.file]: code },
     tests: Object.keys(stage.tests),
-    packages,
+    packages: packagesOf(lab, index),
   };
 }
 

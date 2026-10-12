@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import type { LabView, StageView } from '../lib/labs';
-import { codeOf, isOpen, type Kept, runOf } from './stages';
+import { codeOf, isOpen, type Kept, packagesOf, runOf } from './stages';
 
 function stage(id: string, file: string, starter: string, packages: StageView['packages'] = []) {
   return {
@@ -34,7 +34,7 @@ const lab: LabView = {
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
     stage('two', 'model.py', 'def b():\n    pass\n'),
-    stage('three', 'screener.py', 'class Screener:\n    pass\n'),
+    stage('three', 'screener.py', 'class Screener:\n    pass\n', ['scikit-learn']),
   ],
 };
 
@@ -72,8 +72,14 @@ test("a run has the lab's data, the stage's tests, and the learner's code for ev
       'tests/test_three.py': '# tests for three\n',
     },
     tests: ['tests/test_three.py'],
-    packages: ['numpy'],
+    packages: ['numpy', 'scikit-learn'],
   });
+});
+
+test("a stage loads its own packages and every earlier stage's, never a later stage's", () => {
+  expect(packagesOf(lab, 0)).toEqual(['numpy']);
+  expect(packagesOf(lab, 1)).toEqual(['numpy']);
+  expect(packagesOf(lab, 2)).toEqual(['numpy', 'scikit-learn']);
 });
 
 test('a stage opens once the stage before it is passed', () => {
