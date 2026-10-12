@@ -136,8 +136,9 @@ function banner(b: Banner, { ground, tile, ink }: Theme) {
 
 const row = ['Ripple', 'Sigmoid', 'Steps', 'cord', 'Bell curve', 'Spiral', 'Cube'] as const;
 
-// Each picture with its size: X's and LinkedIn's from their help pages, GitHub's about 500 px and
-// Google's sign-in screen 120 px. The 1080 px pictures are for any site that takes a larger one.
+// Each picture with its size: X's, LinkedIn's and YouTube's from their help pages, GitHub's about
+// 500 px and Google's sign-in screen 120 px. The 1080 px pictures are for any site that takes a
+// larger one.
 const pictures: Record<string, { width: number; height: number; html: string }> = {};
 for (const [name, colours] of Object.entries(themes)) {
   for (const [suffix, size] of [
@@ -199,6 +200,25 @@ pictures['linkedin-profile-cover'] = {
       row: 160,
       line: { y: 322, size: 36 },
       scale: 2,
+    },
+    themes.dark,
+  ),
+};
+// YouTube crops its banner on some screens and keeps text and logos safe only in the middle
+// 1235 × 338 px, so everything sits there, with room to spare at a phone's edges.
+pictures['youtube-banner'] = {
+  width: 2048,
+  height: 1152,
+  html: banner(
+    {
+      width: 2048,
+      height: 1152,
+      windows: row,
+      size: 136,
+      gap: 24,
+      row: 524,
+      line: { y: 694, size: 46 },
+      scale: 2.5,
     },
     themes.dark,
   ),
