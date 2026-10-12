@@ -80,6 +80,18 @@
     margin-block: var(--space-2);
   }
 
+  /*
+    Temml marks the columns of an aligned formula, which MathML would centre: the left side ends
+    at the =, and the right side starts there, so the = lines up on every row.
+  */
+  mtd.tml-right {
+    text-align: right;
+  }
+
+  mtd.tml-left {
+    text-align: left;
+  }
+
   a {
     color: inherit;
     text-underline-offset: 0.2em;
