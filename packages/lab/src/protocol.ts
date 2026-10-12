@@ -61,8 +61,14 @@ export interface Figures {
 }
 
 /** The Python packages sessions can load, from Pyodide's builds. pytest is always loaded. */
-export const pythonPackages = ['numpy'] as const;
+export const pythonPackages = ['numpy', 'scikit-learn'] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
+
+/** The module each package is imported as. */
+export const importNames: Readonly<Record<PythonPackage, string>> = {
+  numpy: 'numpy',
+  'scikit-learn': 'sklearn',
+};
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */
 export const pyodideVersion = '314.0.7';

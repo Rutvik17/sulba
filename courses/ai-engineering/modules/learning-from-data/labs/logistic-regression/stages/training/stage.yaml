@@ -1,0 +1,6 @@
+id: stg_6wncrv
+kind: build
+title: Training
+file: model.py
+packages: [numpy, scikit-learn]
+minutes: 50

@@ -7,7 +7,7 @@ import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useEffect, useRef, useState } from 'react';
 import type { LabView, StageView } from '../lib/labs';
 import { Printed, type Run, TestResults } from './Results';
-import { codeOf, isOpen, runOf } from './stages';
+import { codeOf, isOpen, packagesOf, runOf } from './stages';
 import { kept } from './storage';
 import styles from './workspace.module.css';
 
@@ -53,14 +53,23 @@ export default function Workspace({ lab }: { lab: LabView }) {
   useEffect(() => {
     const runner = new Lab({ indexURL: pyodidePath });
     setPython(runner);
-    const packages = [...new Set(lab.stages.flatMap((stage) => stage.packages))];
-    runner.prepare(packages).then(
-      () => setLoading(false),
-      // A run tries again and says so if Python still won't load.
-      () => setLoading(false),
-    );
     return () => runner.dispose();
-  }, [lab]);
+  }, []);
+
+  // Each stage loads the packages it needs when it opens, so an early stage never waits for a
+  // later stage's. A run tries again and says so if Python still won't load.
+  useEffect(() => {
+    if (!python) return;
+    let current = true;
+    const done = () => {
+      if (current) setLoading(false);
+    };
+    setLoading(true);
+    python.prepare(packagesOf(lab, index)).then(done, done);
+    return () => {
+      current = false;
+    };
+  }, [python, lab, index]);
 
   const open = (to: number) => {
     setIndex(to);

@@ -1,7 +1,13 @@
 // Runs tests in a loaded Pyodide. The worker uses it in the browser and node.ts uses it in Node,
 // so both go through the same steps.
 import type { PyodideAPI } from 'pyodide';
-import { type Figures, type RunRequest, type RunResult, statusOf } from './protocol.ts';
+import {
+  type Figures,
+  importNames,
+  type RunRequest,
+  type RunResult,
+  statusOf,
+} from './protocol.ts';
 
 type Outcome = Omit<RunResult, 'status'>;
 
@@ -24,7 +30,11 @@ export async function createEngine(pyodide: PyodideAPI, runner: string): Promise
   const run = module.run as (files: string, tests: string) => string;
   const figures = module.figures as (files: string) => string;
   return {
-    load: (packages) => pyodide.loadPackage([...packages], quiet).then(() => undefined),
+    async load(packages) {
+      await pyodide.loadPackage([...packages], quiet);
+      // Importing is part of loading: scikit-learn takes seconds to import the first time.
+      for (const name of packages) pyodide.runPython(`import ${importNames[name]}`);
+    },
     run(request) {
       const outcome = JSON.parse(
         run(JSON.stringify(request.files), JSON.stringify(request.tests)),
