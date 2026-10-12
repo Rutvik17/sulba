@@ -2,6 +2,7 @@ export { duplicateIds, prove, type Runner } from './check.ts';
 export { drawnCharacters, italicOf } from './glyphs.ts';
 export { idPattern, prefixes } from './ids.ts';
 export {
+  type CatchProblem,
   type Course,
   courseSlugs,
   type Dataset,
@@ -15,4 +16,4 @@ export {
 } from './load.ts';
 export { type RenderedProse, renderProse } from './prose.ts';
 export { computeFigures, type FiguresRunner, figuresFiles, proseProblems } from './prose-check.ts';
-export { addStarter, type StageRuns, stageRuns } from './runs.ts';
+export { addStarter, type StageRuns, stageRuns, testFiles, withEdit } from './runs.ts';

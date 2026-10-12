@@ -1,13 +1,13 @@
 import { Editor, type EditorHandle } from '@sulba/editor/editor';
 import { Lab } from '@sulba/lab/client';
-import { pyodidePath } from '@sulba/lab/protocol';
+import { pyodidePath, type RunResult } from '@sulba/lab/protocol';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
-import { useEffect, useRef, useState } from 'react';
-import type { LabView, StageView } from '../lib/labs';
-import { Printed, type Run, TestResults } from './Results';
-import { codeOf, isOpen, packagesOf, runOf } from './stages';
+import { useEffect, useId, useRef, useState } from 'react';
+import type { LabView, ProblemView, StageView } from '../lib/labs';
+import { CatchResults, Printed, type Run, TestResults } from './Results';
+import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { kept } from './storage';
 import styles from './workspace.module.css';
 
@@ -30,9 +30,14 @@ const css = classes(
   'code',
   'dock',
   'done',
+  'reviewed',
+  'note',
+  'problems',
+  'caught',
+  'missed',
 );
 
-const kinds: Record<StageView['kind'], string> = { build: 'Build' };
+const kinds: Record<StageView['kind'], string> = { build: 'Build', catch: 'Catch' };
 
 /** The stage to open: the one the address names if it's open, else the first not yet passed. */
 function firstStage(lab: LabView): number {
@@ -43,10 +48,29 @@ function firstStage(lab: LabView): number {
   return next >= 0 ? next : lab.stages.length - 1;
 }
 
+/** Each finished Catch review this browser kept, by stage id. */
+function reviewsOf(lab: LabView): Record<string, Review> {
+  const found: Record<string, Review> = {};
+  for (const stage of lab.stages) {
+    const review = stage.kind === 'catch' ? kept.review(stage.id) : null;
+    if (review) found[stage.id] = review;
+  }
+  return found;
+}
+
+/** A Catch run's review: the problems whose checks the code passed. */
+function reviewOf(problems: readonly ProblemView[], result: RunResult): Review {
+  const caught = problems.filter((problem) =>
+    result.tests.some((test) => test.id === problem.check && test.status === 'pass'),
+  );
+  return { caught: caught.map((problem) => problem.check), total: problems.length };
+}
+
 /** A lab's stages, and the workspace for the one open. Python stays loaded across stages. */
 export default function Workspace({ lab }: { lab: LabView }) {
   const [index, setIndex] = useState(() => firstStage(lab));
   const [passed, setPassed] = useState(() => lab.stages.filter((stage) => kept.passed(stage.id)));
+  const [reviews, setReviews] = useState(() => reviewsOf(lab));
   const [python, setPython] = useState<Lab | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -81,6 +105,12 @@ export default function Workspace({ lab }: { lab: LabView }) {
   const stage = lab.stages[index];
   if (!stage) return null;
   const isPassed = (each: StageView) => passed.some((done) => done.id === each.id);
+  const stateOf = (each: StageView, at: number) => {
+    const review = reviews[each.id];
+    if (review) return `${review.caught.length} of ${review.total} caught`;
+    if (isPassed(each)) return 'Done';
+    return isOpen(lab, at, kept) ? '' : `Opens when stage ${at} is done`;
+  };
 
   return (
     <>
@@ -98,13 +128,7 @@ export default function Workspace({ lab }: { lab: LabView }) {
                 <span className={css.number}>{at + 1}</span>
                 <span className={css.kind}>{kinds[each.kind]}</span>
                 {each.title}
-                <span className={css.state}>
-                  {isPassed(each)
-                    ? 'Done'
-                    : isOpen(lab, at, kept)
-                      ? ''
-                      : `Opens when stage ${at} is done`}
-                </span>
+                <span className={css.state}>{stateOf(each, at)}</span>
               </button>
             </li>
           ))}
@@ -117,8 +141,14 @@ export default function Workspace({ lab }: { lab: LabView }) {
         python={python}
         loading={loading}
         passed={isPassed(stage)}
+        review={reviews[stage.id] ?? null}
         onPass={() => {
           kept.pass(stage.id);
+          setPassed(lab.stages.filter((each) => kept.passed(each.id)));
+        }}
+        onFinish={(review) => {
+          kept.finish(stage.id, review);
+          setReviews((before) => ({ ...before, [stage.id]: review }));
           setPassed(lab.stages.filter((each) => kept.passed(each.id)));
         }}
         onNext={index + 1 < lab.stages.length ? () => open(index + 1) : null}
@@ -133,21 +163,48 @@ interface StageProps {
   readonly python: Lab | null;
   readonly loading: boolean;
   readonly passed: boolean;
+  /** A Catch stage's finished review, or null. */
+  readonly review: Review | null;
   readonly onPass: () => void;
+  /** Keeps a Catch stage's review, which passes the stage. */
+  readonly onFinish: (review: Review) => void;
   readonly onNext: (() => void) | null;
 }
 
-function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }: StageProps) {
+function StageWorkspace({
+  lab,
+  index,
+  python,
+  loading,
+  passed,
+  review,
+  onPass,
+  onFinish,
+  onNext,
+}: StageProps) {
   const stage = lab.stages[index] as StageView;
+  const isCatch = stage.kind === 'catch';
   const editor = useRef<EditorHandle>(null);
+  const left = useRef<HTMLDivElement>(null);
+  const finished = useRef<HTMLParagraphElement>(null);
+  const finishId = useId();
   const [opening] = useState(() => codeOf(lab, index, kept));
   const [run, setRun] = useState<Run>({ state: 'idle' });
   const [tried, setTried] = useState(passed);
   const [hints, setHints] = useState(0);
+  const [tab, setTab] = useState('brief');
   const [results, setResults] = useState<'tests' | 'printed'>('tests');
+  const [confirming, setConfirming] = useState(false);
+  const [finishing, setFinishing] = useState(false);
 
-  const runTests = async () => {
-    if (!python || run.state === 'running') return;
+  // Once Finish review has kept the score, the score is where the learner's focus goes.
+  useEffect(() => {
+    if (review && finishing) finished.current?.focus();
+  }, [review, finishing]);
+
+  /** Runs the tests on the code in the editor, or returns null if they couldn't run. */
+  const execute = async (): Promise<RunResult | null> => {
+    if (!python || run.state === 'running') return null;
     const code = editor.current?.code() ?? opening;
     setRun({ state: 'running' });
     setResults('tests');
@@ -155,10 +212,44 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
     try {
       const result = await python.run(runOf(lab, index, code, kept));
       setRun({ state: 'done', result });
-      if (result.status === 'pass') onPass();
+      return result;
     } catch {
       setRun({ state: 'failed' });
+      return null;
     }
+  };
+
+  // A Catch review finishes by itself once the code passes every test and check.
+  const runTests = async () => {
+    const result = await execute();
+    if (result?.status !== 'pass') return;
+    if (!isCatch) onPass();
+    else if (!review) onFinish(reviewOf(stage.problems, result));
+  };
+
+  // The score is the code as it stands: the review finishes only on a run that gave results. A
+  // run that couldn't give them leaves the question open, under the error.
+  const finish = async () => {
+    const result = await execute();
+    if (!result || result.problem || result.tests.length === 0 || review) return;
+    setFinishing(true);
+    setConfirming(false);
+    onFinish(reviewOf(stage.problems, result));
+  };
+
+  const askToFinish = () => {
+    setResults('tests');
+    setConfirming(true);
+  };
+
+  const keepReviewing = () => {
+    setConfirming(false);
+    document.getElementById(finishId)?.focus();
+  };
+
+  const showProblems = () => {
+    setTab('explanation');
+    left.current?.scrollIntoView({ block: 'nearest' });
   };
 
   const reset = () => {
@@ -171,16 +262,18 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
   };
 
   const done = run.state === 'done' && run.result.status === 'pass';
+  const solutionOpen = isCatch ? review !== null : tried;
+  const unrevealed = new Set(review ? [] : stage.problems.map((problem) => problem.check));
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
-      <div className={css.left}>
-        <Tabs defaultSelectedKey="brief">
+      <div className={css.left} ref={left}>
+        <Tabs selectedKey={tab} onSelectionChange={(key) => setTab(String(key))}>
           <TabList aria-label="Stage">
             <Tab id="brief">Brief</Tab>
             <Tab id="hints">Hints</Tab>
             <Tab id="explanation">Explanation</Tab>
-            <Tab id="solution" isDisabled={!tried}>
+            <Tab id="solution" isDisabled={!solutionOpen}>
               Solution
             </Tab>
           </TabList>
@@ -212,7 +305,12 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
           </TabPanel>
           <TabPanel id="explanation">
             <div className={css.panel}>
-              <Prose html={stage.explanation} />
+              {isCatch && !review ? (
+                <p className={css.note}>Opens when you finish the review.</p>
+              ) : (
+                <Prose html={stage.explanation} />
+              )}
+              {isCatch && review && <Problems problems={stage.problems} review={review} />}
             </div>
           </TabPanel>
           <TabPanel id="solution">
@@ -230,6 +328,17 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
             <Button variant="ghost" size="small" onPress={reset}>
               Reset
             </Button>
+            {isCatch && !review && (
+              <Button
+                id={finishId}
+                variant="outline"
+                size="small"
+                onPress={askToFinish}
+                isDisabled={!python || run.state === 'running'}
+              >
+                Finish review
+              </Button>
+            )}
             <Button size="small" onPress={runTests} isDisabled={!python || run.state === 'running'}>
               Run tests
             </Button>
@@ -245,7 +354,24 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
           />
         </div>
         <div className={css.dock}>
-          {done && (
+          {isCatch && review && (
+            <div className={`${css.done} ${css.reviewed}`}>
+              <p ref={finished} tabIndex={-1}>
+                Review finished: {review.caught.length} of {review.total} problems caught.
+              </p>
+              <div className={css.tools}>
+                <Button variant="outline" size="small" onPress={showProblems}>
+                  See each problem
+                </Button>
+                {onNext && (
+                  <Button size="small" onPress={onNext}>
+                    Next stage
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+          {!isCatch && done && (
             <div className={css.done}>
               <p>Stage {index + 1} done.</p>
               {onNext && (
@@ -265,23 +391,57 @@ function StageWorkspace({ lab, index, python, loading, passed, onPass, onNext }:
             </TabList>
             <TabPanel id="tests">
               <div className={css.panel}>
-                <TestResults
-                  run={run}
-                  loading={loading}
-                  file={stage.file}
-                  onGoTo={(line) => editor.current?.goTo(line)}
-                />
+                {isCatch ? (
+                  <CatchResults
+                    run={run}
+                    loading={loading}
+                    file={stage.file}
+                    onGoTo={(line) => editor.current?.goTo(line)}
+                    problems={stage.problems}
+                    review={review}
+                    confirming={confirming}
+                    onConfirm={finish}
+                    onCancel={keepReviewing}
+                    busy={!python || run.state === 'running'}
+                  />
+                ) : (
+                  <TestResults
+                    run={run}
+                    loading={loading}
+                    file={stage.file}
+                    onGoTo={(line) => editor.current?.goTo(line)}
+                  />
+                )}
               </div>
             </TabPanel>
             <TabPanel id="printed">
               <div className={css.panel}>
-                <Printed run={run} />
+                <Printed run={run} hidden={unrevealed} />
               </div>
             </TabPanel>
           </Tabs>
         </div>
       </div>
     </section>
+  );
+}
+
+/** A finished review's problems: each one caught or missed, what it would cost, and its fix. */
+function Problems({ problems, review }: { problems: readonly ProblemView[]; review: Review }) {
+  return (
+    <ol className={css.problems}>
+      {problems.map((problem) => {
+        const caught = review.caught.includes(problem.check);
+        return (
+          <li key={problem.check}>
+            <h3>{problem.title}</h3>
+            <p className={caught ? css.caught : css.missed}>{caught ? 'Caught' : 'Missed'}</p>
+            <Prose html={problem.cost} />
+            <Prose html={problem.fix} />
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 

@@ -8,6 +8,7 @@ import Markdoc from '@markdoc/markdoc';
 import { parse } from 'yaml';
 import type { z } from 'zod';
 import {
+  type CatchProblem,
   type CourseFile,
   courseFile,
   type LabFile,
@@ -24,7 +25,11 @@ export interface Problem {
   readonly message: string;
 }
 
-export interface Stage extends StageFile {
+export type { CatchProblem } from './schema.ts';
+
+export interface Stage extends Omit<StageFile, 'problems'> {
+  /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
+  readonly problems: readonly CatchProblem[];
   readonly slug: string;
   readonly brief: string;
   /** In the order they open. */
@@ -34,8 +39,10 @@ export interface Stage extends StageFile {
   readonly starter: string;
   /** The learner's file as it should be once the stage is done. */
   readonly solution: string;
-  /** Each test file, by its name in `tests/`. */
+  /** Each test file, by its name in `tests/`. In a Catch stage, the assistant's own tests. */
   readonly tests: Readonly<Record<string, string>>;
+  /** A Catch stage's hidden checks, each file by its name in `checks/`. Other stages have none. */
+  readonly checks: Readonly<Record<string, string>>;
   /** The stage's figures.py, which computes the numbers its prose shows, if it has one. */
   readonly figures: string | null;
   /** A hash of every file in the stage, so progress can tell when a stage has changed. */
@@ -143,42 +150,43 @@ class Reader {
     for (const name of file.stages) {
       if (!present.includes(name)) continue;
       const stage = await this.stage(join(folder, 'stages', name), name);
-      if (stage) stages.push(stage);
+      if (!stage) continue;
+      // The assistant writes a Catch stage's file, so it starts from the assistant's code alone.
+      if (stage.kind === 'catch' && stages.some((earlier) => earlier.file === stage.file)) {
+        this.problem(
+          join(folder, 'stages', name, 'stage.yaml'),
+          `file: A Catch stage's file is the assistant's, so no earlier stage may make ${stage.file}.`,
+        );
+      }
+      stages.push(stage);
     }
     return { ...file, slug, data, stages };
   }
 
   async stage(folder: string, slug: string): Promise<Stage | null> {
     const file = await this.yaml(join(folder, 'stage.yaml'), stageFile);
+    const isCatch = file?.kind === 'catch';
     await this.entries(
       folder,
       ['stage.yaml', ...prose],
-      ['starter', 'solution', 'tests'],
+      ['starter', 'solution', 'tests', ...(isCatch ? ['checks'] : [])],
       ['figures.py'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
     await this.entries(join(folder, 'solution'), [file.file], []);
-    const testNames = (await this.files(join(folder, 'tests'))).sort();
-    for (const name of testNames) {
-      if (!/^test_[a-z0-9_]+\.py$/.test(name)) {
-        this.problem(join(folder, 'tests', name), 'A test file is named test_<name>.py.');
-      }
-    }
-    if (testNames.length === 0) this.problem(join(folder, 'tests'), 'A stage needs a test file.');
 
-    const [brief, hints, explanation, starter, solution] = await Promise.all([
+    const [brief, hints, explanation, starter, solution, tests, checks] = await Promise.all([
       this.prose(join(folder, 'brief.md')),
       this.prose(join(folder, 'hints.md')),
       this.prose(join(folder, 'explanation.md')),
       this.text(join(folder, 'starter', file.file)),
       this.text(join(folder, 'solution', file.file)),
+      this.testFiles(join(folder, 'tests'), 'A stage needs a test file.'),
+      isCatch
+        ? this.testFiles(join(folder, 'checks'), 'A Catch stage needs a check file.')
+        : Promise.resolve({}),
     ]);
-    const tests: Record<string, string> = {};
-    for (const name of testNames) {
-      const text = await this.text(join(folder, 'tests', name));
-      if (text !== null) tests[name] = text;
-    }
     const figures = (await this.list(folder))?.some((entry) => entry.name === 'figures.py')
       ? await this.text(join(folder, 'figures.py'))
       : null;
@@ -188,6 +196,8 @@ class Reader {
     if (hintList.some((hint) => hint === '')) {
       this.problem(join(folder, 'hints.md'), 'Each hint, between lines of ---, needs text.');
     }
+    const problems = file.kind === 'catch' ? file.problems : [];
+    this.problemsMatch(folder, problems, starter, checks);
     const version = hash({
       'stage.yaml': JSON.stringify(file),
       brief,
@@ -197,9 +207,11 @@ class Reader {
       solution,
       ...(figures === null ? {} : { 'figures.py': figures }),
       ...tests,
+      ...Object.fromEntries(Object.entries(checks).map(([name, text]) => [`checks/${name}`, text])),
     });
     return {
       ...file,
+      problems,
       slug,
       brief,
       hints: hintList,
@@ -207,9 +219,77 @@ class Reader {
       starter,
       solution,
       tests,
+      checks,
       figures,
       version,
     };
+  }
+
+  /** The test files in a folder, each by name, which must be test_<name>.py. */
+  async testFiles(folder: string, none: string): Promise<Record<string, string>> {
+    const names = (await this.files(folder)).sort();
+    for (const name of names) {
+      if (!/^test_[a-z0-9_]+\.py$/.test(name)) {
+        this.problem(join(folder, name), 'A test file is named test_<name>.py.');
+      }
+    }
+    if (names.length === 0) this.problem(folder, none);
+    const files: Record<string, string> = {};
+    for (const name of names) {
+      const text = await this.text(join(folder, name));
+      if (text !== null) files[name] = text;
+    }
+    return files;
+  }
+
+  /**
+   * A Catch stage's problems and checks match: each problem names a check that `checks/` has, each
+   * check belongs to one problem, each edit finds its text in the starter exactly once, and the
+   * prose has no tags. Whether each edit fixes its problem alone is proved by running it.
+   */
+  problemsMatch(
+    folder: string,
+    problems: readonly CatchProblem[],
+    starter: string,
+    checks: Readonly<Record<string, string>>,
+  ) {
+    const path = join(folder, 'stage.yaml');
+    const found = new Map<string, string>();
+    for (const [name, text] of Object.entries(checks)) {
+      for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
+        found.set(id as string, name);
+      }
+    }
+    problems.forEach((problem, index) => {
+      const at = `problems.${index}`;
+      if (!found.has(problem.check)) {
+        this.problem(path, `${at}.check: No check in checks/ has the id ${problem.check}.`);
+      }
+      if (problems.findIndex((other) => other.check === problem.check) !== index) {
+        this.problem(path, `${at}.check: Another problem already names ${problem.check}.`);
+      }
+      const times = starter.split(problem.edit.replace).length - 1;
+      if (times !== 1) {
+        this.problem(
+          path,
+          `${at}.edit: The text to replace must appear once in the starter, but appears ${times} times.`,
+        );
+      }
+      for (const field of ['cost', 'fix'] as const) {
+        for (const { error } of Markdoc.validate(Markdoc.parse(problem[field]), {})) {
+          if (error.id !== 'variable-undefined')
+            this.problem(path, `${at}.${field}: ${error.message}`);
+        }
+      }
+    });
+    for (const [id, name] of found) {
+      if (!problems.some((problem) => problem.check === id)) {
+        this.problem(
+          join(folder, 'checks', name),
+          `No problem in stage.yaml names the check ${id}.`,
+        );
+      }
+    }
   }
 
   async yaml<T extends z.ZodType>(path: string, schema: T): Promise<z.infer<T> | null> {

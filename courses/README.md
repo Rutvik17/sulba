@@ -13,13 +13,15 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       lab.yaml              id, title, summary, datasets with their credit, and its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
-        stage.yaml          id, kind, title, the file the learner works in, packages, minutes
+        stage.yaml          id, kind, title, the file the learner works in, packages, minutes,
+                            and a Catch stage's problems
         brief.md            the task
         hints.md            hints in the order they open, separated by lines of ---
         explanation.md      the explanation
         starter/<file>      the code the stage starts from
         solution/<file>     the learner's file as it should be once the stage is done
         tests/test_*.py     pytest tests, each with @pytest.mark.id and a docstring as its name
+        checks/test_*.py    a Catch stage's hidden checks, written like tests
         figures.py          optional: computes the numbers the stage's prose shows
 ```
 
@@ -33,11 +35,36 @@ Every course, level, module, lab, stage and test has a permanent id: a prefix (`
 
 A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code.
 
-The checks hold each stage to three things:
+A stage's `kind` is `build` or `catch`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 
 - The solution passes every one of the stage's tests, and every earlier stage's.
 - The starter fails at least one test.
 - Every test has an id no other test has.
+
+## Catch stages
+
+In a Catch stage an assistant's code passes its own tests, and the learner reviews it before it's used. The starter is the assistant's code, in a file no earlier stage made, and `tests/` holds the assistant's own tests. `checks/` holds the hidden checks: each one tests the code the way it will really be used, and each finds one problem. `stage.yaml` lists the problems in the order the review shows them:
+
+```yaml
+problems:
+  - check: tst_k3m8q2        # the id of the check that finds it
+    title: It scored the wrong class
+    cost: >-                 # what it would cost, in Markdoc
+      ...
+    fix: >-                  # how to fix it, in Markdoc
+      ...
+    edit:                    # the smallest change to the starter that fixes it alone
+      replace: "predict_proba(X_new)[:, 0]"
+      with: "predict_proba(X_new)[:, 1]"
+```
+
+The checks hold each Catch stage to these, besides the solution passing every test, check and earlier stage's test:
+
+- The assistant's tests pass on its code, and every check fails on it.
+- Each problem's edit appears once in the starter. Made alone, it passes the assistant's tests and that problem's check, and no other check.
+- Each check belongs to exactly one problem.
+
+A run shows the assistant's tests by name and only how many checks pass. When the learner finishes the review, the checks their code passes become their score, and each problem opens with what it costs and its fix, beside the explanation and the solution. The page carries the checks, so a learner who reads its source can find them: runs in the browser are practice (decision record 5). A later stage on the same file builds on the learner's code if they caught every problem, and on the solution if they didn't.
 
 ## Prose, formulas and numbers
 

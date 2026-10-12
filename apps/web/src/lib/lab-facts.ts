@@ -1,6 +1,9 @@
 import type { LabView } from './labs';
 
-const kindNames = { build: 'Build' } as const;
+const kindNames: Readonly<Record<LabView['stages'][number]['kind'], string>> = {
+  build: 'Build',
+  catch: 'Catch',
+};
 
 /** "About 45 minutes", or in hours to the nearest half past an hour: "About 4.5 hours". */
 export function aboutTime(minutes: number): string {

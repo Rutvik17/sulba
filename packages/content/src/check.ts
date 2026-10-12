@@ -1,9 +1,11 @@
 // Checks across every course: no two things share an id, and every stage works. A stage works
-// when its solution passes its own tests and every earlier stage's, its starter fails at least
-// one test, and each of its tests has an id of its own.
-import { type RunRequest, type RunResult, statusOf } from '@sulba/lab/protocol';
+// when its solution passes its own tests and every earlier stage's, and each of its tests has an id
+// of its own. A Build stage's starter fails at least one test. A Catch stage's starter, the
+// assistant's code, passes the assistant's tests and fails every hidden check, and fixing any one
+// of its problems alone passes that problem's check and no other.
+import { type RunRequest, type RunResult, statusOf, type TestResult } from '@sulba/lab/protocol';
 import { idPattern } from './ids.ts';
-import type { Course, Problem } from './load.ts';
+import type { Course, Problem, Stage } from './load.ts';
 import { type StageRuns, stageRuns } from './runs.ts';
 
 /** Runs requests in one runtime and returns their results in the same order. */
@@ -62,6 +64,71 @@ function failures(result: RunResult): string {
     .join('; ');
 }
 
+/** A run's results split into a Catch stage's hidden checks and the other tests. */
+function split(stage: Stage, result: RunResult): { tests: TestResult[]; checks: TestResult[] } {
+  const ids = new Set(stage.problems.map((problem) => problem.check));
+  return {
+    tests: result.tests.filter((test) => !test.id || !ids.has(test.id)),
+    checks: result.tests.filter((test) => test.id && ids.has(test.id)),
+  };
+}
+
+function names(tests: readonly TestResult[]): string {
+  return tests.map((test) => `"${test.name}"`).join(', ');
+}
+
+/** The singular or plural of a verb, for one test or several. */
+function verb(tests: readonly TestResult[], one: string, many: string): string {
+  return tests.length === 1 ? one : many;
+}
+
+/** A Catch stage's assistant code and each problem's fix, judged by its checks. */
+function catchProblems(
+  stage: Stage,
+  starter: RunResult,
+  fixes: readonly RunResult[],
+  problem: (message: string) => void,
+) {
+  if (starter.problem) {
+    problem(`The assistant's code doesn't run: ${failures(starter)}`);
+    return;
+  }
+  const { tests, checks } = split(stage, starter);
+  const failing = tests.filter((test) => test.status !== 'pass');
+  if (failing.length) {
+    problem(
+      `The assistant's tests must pass on its code, but ${names(failing)} ${verb(failing, 'fails', 'fail')}.`,
+    );
+  }
+  const passing = checks.filter((check) => check.status === 'pass');
+  if (passing.length) {
+    problem(
+      `${names(passing)} ${verb(passing, 'passes', 'pass')} on the assistant's code, so ${verb(passing, 'it finds', 'they find')} no problem.`,
+    );
+  }
+  for (const [index, each] of stage.problems.entries()) {
+    const fix = fixes[index] as RunResult;
+    const alone = `Fixing "${each.title}" alone`;
+    if (fix.problem) {
+      problem(`${alone} stops the code running: ${failures(fix)}`);
+      continue;
+    }
+    const parts = split(stage, fix);
+    const broken = parts.tests.filter((test) => test.status !== 'pass');
+    if (broken.length) {
+      problem(`${alone} fails the assistant's ${verb(broken, 'test', 'tests')} ${names(broken)}.`);
+    }
+    const own = parts.checks.find((check) => check.id === each.check);
+    if (own?.status !== 'pass') problem(`${alone} doesn't pass its check ${each.check}.`);
+    const others = parts.checks.filter(
+      (check) => check.id !== each.check && check.status === 'pass',
+    );
+    if (others.length) {
+      problem(`${alone} also passes ${names(others)}: each check must find one problem.`);
+    }
+  }
+}
+
 /** Run every stage in one runtime, named in the problems it finds. */
 export async function prove(
   courses: readonly Course[],
@@ -69,22 +136,28 @@ export async function prove(
   runtime: string,
 ): Promise<Problem[]> {
   const stages = courses.flatMap(stagesOf);
-  const requests = stages.flatMap(({ item: runs }) =>
-    runs.earlier ? [runs.solution, runs.starter, runs.earlier] : [runs.solution, runs.starter],
-  );
+  const requests = stages.flatMap(({ item: runs }) => [
+    runs.solution,
+    runs.starter,
+    ...runs.fixes,
+    ...(runs.earlier ? [runs.earlier] : []),
+  ]);
   const results = [...(await runner(requests))];
   const problems: Problem[] = [];
   const testIds = new Map<string, string>();
   for (const { path, item } of stages) {
     const solution = results.shift() as RunResult;
     const starter = results.shift() as RunResult;
+    const fixes = results.splice(0, item.fixes.length);
     const earlier = item.earlier ? (results.shift() as RunResult) : null;
     const problem = (message: string) => problems.push({ path, message: `${runtime}: ${message}` });
 
     if (statusOf(solution.tests, solution.problem) !== 'pass') {
       problem(`The solution fails: ${failures(solution)}`);
     }
-    if (statusOf(starter.tests, starter.problem) === 'pass') {
+    if (item.stage.kind === 'catch') {
+      catchProblems(item.stage, starter, fixes, problem);
+    } else if (statusOf(starter.tests, starter.problem) === 'pass') {
       problem('The starter passes every test, so the stage asks for nothing.');
     }
     if (earlier && statusOf(earlier.tests, earlier.problem) !== 'pass') {

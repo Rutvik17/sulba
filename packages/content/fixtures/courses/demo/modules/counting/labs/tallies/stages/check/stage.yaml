@@ -1,0 +1,26 @@
+id: stg_demo03
+kind: catch
+title: Check
+file: report.py
+minutes: 10
+problems:
+  - check: tst_demo06
+    title: The fewest votes came first
+    cost: >-
+      `sorted(set(choices))` orders the choices by name, so a choice with fewer votes can come
+      first.
+    fix: >-
+      Sort the choices by their share, the largest first.
+    edit:
+      replace: "sorted(set(choices))]"
+      with: "sorted(set(choices), key=lambda each: -share(choices, each))]"
+  - check: tst_demo07
+    title: It reordered the poll's own list
+    cost: >-
+      `choices.sort()` reorders the list it is given, so the poll's list of votes changes each
+      time it is reported.
+    fix: >-
+      Leave `choices` as it is.
+    edit:
+      replace: "    choices.sort()\n"
+      with: ""
