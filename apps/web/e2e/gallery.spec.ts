@@ -241,8 +241,12 @@ test('the editor offers the names in the file as one is typed', async ({ page })
 
   await focusCode(page);
   await page.keyboard.type('\n\nsig');
+  const sigmoid = page.getByRole('option').filter({ hasText: 'sigmoid' });
+  // The editor makes the list out of sight and moves it beside the cursor a frame later. A click
+  // that came first would scroll the page away from the editor, and the list would stay hidden.
+  await expect(sigmoid).toBeInViewport();
   // The editor ignores Enter for a moment after the list opens, so a press can't pick by accident.
-  await page.getByRole('option').filter({ hasText: 'sigmoid' }).click();
+  await sigmoid.click();
 
   await expect(code.locator('.cm-line').last()).toHaveText('sigmoid');
 });

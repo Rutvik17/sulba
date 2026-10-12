@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): a lab
 // of two stages on tally.py, whose tests read a small CSV of votes.
@@ -17,9 +17,16 @@ function code(page: Page) {
   return page.getByRole('textbox', { name: 'tally.py', exact: true });
 }
 
-/** Replaces the learner's code, as a paste would. */
-async function write(page: Page, text: string) {
-  await code(page).fill(text);
+/**
+ * Replaces the code in an editor, as Select All and a paste would. Playwright's fill selects the
+ * code through the browser, and on the Android phone the new code sometimes went in before the
+ * editor had taken that selection in. The editor's own Select All takes effect at once.
+ */
+async function write(editor: Locator, text: string) {
+  // The editor's shortcuts take Command on an iPhone, as on a Mac, and Control elsewhere.
+  const { defaultBrowserType, isMobile } = test.info().project.use;
+  await editor.press(defaultBrowserType === 'webkit' && isMobile ? 'Meta+a' : 'ControlOrMeta+a');
+  await editor.page().keyboard.insertText(text);
 }
 
 async function runTests(page: Page) {
@@ -52,7 +59,7 @@ test('passing every test finishes the stage, and the next builds on the learner�
   await openLab(page);
   await expect(page.getByRole('button', { name: /Share/ })).toBeDisabled();
 
-  await write(page, solved.count);
+  await write(code(page), solved.count);
   await runTests(page);
   await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
   await expect(page.getByText('Stage 1 done.')).toBeVisible();
@@ -110,7 +117,7 @@ test('the code is kept when the page reloads, and Reset brings back the starter'
   page,
 }) => {
   await openLab(page);
-  await write(page, 'def count(choices, choice):\n    return 7\n');
+  await write(code(page), 'def count(choices, choice):\n    return 7\n');
 
   await page.reload();
   await expect(code(page)).toContainText('return 7');
@@ -123,7 +130,7 @@ test('the code is kept when the page reloads, and Reset brings back the starter'
 
 test('a syntax error stops the run and points to its line', async ({ page }) => {
   await openLab(page);
-  await write(page, 'def count(choices, choice:\n    return 0\n');
+  await write(code(page), 'def count(choices, choice:\n    return 0\n');
 
   await runTests(page);
 
@@ -134,14 +141,14 @@ test('a syntax error stops the run and points to its line', async ({ page }) => 
 
 test('a loop that never ends is stopped, and the next run works', async ({ page }) => {
   await openLab(page);
-  await write(page, 'def count(choices, choice):\n    while True:\n        pass\n');
+  await write(code(page), 'def count(choices, choice):\n    while True:\n        pass\n');
 
   await runTests(page);
   await expect(summary(page)).toHaveText(
     'The tests were stopped after 5 seconds. A loop that never ends is the usual cause.',
     loaded,
   );
-  await write(page, solved.count);
+  await write(code(page), solved.count);
   await runTests(page);
 
   await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
@@ -151,7 +158,7 @@ test('a stage the address names opens only once the stage before is done', async
   await openLab(page, '?stage=share');
   await expect(page.getByRole('heading', { name: 'Count' })).toBeVisible();
 
-  await write(page, solved.count);
+  await write(code(page), solved.count);
   await runTests(page);
   await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
   await openLab(page, '?stage=share');
@@ -222,7 +229,8 @@ test('until the review is finished, a production check’s output doesn’t name
   page,
 }) => {
   await openReview(page);
-  await report(page).fill(
+  await write(
+    report(page),
     draft.oneFixed.replace('    return', '    print("reporting")\n    return'),
   );
 
@@ -243,7 +251,7 @@ test('finishing the review keeps the score, and names each problem with what it 
   page,
 }) => {
   await openReview(page);
-  await report(page).fill(draft.oneFixed);
+  await write(report(page), draft.oneFixed);
 
   await page.getByRole('button', { name: 'Finish review' }).click();
   await expect(page.getByText('Finish the review?', { exact: false })).toBeVisible();
@@ -276,7 +284,7 @@ test('finishing the review keeps the score, and names each problem with what it 
 
 test('passing every production check finishes the review by itself', async ({ page }) => {
   await openReview(page);
-  await report(page).fill(draft.fixed);
+  await write(report(page), draft.fixed);
 
   await runTests(page);
 
