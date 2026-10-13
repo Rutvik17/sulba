@@ -71,6 +71,13 @@ test('a Ship stage has hidden tests, its checks and what each requires, and no h
   expect(ship?.problems).toEqual([]);
 });
 
+test('a stage may leave out its explanation', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const [count, share] = course?.levels[0]?.modules[0]?.labs[0]?.stages ?? [];
+  expect(count?.explanation).toMatch(/^A count adds one/);
+  expect(share?.explanation).toBeNull();
+});
+
 test("a Catch stage's version changes when a check does", async () => {
   const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
   const { course } = await loadChanged((root) =>

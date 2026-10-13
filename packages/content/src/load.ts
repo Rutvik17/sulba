@@ -37,7 +37,8 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks'> {
   readonly brief: string;
   /** In the order they open. A stage that needs none has none. */
   readonly hints: readonly string[];
-  readonly explanation: string;
+  /** The explanation, in Markdoc. A stage that needs none has none. */
+  readonly explanation: string | null;
   /** The code this stage starts from: a new file, or code added to the learner's own. */
   readonly starter: string;
   /** The learner's file as it should be once the stage is done. */
@@ -175,20 +176,21 @@ class Reader {
     const hasChecks = file?.kind === 'catch' || file?.kind === 'ship';
     await this.entries(
       folder,
-      ['stage.yaml', 'brief.md', 'explanation.md'],
+      ['stage.yaml', 'brief.md'],
       ['starter', 'solution', 'tests', ...(hasChecks ? ['checks'] : [])],
-      ['hints.md', 'figures.py'],
+      ['hints.md', 'explanation.md', 'figures.py'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
     await this.entries(join(folder, 'solution'), [file.file], []);
     const present = new Set(((await this.list(folder)) ?? []).map((entry) => entry.name));
     const hasHints = present.has('hints.md');
+    const hasExplanation = present.has('explanation.md');
 
     const [brief, hints, explanation, starter, solution, tests, checks] = await Promise.all([
       this.prose(join(folder, 'brief.md')),
       hasHints ? this.prose(join(folder, 'hints.md')) : Promise.resolve(''),
-      this.prose(join(folder, 'explanation.md')),
+      hasExplanation ? this.prose(join(folder, 'explanation.md')) : Promise.resolve(''),
       this.text(join(folder, 'starter', file.file)),
       this.text(join(folder, 'solution', file.file)),
       this.testFiles(join(folder, 'tests'), 'A stage needs a test file.'),
@@ -214,7 +216,7 @@ class Reader {
       'stage.yaml': JSON.stringify(file),
       brief,
       hints,
-      explanation,
+      ...(hasExplanation ? { explanation } : {}),
       starter,
       solution,
       ...(figures === null ? {} : { 'figures.py': figures }),
@@ -228,7 +230,7 @@ class Reader {
       slug,
       brief,
       hints: hintList,
-      explanation,
+      explanation: hasExplanation ? explanation : null,
       starter,
       solution,
       tests,
