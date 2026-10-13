@@ -110,7 +110,7 @@ export interface Frame {
   away: boolean;
   tests: TestState[];
   checks: Checks;
-  /** The note that the failing check stays hidden until the review is finished. */
+  /** The note that each check shows once the review is finished. */
   hiddenNote: boolean;
   done: boolean;
   /** The Run tests button is held down. */

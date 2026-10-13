@@ -8,12 +8,12 @@ export const stages = [
   {
     id: 'build',
     name: 'Build',
-    text: 'Write the core of each system by hand, so you know how it works underneath.',
+    text: 'Write the core of each system by hand, until its tests pass.',
   },
   {
     id: 'catch',
     name: 'Catch',
-    text: "An assistant's code that uses yours passes its own tests. Find and fix what it would get wrong in real use.",
+    text: 'An AI assistant builds on your code, and its own tests pass. Find and fix what would break in production.',
   },
   {
     id: 'ship',
