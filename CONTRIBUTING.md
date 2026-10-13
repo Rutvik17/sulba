@@ -19,7 +19,7 @@ pnpm test:python
 pnpm check:content
 ```
 
-CI runs the end-to-end and accessibility tests only after a merge to `main`. Before a pull request, run the test files your change adds or edits, such as `pnpm test:e2e e2e/lab.spec.ts`.
+CI runs the end-to-end and accessibility tests on the first of each month, and when started by hand from the Actions tab. Pull requests and pushes to `main` don't run them.
 
 ## Screenshots
 
