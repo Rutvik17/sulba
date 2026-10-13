@@ -82,7 +82,7 @@ checks:
 
 A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
 
-The stage passes when every test and check passes, and its solution opens after the first run, as in a Build stage. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Printed tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
+The stage passes when every test and check passes. It has no hints to hold back, so its explanation opens after the first run, with its solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Printed tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Prose, formulas and numbers
 

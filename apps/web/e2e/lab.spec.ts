@@ -334,12 +334,15 @@ function shipCheck(page: Page, title: string) {
   });
 }
 
-test('a Ship stage shows its tests by name only, and what each check before it ships requires', async ({
+test('a Ship stage shows its tests by name only, what each check requires, and its explanation after a run', async ({
   page,
 }) => {
   await openShip(page);
   await expect(page.getByRole('button', { name: /Leader/ })).toContainText('Ship');
   await expect(page.getByRole('tab', { name: 'Hints' })).toHaveCount(0);
+  await page.getByRole('tab', { name: 'Explanation' }).click();
+  const explanation = page.getByRole('tabpanel', { name: 'Explanation' });
+  await expect(explanation).toHaveText('Opens after your first run.');
   const fast = shipCheck(page, 'Fast on 60,000 votes');
   await expect(fast).toContainText('leader finds the leader of 60,000 votes in under a second.');
   await expect(fast).not.toContainText('The limit is a second.');
@@ -354,6 +357,7 @@ test('a Ship stage shows its tests by name only, and what each check before it s
   await expect(tests).not.toContainText('NotImplementedError');
   await expect(tests).not.toContainText('report.py, line');
   await expect(fast).toContainText('The limit is a second.');
+  await expect(explanation).toContainText('stays fast on a long list');
   await expect(page.getByRole('tab', { name: 'Solution' })).not.toHaveAttribute(
     'aria-disabled',
     'true',
