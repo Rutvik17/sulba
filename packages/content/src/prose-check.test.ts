@@ -43,8 +43,11 @@ test("the fixture course's figures and prose have no problems", async () => {
 });
 
 test('figures that differ between runtimes are a problem', async () => {
+  // The count stage's figures differ; every other stage's agree.
   const other: FiguresRunner = async (fileSets) =>
-    fileSets.map(() => ({ figures: { total: '3', yes: '1' }, problem: null }));
+    (await pyodide(fileSets)).map((answer) =>
+      answer.figures?.total ? { figures: { ...answer.figures, yes: '1' }, problem: null } : answer,
+    );
   const { problems } = await computeFigures([course], { Pyodide: pyodide, Other: other });
   expect(problems).toEqual([
     {
@@ -95,6 +98,34 @@ test("a formula in a Catch problem's prose is checked like the rest", async () =
       path: 'demo/modules/counting/labs/tallies/stages/check/stage.yaml',
       message: expect.stringMatching(/^The formula \\sqrt\{2 doesn't render: /),
     },
+  ]);
+});
+
+test("a Ship check's text shows figures, and is one line, checked like the rest", async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const [level] = course.levels;
+  const [module] = level?.modules ?? [];
+  const [lab] = module?.labs ?? [];
+  const shipStage = lab?.stages[3];
+  if (!level || !module || !lab || !shipStage)
+    throw new Error('The fixture lab has no Ship stage.');
+  const [fast, rest] = shipStage.shipChecks;
+  if (!fast || !rest) throw new Error('The fixture Ship stage has no checks.');
+  const shipChecks = [
+    { ...fast, title: 'Fast on {% $fig.most %} votes' },
+    { ...rest, requires: 'It leaves the list.\n\nIt returns a choice.' },
+  ];
+  const stages = lab.stages.map((stage) =>
+    stage === shipStage ? { ...stage, shipChecks } : stage,
+  );
+  const broken: Course = {
+    ...course,
+    levels: [{ ...level, modules: [{ ...module, labs: [{ ...lab, stages }] }] }],
+  };
+  const path = 'demo/modules/counting/labs/tallies/stages/ship';
+  expect(proseProblems([broken], figures, mathFontCharacters())).toEqual([
+    { path: `${path}/stage.yaml`, message: "Undefined variable: 'fig.most'" },
+    { path: `${path}/stage.yaml`, message: 'This text is one line, alone.' },
   ]);
 });
 

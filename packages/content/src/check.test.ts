@@ -14,6 +14,7 @@ const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url))
 const share = 'demo/modules/counting/labs/tallies/stages/share';
 const count = 'demo/modules/counting/labs/tallies/stages/count';
 const check = 'demo/modules/counting/labs/tallies/stages/check';
+const ship = 'demo/modules/counting/labs/tallies/stages/ship';
 const folders: string[] = [];
 let runner: Runner;
 
@@ -149,6 +150,35 @@ test("a problem's edit that fixes another problem instead is a problem", async (
   ]);
 });
 
+test("a Ship stage's solution that fails a check is a problem", async () => {
+  const course = await changed(
+    `${ship}/solution/report.py`,
+    '    return max(set(choices), key=choices.count)',
+    '    choices.sort()\n    return max(set(choices), key=choices.count)',
+  );
+  expect(await prove([course], runner, 'Pyodide')).toEqual([
+    {
+      path: ship,
+      message:
+        "Pyodide: The solution fails: \"Leaves the votes as they were\": assert ['no', 'yes', 'yes'] == ['yes', 'no', 'yes']",
+    },
+  ]);
+});
+
+test("a Ship stage's starter that passes every test and check is a problem", async () => {
+  const course = await changed(
+    `${ship}/starter/report.py`,
+    'raise NotImplementedError',
+    'return max(set(choices), key=choices.count)',
+  );
+  expect(await prove([course], runner, 'Pyodide')).toEqual([
+    {
+      path: ship,
+      message: 'Pyodide: The starter passes every test, so the stage asks for nothing.',
+    },
+  ]);
+});
+
 test('two courses that share an id is a problem', async () => {
   const course = await load(fixtures);
   const copy = { ...course, slug: 'copy', id: 'crs_copy01' };
@@ -159,5 +189,6 @@ test('two courses that share an id is a problem', async () => {
     `The id stg_demo01 is already used by ${count}/stage.yaml.`,
     `The id stg_demo02 is already used by ${share}/stage.yaml.`,
     `The id stg_demo03 is already used by ${check}/stage.yaml.`,
+    `The id stg_demo04 is already used by ${ship}/stage.yaml.`,
   ]);
 });

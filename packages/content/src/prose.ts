@@ -2,8 +2,9 @@
 // on its own lines, and inline code wrapped in dollars, such as `$\sigma(z)$`, sits in the text.
 // Temml renders each one to MathML when the site is built, so a page needs no script to show it
 // and screen readers read it. Numbers come from the stage's figures.py: `\fig{name}` inside a
-// formula, and `{% $fig.name %}` in the text.
-import Markdoc, { type Config, type Node } from '@markdoc/markdoc';
+// formula, and `{% $fig.name %}` in the text. A line of text, such as a check's title, renders
+// without a paragraph around it.
+import Markdoc, { type Config, type Node, type RenderableTreeNodes } from '@markdoc/markdoc';
 import temml from 'temml';
 
 export interface RenderedProse {
@@ -35,6 +36,7 @@ function variablesIn(ast: Node): string[] {
 export function renderProse(
   text: string,
   figures: Readonly<Record<string, string>>,
+  { oneLine = false }: { readonly oneLine?: boolean } = {},
 ): RenderedProse {
   const errors: string[] = [];
   const used = new Set<string>();
@@ -85,8 +87,14 @@ export function renderProse(
   // Markdoc reports a variable figures.py doesn't give.
   for (const { error } of Markdoc.validate(ast, config)) errors.push(error.message);
   for (const name of variablesIn(ast)) used.add(name);
+  let tree: RenderableTreeNodes = Markdoc.transform(ast, config);
+  if (oneLine) {
+    const [line, ...more] = ast.children;
+    if (line?.type !== 'paragraph' || more.length) errors.push('This text is one line, alone.');
+    else tree = ((tree as Tag).children[0] as Tag).children;
+  }
   const html = Markdoc.renderers
-    .html(Markdoc.transform(ast, config))
+    .html(tree)
     .replace(placeholder, (_, index: string) => formulas[Number(index)] ?? '');
   return { html, formulas: formulas.filter(Boolean), used, errors };
 }

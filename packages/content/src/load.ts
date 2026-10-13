@@ -15,6 +15,7 @@ import {
   labFile,
   type ModuleFile,
   moduleFile,
+  type ShipCheck,
   type StageFile,
   stageFile,
 } from './schema.ts';
@@ -25,23 +26,31 @@ export interface Problem {
   readonly message: string;
 }
 
-export type { CatchProblem } from './schema.ts';
+export type { CatchProblem, ShipCheck } from './schema.ts';
 
-export interface Stage extends Omit<StageFile, 'problems'> {
+export interface Stage extends Omit<StageFile, 'problems' | 'checks'> {
   /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
   readonly problems: readonly CatchProblem[];
+  /** A Ship stage's checks before it ships, in the order they show. Other stages have none. */
+  readonly shipChecks: readonly ShipCheck[];
   readonly slug: string;
   readonly brief: string;
-  /** In the order they open. */
+  /** In the order they open. A stage that needs none has none. */
   readonly hints: readonly string[];
   readonly explanation: string;
   /** The code this stage starts from: a new file, or code added to the learner's own. */
   readonly starter: string;
   /** The learner's file as it should be once the stage is done. */
   readonly solution: string;
-  /** Each test file, by its name in `tests/`. In a Catch stage, the assistant's own tests. */
+  /**
+   * Each test file, by its name in `tests/`. In a Catch stage, the assistant's own tests; in a Ship
+   * stage, tests the learner sees only by name.
+   */
   readonly tests: Readonly<Record<string, string>>;
-  /** A Catch stage's hidden checks, each file by its name in `checks/`. Other stages have none. */
+  /**
+   * A Catch or Ship stage's checks, each file by its name in `checks/`: a Catch stage's hidden
+   * checks, or the checks a Ship stage's code must pass before it ships. Other stages have none.
+   */
   readonly checks: Readonly<Record<string, string>>;
   /** The stage's figures.py, which computes the numbers its prose shows, if it has one. */
   readonly figures: string | null;
@@ -82,8 +91,6 @@ export async function loadCourse(root: string, slug: string): Promise<Loaded> {
   const course = await reader.course(join(root, slug), slug);
   return { course, problems: reader.problems };
 }
-
-const prose = ['brief.md', 'hints.md', 'explanation.md'];
 
 class Reader {
   readonly problems: Problem[] = [];
@@ -165,39 +172,44 @@ class Reader {
 
   async stage(folder: string, slug: string): Promise<Stage | null> {
     const file = await this.yaml(join(folder, 'stage.yaml'), stageFile);
-    const isCatch = file?.kind === 'catch';
+    const hasChecks = file?.kind === 'catch' || file?.kind === 'ship';
     await this.entries(
       folder,
-      ['stage.yaml', ...prose],
-      ['starter', 'solution', 'tests', ...(isCatch ? ['checks'] : [])],
-      ['figures.py'],
+      ['stage.yaml', 'brief.md', 'explanation.md'],
+      ['starter', 'solution', 'tests', ...(hasChecks ? ['checks'] : [])],
+      ['hints.md', 'figures.py'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
     await this.entries(join(folder, 'solution'), [file.file], []);
+    const present = new Set(((await this.list(folder)) ?? []).map((entry) => entry.name));
+    const hasHints = present.has('hints.md');
 
     const [brief, hints, explanation, starter, solution, tests, checks] = await Promise.all([
       this.prose(join(folder, 'brief.md')),
-      this.prose(join(folder, 'hints.md')),
+      hasHints ? this.prose(join(folder, 'hints.md')) : Promise.resolve(''),
       this.prose(join(folder, 'explanation.md')),
       this.text(join(folder, 'starter', file.file)),
       this.text(join(folder, 'solution', file.file)),
       this.testFiles(join(folder, 'tests'), 'A stage needs a test file.'),
-      isCatch
-        ? this.testFiles(join(folder, 'checks'), 'A Catch stage needs a check file.')
+      hasChecks
+        ? this.testFiles(
+            join(folder, 'checks'),
+            `A ${file.kind === 'catch' ? 'Catch' : 'Ship'} stage needs a check file.`,
+          )
         : Promise.resolve({}),
     ]);
-    const figures = (await this.list(folder))?.some((entry) => entry.name === 'figures.py')
-      ? await this.text(join(folder, 'figures.py'))
-      : null;
+    const figures = present.has('figures.py') ? await this.text(join(folder, 'figures.py')) : null;
     if (brief === null || hints === null || explanation === null) return null;
     if (starter === null || solution === null) return null;
-    const hintList = hints.split(/^---$/m).map((hint) => hint.trim());
+    const hintList = hasHints ? hints.split(/^---$/m).map((hint) => hint.trim()) : [];
     if (hintList.some((hint) => hint === '')) {
       this.problem(join(folder, 'hints.md'), 'Each hint, between lines of ---, needs text.');
     }
     const problems = file.kind === 'catch' ? file.problems : [];
-    this.problemsMatch(folder, problems, starter, checks);
+    const shipChecks = file.kind === 'ship' ? file.checks : [];
+    if (file.kind === 'catch') this.problemsMatch(folder, problems, starter, checks);
+    if (file.kind === 'ship') this.shipChecksMatch(folder, shipChecks, checks);
     const version = hash({
       'stage.yaml': JSON.stringify(file),
       brief,
@@ -212,6 +224,7 @@ class Reader {
     return {
       ...file,
       problems,
+      shipChecks,
       slug,
       brief,
       hints: hintList,
@@ -254,20 +267,13 @@ class Reader {
     checks: Readonly<Record<string, string>>,
   ) {
     const path = join(folder, 'stage.yaml');
-    const found = new Map<string, string>();
-    for (const [name, text] of Object.entries(checks)) {
-      for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
-        found.set(id as string, name);
-      }
-    }
+    this.checksNamed(folder, problems, checks, {
+      field: 'problems',
+      twice: (id) => `Another problem already names ${id}.`,
+      unnamed: (id) => `No problem in stage.yaml names the check ${id}.`,
+    });
     problems.forEach((problem, index) => {
       const at = `problems.${index}`;
-      if (!found.has(problem.check)) {
-        this.problem(path, `${at}.check: No check in checks/ has the id ${problem.check}.`);
-      }
-      if (problems.findIndex((other) => other.check === problem.check) !== index) {
-        this.problem(path, `${at}.check: Another problem already names ${problem.check}.`);
-      }
       const times = starter.split(problem.edit.replace).length - 1;
       if (times !== 1) {
         this.problem(
@@ -275,20 +281,69 @@ class Reader {
           `${at}.edit: The text to replace must appear once in the starter, but appears ${times} times.`,
         );
       }
-      for (const field of ['cost', 'fix'] as const) {
-        for (const { error } of Markdoc.validate(Markdoc.parse(problem[field]), {})) {
-          if (error.id !== 'variable-undefined')
-            this.problem(path, `${at}.${field}: ${error.message}`);
-        }
+      for (const field of ['cost', 'fix'] as const)
+        this.yamlProse(path, `${at}.${field}`, problem[field]);
+    });
+  }
+
+  /**
+   * A Ship stage's checks in stage.yaml and in `checks/` match: each one listed is in `checks/`,
+   * none is listed twice, every check is listed, and the text has no tags.
+   */
+  shipChecksMatch(
+    folder: string,
+    listed: readonly ShipCheck[],
+    checks: Readonly<Record<string, string>>,
+  ) {
+    const path = join(folder, 'stage.yaml');
+    this.checksNamed(folder, listed, checks, {
+      field: 'checks',
+      twice: (id) => `${id} is already listed.`,
+      unnamed: (id) => `stage.yaml's checks don't list ${id}.`,
+    });
+    listed.forEach((check, index) => {
+      for (const field of ['title', 'requires', 'failure'] as const) {
+        this.yamlProse(path, `checks.${index}.${field}`, check[field]);
+      }
+    });
+  }
+
+  /** The entries in stage.yaml and the checks in `checks/` name each other, one to one. */
+  checksNamed(
+    folder: string,
+    named: readonly { readonly check: string }[],
+    checks: Readonly<Record<string, string>>,
+    say: {
+      readonly field: string;
+      readonly twice: (id: string) => string;
+      readonly unnamed: (id: string) => string;
+    },
+  ) {
+    const path = join(folder, 'stage.yaml');
+    const found = new Map<string, string>();
+    for (const [name, text] of Object.entries(checks)) {
+      for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
+        found.set(id as string, name);
+      }
+    }
+    named.forEach(({ check }, index) => {
+      const at = `${say.field}.${index}.check`;
+      if (!found.has(check)) this.problem(path, `${at}: No check in checks/ has the id ${check}.`);
+      if (named.findIndex((other) => other.check === check) !== index) {
+        this.problem(path, `${at}: ${say.twice(check)}`);
       }
     });
     for (const [id, name] of found) {
-      if (!problems.some((problem) => problem.check === id)) {
-        this.problem(
-          join(folder, 'checks', name),
-          `No problem in stage.yaml names the check ${id}.`,
-        );
+      if (!named.some(({ check }) => check === id)) {
+        this.problem(join(folder, 'checks', name), say.unnamed(id));
       }
+    }
+  }
+
+  /** Markdoc in stage.yaml, such as a problem's cost: it may show figures, and has no tags. */
+  yamlProse(path: string, at: string, text: string) {
+    for (const { error } of Markdoc.validate(Markdoc.parse(text), {})) {
+      if (error.id !== 'variable-undefined') this.problem(path, `${at}: ${error.message}`);
     }
   }
 

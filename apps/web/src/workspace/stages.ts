@@ -59,7 +59,7 @@ export function packagesOf(lab: LabView, index: number): RunRequest['packages'] 
 
 /**
  * A stage's run: the lab's data, the code each earlier stage carried on for its file, and the
- * tests, then a Catch stage's hidden checks.
+ * tests, then a Catch or Ship stage's checks.
  */
 export function runOf(lab: LabView, index: number, code: string, kept: Kept): RunRequest {
   const stage = lab.stages[index];

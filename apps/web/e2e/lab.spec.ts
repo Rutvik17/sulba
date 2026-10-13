@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): a lab
-// of two stages on tally.py, whose tests read a small CSV of votes.
+// whose first two stages build tally.py, whose tests read a small CSV of votes.
 const path = '/demo/counting/tallies/';
 
 const solved = {
@@ -304,4 +304,100 @@ test('Keep reviewing closes the question and goes back to Finish review', async 
 
   await expect(page.getByText('Finish the review?', { exact: false })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Finish review' })).toBeFocused();
+});
+
+// The fourth stage is a Ship stage: leader goes below report.py, where the Catch stage's fixed code
+// carries on, since its review wasn't finished. Its tests are hidden, and two checks must pass
+// before it ships.
+const leader = {
+  /** Finds the leader, but sorts the poll's own list to do it. */
+  sorting:
+    'def leader(choices):\n    choices.sort()\n    return max(set(choices), key=choices.count)\n',
+  fixed: 'def leader(choices):\n    return max(set(choices), key=choices.count)\n',
+};
+
+async function openShip(page: Page) {
+  await page.addInitScript((code) => {
+    for (const stage of ['stg_demo01', 'stg_demo02', 'stg_demo03']) {
+      localStorage.setItem(`sulba:passed:${stage}`, '1');
+    }
+    localStorage.setItem('sulba:code:stg_demo02', code);
+  }, shareSolved);
+  await page.goto(`${path}?stage=ship`);
+  await expect(report(page)).toBeVisible();
+}
+
+/** A check before the code ships, in the Tests tab. */
+function shipCheck(page: Page, title: string) {
+  return page.getByRole('tabpanel', { name: 'Tests' }).getByRole('listitem').filter({
+    hasText: title,
+  });
+}
+
+test('a Ship stage shows its tests by name only, and what each check before it ships requires', async ({
+  page,
+}) => {
+  await openShip(page);
+  await expect(page.getByRole('button', { name: /Leader/ })).toContainText('Ship');
+  await expect(page.getByRole('tab', { name: 'Hints' })).toHaveCount(0);
+  const fast = shipCheck(page, 'Fast on 60,000 votes');
+  await expect(fast).toContainText('leader finds the leader of 60,000 votes in under a second.');
+  await expect(fast).not.toContainText('The limit is a second.');
+
+  await runTests(page);
+
+  await expect(summary(page)).toHaveText('0 of 2 tests pass. 0 of 2 checks pass.', loaded);
+  const tests = page.getByRole('tabpanel', { name: 'Tests' });
+  await expect(tests.getByRole('listitem').filter({ hasText: "The poll's leader" })).toContainText(
+    '✗',
+  );
+  await expect(tests).not.toContainText('NotImplementedError');
+  await expect(tests).not.toContainText('report.py, line');
+  await expect(fast).toContainText('The limit is a second.');
+  await expect(page.getByRole('tab', { name: 'Solution' })).not.toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+});
+
+test('a check before it ships says why it failed and what it measured, and passing every one finishes the stage', async ({
+  page,
+}) => {
+  await openShip(page);
+  await write(report(page), leader.sorting);
+
+  await runTests(page);
+
+  await expect(summary(page)).toHaveText('All 2 tests pass. 1 of 2 checks pass.', loaded);
+  const fast = shipCheck(page, 'Fast on 60,000 votes');
+  await expect(fast).toContainText('✓');
+  await expect(fast).toContainText(/\d\.\d\d s on 60,000 votes/);
+  await expect(fast).not.toContainText('The limit is a second.');
+  const leaves = shipCheck(page, 'Leaves the votes as they were');
+  await expect(leaves).toContainText('✗');
+  await expect(leaves).toContainText(
+    "It changed the list it was given, so the poll's votes would change with every call.",
+  );
+
+  await write(report(page), leader.fixed);
+  await runTests(page);
+  await expect(summary(page)).toHaveText('All 2 tests pass. All 2 checks pass.', loaded);
+  await expect(page.getByText('Stage 4 done.')).toBeVisible();
+  await expect(page.getByRole('button', { name: /Leader/ })).toContainText('Done');
+});
+
+test("a Ship stage's Printed tab shows only what the code prints as it loads", async ({ page }) => {
+  await openShip(page);
+  await write(
+    report(page),
+    `print("loading")\n\n\n${leader.fixed.replace('    return', '    print("counting")\n    return')}`,
+  );
+
+  await runTests(page);
+  await expect(summary(page)).toHaveText('All 2 tests pass. All 2 checks pass.', loaded);
+  await page.getByRole('tab', { name: 'Printed' }).click();
+
+  const printed = page.getByRole('tabpanel', { name: 'Printed' });
+  await expect(printed).toContainText('loading');
+  await expect(printed).not.toContainText('counting');
 });

@@ -1,7 +1,7 @@
 // Checks a course's prose once each stage's figures.py has run: the figures come out the same in
 // every runtime, every formula renders, every figure the prose names exists and every figure is
 // shown, and the math font has a glyph for every character a formula draws. A Catch stage's prose
-// includes what each problem costs and its fix.
+// includes what each problem costs and its fix, and a Ship stage's the text of each check.
 import type { Figures, RunRequest } from '@sulba/lab/protocol';
 import { drawnCharacters } from './glyphs.ts';
 import type { Course, Lab, Problem, Stage } from './load.ts';
@@ -88,17 +88,24 @@ export function proseProblems(
   for (const { path, stage } of stagesWithPaths(courses)) {
     const values = figures.get(stage.id) ?? {};
     const used = new Set<string>();
-    const pieces: [file: string, text: string][] = [
+    const pieces: [file: string, text: string, oneLine?: boolean][] = [
       ['brief.md', stage.brief],
-      ...stage.hints.map((hint) => ['hints.md', hint] as [string, string]),
+      ...stage.hints.map((hint): [string, string] => ['hints.md', hint]),
       ['explanation.md', stage.explanation],
-      ...stage.problems.flatMap(({ cost, fix }) => [
-        ['stage.yaml', cost] as [string, string],
-        ['stage.yaml', fix] as [string, string],
+      ...stage.problems.flatMap(({ cost, fix }): [string, string][] => [
+        ['stage.yaml', cost],
+        ['stage.yaml', fix],
       ]),
+      ...stage.shipChecks.flatMap(({ title, requires, failure }) =>
+        [title, requires, failure].map((text): [string, string, boolean] => [
+          'stage.yaml',
+          text,
+          true,
+        ]),
+      ),
     ];
-    for (const [file, text] of pieces) {
-      const rendered = renderProse(text, values);
+    for (const [file, text, oneLine] of pieces) {
+      const rendered = renderProse(text, values, { oneLine: oneLine ?? false });
       for (const message of rendered.errors) problems.push({ path: `${path}/${file}`, message });
       for (const name of rendered.used) used.add(name);
       const missing = new Set<number>();

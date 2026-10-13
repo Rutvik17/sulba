@@ -33,6 +33,11 @@ export interface TestResult {
   readonly location: Location | null;
   /** What the test printed. */
   readonly output: string;
+  /**
+   * What the test reports beyond passing or failing, such as how long the code took: the value it
+   * gave `record_property("note", ...)`.
+   */
+  readonly note: string | null;
   readonly durationMs: number;
 }
 

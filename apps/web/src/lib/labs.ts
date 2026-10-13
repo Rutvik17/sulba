@@ -38,17 +38,19 @@ export interface StageView {
   readonly solution: string;
   /**
    * Each test file, by its path in a run, such as `tests/test_model.py`. In a Catch stage, the
-   * assistant's own tests.
+   * assistant's own tests; in a Ship stage, tests the learner sees only by name.
    */
   readonly tests: Readonly<Record<string, string>>;
   /**
-   * A Catch stage's hidden checks, by their path in a run, such as `tests/checks/test_screener.py`.
-   * The page has them, so a learner who reads its source can find them: runs in the browser are
-   * practice (decision record 5).
+   * A Catch or Ship stage's checks, by their path in a run, such as `tests/checks/test_screener.py`.
+   * The page has them, as it has a Ship stage's tests, so a learner who reads its source can find
+   * them: runs in the browser are practice (decision record 5).
    */
   readonly checks: Readonly<Record<string, string>>;
   /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
   readonly problems: readonly ProblemView[];
+  /** A Ship stage's checks before it ships, in the order they show. Other stages have none. */
+  readonly shipChecks: readonly ShipCheckView[];
 }
 
 export interface ProblemView {
@@ -58,6 +60,15 @@ export interface ProblemView {
   /** What the problem would cost, and its fix, as HTML made like the rest of the prose. */
   readonly cost: string;
   readonly fix: string;
+}
+
+export interface ShipCheckView {
+  /** The id of the check in `checks/`. */
+  readonly check: string;
+  /** Its title, what it requires and what it says when it fails, each a line of HTML. */
+  readonly title: string;
+  readonly requires: string;
+  readonly failure: string;
 }
 
 export interface LabView {
@@ -79,6 +90,7 @@ type Figures = ReadonlyMap<string, Readonly<Record<string, string>>>;
 function stageView(stage: Stage, figures: Figures): StageView {
   const values = figures.get(stage.id) ?? {};
   const html = (text: string) => renderProse(text, values).html;
+  const line = (text: string) => renderProse(text, values, { oneLine: true }).html;
   const tests = Object.fromEntries(
     Object.entries(stage.tests).map(([name, text]) => [`tests/${name}`, text]),
   );
@@ -106,6 +118,12 @@ function stageView(stage: Stage, figures: Figures): StageView {
       title,
       cost: html(cost),
       fix: html(fix),
+    })),
+    shipChecks: stage.shipChecks.map(({ check, title, requires, failure }) => ({
+      check,
+      title: line(title),
+      requires: line(requires),
+      failure: line(failure),
     })),
   };
 }

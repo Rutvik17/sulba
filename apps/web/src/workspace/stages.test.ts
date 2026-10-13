@@ -25,6 +25,7 @@ function stage(
     tests: { [`tests/test_${id}.py`]: `# tests for ${id}\n` },
     checks: {},
     problems: [],
+    shipChecks: [],
   };
 }
 

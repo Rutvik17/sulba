@@ -15,8 +15,8 @@ export function withEdit(starter: string, problem: CatchProblem): string {
 }
 
 /**
- * A stage's test files by their path in a run, inside `folder`: its tests, then a Catch stage's
- * hidden checks in `checks/` within it, so the runner treats both as tests.
+ * A stage's test files by their path in a run, inside `folder`: its tests, then a Catch or Ship
+ * stage's checks in `checks/` within it, so the runner treats both as tests.
  */
 export function testFiles(stage: Stage, folder = 'tests'): Record<string, string> {
   const files: Record<string, string> = {};

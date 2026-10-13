@@ -14,14 +14,14 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
         stage.yaml          id, kind, title, the file the learner works in, packages, minutes,
-                            and a Catch stage's problems
+                            and a Catch stage's problems or a Ship stage's checks
         brief.md            the task
-        hints.md            hints in the order they open, separated by lines of ---
+        hints.md            optional: hints in the order they open, separated by lines of ---
         explanation.md      the explanation
         starter/<file>      the code the stage starts from
         solution/<file>     the learner's file as it should be once the stage is done
         tests/test_*.py     pytest tests, each with @pytest.mark.id and a docstring as its name
-        checks/test_*.py    a Catch stage's hidden checks, written like tests
+        checks/test_*.py    a Catch or Ship stage's checks, written like tests
         figures.py          optional: computes the numbers the stage's prose shows
 ```
 
@@ -35,7 +35,7 @@ Every course, level, module, lab, stage and test has a permanent id: a prefix (`
 
 A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code.
 
-A stage's `kind` is `build` or `catch`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
+A stage's `kind` is `build`, `catch` or `ship`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 
 - The solution passes every one of the stage's tests, and every earlier stage's.
 - The starter fails at least one test.
@@ -65,6 +65,24 @@ The checks hold each Catch stage to these, besides the solution passing every te
 - Each check belongs to exactly one problem.
 
 A run shows the assistant's tests by name and only how many checks pass. When the learner finishes the review, the checks their code passes become their score, and each problem opens with what it costs and its fix, beside the explanation and the solution. The page carries the checks, so a learner who reads its source can find them: runs in the browser are practice (decision record 5). A later stage on the same file builds on the learner's code if they caught every problem, and on the solution if they didn't.
+
+## Ship stages
+
+In a Ship stage the learner's code must pass hidden tests, then the checks it needs before it ships. `tests/` holds the tests: a run shows each one by name and whether it passed, never what it was given, expected or printed. `checks/` holds the checks, and `stage.yaml` lists them in the order they show, each part a line of Markdoc:
+
+```yaml
+checks:
+  - check: tst_k3m8q2        # the id of the check in checks/
+    title: "Fast on {% $fig.samples %} samples"
+    requires: >-             # what the check requires of the code
+      `best_threshold` handles {% $fig.samples %} samples in under a second.
+    failure: >-              # what the learner reads when the code fails it
+      The limit is a second.
+```
+
+A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
+
+The stage passes when every test and check passes, and its solution opens after the first run, as in a Build stage. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Printed tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Prose, formulas and numbers
 

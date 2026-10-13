@@ -111,7 +111,12 @@
   overflow-wrap: anywhere;
 }
 
-/* A Catch stage's results come in two groups: the assistant's tests, then the production checks. */
+/* A check before a Ship stage's code ships says why it failed in the text's own colour. */
+.failure {
+  color: var(--fg);
+}
+
+/* A Catch or Ship stage's results come in two groups: the tests, then the checks. */
 .group {
   margin: 0 0 var(--space-1);
   color: var(--dim);

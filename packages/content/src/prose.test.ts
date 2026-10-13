@@ -48,6 +48,22 @@ test('a formula that doesn’t render, and a figure that doesn’t exist, are er
   ]);
 });
 
+test('one line of text renders without a paragraph, and more than one is an error', () => {
+  const line = renderProse(
+    'Fast on {% $fig.many %} votes, in `$\\fig{limit}\\,\\text{s}$`',
+    {
+      many: '60,000',
+      limit: '1',
+    },
+    { oneLine: true },
+  );
+  expect(line.errors).toEqual([]);
+  expect(line.html).toMatch(/^Fast on 60,000 votes, in <math>.*<mn>1<\/mn>.*<\/math>$/);
+  expect(renderProse('One.\n\nTwo.', {}, { oneLine: true }).errors).toEqual([
+    'This text is one line, alone.',
+  ]);
+});
+
 test('a one-letter identifier is drawn in its math italic form, as MathML Core says', () => {
   expect(String.fromCodePoint(italicOf('x'.codePointAt(0) as number))).toBe('𝑥');
   expect(String.fromCodePoint(italicOf('h'.codePointAt(0) as number))).toBe('ℎ');

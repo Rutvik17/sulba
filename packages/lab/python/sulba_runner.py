@@ -167,6 +167,9 @@ class Report:
         entry["durationMs"] += round(report.duration * 1000)
         # Each phase's report repeats the output of the phases before it.
         entry["output"] = report.capstdout + report.capstderr
+        for name, value in report.user_properties:
+            if name == "note":
+                entry["note"] = clip(str(value))
         if report.failed and entry["status"] == "pass":
             excinfo = call.excinfo
             failed = excinfo is not None and excinfo.errisinstance(AssertionError)
@@ -207,6 +210,7 @@ class Report:
             "actual": None,
             "location": None,
             "output": "",
+            "note": None,
             "durationMs": 0,
         }
 

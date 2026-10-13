@@ -12,6 +12,7 @@ export {
   loadCourse,
   type Module,
   type Problem,
+  type ShipCheck,
   type Stage,
 } from './load.ts';
 export { type RenderedProse, renderProse } from './prose.ts';
