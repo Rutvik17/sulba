@@ -6,7 +6,7 @@ import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useEffect, useId, useRef, useState } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
-import { CatchResults, Printed, type Run, TestResults } from './Results';
+import { CatchResults, Printed, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { kept } from './storage';
 import styles from './workspace.module.css';
@@ -37,7 +37,7 @@ const css = classes(
   'missed',
 );
 
-const kinds: Record<StageView['kind'], string> = { build: 'Build', catch: 'Catch' };
+const kinds: Record<StageView['kind'], string> = { build: 'Build', catch: 'Catch', ship: 'Ship' };
 
 /** The stage to open: the one the address names if it's open, else the first not yet passed. */
 function firstStage(lab: LabView): number {
@@ -184,6 +184,7 @@ function StageWorkspace({
 }: StageProps) {
   const stage = lab.stages[index] as StageView;
   const isCatch = stage.kind === 'catch';
+  const isShip = stage.kind === 'ship';
   const editor = useRef<EditorHandle>(null);
   const left = useRef<HTMLDivElement>(null);
   const finished = useRef<HTMLParagraphElement>(null);
@@ -271,7 +272,7 @@ function StageWorkspace({
         <Tabs selectedKey={tab} onSelectionChange={(key) => setTab(String(key))}>
           <TabList aria-label="Stage">
             <Tab id="brief">Brief</Tab>
-            <Tab id="hints">Hints</Tab>
+            {stage.hints.length > 0 && <Tab id="hints">Hints</Tab>}
             <Tab id="explanation">Explanation</Tab>
             <Tab id="solution" isDisabled={!solutionOpen}>
               Solution
@@ -283,26 +284,28 @@ function StageWorkspace({
               <Prose html={stage.brief} />
             </div>
           </TabPanel>
-          <TabPanel id="hints">
-            <div className={css.panel}>
-              {hints > 0 && (
-                <ol className={css.hints}>
-                  {stage.hints.slice(0, hints).map((hint) => (
-                    <li key={hint}>
-                      <Prose html={hint} />
-                    </li>
-                  ))}
-                </ol>
-              )}
-              {hints < stage.hints.length ? (
-                <Button variant="outline" size="small" onPress={() => setHints(hints + 1)}>
-                  {hints === 0 ? 'Show a hint' : 'Show the next hint'}
-                </Button>
-              ) : (
-                <p>That’s every hint for this stage.</p>
-              )}
-            </div>
-          </TabPanel>
+          {stage.hints.length > 0 && (
+            <TabPanel id="hints">
+              <div className={css.panel}>
+                {hints > 0 && (
+                  <ol className={css.hints}>
+                    {stage.hints.slice(0, hints).map((hint) => (
+                      <li key={hint}>
+                        <Prose html={hint} />
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {hints < stage.hints.length ? (
+                  <Button variant="outline" size="small" onPress={() => setHints(hints + 1)}>
+                    {hints === 0 ? 'Show a hint' : 'Show the next hint'}
+                  </Button>
+                ) : (
+                  <p>That’s every hint for this stage.</p>
+                )}
+              </div>
+            </TabPanel>
+          )}
           <TabPanel id="explanation">
             <div className={css.panel}>
               {isCatch && !review ? (
@@ -404,6 +407,14 @@ function StageWorkspace({
                     onCancel={keepReviewing}
                     busy={!python || run.state === 'running'}
                   />
+                ) : isShip ? (
+                  <ShipResults
+                    run={run}
+                    loading={loading}
+                    file={stage.file}
+                    onGoTo={(line) => editor.current?.goTo(line)}
+                    checks={stage.shipChecks}
+                  />
                 ) : (
                   <TestResults
                     run={run}
@@ -416,7 +427,7 @@ function StageWorkspace({
             </TabPanel>
             <TabPanel id="printed">
               <div className={css.panel}>
-                <Printed run={run} hidden={unrevealed} />
+                <Printed run={run} hidden={unrevealed} loadingOnly={isShip} />
               </div>
             </TabPanel>
           </Tabs>

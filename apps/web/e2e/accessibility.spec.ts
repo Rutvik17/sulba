@@ -18,6 +18,17 @@ async function openReview(page: Page) {
   await expect(page.getByRole('textbox', { name: 'report.py', exact: true })).toBeVisible();
 }
 
+/** The fixture lab's Ship stage, with the three stages before it done (lab.spec.ts). */
+async function openShip(page: Page) {
+  await page.addInitScript(() => {
+    for (const stage of ['stg_demo01', 'stg_demo02', 'stg_demo03']) {
+      localStorage.setItem(`sulba:passed:${stage}`, '1');
+    }
+  });
+  await page.goto('/demo/counting/tallies/?stage=ship');
+  await expect(page.getByRole('textbox', { name: 'report.py', exact: true })).toBeVisible();
+}
+
 for (const scheme of ['dark', 'light'] as const) {
   for (const path of [
     '/',
@@ -132,6 +143,21 @@ for (const scheme of ['dark', 'light'] as const) {
     });
     await page.getByRole('button', { name: 'See each problem' }).click();
     await expect(page.getByText('Missed', { exact: true })).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a Ship stage's results have no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await openShip(page);
+    await page.getByRole('button', { name: 'Run tests' }).click();
+    await expect(page.getByText('0 of 2 checks pass.', { exact: false })).toBeVisible({
+      timeout: 60_000,
+    });
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 

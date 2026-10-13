@@ -76,13 +76,26 @@ const problem = z.strictObject({
   edit: z.strictObject({ replace: z.string().min(1), with: z.string() }),
 });
 
+/** One check a Ship stage's code must pass before it ships. Its text is Markdoc. */
+const shipCheck = z.strictObject({
+  /** The id of the check in `checks/`. */
+  check: id('test'),
+  title,
+  /** What the check requires of the code. */
+  requires: title,
+  /** What the learner reads when the code fails it. */
+  failure: title,
+});
+
 /**
  * Build: the learner writes the core by hand. Catch: the learner reviews an assistant's code that
- * passes its own tests, and hidden checks find its problems. Ship arrives with its first stage.
+ * passes its own tests, and hidden checks find its problems. Ship: the learner's code passes
+ * hidden tests, then the checks it must pass before it ships.
  */
 export const stageFile = z.discriminatedUnion('kind', [
   z.strictObject({ ...stageFields, kind: z.literal('build') }),
   z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem).min(1) }),
+  z.strictObject({ ...stageFields, kind: z.literal('ship'), checks: z.array(shipCheck).min(1) }),
 ]);
 
 export type CourseFile = z.infer<typeof courseFile>;
@@ -90,3 +103,4 @@ export type ModuleFile = z.infer<typeof moduleFile>;
 export type LabFile = z.infer<typeof labFile>;
 export type StageFile = z.infer<typeof stageFile>;
 export type CatchProblem = z.infer<typeof problem>;
+export type ShipCheck = z.infer<typeof shipCheck>;

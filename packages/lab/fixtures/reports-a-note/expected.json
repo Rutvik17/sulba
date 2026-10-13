@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_note01",
+      "name": "Doubles a thousand values",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": "1,000 values"
+    },
+    {
+      "id": "tst_note02",
+      "name": "Triples a value",
+      "status": "fail",
+      "message": "assert [2] == [3]",
+      "expected": "[3]",
+      "actual": "[2]",
+      "location": null,
+      "output": "",
+      "note": "1 value"
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

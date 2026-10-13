@@ -8,7 +8,8 @@
       "expected": null,
       "actual": null,
       "location": null,
-      "output": ""
+      "output": "",
+      "note": null
     },
     {
       "id": "tst_skln02",
@@ -18,7 +19,8 @@
       "expected": "(4,)",
       "actual": "(4, 2)",
       "location": null,
-      "output": ""
+      "output": "",
+      "note": null
     }
   ],
   "problem": null,

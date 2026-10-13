@@ -1,8 +1,8 @@
 // Checks across every course: no two things share an id, and every stage works. A stage works
-// when its solution passes its own tests and every earlier stage's, and each of its tests has an id
-// of its own. A Build stage's starter fails at least one test. A Catch stage's starter, the
-// assistant's code, passes the assistant's tests and fails every hidden check, and fixing any one
-// of its problems alone passes that problem's check and no other.
+// when its solution passes its own tests and checks and every earlier stage's, and each of its
+// tests has an id of its own. A Build or Ship stage's starter fails at least one test or check. A
+// Catch stage's starter, the assistant's code, passes the assistant's tests and fails every hidden
+// check, and fixing any one of its problems alone passes that problem's check and no other.
 import { type RunRequest, type RunResult, statusOf, type TestResult } from '@sulba/lab/protocol';
 import { idPattern } from './ids.ts';
 import type { Course, Problem, Stage } from './load.ts';

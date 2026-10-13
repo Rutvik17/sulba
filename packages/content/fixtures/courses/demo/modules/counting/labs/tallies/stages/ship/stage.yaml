@@ -1,0 +1,18 @@
+id: stg_demo04
+kind: ship
+title: Leader
+file: report.py
+minutes: 10
+checks:
+  - check: tst_demo11
+    title: "Fast on {% $fig.many %} votes"
+    requires: >-
+      `leader` finds the leader of {% $fig.many %} votes in under a second.
+    failure: >-
+      The limit is a second.
+  - check: tst_demo12
+    title: Leaves the votes as they were
+    requires: >-
+      `leader` leaves the list it is given as it was.
+    failure: >-
+      It changed the list it was given, so the poll's votes would change with every call.

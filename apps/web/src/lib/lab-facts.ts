@@ -3,6 +3,7 @@ import type { LabView } from './labs';
 const kindNames: Readonly<Record<LabView['stages'][number]['kind'], string>> = {
   build: 'Build',
   catch: 'Catch',
+  ship: 'Ship',
 };
 
 /** "About 45 minutes", or in hours to the nearest half past an hour: "About 4.5 hours". */

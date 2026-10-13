@@ -8,7 +8,8 @@
       "expected": null,
       "actual": null,
       "location": null,
-      "output": "mean of 3 values\n"
+      "output": "mean of 3 values\n",
+      "note": null
     },
     {
       "id": "tst_pass02",
@@ -18,7 +19,8 @@
       "expected": null,
       "actual": null,
       "location": null,
-      "output": "mean of 2 values\n"
+      "output": "mean of 2 values\n",
+      "note": null
     }
   ],
   "problem": null,

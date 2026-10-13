@@ -8,7 +8,8 @@
       "expected": null,
       "actual": null,
       "location": null,
-      "output": ""
+      "output": "",
+      "note": null
     },
     {
       "id": "tst_fail02",
@@ -18,7 +19,8 @@
       "expected": "2.5 ± 2.5e-06",
       "actual": "3",
       "location": null,
-      "output": ""
+      "output": "",
+      "note": null
     },
     {
       "id": "tst_fail03",
@@ -31,7 +33,8 @@
         "file": "stats.py",
         "line": 2
       },
-      "output": ""
+      "output": "",
+      "note": null
     }
   ],
   "problem": null,

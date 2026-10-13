@@ -32,7 +32,7 @@ test('the fixture course loads, in the order its files give', async () => {
   const { course, problems } = await loadCourse(fixtures, 'demo');
   expect(problems).toEqual([]);
   const lab = course?.levels[0]?.modules[0]?.labs[0];
-  expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share', 'check']);
+  expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share', 'check', 'ship']);
   expect(lab?.data[0]?.text).toBe('choice\nyes\nno\nyes\n');
   expect(lab?.stages[0]?.hints).toEqual([
     'Compare each choice with the one you are counting.',
@@ -54,6 +54,21 @@ test("a Catch stage has the assistant's tests, its hidden checks and its problem
     ['tst_demo07', "It reordered the poll's own list"],
   ]);
   expect(check?.problems[1]?.edit).toEqual({ replace: '    choices.sort()\n', with: '' });
+});
+
+test('a Ship stage has hidden tests, its checks and what each requires, and no hints', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const ship = course?.levels[0]?.modules[0]?.labs[0]?.stages[3];
+  expect(ship?.kind).toBe('ship');
+  expect(Object.keys(ship?.tests ?? {})).toEqual(['test_leader.py']);
+  expect(Object.keys(ship?.checks ?? {})).toEqual(['test_leader.py']);
+  expect(ship?.shipChecks.map(({ check, title }) => [check, title])).toEqual([
+    ['tst_demo11', 'Fast on {% $fig.many %} votes'],
+    ['tst_demo12', 'Leaves the votes as they were'],
+  ]);
+  expect(ship?.shipChecks[0]?.failure).toBe('The limit is a second.');
+  expect(ship?.hints).toEqual([]);
+  expect(ship?.problems).toEqual([]);
 });
 
 test("a Catch stage's version changes when a check does", async () => {
@@ -213,6 +228,51 @@ test.each([
     problem: {
       path: `${stages}/check/stage.yaml`,
       message: "problems.1.fix: Undefined tag: 'video'",
+    },
+  },
+  {
+    name: 'a Ship stage without checks',
+    change: (root: string) => rm(join(root, stages, 'ship/checks'), { recursive: true }),
+    problem: { path: `${stages}/ship/checks`, message: 'Missing.' },
+  },
+  {
+    name: 'a Ship check that no check file has',
+    change: (root: string) =>
+      edit(join(root, stages, 'ship/stage.yaml'), 'check: tst_demo12', 'check: tst_demo09'),
+    problem: {
+      path: `${stages}/ship/stage.yaml`,
+      message: 'checks.1.check: No check in checks/ has the id tst_demo09.',
+    },
+  },
+  {
+    name: "a check the Ship stage doesn't list",
+    change: (root: string) =>
+      edit(join(root, stages, 'ship/stage.yaml'), 'check: tst_demo12', 'check: tst_demo09'),
+    problem: {
+      path: `${stages}/ship/checks/test_leader.py`,
+      message: "stage.yaml's checks don't list tst_demo12.",
+    },
+  },
+  {
+    name: 'a Ship check listed twice',
+    change: (root: string) =>
+      edit(join(root, stages, 'ship/stage.yaml'), 'check: tst_demo12', 'check: tst_demo11'),
+    problem: {
+      path: `${stages}/ship/stage.yaml`,
+      message: 'checks.1.check: tst_demo11 is already listed.',
+    },
+  },
+  {
+    name: "a tag in a Ship check's text",
+    change: (root: string) =>
+      edit(
+        join(root, stages, 'ship/stage.yaml'),
+        'The limit is a second.',
+        '{% video /%} The limit is a second.',
+      ),
+    problem: {
+      path: `${stages}/ship/stage.yaml`,
+      message: "checks.0.failure: Undefined tag: 'video'",
     },
   },
   {

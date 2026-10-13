@@ -1,7 +1,7 @@
 import type { RunResult, TestResult } from '@sulba/lab/protocol';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
-import type { ProblemView } from '../lib/labs';
+import type { ProblemView, ShipCheckView } from '../lib/labs';
 import styles from './results.module.css';
 import type { Review } from './stages';
 
@@ -23,6 +23,7 @@ const css = classes(
   'group',
   'finish',
   'actions',
+  'failure',
 );
 
 export type Run =
@@ -49,17 +50,21 @@ function stoppedOf(result: RunResult): string | null {
   return null;
 }
 
-function summaryOf(result: RunResult): string {
-  const stopped = stoppedOf(result);
-  if (stopped) return stopped;
-  const passed = result.tests.filter((test) => test.status === 'pass').length;
-  const all = result.tests.length;
-  if (all === 1) return passed ? 'The test passes.' : 'The test fails.';
-  return passed === all ? `All ${all} tests pass.` : `${passed} of ${all} tests pass.`;
-}
-
 const passing = (tests: readonly TestResult[]) =>
   tests.filter((test) => test.status === 'pass').length;
+
+/** How many of some tests or checks pass, such as "All 3 tests pass." */
+function counted(tests: readonly TestResult[], one: string, many: string): string {
+  const passed = passing(tests);
+  if (tests.length === 1) return `The ${one} ${passed ? 'passes' : 'fails'}.`;
+  return passed === tests.length
+    ? `All ${tests.length} ${many} pass.`
+    : `${passed} of ${tests.length} ${many} pass.`;
+}
+
+function summaryOf(result: RunResult): string {
+  return stoppedOf(result) ?? counted(result.tests, 'test', 'tests');
+}
 
 /** A Catch run: how many production checks pass, then how the assistant's own tests did. */
 function catchSummaryOf(
@@ -78,6 +83,17 @@ function catchSummaryOf(
       ? `The assistant’s ${own.length === 1 ? 'test passes' : 'tests pass'}.`
       : `${passing(own)} of the assistant’s ${own.length} tests pass.`;
   return `${checked} ${tested}`;
+}
+
+/** A Ship run: how its tests did, then its checks before it ships. */
+function shipSummaryOf(
+  result: RunResult,
+  tests: readonly TestResult[],
+  checks: readonly TestResult[],
+): string {
+  return (
+    stoppedOf(result) ?? `${counted(tests, 'test', 'tests')} ${counted(checks, 'check', 'checks')}`
+  );
 }
 
 /** The problem that stopped a run, with a link to its line when it's in the learner's file. */
@@ -160,6 +176,87 @@ export function TestResults({ run, loading, onGoTo, file }: Props) {
           ))}
         </ol>
       )}
+    </div>
+  );
+}
+
+/** A line of a stage's text, made from its Markdoc when the site was built. */
+function Line({ html }: { html: string }) {
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+interface ShipProps extends Props {
+  readonly checks: readonly ShipCheckView[];
+}
+
+/**
+ * A Ship stage's Tests tab: each test by name, passed or not, and nothing of what it checked. Then
+ * the checks before it ships, each with what it requires, why it failed and what it measured.
+ */
+export function ShipResults({ run, loading, onGoTo, file, checks }: ShipProps) {
+  const ids = new Set(checks.map(({ check }) => check));
+  const result = run.state === 'done' ? run.result : null;
+  const ran = result?.problem ? [] : (result?.tests ?? []);
+  const tests = ran.filter((test) => !test.id || !ids.has(test.id));
+  const checked = ran.filter((test) => test.id !== null && ids.has(test.id));
+  return (
+    <div className={css.results}>
+      <p className={css.summary} aria-live="polite">
+        {run.state === 'idle' && 'Run the tests to check your code.'}
+        {run.state === 'running' && (loading ? 'Loading Python…' : 'Running the tests…')}
+        {run.state === 'failed' &&
+          'Python didn’t load. Check your connection, then run the tests again.'}
+        {result && shipSummaryOf(result, tests, checked)}
+      </p>
+      <Stopped run={run} file={file} onGoTo={onGoTo} />
+      {tests.length > 0 && (
+        <section>
+          <h3 className={css.group}>Tests</h3>
+          <ol className={css.tests}>
+            {tests.map((test) => (
+              <li
+                key={test.id ?? test.name}
+                className={`${css.test} ${test.status === 'pass' ? css.pass : css.fail}`}
+              >
+                <span className={css.name}>
+                  <Mark passed={test.status === 'pass'} /> {test.name}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      <section>
+        <h3 className={css.group}>Before it ships</h3>
+        <ol className={css.tests}>
+          {checks.map(({ check, title, requires, failure }) => {
+            const test = checked.find((each) => each.id === check);
+            const passed = test?.status === 'pass';
+            return (
+              <li
+                key={check}
+                className={test ? `${css.test} ${passed ? css.pass : css.fail}` : css.test}
+              >
+                <span className={css.name}>
+                  {test && <Mark passed={passed} />} <Line html={title} />
+                </span>
+                <div className={css.detail}>
+                  <p>
+                    <Line html={requires} />
+                  </p>
+                  {test && !passed && (
+                    <p className={css.failure}>
+                      <Line html={failure} />
+                    </p>
+                  )}
+                  {test?.note && <p>{test.note}</p>}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
     </div>
   );
 }
@@ -259,22 +356,43 @@ export function CatchResults({
 
 /**
  * The Printed tab: what the code printed, as it loaded and in each test. A hidden check's output
- * doesn't name the check.
+ * doesn't name the check. A Ship stage's tests are hidden whole, so only what the code printed as
+ * it loaded shows.
  */
-export function Printed({ run, hidden = new Set() }: { run: Run; hidden?: ReadonlySet<string> }) {
+export function Printed({
+  run,
+  hidden = new Set(),
+  loadingOnly = false,
+}: {
+  run: Run;
+  hidden?: ReadonlySet<string>;
+  loadingOnly?: boolean;
+}) {
   if (run.state !== 'done') {
-    return <p className={css.note}>What your code prints while the tests run appears here.</p>;
+    return (
+      <p className={css.note}>
+        {loadingOnly
+          ? 'What your code prints as it loads appears here. What it prints in the tests stays hidden.'
+          : 'What your code prints while the tests run appears here.'}
+      </p>
+    );
   }
   const parts = [
     ...(run.result.output ? [{ name: 'While loading', text: run.result.output }] : []),
-    ...run.result.tests
+    ...(loadingOnly ? [] : run.result.tests)
       .filter((test) => test.output)
       .map(({ id, name, output }) => ({
         name: id !== null && hidden.has(id) ? 'A production check' : name,
         text: output,
       })),
   ];
-  if (parts.length === 0) return <p className={css.note}>Your code printed nothing.</p>;
+  if (parts.length === 0) {
+    return (
+      <p className={css.note}>
+        {loadingOnly ? 'Your code printed nothing as it loaded.' : 'Your code printed nothing.'}
+      </p>
+    );
+  }
   return (
     <div className={css.results}>
       {parts.map(({ name, text }, index) => (
