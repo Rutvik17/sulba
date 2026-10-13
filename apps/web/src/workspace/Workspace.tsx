@@ -4,9 +4,10 @@ import { pyodidePath, type RunResult } from '@sulba/lab/protocol';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
-import { CatchResults, Printed, type Run, ShipResults, TestResults } from './Results';
+import { ChartPanel } from './ChartPanel';
+import { CatchResults, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { kept } from './storage';
 import styles from './workspace.module.css';
@@ -192,11 +193,13 @@ function StageWorkspace({
   const finished = useRef<HTMLParagraphElement>(null);
   const finishId = useId();
   const [opening] = useState(() => codeOf(lab, index, kept));
+  const code = useCallback(() => editor.current?.code() ?? opening, [opening]);
   const [run, setRun] = useState<Run>({ state: 'idle' });
+  const [runs, setRuns] = useState(0);
   const [tried, setTried] = useState(passed);
   const [hints, setHints] = useState(0);
   const [tab, setTab] = useState('brief');
-  const [results, setResults] = useState<'tests' | 'printed'>('tests');
+  const [results, setResults] = useState<'tests' | 'output'>('tests');
   const [confirming, setConfirming] = useState(false);
   const [finishing, setFinishing] = useState(false);
 
@@ -208,13 +211,13 @@ function StageWorkspace({
   /** Runs the tests on the code in the editor, or returns null if they couldn't run. */
   const execute = async (): Promise<RunResult | null> => {
     if (!python || run.state === 'running') return null;
-    const code = editor.current?.code() ?? opening;
     setRun({ state: 'running' });
     setResults('tests');
     setTried(true);
     try {
-      const result = await python.run(runOf(lab, index, code, kept));
+      const result = await python.run(runOf(lab, index, code(), kept));
       setRun({ state: 'done', result });
+      setRuns((before) => before + 1);
       return result;
     } catch {
       setRun({ state: 'failed' });
@@ -250,8 +253,8 @@ function StageWorkspace({
     document.getElementById(finishId)?.focus();
   };
 
-  const showProblems = () => {
-    setTab('explanation');
+  const show = (panel: string) => {
+    setTab(panel);
     left.current?.scrollIntoView({ block: 'nearest' });
   };
 
@@ -279,6 +282,7 @@ function StageWorkspace({
             <Tab id="solution" isDisabled={!solutionOpen}>
               Solution
             </Tab>
+            {stage.chart && <Tab id="chart">Chart</Tab>}
           </TabList>
           <TabPanel id="brief">
             <div className={css.panel}>
@@ -303,7 +307,7 @@ function StageWorkspace({
                     {hints === 0 ? 'Show a hint' : 'Show the next hint'}
                   </Button>
                 ) : (
-                  <p>That’s every hint for this stage.</p>
+                  <p>No more hints.</p>
                 )}
               </div>
             </TabPanel>
@@ -330,6 +334,21 @@ function StageWorkspace({
               <Editor defaultValue={stage.solution} label={`Solution: ${stage.file}`} readOnly />
             </div>
           </TabPanel>
+          {stage.chart && (
+            <TabPanel id="chart">
+              <div className={css.panel}>
+                <h2>{stage.chart.title}</h2>
+                <ChartPanel
+                  lab={lab}
+                  index={index}
+                  python={python}
+                  passed={passed}
+                  code={code}
+                  runs={runs}
+                />
+              </div>
+            </TabPanel>
+          )}
         </Tabs>
       </div>
 
@@ -369,10 +388,10 @@ function StageWorkspace({
           {isCatch && review && (
             <div className={`${css.done} ${css.reviewed}`}>
               <p ref={finished} tabIndex={-1}>
-                Review finished: {review.caught.length} of {review.total} problems caught.
+                Review finished. You caught {review.caught.length} of {review.total} problems.
               </p>
               <div className={css.tools}>
-                <Button variant="outline" size="small" onPress={showProblems}>
+                <Button variant="outline" size="small" onPress={() => show('explanation')}>
                   See each problem
                 </Button>
                 {onNext && (
@@ -386,11 +405,18 @@ function StageWorkspace({
           {!isCatch && done && (
             <div className={css.done}>
               <p>Stage {index + 1} done.</p>
-              {onNext && (
-                <Button size="small" onPress={onNext}>
-                  Next stage
-                </Button>
-              )}
+              <div className={css.tools}>
+                {stage.chart && (
+                  <Button variant="outline" size="small" onPress={() => show('chart')}>
+                    See the chart
+                  </Button>
+                )}
+                {onNext && (
+                  <Button size="small" onPress={onNext}>
+                    Next stage
+                  </Button>
+                )}
+              </div>
             </div>
           )}
           <Tabs
@@ -399,7 +425,7 @@ function StageWorkspace({
           >
             <TabList aria-label="Results">
               <Tab id="tests">Tests</Tab>
-              <Tab id="printed">Printed</Tab>
+              <Tab id="output">Output</Tab>
             </TabList>
             <TabPanel id="tests">
               <div className={css.panel}>
@@ -434,9 +460,9 @@ function StageWorkspace({
                 )}
               </div>
             </TabPanel>
-            <TabPanel id="printed">
+            <TabPanel id="output">
               <div className={css.panel}>
-                <Printed run={run} hidden={unrevealed} loadingOnly={isShip} />
+                <Output run={run} hidden={unrevealed} loadingOnly={isShip} />
               </div>
             </TabPanel>
           </Tabs>

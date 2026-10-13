@@ -1,7 +1,14 @@
-// The page's side of the lab. It sends the worker one task at a time, stops a run that passes
-// the time limit by ending the worker, and starts a new worker for the next task.
+// The page's side of the lab. It sends the worker one task at a time, stops a run or a chart that
+// passes the time limit by ending the worker, and starts a new worker for the next task.
 import type { FromWorker, ToWorker } from './messages.ts';
-import { type RunRequest, type RunResult, timeLimitMs } from './protocol.ts';
+import {
+  type ChartRequest,
+  type ChartResult,
+  type Problem,
+  type RunRequest,
+  type RunResult,
+  timeLimitMs,
+} from './protocol.ts';
 
 /** The parts of a Worker the lab uses, so tests can stand in for one. */
 export interface WorkerLike {
@@ -64,24 +71,56 @@ export class Lab {
   }
 
   run(request: RunRequest): Promise<RunResult> {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    return this.#enqueue<RunResult>(
+    return this.#timed(
       (id) => ({ type: 'run', id, request }),
-      (message, finish) => {
-        if (message.type === 'started') {
-          timer = setTimeout(() => {
-            this.#end();
-            finish.resolve(this.#stopped());
-          }, this.#timeLimitMs);
-        }
-        if (message.type === 'result') finish.resolve(message.result);
-      },
-    ).finally(() => clearTimeout(timer));
+      (reply) => (reply.type === 'result' ? reply.result : null),
+      (problem) => ({
+        status: 'error',
+        tests: [],
+        problem: { ...problem, location: null },
+        output: '',
+        durationMs: this.#timeLimitMs,
+      }),
+    );
+  }
+
+  /** What a stage's chart.py draws with these values. */
+  chart(request: ChartRequest): Promise<ChartResult> {
+    return this.#timed(
+      (id) => ({ type: 'chart', id, request }),
+      (reply) => (reply.type === 'drawn' ? reply.result : null),
+      (problem) => ({ chart: null, problem }),
+    );
   }
 
   /** End the worker. A later task starts a new one. */
   dispose() {
     this.#end();
+  }
+
+  /**
+   * A task the time limit applies to, from when the worker starts it: past the limit, the worker is
+   * ended and the task gives what `stopped` makes of the problem.
+   */
+  #timed<T>(
+    message: (id: number) => ToWorker,
+    answer: (reply: FromWorker) => T | null,
+    stopped: (problem: Pick<Problem, 'kind' | 'message'>) => T,
+  ): Promise<T> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    return this.#enqueue<T>(message, (reply, finish) => {
+      if (reply.type === 'started') {
+        timer = setTimeout(() => {
+          this.#end();
+          const seconds = this.#timeLimitMs / 1000;
+          finish.resolve(
+            stopped({ kind: 'TimeLimit', message: `Stopped after ${seconds} seconds.` }),
+          );
+        }, this.#timeLimitMs);
+      }
+      const value = answer(reply);
+      if (value !== null) finish.resolve(value);
+    }).finally(() => clearTimeout(timer));
   }
 
   #enqueue<T>(
@@ -142,16 +181,5 @@ export class Lab {
   #end() {
     this.#worker?.terminate();
     this.#worker = null;
-  }
-
-  #stopped(): RunResult {
-    const seconds = this.#timeLimitMs / 1000;
-    return {
-      status: 'error',
-      tests: [],
-      problem: { kind: 'TimeLimit', message: `Stopped after ${seconds} seconds.`, location: null },
-      output: '',
-      durationMs: this.#timeLimitMs,
-    };
   }
 }

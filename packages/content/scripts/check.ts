@@ -1,10 +1,11 @@
 // Checks every course in a folder: its files against their schemas, every stage in Pyodide and in
-// CPython, and every stage's prose with the numbers its figures.py gives in each. Prints each
-// problem and fails if there is one.
+// CPython, every stage's prose with the numbers its figures.py gives in each, and every chart as
+// each draws it. Prints each problem and fails if there is one.
 import { resolve } from 'node:path';
-import { figuresInCPython, pyodideEngine, runInCPython } from '@sulba/lab/node';
+import { chartsInCPython, figuresInCPython, pyodideEngine, runInCPython } from '@sulba/lab/node';
 import {
   type Course,
+  checkCharts,
   computeFigures,
   courseSlugs,
   duplicateIds,
@@ -35,6 +36,12 @@ if (problems.length === 0) {
     CPython: figuresInCPython,
   });
   problems.push(...found, ...proseProblems(courses, figures, mathFontCharacters()));
+  problems.push(
+    ...(await checkCharts(courses, {
+      Pyodide: async (requests) => requests.map(engine.chart),
+      CPython: chartsInCPython,
+    })),
+  );
 }
 
 const stages = courses.flatMap((course) =>

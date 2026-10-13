@@ -1,6 +1,15 @@
 import { expect, test } from 'vitest';
 import type { LabView, StageView } from '../lib/labs';
-import { codeOf, isOpen, type Kept, packagesOf, type Review, runOf } from './stages';
+import {
+  chartOf,
+  codeOf,
+  isOpen,
+  type Kept,
+  packagesOf,
+  previewOf,
+  type Review,
+  runOf,
+} from './stages';
 
 function stage(
   id: string,
@@ -27,6 +36,7 @@ function stage(
     checks: {},
     problems: [],
     shipChecks: [],
+    chart: null,
   };
 }
 
@@ -136,6 +146,33 @@ test("a later stage's runs use the code the Catch stage carried on", () => {
   });
   expect(runOf(later, 3, 'x = 1\n', missed).files['screener.py']).toBe(review.solution);
   expect(runOf(later, 3, 'x = 1\n', caught).files['screener.py']).toBe('mine\n');
+});
+
+test("a chart draws with the learner's files, as a run has them, and chart.py", () => {
+  const chart = { title: 'Chart', sliders: [], code: '# draws\n' };
+  const charted: LabView = {
+    ...lab,
+    stages: lab.stages.map((each, at) => (at === 1 ? { ...each, chart } : each)),
+  };
+  expect(chartOf(charted, 1, 'mine\n', keeping({ one: 'A\n' }), { w: 1 })).toEqual({
+    files: { 'data/votes.csv': 'choice\nyes\n', 'model.py': 'mine\n', 'chart.py': '# draws\n' },
+    values: { w: 1 },
+    packages: ['numpy'],
+  });
+});
+
+test("a chart's preview draws with every stage's solution up to it", () => {
+  const chart = { title: 'Chart', sliders: [], code: '# draws\n' };
+  const charted: LabView = {
+    ...lab,
+    stages: lab.stages.map((each, at) => (at === 2 ? { ...each, chart } : each)),
+  };
+  expect(previewOf(charted, 2, {}).files).toEqual({
+    'data/votes.csv': 'choice\nyes\n',
+    'model.py': 'def b():\n    pass\n# solved\n',
+    'screener.py': 'class Screener:\n    draft = True\n# solved\n',
+    'chart.py': '# draws\n',
+  });
 });
 
 test("a stage loads its own packages and every earlier stage's, never a later stage's", () => {

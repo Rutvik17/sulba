@@ -34,7 +34,7 @@ async function runTests(page: Page) {
 }
 
 const summary = (page: Page) =>
-  page.getByText(/tests pass\.|test (passes|fails)\.|couldn’t run|were stopped/);
+  page.getByText(/tests passed\.|test (passed|failed)\.|has an error|5-second limit/);
 
 // A page's first run waits for Python to load, which takes longer while other tests load it too.
 const loaded = { timeout: 60_000 };
@@ -46,7 +46,7 @@ test('a run lists each test, with the error and the line it came from', async ({
 
   await runTests(page);
 
-  await expect(summary(page)).toHaveText('0 of 2 tests pass.', loaded);
+  await expect(summary(page)).toHaveText('0 of 2 tests passed.', loaded);
   const first = page.getByRole('listitem').filter({ hasText: 'Two votes for yes' });
   await expect(first).toContainText('NotImplementedError');
   await first.getByRole('button', { name: 'tally.py, line 3' }).click();
@@ -61,7 +61,7 @@ test('passing every test finishes the stage, and the next builds on the learner�
 
   await write(code(page), solved.count);
   await runTests(page);
-  await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
+  await expect(summary(page)).toHaveText('Both tests passed.', loaded);
   await expect(page.getByText('Stage 1 done.')).toBeVisible();
   await page.getByRole('button', { name: 'Next stage' }).click();
 
@@ -69,7 +69,7 @@ test('passing every test finishes the stage, and the next builds on the learner�
   await expect(code(page)).toContainText('return sum(1 for each in choices if each == choice)');
   await expect(code(page)).toContainText('def share(choices, choice):');
   await runTests(page);
-  await expect(summary(page)).toHaveText('The test fails.', loaded);
+  await expect(summary(page)).toHaveText('The test failed.', loaded);
 });
 
 test('the solution opens after the first run', async ({ page }) => {
@@ -110,7 +110,7 @@ test('hints open one at a time', async ({ page }) => {
   await page.getByRole('button', { name: 'Show the next hint' }).click();
 
   await expect(page.getByText('adds up a generator of ones')).toBeVisible();
-  await expect(page.getByText('That’s every hint for this stage.')).toBeVisible();
+  await expect(page.getByText('No more hints.')).toBeVisible();
 });
 
 test('the code is kept when the page reloads, and Reset brings back the starter', async ({
@@ -134,7 +134,10 @@ test('a syntax error stops the run and points to its line', async ({ page }) => 
 
   await runTests(page);
 
-  await expect(summary(page)).toHaveText('The tests couldn’t run: your code has an error.', loaded);
+  await expect(summary(page)).toHaveText(
+    'Your code has an error. Fix it, then run the tests again.',
+    loaded,
+  );
   await expect(page.getByText(/^SyntaxError: /)).toBeVisible();
   await expect(page.getByRole('button', { name: 'tally.py, line 1' })).toBeVisible();
 });
@@ -145,13 +148,13 @@ test('a loop that never ends is stopped, and the next run works', async ({ page 
 
   await runTests(page);
   await expect(summary(page)).toHaveText(
-    'The tests were stopped after 5 seconds. A loop that never ends is the usual cause.',
+    'The tests ran past the 5-second limit. Check for a loop that never ends.',
     loaded,
   );
   await write(code(page), solved.count);
   await runTests(page);
 
-  await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
+  await expect(summary(page)).toHaveText('Both tests passed.', loaded);
 });
 
 test('a stage the address names opens only once the stage before is done', async ({ page }) => {
@@ -160,7 +163,7 @@ test('a stage the address names opens only once the stage before is done', async
 
   await write(code(page), solved.count);
   await runTests(page);
-  await expect(summary(page)).toHaveText('All 2 tests pass.', loaded);
+  await expect(summary(page)).toHaveText('Both tests passed.', loaded);
   await openLab(page, '?stage=share');
 
   await expect(page.getByRole('heading', { name: 'Share' })).toBeVisible();
@@ -226,7 +229,7 @@ test('a Catch stage shows the assistant’s tests, and only a count of its produ
   await runTests(page);
 
   await expect(checked(page)).toHaveText(
-    '0 of 2 production checks pass. The assistant’s tests pass.',
+    '0 of 2 production checks passed. The assistant’s tests passed.',
     loaded,
   );
   await expect(page.getByText('One line per choice')).toBeVisible();
@@ -245,12 +248,12 @@ test('until the review is finished, a production check’s output doesn’t name
 
   await runTests(page);
   await expect(checked(page)).toHaveText(
-    '1 of 2 production checks pass. The assistant’s tests pass.',
+    '1 of 2 production checks passed. The assistant’s tests passed.',
     loaded,
   );
-  await page.getByRole('tab', { name: 'Printed' }).click();
+  await page.getByRole('tab', { name: 'Output' }).click();
 
-  const printed = page.getByRole('tabpanel', { name: 'Printed' });
+  const printed = page.getByRole('tabpanel', { name: 'Output' });
   await expect(printed).toContainText('One line per choice');
   await expect(printed).toContainText('A production check');
   await expect(printed).not.toContainText('Most votes first');
@@ -269,7 +272,7 @@ test('finishing the review keeps the score, and names each problem with what it 
     .getByRole('button', { name: 'Finish review' })
     .click();
 
-  await expect(page.getByText('Review finished: 1 of 2 problems caught.')).toBeFocused(loaded);
+  await expect(page.getByText('Review finished. You caught 1 of 2 problems.')).toBeFocused(loaded);
   await expect(page.getByRole('button', { name: 'Finish review' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Check/ })).toContainText('1 of 2 caught');
   await page.getByRole('button', { name: 'See each problem' }).click();
@@ -291,7 +294,7 @@ test('finishing the review keeps the score, and names each problem with what it 
   );
 
   await page.reload();
-  await expect(page.getByText('Review finished: 1 of 2 problems caught.')).toBeVisible();
+  await expect(page.getByText('Review finished. You caught 1 of 2 problems.')).toBeVisible();
 });
 
 test('passing every production check finishes the review by itself', async ({ page }) => {
@@ -300,7 +303,7 @@ test('passing every production check finishes the review by itself', async ({ pa
 
   await runTests(page);
 
-  await expect(page.getByText('Review finished: 2 of 2 problems caught.')).toBeVisible(loaded);
+  await expect(page.getByText('Review finished. You caught 2 of 2 problems.')).toBeVisible(loaded);
   await expect(
     page.getByRole('tabpanel', { name: 'Tests' }).getByRole('listitem').filter({
       hasText: 'The fewest votes came first',
@@ -361,7 +364,7 @@ test('a Ship stage shows its tests by name only, what each check requires, and i
 
   await runTests(page);
 
-  await expect(summary(page)).toHaveText('0 of 2 tests pass. 0 of 2 checks pass.', loaded);
+  await expect(summary(page)).toHaveText('0 of 2 tests passed. 0 of 2 checks passed.', loaded);
   const tests = page.getByRole('tabpanel', { name: 'Tests' });
   await expect(tests.getByRole('listitem').filter({ hasText: "The poll's leader" })).toContainText(
     '✗',
@@ -384,7 +387,7 @@ test('a check before it ships says why it failed and what it measured, and passi
 
   await runTests(page);
 
-  await expect(summary(page)).toHaveText('All 2 tests pass. 1 of 2 checks pass.', loaded);
+  await expect(summary(page)).toHaveText('Both tests passed. 1 of 2 checks passed.', loaded);
   const fast = shipCheck(page, 'Fast on 60,000 votes');
   await expect(fast).toContainText('✓');
   await expect(fast).toContainText(/\d\.\d\d s on 60,000 votes/);
@@ -397,12 +400,12 @@ test('a check before it ships says why it failed and what it measured, and passi
 
   await write(report(page), leader.fixed);
   await runTests(page);
-  await expect(summary(page)).toHaveText('All 2 tests pass. All 2 checks pass.', loaded);
+  await expect(summary(page)).toHaveText('Both tests passed. Both checks passed.', loaded);
   await expect(page.getByText('Stage 4 done.')).toBeVisible();
   await expect(page.getByRole('button', { name: /Leader/ })).toContainText('Done');
 });
 
-test("a Ship stage's Printed tab shows only what the code prints as it loads", async ({ page }) => {
+test("a Ship stage's Output tab shows only what the code prints as it loads", async ({ page }) => {
   await openShip(page);
   await write(
     report(page),
@@ -410,10 +413,55 @@ test("a Ship stage's Printed tab shows only what the code prints as it loads", a
   );
 
   await runTests(page);
-  await expect(summary(page)).toHaveText('All 2 tests pass. All 2 checks pass.', loaded);
-  await page.getByRole('tab', { name: 'Printed' }).click();
+  await expect(summary(page)).toHaveText('Both tests passed. Both checks passed.', loaded);
+  await page.getByRole('tab', { name: 'Output' }).click();
 
-  const printed = page.getByRole('tabpanel', { name: 'Printed' });
+  const printed = page.getByRole('tabpanel', { name: 'Output' });
   await expect(printed).toContainText('loading');
   await expect(printed).not.toContainText('counting');
+});
+
+test("a stage's chart previews the solution, then draws the learner's code once it passes", async ({
+  page,
+}) => {
+  await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
+  await openLab(page, '?stage=share');
+  await page.getByRole('tab', { name: 'Chart' }).click();
+  const slider = page.getByRole('slider', { name: 'Votes counted' });
+  const locked = page.getByText('Opens when your tests pass.');
+  await expect(locked).toBeVisible();
+  await expect(slider).toBeDisabled();
+
+  await write(code(page), shareSolved);
+  await runTests(page);
+  await expect(page.getByText('Stage 2 done.')).toBeVisible(loaded);
+
+  await expect(locked).toBeHidden();
+  const value = page.locator('dl').filter({ hasText: 'Share of yes' }).getByRole('definition');
+  await expect(value).toHaveText('0.6667');
+  await slider.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(value).toHaveText('0.5000');
+  await expect(page.getByRole('img', { name: /in the first 1 to 2 votes/ })).toBeVisible();
+
+  // After a run, the chart draws the code as it stands.
+  await write(code(page), `${solved.count}\n\ndef share(choices, choice):\n    return 0.25\n`);
+  await runTests(page);
+  await expect(value).toHaveText('0.2500');
+});
+
+test("a chart shows the error when the learner's code raises one", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('sulba:passed:stg_demo01', '1');
+    localStorage.setItem('sulba:passed:stg_demo02', '1');
+    localStorage.setItem(
+      'sulba:code:stg_demo02',
+      'def count(choices, choice):\n    return 0\n\n\ndef share(choices, choice):\n    return 1 / 0\n',
+    );
+  });
+  await openLab(page, '?stage=share');
+  await page.getByRole('tab', { name: 'Chart' }).click();
+
+  await expect(page.getByText('Your code raised an error.')).toBeVisible(loaded);
+  await expect(page.getByText('ZeroDivisionError: division by zero')).toBeVisible();
 });

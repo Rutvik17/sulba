@@ -53,6 +53,59 @@ export const labFile = z.strictObject({
   stages: z.array(slug).min(1),
 });
 
+/** Whether span is a whole number of steps. */
+function inSteps(span: number, step: number): boolean {
+  const steps = span / step;
+  return Math.abs(steps - Math.round(steps)) < 1e-9;
+}
+
+/** What a slider is called, the name chart() takes its value as, and the value it starts at. */
+const sliderFields = {
+  name: z.string().regex(/^[a-z_][a-z0-9_]*$/, 'Expected a name in Python, in lowercase'),
+  label: title,
+  value: z.number(),
+};
+
+/** A slider over an even range, such as a bias from -4 to 4 in steps of 0.1. */
+const rangeSlider = z
+  .strictObject({ ...sliderFields, min: z.number(), max: z.number(), step: z.number().positive() })
+  .refine(({ min, max }) => min < max, { message: 'max must be more than min.', path: ['max'] })
+  .refine(({ min, max, step }) => inSteps(max - min, step), {
+    message: 'The range must be a whole number of steps.',
+    path: ['step'],
+  })
+  .refine(
+    ({ min, max, step, value }) => value >= min && value <= max && inSteps(value - min, step),
+    {
+      message: 'value must be in the range, on a step.',
+      path: ['value'],
+    },
+  );
+
+/** A slider that moves through a list of values, for a range that spans powers of ten. */
+const stopSlider = z
+  .strictObject({ ...sliderFields, stops: z.array(z.number()).min(2) })
+  .refine(({ stops }) => stops.slice(1).every((stop, index) => stop > (stops[index] as number)), {
+    message: 'Each stop must be more than the one before.',
+    path: ['stops'],
+  })
+  .refine(({ stops, value }) => stops.includes(value), {
+    message: 'value must be one of the stops.',
+    path: ['value'],
+  });
+
+/** A chart that chart.py draws with the learner's code, under its title. */
+const chart = z
+  .strictObject({
+    title,
+    /** The values the learner can change, each passed to chart() by its name. */
+    sliders: z.array(z.union([rangeSlider, stopSlider])).default([]),
+  })
+  .refine(({ sliders }) => new Set(sliders.map(({ name }) => name)).size === sliders.length, {
+    message: 'Each slider needs a name of its own.',
+    path: ['sliders'],
+  });
+
 const stageFields = {
   id: id('stage'),
   title,
@@ -61,6 +114,8 @@ const stageFields = {
   packages: z.array(z.enum(pythonPackages)).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),
+  /** A chart that draws the learner's code once the stage is passed: chart.py draws it. */
+  chart: chart.optional(),
 };
 
 /** One problem in a Catch stage's code, found by one hidden check. */
@@ -104,3 +159,4 @@ export type LabFile = z.infer<typeof labFile>;
 export type StageFile = z.infer<typeof stageFile>;
 export type CatchProblem = z.infer<typeof problem>;
 export type ShipCheck = z.infer<typeof shipCheck>;
+export type ChartFile = z.infer<typeof chart>;

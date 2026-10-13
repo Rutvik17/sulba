@@ -4,3 +4,10 @@ title: Training
 file: model.py
 packages: [numpy, scikit-learn]
 minutes: 50
+chart:
+  title: Training loss
+  sliders:
+    - name: lr
+      label: Learning rate
+      stops: [0.05, 0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32]
+      value: 0.5

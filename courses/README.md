@@ -1,6 +1,6 @@
 # Writing a course
 
-A course is a folder of plain files (decision record 7). `pnpm check:content` checks every course on every pull request: each file against its schema, every stage in Pyodide and in CPython, and every stage's prose with the numbers its `figures.py` gives.
+A course is a folder of plain files (decision record 7). `pnpm check:content` checks every course on every pull request: each file against its schema, every stage in Pyodide and in CPython, every stage's prose with the numbers its `figures.py` gives, and every chart as its `chart.py` draws it.
 
 ## Layout
 
@@ -14,7 +14,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
         stage.yaml          id, kind, title, the file the learner works in, packages, minutes,
-                            and a Catch stage's problems or a Ship stage's checks
+                            a Catch stage's problems or a Ship stage's checks, and a chart
         brief.md            the task
         hints.md            optional: hints in the order they open, separated by lines of ---
         explanation.md      optional: the explanation
@@ -23,6 +23,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
         tests/test_*.py     pytest tests, each with @pytest.mark.id and a docstring as its name
         checks/test_*.py    a Catch or Ship stage's checks, written like tests
         figures.py          optional: computes the numbers the stage's prose shows
+        chart.py            optional: draws the stage's chart with the learner's code
 ```
 
 A folder's name is its address in the URL. Order comes from the YAML files, which must list every folder there is and nothing else. A file the course doesn't use is an error. Hidden files and folders, whose names start with a dot, are left out.
@@ -82,7 +83,7 @@ checks:
 
 A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
 
-The stage passes when every test and check passes. If it has an explanation, it opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Printed tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
+The stage passes when every test and check passes. If it has an explanation, it opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Prose, formulas and numbers
 
@@ -106,6 +107,46 @@ Numbers are never typed. `figures.py` defines `figures()`, which returns each nu
 - a figure the prose names that `figures.py` doesn't give, or one it gives that the prose never shows;
 - figures that differ between Pyodide and CPython;
 - a character in a formula that the math font has no glyph for.
+
+## Charts
+
+A stage can have a chart that draws the learner's own code (decision record 16). Until the stage is passed, it shows the solution's drawing, faded, and its sliders stay where they start. `chart.py` defines `chart()`, which runs beside the lab's data and the learner's files, imports the functions it draws, and takes each slider's value by its name. It returns what to draw:
+
+```python
+{
+    # Each axis: the values it spans, the step between its labelled ticks, its name.
+    "x": {"min": -8, "max": 8, "step": 2, "label": "x"},
+    "y": {"min": 0, "max": 1, "step": 0.25, "label": "probability"},
+    # Drawn in order, so the last lies on top.
+    "lines": [{"style": "main", "label": "Your sigmoid", "x": x, "y": yours}],
+    "points": [{"x": 0, "y": 0.5}],
+    "readouts": [{"label": "Probability at x = 0", "value": "0.5000"}],
+    # What a screen reader reads in place of the chart.
+    "description": "Your sigmoid with w = 1 and b = 0",
+}
+```
+
+A line's style is `main`, the learner's own result; `base`, a curve to read it against; `faint`, a result to compare with; or `dashed`, a level such as a target. Its label names it in the legend, which lists the line drawn last first. NumPy arrays and numbers can go in as they are, and a number that isn't finite breaks its line. A readout is a value as the page shows it, under a short label. Labels name what a number is, not how it was worked out.
+
+`stage.yaml` gives the chart's title and its sliders:
+
+```yaml
+chart:
+  title: Sigmoid
+  sliders:
+    - name: w                # the argument chart() takes the value as
+      label: Weight w
+      min: 0.25
+      max: 4
+      step: 0.05
+      value: 1               # where it starts
+    - name: lr
+      label: Learning rate
+      stops: [0.05, 0.5, 5]  # values to move through, in place of a range
+      value: 0.5
+```
+
+The checks draw each chart with the stage's solution at its sliders' first values, and at each end of each slider with the others at their first, in Pyodide and in CPython. They fail if `chart.py` raises an error or returns something the page can't draw, and if the runtimes draw differently at the first values. Elsewhere they may: training that never settles turns their last-digit differences into visible ones.
 
 ## Data
 

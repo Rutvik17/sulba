@@ -2,7 +2,7 @@
 // from the stages before it, never on the solutions, except after a Catch review that missed a
 // problem: then the fixed code carries on.
 import { addStarter } from '@sulba/content/runs';
-import type { RunRequest } from '@sulba/lab/protocol';
+import type { ChartRequest, RunRequest } from '@sulba/lab/protocol';
 import type { LabView } from '../lib/labs';
 
 /** A finished Catch review: the ids of the checks the learner's code passed, of how many. */
@@ -57,11 +57,8 @@ export function packagesOf(lab: LabView, index: number): RunRequest['packages'] 
   return [...new Set(lab.stages.slice(0, index + 1).flatMap((each) => each.packages))];
 }
 
-/**
- * A stage's run: the lab's data, the code each earlier stage carried on for its file, and the
- * tests, then a Catch or Ship stage's checks.
- */
-export function runOf(lab: LabView, index: number, code: string, kept: Kept): RunRequest {
+/** The lab's data, the code each earlier stage carried on for its file, and the stage's code. */
+function filesOf(lab: LabView, index: number, code: string, kept: Kept): Record<string, string> {
   const stage = lab.stages[index];
   if (!stage) throw new Error(`The lab has no stage ${index + 1}.`);
   const files: Record<string, string> = { ...lab.files };
@@ -69,11 +66,45 @@ export function runOf(lab: LabView, index: number, code: string, kept: Kept): Ru
     const earlier = lab.stages[before];
     if (earlier) files[earlier.file] = carriedOn(lab, before, kept);
   }
+  return { ...files, [stage.file]: code };
+}
+
+/** A stage's run: the learner's files, with the tests, then a Catch or Ship stage's checks. */
+export function runOf(lab: LabView, index: number, code: string, kept: Kept): RunRequest {
+  const stage = lab.stages[index];
+  if (!stage) throw new Error(`The lab has no stage ${index + 1}.`);
   return {
-    files: { ...files, ...stage.tests, ...stage.checks, [stage.file]: code },
+    files: { ...stage.tests, ...stage.checks, ...filesOf(lab, index, code, kept) },
     tests: [...Object.keys(stage.tests), ...Object.keys(stage.checks)],
     packages: packagesOf(lab, index),
   };
+}
+
+/** A stage's chart, drawn with the learner's files, as a run has them. */
+export function chartOf(
+  lab: LabView,
+  index: number,
+  code: string,
+  kept: Kept,
+  values: ChartRequest['values'],
+): ChartRequest {
+  const chart = lab.stages[index]?.chart;
+  if (!chart) throw new Error(`Stage ${index + 1} has no chart.`);
+  const files = { ...filesOf(lab, index, code, kept), 'chart.py': chart.code };
+  return { files, values, packages: packagesOf(lab, index) };
+}
+
+/** A stage's chart before it is passed, drawn with every stage's solution up to it. */
+export function previewOf(
+  lab: LabView,
+  index: number,
+  values: ChartRequest['values'],
+): ChartRequest {
+  const chart = lab.stages[index]?.chart;
+  if (!chart) throw new Error(`Stage ${index + 1} has no chart.`);
+  const files: Record<string, string> = { ...lab.files };
+  for (const stage of lab.stages.slice(0, index + 1)) files[stage.file] = stage.solution;
+  return { files: { ...files, 'chart.py': chart.code }, values, packages: packagesOf(lab, index) };
 }
 
 /** The first stage is open, and each stage after one the learner has passed. */

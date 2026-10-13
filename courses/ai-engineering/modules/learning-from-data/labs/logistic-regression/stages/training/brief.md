@@ -4,4 +4,9 @@ Train the model.
 
 `train` starts from zero weights and takes `steps` steps of gradient descent, `w = w - lr * dw` and `b = b - lr * db`. After each step it records the loss with its l2 term, and it returns `(w, b, losses)`.
 
+```
+standardize(X_train, X_test) -> (X_train_scaled, X_test_scaled)
+train(X, y, lr=4.0, steps=1_000, l2=0.0) -> (w, b, losses)
+```
+
 With the default `lr` and `steps`, and `l2 = 1 / {% $fig.n_train %}`, your model must give the same probabilities as scikit-learn's `LogisticRegression(tol=1e-12)`, within 0.0001 on every test sample.

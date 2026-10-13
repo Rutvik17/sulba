@@ -5,8 +5,9 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
+import { shares } from './chart.fixture.ts';
 import { counted } from './figures.fixture.ts';
-import { figuresInCPython, pyodideEngine, runInCPython } from './node.ts';
+import { chartsInCPython, figuresInCPython, pyodideEngine, runInCPython } from './node.ts';
 import { pythonPackages, type RunRequest, type RunResult } from './protocol.ts';
 
 const hasUv = spawnSync('uv', ['--version']).status === 0;
@@ -45,6 +46,16 @@ test.skipIf(!hasUv)(
   async () => {
     const engine = await pyodideEngine();
     expect(await figuresInCPython([counted])).toEqual([engine.figures(counted)]);
+  },
+  180_000,
+);
+
+test.skipIf(!hasUv)(
+  'CPython and Pyodide draw the same chart',
+  async () => {
+    const engine = await pyodideEngine();
+    const requests = [shares, { ...shares, values: { votes: 0 } }];
+    expect(await chartsInCPython(requests)).toEqual(requests.map(engine.chart));
   },
   180_000,
 );

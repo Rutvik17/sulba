@@ -4,6 +4,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beforeAll, expect, test } from 'vitest';
+import { shares } from './chart.fixture.ts';
 import type { Engine } from './engine.ts';
 import { counted } from './figures.fixture.ts';
 import { pyodideEngine } from './node.ts';
@@ -81,5 +82,26 @@ test('figures that fail give the error', () => {
   expect(engine.figures(files)).toEqual({
     figures: null,
     problem: 'ZeroDivisionError: division by zero',
+  });
+});
+
+test("a chart is what a stage's chart.py draws with the learner's code and the values", () => {
+  expect(engine.chart(shares)).toEqual({
+    chart: {
+      x: { min: 0, max: 1, step: 1, label: 'votes' },
+      y: { min: 0, max: 1, step: 0.5, label: 'share' },
+      lines: [{ style: 'main', label: 'Yes', x: [0, 1], y: [0, 0.6666666666666666] }],
+      points: [{ x: 1, y: 0.6666666666666666 }],
+      readouts: [{ label: 'share of 3', value: '0.6667' }],
+      description: 'The share of yes votes in the first 3',
+    },
+    problem: null,
+  });
+});
+
+test('a chart that fails gives the error', () => {
+  expect(engine.chart({ ...shares, values: { votes: 0 } })).toEqual({
+    chart: null,
+    problem: { kind: 'ZeroDivisionError', message: 'division by zero' },
   });
 });

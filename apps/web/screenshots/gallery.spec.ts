@@ -76,6 +76,11 @@ const sections: {
       await page.keyboard.press('Tab');
     },
   },
+  {
+    id: 'chart',
+    name: 'Chart',
+    states: async () => {},
+  },
 ];
 
 /** The overlays, pictured open: the side panel, and the menu with its first item focused. */

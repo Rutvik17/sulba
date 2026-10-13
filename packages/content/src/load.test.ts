@@ -73,6 +73,17 @@ test('a Ship stage has hidden tests, its checks and what each requires, and no h
   expect(ship?.problems).toEqual([]);
 });
 
+test('a stage with a chart has what stage.yaml says of it, and chart.py', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const [count, share] = course?.levels[0]?.modules[0]?.labs[0]?.stages ?? [];
+  expect(count?.chart).toBeNull();
+  expect(share?.chart?.title).toBe('The share of yes votes');
+  expect(share?.chart?.sliders).toEqual([
+    { name: 'votes', label: 'Votes counted', min: 1, max: 3, step: 1, value: 3 },
+  ]);
+  expect(share?.chart?.code).toMatch(/^import csv\n/);
+});
+
 test('a stage may leave out its explanation', async () => {
   const { course } = await loadCourse(fixtures, 'demo');
   const [count, share] = course?.levels[0]?.modules[0]?.labs[0]?.stages ?? [];
@@ -96,6 +107,15 @@ test("a stage's version changes when any of its files does", async () => {
   );
   const after = course?.levels[0]?.modules[0]?.labs[0];
   expect(after?.stages[0]?.version).toBe(before?.stages[0]?.version);
+  expect(after?.stages[1]?.version).not.toBe(before?.stages[1]?.version);
+});
+
+test("a stage's version changes when its chart.py does", async () => {
+  const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
+  const { course } = await loadChanged((root) =>
+    edit(join(root, stages, 'share/chart.py'), '"share"', '"part"'),
+  );
+  const after = course?.levels[0]?.modules[0]?.labs[0];
   expect(after?.stages[1]?.version).not.toBe(before?.stages[1]?.version);
 });
 
@@ -330,6 +350,71 @@ test.each([
       path: `${stages}/check/stage.yaml`,
       message:
         "file: A Catch stage's file is the assistant's, so no earlier stage may make tally.py.",
+    },
+  },
+  {
+    name: 'a chart without chart.py',
+    change: (root: string) => rm(join(root, stages, 'share/chart.py')),
+    problem: {
+      path: `${stages}/share/chart.py`,
+      message: 'Missing: stage.yaml has a chart, which chart.py draws.',
+    },
+  },
+  {
+    name: 'a chart.py that stage.yaml has no chart for',
+    change: (root: string) =>
+      cp(join(root, stages, 'share/chart.py'), join(root, stages, 'count/chart.py')),
+    problem: {
+      path: `${stages}/count/chart.py`,
+      message: 'stage.yaml has no chart for it to draw.',
+    },
+  },
+  {
+    name: 'a slider that starts off its steps',
+    change: (root: string) =>
+      edit(join(root, stages, 'share/stage.yaml'), 'value: 3', 'value: 2.5'),
+    problem: {
+      path: `${stages}/share/stage.yaml`,
+      message: 'chart.sliders.0.value: value must be in the range, on a step.',
+    },
+  },
+  {
+    name: 'a slider without the end of its range',
+    change: (root: string) => edit(join(root, stages, 'share/stage.yaml'), '      max: 3\n', ''),
+    problem: {
+      path: `${stages}/share/stage.yaml`,
+      message: 'chart.sliders.0.max: Invalid input: expected number, received undefined',
+    },
+  },
+  {
+    name: 'stops that go down',
+    change: (root: string) =>
+      edit(
+        join(root, stages, 'share/stage.yaml'),
+        '      min: 1\n      max: 3\n      step: 1\n',
+        '      stops: [1, 3, 2]\n',
+      ),
+    problem: {
+      path: `${stages}/share/stage.yaml`,
+      message: 'chart.sliders.0.stops: Each stop must be more than the one before.',
+    },
+  },
+  {
+    name: "a learner's file named chart.py in a lab with a chart",
+    change: async (root: string) => {
+      await edit(join(root, stages, 'ship/stage.yaml'), 'file: report.py', 'file: chart.py');
+      for (const folder of ['starter', 'solution']) {
+        await cp(
+          join(root, stages, `ship/${folder}/report.py`),
+          join(root, stages, `ship/${folder}/chart.py`),
+        );
+        await rm(join(root, stages, `ship/${folder}/report.py`));
+      }
+    },
+    problem: {
+      path: `${stages}/ship/stage.yaml`,
+      message:
+        "file: chart.py is the name a stage's chart runs as, so the learner's file needs another.",
     },
   },
 ])('$name is a problem', async ({ change, problem }) => {

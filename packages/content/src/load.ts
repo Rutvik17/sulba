@@ -9,6 +9,7 @@ import { parse } from 'yaml';
 import type { z } from 'zod';
 import {
   type CatchProblem,
+  type ChartFile,
   type CourseFile,
   courseFile,
   type LabFile,
@@ -26,9 +27,14 @@ export interface Problem {
   readonly message: string;
 }
 
-export type { CatchProblem, ShipCheck } from './schema.ts';
+export type { CatchProblem, ChartFile, ShipCheck } from './schema.ts';
 
-export interface Stage extends Omit<StageFile, 'problems' | 'checks'> {
+/** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
+export interface Chart extends ChartFile {
+  readonly code: string;
+}
+
+export interface Stage extends Omit<StageFile, 'problems' | 'checks' | 'chart'> {
   /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
   readonly problems: readonly CatchProblem[];
   /** A Ship stage's checks before it ships, in the order they show. Other stages have none. */
@@ -60,6 +66,8 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks'> {
   readonly checks: Readonly<Record<string, string>>;
   /** The stage's figures.py, which computes the numbers its prose shows, if it has one. */
   readonly figures: string | null;
+  /** The chart that draws the learner's code once the stage is passed, if it has one. */
+  readonly chart: Chart | null;
   /** A hash of every file in the stage, so progress can tell when a stage has changed. */
   readonly version: string;
 }
@@ -173,6 +181,15 @@ class Reader {
       }
       stages.push(stage);
     }
+    // A chart runs as chart.py beside the learner's files, so no learner's file may take the name.
+    if (stages.some((stage) => stage.chart)) {
+      for (const stage of stages.filter((each) => each.file === 'chart.py')) {
+        this.problem(
+          join(folder, 'stages', stage.slug, 'stage.yaml'),
+          "file: chart.py is the name a stage's chart runs as, so the learner's file needs another.",
+        );
+      }
+    }
     return { ...file, slug, data, stages };
   }
 
@@ -183,7 +200,7 @@ class Reader {
       folder,
       ['stage.yaml', 'brief.md'],
       ['starter', 'solution', 'tests', ...(hasChecks ? ['checks'] : [])],
-      ['hints.md', 'explanation.md', 'figures.py'],
+      ['hints.md', 'explanation.md', 'figures.py', 'chart.py'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
@@ -207,6 +224,7 @@ class Reader {
         : Promise.resolve({}),
     ]);
     const figures = present.has('figures.py') ? await this.text(join(folder, 'figures.py')) : null;
+    const chart = await this.chart(folder, file.chart, present.has('chart.py'));
     if (brief === null || hints === null || explanation === null) return null;
     if (starter === null || solution === null) return null;
     const hintList = hasHints ? hints.split(/^---$/m).map((hint) => hint.trim()) : [];
@@ -239,6 +257,7 @@ class Reader {
       starter,
       solution,
       ...(figures === null ? {} : { 'figures.py': figures }),
+      ...(chart === null ? {} : { 'chart.py': chart.code }),
       ...tests,
       ...Object.fromEntries(Object.entries(checks).map(([name, text]) => [`checks/${name}`, text])),
     });
@@ -256,8 +275,33 @@ class Reader {
       tests,
       checks,
       figures,
+      chart,
       version,
     };
+  }
+
+  /**
+   * A stage's chart: stage.yaml names it and its sliders, and chart.py draws it, so the stage has
+   * both or neither. What chart.py draws is checked by running it.
+   */
+  async chart(
+    folder: string,
+    described: ChartFile | undefined,
+    drawn: boolean,
+  ): Promise<Chart | null> {
+    if (!described) {
+      if (drawn) this.problem(join(folder, 'chart.py'), 'stage.yaml has no chart for it to draw.');
+      return null;
+    }
+    if (!drawn) {
+      this.problem(
+        join(folder, 'chart.py'),
+        'Missing: stage.yaml has a chart, which chart.py draws.',
+      );
+      return null;
+    }
+    const code = await this.text(join(folder, 'chart.py'));
+    return code === null ? null : { ...described, code };
   }
 
   /** The test files in a folder, each by name, which must be test_<name>.py. */
@@ -381,7 +425,7 @@ class Reader {
     }
     const result = schema.safeParse(data);
     if (result.success) return result.data;
-    for (const issue of result.error.issues) {
+    for (const issue of issuesOf(result.error.issues)) {
       const at = issue.path.length ? `${issue.path.join('.')}: ` : '';
       this.problem(path, `${at}${issue.message}`);
     }
@@ -473,6 +517,18 @@ class Reader {
   problem(path: string, message: string) {
     this.problems.push({ path: relative(this.root, path).split(sep).join('/'), message });
   }
+}
+
+/**
+ * The issues to report. Where a value matches none of a union's options, the issues of the option
+ * it comes closest to, the one with the fewest, say more than that it matched none.
+ */
+function issuesOf(issues: readonly z.core.$ZodIssue[]): z.core.$ZodIssue[] {
+  return issues.flatMap((issue) => {
+    if (issue.code !== 'invalid_union' || issue.errors.length === 0) return [issue];
+    const closest = issue.errors.reduce((best, each) => (each.length < best.length ? each : best));
+    return issuesOf(closest.map((inner) => ({ ...inner, path: [...issue.path, ...inner.path] })));
+  });
 }
 
 /** A name starting with a dot, such as a tool's cache or a system's own file. */

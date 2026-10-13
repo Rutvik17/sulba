@@ -44,29 +44,28 @@ interface Props {
 /** Why a run gave no results, or null if it gave them. */
 function stoppedOf(result: RunResult): string | null {
   if (result.problem?.kind === 'TimeLimit') {
-    return 'The tests were stopped after 5 seconds. A loop that never ends is the usual cause.';
+    return 'The tests ran past the 5-second limit. Check for a loop that never ends.';
   }
-  if (result.problem) return 'The tests couldn’t run: your code has an error.';
+  if (result.problem) return 'Your code has an error. Fix it, then run the tests again.';
   return null;
 }
 
 const passing = (tests: readonly TestResult[]) =>
   tests.filter((test) => test.status === 'pass').length;
 
-/** How many of some tests or checks pass, such as "All 3 tests pass." */
+/** How many of some tests or checks passed, such as "All 3 tests passed." */
 function counted(tests: readonly TestResult[], one: string, many: string): string {
   const passed = passing(tests);
-  if (tests.length === 1) return `The ${one} ${passed ? 'passes' : 'fails'}.`;
-  return passed === tests.length
-    ? `All ${tests.length} ${many} pass.`
-    : `${passed} of ${tests.length} ${many} pass.`;
+  if (tests.length === 1) return `The ${one} ${passed ? 'passed' : 'failed'}.`;
+  if (passed < tests.length) return `${passed} of ${tests.length} ${many} passed.`;
+  return tests.length === 2 ? `Both ${many} passed.` : `All ${tests.length} ${many} passed.`;
 }
 
 function summaryOf(result: RunResult): string {
   return stoppedOf(result) ?? counted(result.tests, 'test', 'tests');
 }
 
-/** A Catch run: how many production checks pass, then how the assistant's own tests did. */
+/** A Catch run: how many production checks passed, then how the assistant's own tests did. */
 function catchSummaryOf(
   result: RunResult,
   own: readonly TestResult[],
@@ -76,12 +75,12 @@ function catchSummaryOf(
   if (stopped) return stopped;
   const checked =
     checks.length === 1
-      ? `The production check ${passing(checks) ? 'passes' : 'fails'}.`
-      : `${passing(checks)} of ${checks.length} production checks pass.`;
+      ? `The production check ${passing(checks) ? 'passed' : 'failed'}.`
+      : `${passing(checks)} of ${checks.length} production checks passed.`;
   const tested =
     passing(own) === own.length
-      ? `The assistant’s ${own.length === 1 ? 'test passes' : 'tests pass'}.`
-      : `${passing(own)} of the assistant’s ${own.length} tests pass.`;
+      ? `The assistant’s ${own.length === 1 ? 'test' : 'tests'} passed.`
+      : `${passing(own)} of the assistant’s ${own.length} tests passed.`;
   return `${checked} ${tested}`;
 }
 
@@ -181,7 +180,7 @@ export function TestResults({ run, loading, onGoTo, file }: Props) {
 }
 
 /** A line of a stage's text, made from its Markdoc when the site was built. */
-function Line({ html }: { html: string }) {
+export function Line({ html }: { html: string }) {
   // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
@@ -310,7 +309,10 @@ export function CatchResults({
       </p>
       {confirming && !review && (
         <div className={css.finish}>
-          <p>Finish the review? The production checks your code passes now become your score.</p>
+          <p>
+            Finish the review? Your score is based on the production checks your code passes now.
+            You can’t change it once you finish.
+          </p>
           <div className={css.actions}>
             <Button size="small" autoFocus isDisabled={busy} onPress={onConfirm}>
               Finish review
@@ -355,11 +357,11 @@ export function CatchResults({
 }
 
 /**
- * The Printed tab: what the code printed, as it loaded and in each test. A hidden check's output
+ * The Output tab: what the code printed, as it loaded and in each test. A hidden check's output
  * doesn't name the check. A Ship stage's tests are hidden whole, so only what the code printed as
  * it loaded shows.
  */
-export function Printed({
+export function Output({
   run,
   hidden = new Set(),
   loadingOnly = false,
@@ -372,7 +374,7 @@ export function Printed({
     return (
       <p className={css.note}>
         {loadingOnly
-          ? 'What your code prints as it loads appears here. What it prints in the tests stays hidden.'
+          ? 'What your code prints as it loads appears here. Output from the hidden tests isn’t shown.'
           : 'What your code prints while the tests run appears here.'}
       </p>
     );

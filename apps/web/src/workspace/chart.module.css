@@ -1,0 +1,57 @@
+/* A stage's chart: the plot and its legend, its sliders two to a row, then the values to read. */
+.chart {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.sliders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-6);
+}
+
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.readouts div {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+}
+
+.readouts dt {
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.readouts dd {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.problem {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--bad);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .sliders {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

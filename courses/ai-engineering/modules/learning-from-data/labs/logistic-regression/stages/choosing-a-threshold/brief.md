@@ -7,4 +7,4 @@ precision_recall(y, p, threshold=0.5) -> (precision, recall)
 best_threshold(y, p, min_recall) -> float
 ```
 
-The tests call them with the test set's labels and your screener's probabilities for it. If you missed any of stage 4's problems, this stage starts from the fixed screener. There are no hints, and the tests are hidden: you see which cases pass, but not their inputs. Two checks then decide whether it's ready to ship.
+The tests call them with the test set's labels and your screener's probabilities for it. If you missed any of stage 4's problems, this stage starts from the fixed screener. There are no hints. The tests are hidden: you see which pass, but not their inputs. Two more checks decide whether it ships.

@@ -42,6 +42,9 @@ scope.addEventListener('message', ({ data }) => {
       }
       await ready.load(data.request.packages);
       scope.postMessage({ type: 'started', id });
+      if (data.type === 'chart') {
+        return scope.postMessage({ type: 'drawn', id, result: ready.chart(data.request) });
+      }
       scope.postMessage({ type: 'result', id, result: ready.run(data.request) });
     })
     .catch((error: unknown) => failed(id, error));

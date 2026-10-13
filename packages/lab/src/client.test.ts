@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { Lab, LabLoadError, type WorkerLike } from './client.ts';
 import type { FromWorker, ToWorker } from './messages.ts';
-import type { RunRequest, RunResult } from './protocol.ts';
+import type { ChartRequest, ChartResult, RunRequest, RunResult } from './protocol.ts';
 
 class StandIn implements WorkerLike {
   readonly sent: ToWorker[] = [];
@@ -50,6 +50,22 @@ const request: RunRequest = {
   packages: [],
 };
 const passed: RunResult = { status: 'pass', tests: [], problem: null, output: '', durationMs: 3 };
+const chartRequest: ChartRequest = {
+  files: { 'model.py': '', 'chart.py': '' },
+  values: { w: 1 },
+  packages: ['numpy'],
+};
+const drawn: ChartResult = {
+  chart: {
+    x: { min: 0, max: 1, step: 1, label: 'x' },
+    y: { min: 0, max: 1, step: 1, label: 'y' },
+    lines: [{ style: 'main', label: 'A line', x: [0, 1], y: [0, null] }],
+    points: [],
+    readouts: [],
+    description: 'A line',
+  },
+  problem: null,
+};
 
 let workers: StandIn[];
 let lab: Lab;
@@ -89,6 +105,27 @@ test('a run starts the worker, sends the request and gives back its result', asy
   worker(0).reply({ type: 'started', id: 0 });
   worker(0).reply({ type: 'result', id: 0, result: passed });
   await expect(result).resolves.toEqual(passed);
+});
+
+test('a chart is sent like a run and gives back what it drew', async () => {
+  const result = lab.chart(chartRequest);
+  await settle();
+  expect(worker(0).sent.at(-1)).toEqual({ type: 'chart', id: 0, request: chartRequest });
+  worker(0).reply({ type: 'started', id: 0 });
+  worker(0).reply({ type: 'drawn', id: 0, result: drawn });
+  await expect(result).resolves.toEqual(drawn);
+});
+
+test('a chart past the time limit is stopped, like a run', async () => {
+  const result = lab.chart(chartRequest);
+  await settle();
+  worker(0).reply({ type: 'started', id: 0 });
+  await vi.advanceTimersByTimeAsync(5000);
+  await expect(result).resolves.toEqual({
+    chart: null,
+    problem: { kind: 'TimeLimit', message: 'Stopped after 5 seconds.' },
+  });
+  expect(worker(0).terminated).toBe(true);
 });
 
 test('runs go one at a time, in order', async () => {
