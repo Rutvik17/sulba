@@ -347,9 +347,7 @@ export function CatchResults({
             ))}
           </ol>
         ) : (
-          <p className={css.note}>
-            They test the code as it will really be used. Finish the review to see each one.
-          </p>
+          <p className={css.note}>Finish the review to see each one.</p>
         )}
       </section>
     </div>
