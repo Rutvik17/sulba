@@ -73,13 +73,6 @@ test('a Ship stage has hidden tests, its checks and what each requires, and no h
   expect(ship?.problems).toEqual([]);
 });
 
-test('a stage may leave out its explanation', async () => {
-  const { course } = await loadCourse(fixtures, 'demo');
-  const [count, share] = course?.levels[0]?.modules[0]?.labs[0]?.stages ?? [];
-  expect(count?.explanation).toMatch(/^A count adds one/);
-  expect(share?.explanation).toBeNull();
-});
-
 test("a Catch stage's version changes when a check does", async () => {
   const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
   const { course } = await loadChanged((root) =>
@@ -160,6 +153,11 @@ test.each([
       path: `${stages}/count/hints.md`,
       message: 'Each hint, between lines of ---, needs text.',
     },
+  },
+  {
+    name: 'a stage without an explanation',
+    change: (root: string) => rm(join(root, stages, 'count/explanation.md')),
+    problem: { path: `${stages}/count/explanation.md`, message: 'Missing.' },
   },
   {
     name: 'a line of --- outside a Catch stage',
