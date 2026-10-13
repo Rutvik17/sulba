@@ -72,6 +72,13 @@ test('passing every test finishes the stage, and the next builds on the learnerâ
   await expect(summary(page)).toHaveText('The test failed.', loaded);
 });
 
+test('the brief says what its stage builds on', async ({ page }) => {
+  await openLab(page);
+  await expect(page.getByRole('tabpanel', { name: 'Brief' })).toContainText(
+    'Builds on Â· A new tally.py.',
+  );
+});
+
 test('the solution opens after the first run', async ({ page }) => {
   await openLab(page);
   const solution = page.getByRole('tab', { name: 'Solution' });

@@ -1,6 +1,7 @@
 id: stg_15neci
 kind: build
 title: Loss and gradient
+builds: Your `model.py` from stage 1.
 file: model.py
 packages: [numpy]
 minutes: 45

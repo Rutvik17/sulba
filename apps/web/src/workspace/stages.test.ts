@@ -27,6 +27,7 @@ function stage(
     minutes: 10,
     version: id,
     brief: '',
+    builds: '',
     hints: [],
     explanation: '',
     afterProblems: null,

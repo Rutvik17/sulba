@@ -7,7 +7,7 @@ import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { ChartPanel } from './ChartPanel';
-import { CatchResults, Output, type Run, ShipResults, TestResults } from './Results';
+import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { kept } from './storage';
 import styles from './workspace.module.css';
@@ -22,6 +22,7 @@ const css = classes(
   'workspace',
   'left',
   'panel',
+  'builds',
   'prose',
   'hints',
   'right',
@@ -285,6 +286,9 @@ function StageWorkspace({
           <TabPanel id="brief">
             <div className={css.panel}>
               <h2>{stage.title}</h2>
+              <p className={css.builds}>
+                <strong>Builds on</strong> · <Line html={stage.builds} />
+              </p>
               <Prose html={stage.brief} />
             </div>
           </TabPanel>

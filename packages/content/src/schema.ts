@@ -109,6 +109,8 @@ const chart = z
 const stageFields = {
   id: id('stage'),
   title,
+  /** What the stage builds on, a line of Markdoc above its brief. */
+  builds: title,
   /** The file the learner works in. A later stage on the same file adds to their code. */
   file: z.string().regex(/^[a-z_][a-z0-9_]*\.py$/),
   packages: z.array(z.enum(pythonPackages)).default([]),
