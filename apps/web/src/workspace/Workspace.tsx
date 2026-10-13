@@ -310,6 +310,8 @@ function StageWorkspace({
             <div className={css.panel}>
               {isCatch && !review ? (
                 <p className={css.note}>Opens when you finish the review.</p>
+              ) : isShip && !tried ? (
+                <p className={css.note}>Opens after your first run.</p>
               ) : (
                 <Prose html={stage.explanation} />
               )}
