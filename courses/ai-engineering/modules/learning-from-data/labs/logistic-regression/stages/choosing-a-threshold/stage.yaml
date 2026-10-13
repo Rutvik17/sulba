@@ -1,0 +1,21 @@
+id: stg_9umplk
+kind: ship
+title: Choosing a threshold
+file: screener.py
+packages: [numpy, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_e5sbjd
+    title: Fast on 200,000 samples
+    requires: >-
+      `best_threshold` must handle 200,000 samples in under 1 second.
+    failure: >-
+      The limit is 1 s.
+  - check: tst_edsjt3
+    title: Leaves the arrays it is given unchanged
+    requires: >-
+      `precision_recall` and `best_threshold` must leave the arrays they're given as they
+      were.
+    failure: >-
+      One of them changed an array it was given, so the clinic's data would change with
+      every call.

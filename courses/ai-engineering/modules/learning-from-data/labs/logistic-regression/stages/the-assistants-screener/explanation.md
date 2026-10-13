@@ -1,0 +1,3 @@
+The assistant's tests checked the model on its own and scored the whole test set at once, so they passed. The clinic uses the screener differently: samples arrive one at a time, its arrays are used again after scoring, measurements go missing, and it needs the model it validated. Each problem below shows up only there.
+
+scikit-learn already does some things you wrote by hand: `StandardScaler` leaves a measurement that never varies unscaled instead of dividing by zero. What it can't do is choose the right arguments and methods for you. That takes knowing what each one does to the numbers, which is what stages 1 to 3 were for.

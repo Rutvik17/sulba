@@ -1,0 +1,66 @@
+id: stg_c1k1hp
+kind: catch
+title: The assistant's screener
+file: screener.py
+packages: [numpy, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_0gj3ni
+    title: It scored the wrong class
+    cost: >-
+      `predict_proba` returns one column per class, in the order of `model.classes_`,
+      which is `[0, 1]`. Column 0 is the probability of benign, so the likeliest cancers
+      scored lowest.
+    fix: >-
+      The fix: take column 1, malignant.
+    edit:
+      replace: "predict_proba(X_new)[:, 0]"
+      with: "predict_proba(X_new)[:, 1]"
+  - check: tst_012aru
+    title: Training–serving skew
+    cost: >-
+      `score` called `fit_transform`, so it learned new means and standard deviations from
+      every batch it scored. A sample scored on its own became all zeros and got the same
+      score, {% $fig.lone_score %}, whatever its measurements, and the test set's scores
+      moved by up to {% $fig.skew_gap %}.
+    fix: >-
+      The fix: `transform`, which reuses the numbers `fit` learned from the training set.
+      A scikit-learn `Pipeline` does this for you.
+    edit:
+      replace: "X_new = self.scaler.fit_transform("
+      with: "X_new = self.scaler.transform("
+  - check: tst_8shgp2
+    title: It overwrote the clinic's data
+    cost: >-
+      `SimpleImputer(copy=False)` handed the clinic's own array to
+      `StandardScaler(copy=False)`, which rescaled it in place: after scoring, the clinic's
+      measurements were gone.
+    fix: >-
+      The fix: leave `copy` at its default, `True`.
+    edit:
+      replace: "StandardScaler(copy=False)"
+      with: "StandardScaler()"
+  - check: tst_0xc7i0
+    title: A missing measurement filled in silently
+    cost: >-
+      `SimpleImputer` replaced a missing measurement with the training average, so the
+      sample was scored as if that measurement were normal, and nobody was told it was
+      missing.
+    fix: >-
+      The fix: drop the imputer, and raise an error that names the samples, so a person
+      looks at them. Without it, scikit-learn refuses to score a missing value anyway.
+    edit:
+      replace: "self.scaler.fit_transform(self.imputer.transform(X_new))"
+      with: "self.scaler.fit_transform(X_new)"
+  - check: tst_fustar
+    title: Not the model you validated
+    cost: >-
+      `class_weight="balanced"` counts the rarer malignant samples more heavily in
+      training, so the model isn't the one you built and checked: its probabilities moved
+      by up to {% $fig.weights_gap %}.
+    fix: >-
+      The fix: scikit-learn's defaults, `LogisticRegression()`, which stay within
+      {% $fig.your_model_gap %} of your model.
+    edit:
+      replace: 'LogisticRegression(class_weight="balanced")'
+      with: "LogisticRegression()"
