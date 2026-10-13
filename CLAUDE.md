@@ -4,13 +4,27 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 
 ## Hard rules
 
-- Work on a feature branch, never on `main`, and commit to it as you go. When every check passes and the work meets the standard, squash the branch into one commit, push it and open a pull request. One pull request does one task. The founder reviews and merges every pull request: never merge, push to `main` or rewrite its history.
+- Work on a feature branch, never on `main`, and commit to it as you go. When every check passes and the work meets the standard, squash the branch into one commit, push it and open a pull request. One pull request does one task. Claude merges its own pull requests as the Merging section allows, and the founder merges every other one. Never push to `main` or rewrite its history.
 - Commit messages have an imperative subject under 50 characters and a body only when the reason isn't obvious. Commits and pull request descriptions carry no attribution lines and no session links.
 - Follow best practice without being asked: maintained libraries, strict types, tests for behaviour, no dead code. No filler in code, comments, docs or commit messages.
 - Decide on evidence. A new architectural choice gets a record in `docs/decisions` with the options compared and the sources read. An accepted record is superseded, never rewritten.
 - Secrets never enter the repository, issues or logs. They live in GitHub Actions secrets, Cloudflare Worker secrets, the Supabase dashboard or a gitignored `.dev.vars`. Never read `.dev.vars` or `.env` files.
 - Only public keys reach the browser: the Supabase publishable key and the Turnstile site key.
 - Learner data lives in Supabase, never in GitHub.
+
+## Merging
+
+Claude squash-merges a pull request it opened, without asking, when all of these hold:
+
+- Every check on its head commit passed, and the end-to-end test files it adds or edits passed locally.
+- Nobody has asked for changes or for it to wait, and every review comment on it is answered.
+- It keeps to the accepted decision records. It may make a new architectural choice that is small and easy to undo, good for learners and the founder, ethical and free of legal risk, with the choice's record in `docs/decisions` in the same pull request. A choice about hosting, learner data, sign-in, a provider, a licence, or what the site collects or sends waits for the founder, and so does superseding an accepted record.
+- It keeps the bill at $0: no new Cloudflare binding, product or plan, no new provider or account, and nothing that could take the site past a free tier's limits.
+- It adds, removes or moves to a new major version no dependency, and it leaves alone `CLAUDE.md`, the accepted decision records, `.github/`, `apps/web/wrangler.jsonc`, `apps/web/public/_headers`, `apps/web/src/pages/api/`, the Privacy Policy and the Terms.
+
+Any other pull request waits for the founder, with a comment saying which of these it fails. Renovate's pull requests are the founder's.
+
+After a merge, Claude follows `main`'s run to the end. If the deploy or the end-to-end tests fail, or sulba.dev stops working, it opens a pull request that reverts the merge, merges it once its checks pass, and fixes the cause in a new pull request.
 
 ## Commands
 
