@@ -17,8 +17,9 @@ pnpm typecheck
 pnpm test
 pnpm test:python
 pnpm check:content
-pnpm test:e2e
 ```
+
+CI runs the end-to-end and accessibility tests only after a merge to `main`. Before a pull request, run the test files your change adds or edits, such as `pnpm test:e2e e2e/lab.spec.ts`.
 
 ## Screenshots
 

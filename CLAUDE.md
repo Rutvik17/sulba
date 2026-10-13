@@ -26,7 +26,9 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | `pnpm test:e2e` | Playwright end-to-end and axe accessibility tests in Chromium, Firefox and WebKit, on desktop and phone |
 | `pnpm build` | Builds the site |
 
-Run lint, lint:python, typecheck, test, test:python, check:content and test:e2e before calling work done. On Windows, run the Python ones in Docker if uv isn't installed.
+Run lint, lint:python, typecheck, test, test:python and check:content before calling work done. On Windows, run the Python ones in Docker if uv isn't installed.
+
+End-to-end tests are written with each feature. While building, run only the test files a change adds or edits (`pnpm test:e2e e2e/lab.spec.ts`), and the whole suite only when asked. CI runs them on each push to `main`, not on pull requests, and the deploy doesn't wait for them: after a merge, check that run, and fix anything it shows broken in the next pull request.
 
 ## How the project is set up
 

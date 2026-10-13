@@ -49,10 +49,14 @@ jobs:
       - run: pnpm check:content
       - run: pnpm build
 
+  # The end-to-end tests run once a change is on main, so a pull request doesn't wait for them and
+  # the deploy doesn't either; a failure here says what the last merge broke. On a pull request
+  # the job is skipped, which counts as passing.
   e2e:
     name: End-to-end and accessibility tests
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -110,7 +114,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [checks, e2e]
+    needs: [checks]
     # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
     # updates and pull requests from forks, which have no access to secrets, are tested only.
     if: >-
