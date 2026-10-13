@@ -54,6 +54,8 @@ test("a Catch stage has the assistant's tests, its hidden checks and its problem
     ['tst_demo07', "It reordered the poll's own list"],
   ]);
   expect(check?.problems[1]?.edit).toEqual({ replace: '    choices.sort()\n', with: '' });
+  expect(check?.explanation).toMatch(/^The assistant's tests checked/);
+  expect(check?.afterProblems).toMatch(/^`sorted` returns a new list/);
 });
 
 test('a Ship stage has hidden tests, its checks and what each requires, and no hints', async () => {
@@ -157,6 +159,36 @@ test.each([
     problem: {
       path: `${stages}/count/hints.md`,
       message: 'Each hint, between lines of ---, needs text.',
+    },
+  },
+  {
+    name: 'a line of --- outside a Catch stage',
+    change: (root: string) =>
+      writeFile(join(root, stages, 'count/explanation.md'), 'Before.\n\n---\n\nAfter.\n'),
+    problem: {
+      path: `${stages}/count/explanation.md`,
+      message: "Only a Catch stage's explanation has a line of ---, where its problems go.",
+    },
+  },
+  {
+    name: 'two lines of --- in an explanation',
+    change: (root: string) =>
+      writeFile(
+        join(root, stages, 'check/explanation.md'),
+        'One.\n\n---\n\nTwo.\n\n---\n\nThree.\n',
+      ),
+    problem: {
+      path: `${stages}/check/explanation.md`,
+      message: 'An explanation has at most one line of ---, where the problems go.',
+    },
+  },
+  {
+    name: 'an explanation with nothing after its line of ---',
+    change: (root: string) =>
+      writeFile(join(root, stages, 'check/explanation.md'), 'Before.\n\n---\n'),
+    problem: {
+      path: `${stages}/check/explanation.md`,
+      message: 'The explanation needs text before and after its line of ---.',
     },
   },
   {

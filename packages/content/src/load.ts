@@ -37,8 +37,13 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks'> {
   readonly brief: string;
   /** In the order they open. A stage that needs none has none. */
   readonly hints: readonly string[];
-  /** The explanation, in Markdoc. A stage that needs none has none. */
+  /**
+   * The explanation, in Markdoc: all of it, or in a Catch stage whose problems sit inside it, the
+   * part before them. A stage that needs none has none.
+   */
   readonly explanation: string | null;
+  /** A Catch stage's explanation after its problems, where a line of --- puts them inside it. */
+  readonly afterProblems: string | null;
   /** The code this stage starts from: a new file, or code added to the learner's own. */
   readonly starter: string;
   /** The learner's file as it should be once the stage is done. */
@@ -208,6 +213,20 @@ class Reader {
     if (hintList.some((hint) => hint === '')) {
       this.problem(join(folder, 'hints.md'), 'Each hint, between lines of ---, needs text.');
     }
+    const parts = hasExplanation ? explanation.split(/^---$/m).map((part) => part.trim()) : [];
+    if (parts.length > 1) {
+      const path = join(folder, 'explanation.md');
+      if (file.kind !== 'catch') {
+        this.problem(
+          path,
+          "Only a Catch stage's explanation has a line of ---, where its problems go.",
+        );
+      } else if (parts.length > 2) {
+        this.problem(path, 'An explanation has at most one line of ---, where the problems go.');
+      } else if (parts.some((part) => part === '')) {
+        this.problem(path, 'The explanation needs text before and after its line of ---.');
+      }
+    }
     const problems = file.kind === 'catch' ? file.problems : [];
     const shipChecks = file.kind === 'ship' ? file.checks : [];
     if (file.kind === 'catch') this.problemsMatch(folder, problems, starter, checks);
@@ -230,7 +249,8 @@ class Reader {
       slug,
       brief,
       hints: hintList,
-      explanation: hasExplanation ? explanation : null,
+      explanation: parts[0] ?? null,
+      afterProblems: parts[1] ?? null,
       starter,
       solution,
       tests,

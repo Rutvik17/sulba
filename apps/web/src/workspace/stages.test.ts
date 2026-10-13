@@ -20,6 +20,7 @@ function stage(
     brief: '',
     hints: [],
     explanation: '',
+    afterProblems: null,
     starter,
     solution: `${starter}# solved\n`,
     tests: { [`tests/test_${id}.py`]: `# tests for ${id}\n` },

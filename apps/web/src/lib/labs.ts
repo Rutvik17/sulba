@@ -35,6 +35,8 @@ export interface StageView {
   readonly hints: readonly string[];
   /** Null when the stage has none. */
   readonly explanation: string | null;
+  /** A Catch stage's explanation after its problems, when its problems sit inside it. */
+  readonly afterProblems: string | null;
   readonly starter: string;
   readonly solution: string;
   /**
@@ -110,6 +112,7 @@ function stageView(stage: Stage, figures: Figures): StageView {
     brief: html(stage.brief),
     hints: stage.hints.map(html),
     explanation: stage.explanation === null ? null : html(stage.explanation),
+    afterProblems: stage.afterProblems === null ? null : html(stage.afterProblems),
     starter: stage.starter,
     solution: stage.solution,
     tests,
