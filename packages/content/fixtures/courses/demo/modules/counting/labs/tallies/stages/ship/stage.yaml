@@ -1,8 +1,7 @@
 id: stg_demo04
 kind: ship
 title: Leader
-builds: >-
-  Your `report.py` from stage 3: your `leader` goes below it.
+builds: Your `report.py` from stage 3.
 file: report.py
 minutes: 10
 checks:

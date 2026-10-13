@@ -1,9 +1,7 @@
 id: stg_c1k1hp
 kind: catch
 title: The assistant's screener
-builds: >-
-  Your `model.py` from stages 1 to 3: the production checks hold the assistant's scikit-learn
-  screener to the model you built.
+builds: Your `model.py` from stages 1 to 3.
 file: screener.py
 packages: [numpy, scikit-learn]
 minutes: 60

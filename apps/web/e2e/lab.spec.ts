@@ -75,7 +75,7 @@ test('passing every test finishes the stage, and the next builds on the learner�
 test('the brief says what its stage builds on', async ({ page }) => {
   await openLab(page);
   await expect(page.getByRole('tabpanel', { name: 'Brief' })).toContainText(
-    'Builds on · Nothing yet: this stage starts tally.py.',
+    'Builds on · A new tally.py.',
   );
 });
 

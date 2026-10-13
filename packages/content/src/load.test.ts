@@ -143,11 +143,7 @@ test.each([
   {
     name: 'a stage that does not say what it builds on',
     change: (root: string) =>
-      edit(
-        join(root, stages, 'count/stage.yaml'),
-        'builds: >-\n  Nothing yet: this stage starts `tally.py`.\n',
-        '',
-      ),
+      edit(join(root, stages, 'count/stage.yaml'), 'builds: A new `tally.py`.\n', ''),
     problem: {
       path: `${stages}/count/stage.yaml`,
       message: 'builds: Invalid input: expected string, received undefined',

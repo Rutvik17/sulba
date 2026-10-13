@@ -1,7 +1,6 @@
 id: stg_demo01
 kind: build
 title: Count
-builds: >-
-  Nothing yet: this stage starts `tally.py`.
+builds: A new `tally.py`.
 file: tally.py
 minutes: 10

@@ -1,8 +1,7 @@
 id: stg_6wncrv
 kind: build
 title: Training
-builds: >-
-  Your `model.py` from stages 1 and 2: `train` calls your `gradient` and `log_loss`.
+builds: Your `model.py` from stages 1 and 2.
 file: model.py
 packages: [numpy, scikit-learn]
 minutes: 50

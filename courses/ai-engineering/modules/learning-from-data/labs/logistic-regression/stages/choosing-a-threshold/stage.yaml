@@ -1,9 +1,7 @@
 id: stg_9umplk
 kind: ship
 title: Choosing a threshold
-builds: >-
-  Your `screener.py` from stage 4: your new functions go below it, and the tests score the test
-  set with your screener.
+builds: Your `screener.py` from stage 4.
 file: screener.py
 packages: [numpy, scikit-learn]
 minutes: 45

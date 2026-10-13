@@ -1,8 +1,7 @@
 id: stg_l5gxcl
 kind: build
 title: The model
-builds: >-
-  Nothing yet: this stage starts `model.py`.
+builds: A new `model.py`.
 file: model.py
 packages: [numpy]
 minutes: 40
