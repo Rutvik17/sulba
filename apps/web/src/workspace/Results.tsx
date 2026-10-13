@@ -181,7 +181,7 @@ export function TestResults({ run, loading, onGoTo, file }: Props) {
 }
 
 /** A line of a stage's text, made from its Markdoc when the site was built. */
-function Line({ html }: { html: string }) {
+export function Line({ html }: { html: string }) {
   // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }

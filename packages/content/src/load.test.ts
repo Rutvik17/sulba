@@ -134,6 +134,15 @@ test.each([
     },
   },
   {
+    name: 'a stage that does not say what it builds on',
+    change: (root: string) =>
+      edit(join(root, stages, 'count/stage.yaml'), 'builds: A new `tally.py`.\n', ''),
+    problem: {
+      path: `${stages}/count/stage.yaml`,
+      message: 'builds: Invalid input: expected string, received undefined',
+    },
+  },
+  {
     name: 'a field the schema does not know',
     change: (root: string) =>
       edit(join(root, stages, 'count/stage.yaml'), 'minutes: 10', 'minutes: 10\nlevel: 2'),
