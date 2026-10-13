@@ -50,27 +50,6 @@
   padding: 0 var(--space-2) 0 var(--space-3);
 }
 
-.code :global(.cm-tooltip) {
-  overflow: hidden;
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-}
-
-.code :global(.cm-tooltip-autocomplete > ul) {
-  font-family: var(--font-mono);
-}
-
-.code :global(.cm-diagnostic) {
-  padding: var(--space-2) var(--space-3);
-}
-
-.code :global(.cm-diagnosticSource) {
-  opacity: 0.75;
-}
-
 /* Code that does nothing, such as an import that is never used, gets a dotted line instead of a
    wavy one. It keeps its colour, so it stays as readable as the code around it. */
 .code :global(.cm-lintRange-unnecessary) {

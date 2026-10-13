@@ -17,6 +17,7 @@ import {
   highlightActiveLineGutter,
   keymap,
   lineNumbers,
+  tooltips,
 } from '@codemirror/view';
 import { classes } from '@sulba/ui/classes';
 import { type Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
@@ -25,6 +26,23 @@ import { formatCode, ruffLint } from './ruff.ts';
 import { type Palette, paletteTheme, sulba } from './themes.ts';
 
 const css = classes(styles, 'editor', 'code', 'status');
+
+// Tooltips, such as the completion list and Ruff's messages, sit in the page's body, so the
+// editor's frame can't cut them off. Otherwise CodeMirror puts them inside the editor in Safari,
+// always on an iPhone and at times on a Mac. The frame's CSS Module can't reach them in the body,
+// so their look is part of the editor's theme.
+const tooltipTheme = EditorView.theme({
+  '.cm-tooltip': {
+    overflow: 'hidden',
+    border: '1px solid var(--line-2)',
+    borderRadius: 'var(--radius-sm)',
+    boxShadow: 'var(--shadow)',
+    fontFamily: 'var(--font-sans)',
+    fontSize: 'var(--text-sm)',
+  },
+  '.cm-diagnostic': { padding: 'var(--space-2) var(--space-3)' },
+  '.cm-diagnosticSource': { opacity: '0.75' },
+});
 
 export interface EditorHandle {
   /** The code as it stands. */
@@ -138,6 +156,8 @@ export function Editor({
           // The code area takes focus already; the tabindex says so to checkers such as axe, which
           // otherwise see the scrolling area around it as one a keyboard can't reach.
           EditorView.contentAttributes.of({ 'aria-label': label, tabindex: '0' }),
+          tooltips({ parent: document.body }),
+          tooltipTheme,
           theme.current.of(paletteTheme(palette)),
           EditorView.updateListener.of((update) => {
             if (update.docChanged) changed.current?.(update.state.doc.toString());
