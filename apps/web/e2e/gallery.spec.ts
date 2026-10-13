@@ -251,6 +251,24 @@ test('the editor offers the names in the file as one is typed', async ({ page })
   await expect(code.locator('.cm-line').last()).toHaveText('sigmoid');
 });
 
+test('the list of names shows whole where it reaches past the editor', async ({ page }) => {
+  await openGallery(page);
+  const { section } = editor(page);
+
+  await focusCode(page);
+  await page.keyboard.type('\n\nsig');
+  const list = page.getByRole('listbox', { name: 'Completions' });
+
+  // The list reaches below the code, where the editor's frame would cut it off if it sat inside.
+  await expect(list).toBeInViewport({ ratio: 1 });
+  const listBox = await list.boundingBox();
+  const codeBox = await section
+    .locator('.cm-editor', { has: page.getByRole('textbox', { name: 'model.py' }) })
+    .boundingBox();
+  if (!listBox || !codeBox) throw new Error('The list or the code has no box');
+  expect(listBox.y + listBox.height).toBeGreaterThan(codeBox.y + codeBox.height);
+});
+
 test('Ctrl+/ comments a line out and back in', async ({ page, isMobile }) => {
   test.skip(isMobile, shortcuts);
   await openGallery(page);
