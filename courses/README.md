@@ -17,7 +17,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
                             a Catch stage's problems or a Ship stage's checks, and a chart
         brief.md            the task
         hints.md            optional: hints in the order they open, separated by lines of ---
-        explanation.md      optional: the explanation
+        explanation.md      the explanation
         starter/<file>      the code the stage starts from
         solution/<file>     the learner's file as it should be once the stage is done
         tests/test_*.py     pytest tests, each with @pytest.mark.id and a docstring as its name
@@ -83,7 +83,7 @@ checks:
 
 A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
 
-The stage passes when every test and check passes. If it has an explanation, it opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
+The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Prose, formulas and numbers
 

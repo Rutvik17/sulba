@@ -169,15 +169,6 @@ test('a stage the address names opens only once the stage before is done', async
   await expect(page.getByRole('heading', { name: 'Share' })).toBeVisible();
 });
 
-test('a stage without an explanation has no Explanation tab', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
-  await openLab(page, '?stage=share');
-
-  await expect(page.getByRole('heading', { name: 'Share' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Hints' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Explanation' })).toHaveCount(0);
-});
-
 test('the lab page fits the screen without scrolling sideways', async ({ page }) => {
   await openLab(page);
   const width = await page.evaluate(() => document.documentElement.scrollWidth);

@@ -45,9 +45,9 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks' | 'chart'> 
   readonly hints: readonly string[];
   /**
    * The explanation, in Markdoc: all of it, or in a Catch stage whose problems sit inside it, the
-   * part before them. A stage that needs none has none.
+   * part before them.
    */
-  readonly explanation: string | null;
+  readonly explanation: string;
   /** A Catch stage's explanation after its problems, where a line of --- puts them inside it. */
   readonly afterProblems: string | null;
   /** The code this stage starts from: a new file, or code added to the learner's own. */
@@ -198,21 +198,20 @@ class Reader {
     const hasChecks = file?.kind === 'catch' || file?.kind === 'ship';
     await this.entries(
       folder,
-      ['stage.yaml', 'brief.md'],
+      ['stage.yaml', 'brief.md', 'explanation.md'],
       ['starter', 'solution', 'tests', ...(hasChecks ? ['checks'] : [])],
-      ['hints.md', 'explanation.md', 'figures.py', 'chart.py'],
+      ['hints.md', 'figures.py', 'chart.py'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
     await this.entries(join(folder, 'solution'), [file.file], []);
     const present = new Set(((await this.list(folder)) ?? []).map((entry) => entry.name));
     const hasHints = present.has('hints.md');
-    const hasExplanation = present.has('explanation.md');
 
     const [brief, hints, explanation, starter, solution, tests, checks] = await Promise.all([
       this.prose(join(folder, 'brief.md')),
       hasHints ? this.prose(join(folder, 'hints.md')) : Promise.resolve(''),
-      hasExplanation ? this.prose(join(folder, 'explanation.md')) : Promise.resolve(''),
+      this.prose(join(folder, 'explanation.md')),
       this.text(join(folder, 'starter', file.file)),
       this.text(join(folder, 'solution', file.file)),
       this.testFiles(join(folder, 'tests'), 'A stage needs a test file.'),
@@ -231,7 +230,7 @@ class Reader {
     if (hintList.some((hint) => hint === '')) {
       this.problem(join(folder, 'hints.md'), 'Each hint, between lines of ---, needs text.');
     }
-    const parts = hasExplanation ? explanation.split(/^---$/m).map((part) => part.trim()) : [];
+    const parts = explanation.split(/^---$/m).map((part) => part.trim());
     if (parts.length > 1) {
       const path = join(folder, 'explanation.md');
       if (file.kind !== 'catch') {
@@ -253,7 +252,7 @@ class Reader {
       'stage.yaml': JSON.stringify(file),
       brief,
       hints,
-      ...(hasExplanation ? { explanation } : {}),
+      explanation,
       starter,
       solution,
       ...(figures === null ? {} : { 'figures.py': figures }),
@@ -268,7 +267,7 @@ class Reader {
       slug,
       brief,
       hints: hintList,
-      explanation: parts[0] ?? null,
+      explanation: parts[0] ?? '',
       afterProblems: parts[1] ?? null,
       starter,
       solution,
