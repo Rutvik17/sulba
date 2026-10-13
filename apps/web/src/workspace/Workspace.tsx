@@ -185,6 +185,8 @@ function StageWorkspace({
   const stage = lab.stages[index] as StageView;
   const isCatch = stage.kind === 'catch';
   const isShip = stage.kind === 'ship';
+  // A Catch stage's problems open in the Explanation tab, so it keeps the tab without prose.
+  const hasExplanation = stage.explanation !== null || isCatch;
   const editor = useRef<EditorHandle>(null);
   const left = useRef<HTMLDivElement>(null);
   const finished = useRef<HTMLParagraphElement>(null);
@@ -273,7 +275,7 @@ function StageWorkspace({
           <TabList aria-label="Stage">
             <Tab id="brief">Brief</Tab>
             {stage.hints.length > 0 && <Tab id="hints">Hints</Tab>}
-            <Tab id="explanation">Explanation</Tab>
+            {hasExplanation && <Tab id="explanation">Explanation</Tab>}
             <Tab id="solution" isDisabled={!solutionOpen}>
               Solution
             </Tab>
@@ -306,18 +308,20 @@ function StageWorkspace({
               </div>
             </TabPanel>
           )}
-          <TabPanel id="explanation">
-            <div className={css.panel}>
-              {isCatch && !review ? (
-                <p className={css.note}>Opens when you finish the review.</p>
-              ) : isShip && !tried ? (
-                <p className={css.note}>Opens after your first run.</p>
-              ) : (
-                <Prose html={stage.explanation} />
-              )}
-              {isCatch && review && <Problems problems={stage.problems} review={review} />}
-            </div>
-          </TabPanel>
+          {hasExplanation && (
+            <TabPanel id="explanation">
+              <div className={css.panel}>
+                {isCatch && !review ? (
+                  <p className={css.note}>Opens when you finish the review.</p>
+                ) : isShip && !tried ? (
+                  <p className={css.note}>Opens after your first run.</p>
+                ) : (
+                  stage.explanation !== null && <Prose html={stage.explanation} />
+                )}
+                {isCatch && review && <Problems problems={stage.problems} review={review} />}
+              </div>
+            </TabPanel>
+          )}
           <TabPanel id="solution">
             <div className={css.panel}>
               <Editor defaultValue={stage.solution} label={`Solution: ${stage.file}`} readOnly />

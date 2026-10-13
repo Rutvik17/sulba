@@ -33,7 +33,8 @@ export interface StageView {
    */
   readonly brief: string;
   readonly hints: readonly string[];
-  readonly explanation: string;
+  /** Null when the stage has none. */
+  readonly explanation: string | null;
   readonly starter: string;
   readonly solution: string;
   /**
@@ -108,7 +109,7 @@ function stageView(stage: Stage, figures: Figures): StageView {
     version: stage.version,
     brief: html(stage.brief),
     hints: stage.hints.map(html),
-    explanation: html(stage.explanation),
+    explanation: stage.explanation === null ? null : html(stage.explanation),
     starter: stage.starter,
     solution: stage.solution,
     tests,
