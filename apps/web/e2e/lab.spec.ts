@@ -282,6 +282,9 @@ test('finishing the review keeps the score, and names each problem with what it 
   await expect(
     explanation.getByRole('listitem').filter({ hasText: "It reordered the poll's own list" }),
   ).toContainText('Caught');
+  await expect(explanation).toHaveText(
+    /The assistant's tests checked[\s\S]*It reordered the poll's own list[\s\S]*sorted returns a new list/,
+  );
   await expect(page.getByRole('tab', { name: 'Solution' })).not.toHaveAttribute(
     'aria-disabled',
     'true',

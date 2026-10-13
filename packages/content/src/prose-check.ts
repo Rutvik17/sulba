@@ -91,10 +91,9 @@ export function proseProblems(
     const pieces: [file: string, text: string, oneLine?: boolean][] = [
       ['brief.md', stage.brief],
       ...stage.hints.map((hint): [string, string] => ['hints.md', hint]),
-      ...(stage.explanation === null ? [] : [stage.explanation]).map((text): [string, string] => [
-        'explanation.md',
-        text,
-      ]),
+      ...[stage.explanation, stage.afterProblems]
+        .filter((text) => text !== null)
+        .map((text): [string, string] => ['explanation.md', text]),
       ...stage.problems.flatMap(({ cost, fix }): [string, string][] => [
         ['stage.yaml', cost],
         ['stage.yaml', fix],

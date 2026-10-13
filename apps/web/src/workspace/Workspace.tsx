@@ -319,6 +319,9 @@ function StageWorkspace({
                   stage.explanation !== null && <Prose html={stage.explanation} />
                 )}
                 {isCatch && review && <Problems problems={stage.problems} review={review} />}
+                {isCatch && review && stage.afterProblems !== null && (
+                  <Prose html={stage.afterProblems} />
+                )}
               </div>
             </TabPanel>
           )}
