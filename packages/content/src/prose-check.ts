@@ -90,6 +90,7 @@ export function proseProblems(
     const used = new Set<string>();
     const pieces: [file: string, text: string, oneLine?: boolean][] = [
       ['brief.md', stage.brief],
+      ['stage.yaml', stage.builds, true],
       ...stage.hints.map((hint): [string, string] => ['hints.md', hint]),
       ...[stage.explanation, stage.afterProblems]
         .filter((text) => text !== null)

@@ -1,6 +1,8 @@
 id: stg_demo03
 kind: catch
 title: Check
+builds: >-
+  Your `tally.py` from stages 1 and 2: the assistant's `report` calls your `share`.
 file: report.py
 minutes: 10
 problems:

@@ -13,8 +13,9 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       lab.yaml              id, title, summary, datasets with their credit, and its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
-        stage.yaml          id, kind, title, the file the learner works in, packages, minutes,
-                            and a Catch stage's problems or a Ship stage's checks
+        stage.yaml          id, kind, title, what it builds on, the file the learner works in,
+                            packages, minutes, and a Catch stage's problems or a Ship stage's
+                            checks
         brief.md            the task
         hints.md            optional: hints in the order they open, separated by lines of ---
         explanation.md      optional: the explanation
@@ -33,7 +34,7 @@ Every course, level, module, lab, stage and test has a permanent id: a prefix (`
 
 ## Stages
 
-A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code.
+A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code. `builds` in `stage.yaml` says what the stage builds on, in a line of Markdoc above its brief.
 
 A stage's `kind` is `build`, `catch` or `ship`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 

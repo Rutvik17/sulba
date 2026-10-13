@@ -32,6 +32,8 @@ export interface StageView {
    * MathML and the numbers from the stage's figures.py.
    */
   readonly brief: string;
+  /** What the stage builds on, one line. */
+  readonly builds: string;
   readonly hints: readonly string[];
   /** Null when the stage has none. */
   readonly explanation: string | null;
@@ -110,6 +112,7 @@ function stageView(stage: Stage, figures: Figures): StageView {
     minutes: stage.minutes,
     version: stage.version,
     brief: html(stage.brief),
+    builds: line(stage.builds),
     hints: stage.hints.map(html),
     explanation: stage.explanation === null ? null : html(stage.explanation),
     afterProblems: stage.afterProblems === null ? null : html(stage.afterProblems),

@@ -1,5 +1,7 @@
 id: stg_demo02
 kind: build
 title: Share
+builds: >-
+  Your `tally.py` from stage 1: `share` calls your `count`.
 file: tally.py
 minutes: 10
