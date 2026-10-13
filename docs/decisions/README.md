@@ -19,5 +19,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [13. Leave the EEA, the UK and Switzerland out of visit counts](0013-leave-the-eea-uk-and-switzerland-out-of-visit-counts.md) | Accepted |
 | [14. Use CodeMirror 6, with each language's own browser build](0014-use-codemirror-with-each-languages-own-browser-build.md) | Accepted |
 | [15. Render formulas as MathML at build time, in Noto Sans Math](0015-render-formulas-as-mathml-in-noto-sans-math.md) | Accepted |
+| [16. Draw charts in SVG, from the data a stage's chart.py returns](0016-draw-charts-in-svg-from-data-chart-py-returns.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

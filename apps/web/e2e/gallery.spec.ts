@@ -98,6 +98,21 @@ test('a slider moves by a step with the arrow keys and to its ends with Home and
   await expect(shown).toHaveText('0.00');
 });
 
+test('a slider through a list of stops shows and announces each stop', async ({ page }) => {
+  await openGallery(page);
+  const decay = page.getByRole('slider', { name: 'Weight decay' });
+  const shown = page.getByRole('group', { name: 'Weight decay' }).locator('output');
+  await expect(shown).toHaveText('0.01');
+  await expect(decay).toHaveAttribute('aria-valuetext', '0.01');
+
+  await decay.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(shown).toHaveText('0.1');
+  await expect(decay).toHaveAttribute('aria-valuetext', '0.1');
+  await page.keyboard.press('Home');
+  await expect(decay).toHaveAttribute('aria-valuetext', '0.0001');
+});
+
 /** Presses the right end of a slider's track, the 24 px row at the bottom of the slider. */
 async function pressTrackEnd(page: Page, name: string) {
   const slider = page.getByRole('group', { name });

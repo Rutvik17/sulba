@@ -10,6 +10,7 @@ from __future__ import annotations
 import importlib
 import io
 import json
+import math
 import os
 import sys
 import tempfile
@@ -64,6 +65,43 @@ def figures(files_json: str) -> str:
     if not named:
         return json.dumps({"figures": None, "problem": "figures() must return names and strings."})
     return json.dumps({"figures": values, "problem": None})
+
+
+def chart(files_json: str, values_json: str) -> str:
+    """Call chart() in the session's chart.py with the sliders' values, and return what it draws
+    or its error.
+
+    A chart draws the learner's own functions: chart.py imports them from the session's files,
+    and each slider's value arrives as a keyword argument.
+    """
+    files: dict[str, str] = json.loads(files_json)
+    values: dict[str, float] = json.loads(values_json)
+    with tempfile.TemporaryDirectory(prefix="sulba-") as folder:
+        root = Path(folder).resolve()
+        write(root, files)
+        try:
+            drawing = within(root, lambda: plain(importlib.import_module("chart").chart(**values)))
+            return json.dumps({"chart": drawing, "problem": None}, allow_nan=False)
+        # A learner's sys.exit() is an error in their code, not a reason to stop the runner.
+        except (Exception, SystemExit) as error:
+            message = clip(str(error).replace(f"{root}{os.sep}", ""))
+            return json.dumps(
+                {"chart": None, "problem": {"kind": type(error).__name__, "message": message}}
+            )
+
+
+def plain(value: object) -> object:
+    """value as JSON holds it: NumPy arrays and numbers become lists and Python numbers, and a
+    number that isn't finite becomes None, since JSON can't write it."""
+    if isinstance(value, dict):
+        return {key: plain(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [plain(item) for item in value]
+    if hasattr(value, "tolist"):
+        return plain(value.tolist())
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    return value
 
 
 def write(root: Path, files: dict[str, str]) -> None:
@@ -266,12 +304,15 @@ def clip(text: str) -> str:
 
 if __name__ == "__main__":
     # One request per line of standard input and its answer on one line of standard output, so
-    # checks can run many sessions in one process. A run is {"files": {...}, "tests": [...]}, and
-    # {"files": {...}, "figures": true} asks for figures.py's numbers.
+    # checks can run many sessions in one process. A run is {"files": {...}, "tests": [...]},
+    # {"files": {...}, "figures": true} asks for figures.py's numbers, and
+    # {"files": {...}, "chart": {...}} for what chart.py draws with those values.
     for line in sys.stdin:
         request = json.loads(line)
         files = json.dumps(request["files"])
         if request.get("figures"):
             print(figures(files), flush=True)
+        elif "chart" in request:
+            print(chart(files, json.dumps(request["chart"])), flush=True)
         else:
             print(run(files, json.dumps(request["tests"])), flush=True)

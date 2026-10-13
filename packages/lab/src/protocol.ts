@@ -65,6 +65,59 @@ export interface Figures {
   readonly problem: string | null;
 }
 
+/** Draw a stage's chart: call chart() in its chart.py, among these files, with these values. */
+export interface ChartRequest {
+  /** chart.py and every file it reads, such as the learner's code and the lab's data. */
+  readonly files: RunRequest['files'];
+  /** Each slider's value, by the name chart() takes it as. */
+  readonly values: Readonly<Record<string, number>>;
+  readonly packages: RunRequest['packages'];
+}
+
+/**
+ * How a line is drawn. main: the learner's own result. base: a curve the learner's result is read
+ * against. faint: a result to compare with. dashed: a level, such as the lowest loss there is.
+ */
+export const lineStyles = ['main', 'base', 'faint', 'dashed'] as const;
+export type LineStyle = (typeof lineStyles)[number];
+
+/** An axis: the values it spans, the step between its labelled ticks, and what it measures. */
+export interface Axis {
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  readonly label: string;
+}
+
+export interface Line {
+  readonly style: LineStyle;
+  /** What the line shows, as the legend names it. */
+  readonly label: string;
+  readonly x: readonly number[];
+  /** Null where there is no number, such as a loss that isn't finite: the line breaks there. */
+  readonly y: readonly (number | null)[];
+}
+
+/** What a stage's chart.py draws, and the values to read beside it. */
+export interface Drawing {
+  readonly x: Axis;
+  readonly y: Axis;
+  /** In the order they are drawn, so a later line lies on top. The legend lists the top one first. */
+  readonly lines: readonly Line[];
+  /** Points marked on top, in the main style. */
+  readonly points: readonly { readonly x: number; readonly y: number | null }[];
+  /** Each value with the expression that gives it, such as `sigmoid(1 * 0 + 0)`. */
+  readonly readouts: readonly { readonly label: string; readonly value: string }[];
+  /** What the chart shows, for screen readers. */
+  readonly description: string;
+}
+
+/** What a chart drew, or why it drew nothing: chart.py's error, or TimeLimit when it was stopped. */
+export interface ChartResult {
+  readonly chart: Drawing | null;
+  readonly problem: Pick<Problem, 'kind' | 'message'> | null;
+}
+
 /** The Python packages sessions can load, from Pyodide's builds. pytest is always loaded. */
 export const pythonPackages = ['numpy', 'scikit-learn'] as const;
 export type PythonPackage = (typeof pythonPackages)[number];

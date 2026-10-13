@@ -5,3 +5,12 @@ builds: Your `model.py` from stage 1.
 file: model.py
 packages: [numpy]
 minutes: 45
+chart:
+  title: Log loss on scaled worst radius
+  sliders:
+    - name: w
+      label: Weight w
+      min: -2
+      max: 10
+      step: 0.1
+      value: 1

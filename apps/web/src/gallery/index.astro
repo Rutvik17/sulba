@@ -6,6 +6,7 @@ import { buttonClass } from '@sulba/ui/button';
 import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
+import ChartDemo from './ChartDemo';
 import EditorDemo from './EditorDemo';
 import formulas from './formulas.md?raw';
 import MenuDemo from './MenuDemo';
@@ -154,6 +155,16 @@ const buttons = [
       </div>
     </div>
   </section>
+
+  <section aria-labelledby="chart">
+    <SectionHeading id="chart" text="Chart" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="charts">
+        <ChartDemo client:load />
+      </div>
+    </div>
+  </section>
 </Page>
 
 <style>
@@ -235,6 +246,22 @@ h3 {
   display: grid;
   gap: var(--space-6);
   max-width: 360px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-8);
+  min-width: 0;
+  max-width: 960px;
+}
+
+.charts :global(figure) {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  min-width: 0;
+  margin: 0;
 }
 
 .code {

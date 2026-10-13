@@ -2,6 +2,8 @@
 // so both go through the same steps.
 import type { PyodideAPI } from 'pyodide';
 import {
+  type ChartRequest,
+  type ChartResult,
   type Figures,
   importNames,
   type RunRequest,
@@ -17,6 +19,8 @@ export interface Engine {
   run(request: RunRequest): RunResult;
   /** The numbers the files' figures.py gives, for prose to show. */
   figures(files: RunRequest['files']): Figures;
+  /** What the files' chart.py draws with these values. Its packages must be loaded. */
+  chart(request: Omit<ChartRequest, 'packages'>): ChartResult;
 }
 
 /** `runner` is the text of python/sulba_runner.py. */
@@ -29,6 +33,7 @@ export async function createEngine(pyodide: PyodideAPI, runner: string): Promise
   const module = pyodide.pyimport('sulba_runner');
   const run = module.run as (files: string, tests: string) => string;
   const figures = module.figures as (files: string) => string;
+  const chart = module.chart as (files: string, values: string) => string;
   return {
     async load(packages) {
       await pyodide.loadPackage([...packages], quiet);
@@ -42,5 +47,7 @@ export async function createEngine(pyodide: PyodideAPI, runner: string): Promise
       return { status: statusOf(outcome.tests, outcome.problem), ...outcome };
     },
     figures: (files) => JSON.parse(figures(JSON.stringify(files))) as Figures,
+    chart: ({ files, values }) =>
+      JSON.parse(chart(JSON.stringify(files), JSON.stringify(values))) as ChartResult,
   };
 }

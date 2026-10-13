@@ -7,6 +7,8 @@ import { loadPyodide } from 'pyodide';
 import { pyodideFolder } from './assemble.ts';
 import { createEngine, type Engine } from './engine.ts';
 import {
+  type ChartRequest,
+  type ChartResult,
   type Figures,
   pythonPackages,
   type RunRequest,
@@ -71,4 +73,10 @@ export async function figuresInCPython(
 ): Promise<Figures[]> {
   const answers = await inCPython(fileSets.map((files) => ({ files, figures: true })));
   return answers as Figures[];
+}
+
+/** What each request's chart.py draws, in CPython. */
+export async function chartsInCPython(requests: readonly ChartRequest[]): Promise<ChartResult[]> {
+  const answers = await inCPython(requests.map(({ files, values }) => ({ files, chart: values })));
+  return answers as ChartResult[];
 }

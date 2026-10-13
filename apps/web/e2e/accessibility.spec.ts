@@ -105,7 +105,30 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.goto('/demo/counting/tallies/');
     await page.getByRole('button', { name: 'Run tests' }).click();
     // The first run waits for Python to load.
-    await expect(page.getByText('0 of 2 tests pass.')).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByText('0 of 2 tests passed.')).toBeVisible({ timeout: 60_000 });
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a stage's chart has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    // The chart draws the learner's code, so the stage needs code that passes.
+    await page.addInitScript(() => {
+      localStorage.setItem('sulba:passed:stg_demo01', '1');
+      localStorage.setItem('sulba:passed:stg_demo02', '1');
+      localStorage.setItem(
+        'sulba:code:stg_demo02',
+        'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n\n\ndef share(choices, choice):\n    return count(choices, choice) / len(choices)\n',
+      );
+    });
+    await page.goto('/demo/counting/tallies/?stage=share');
+    await page.getByRole('tab', { name: 'Chart' }).click();
+    // The chart is drawn once Python has loaded.
+    await expect(page.getByRole('img', { name: /share of yes votes/ })).toBeVisible({
+      timeout: 60_000,
+    });
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 
@@ -118,7 +141,7 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await openReview(page);
     await page.getByRole('button', { name: 'Run tests' }).click();
-    await expect(page.getByText('0 of 2 production checks pass.', { exact: false })).toBeVisible({
+    await expect(page.getByText('0 of 2 production checks passed.', { exact: false })).toBeVisible({
       timeout: 60_000,
     });
     await page.getByRole('button', { name: 'Finish review' }).click();
@@ -138,7 +161,7 @@ for (const scheme of ['dark', 'light'] as const) {
     );
     await openReview(page);
     await page.getByRole('button', { name: 'Run tests' }).click();
-    await expect(page.getByText('0 of 2 production checks pass.', { exact: false })).toBeVisible({
+    await expect(page.getByText('0 of 2 production checks passed.', { exact: false })).toBeVisible({
       timeout: 60_000,
     });
     await page.getByRole('button', { name: 'See each problem' }).click();
@@ -155,7 +178,7 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await openShip(page);
     await page.getByRole('button', { name: 'Run tests' }).click();
-    await expect(page.getByText('0 of 2 checks pass.', { exact: false })).toBeVisible({
+    await expect(page.getByText('0 of 2 checks passed.', { exact: false })).toBeVisible({
       timeout: 60_000,
     });
 

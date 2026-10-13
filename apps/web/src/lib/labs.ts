@@ -4,6 +4,7 @@
 
 import { resolve } from 'node:path';
 import {
+  type Chart,
   type Course,
   computeFigures,
   courseSlugs,
@@ -55,6 +56,15 @@ export interface StageView {
   readonly problems: readonly ProblemView[];
   /** A Ship stage's checks before it ships, in the order they show. Other stages have none. */
   readonly shipChecks: readonly ShipCheckView[];
+  /** The chart that draws the learner's code once the stage is passed, if it has one. */
+  readonly chart: ChartView | null;
+}
+
+export interface ChartView {
+  readonly title: string;
+  readonly sliders: Chart['sliders'];
+  /** chart.py, which draws the chart with the learner's code. */
+  readonly code: string;
 }
 
 export interface ProblemView {
@@ -131,6 +141,11 @@ function stageView(stage: Stage, figures: Figures): StageView {
       requires: line(requires),
       failure: line(failure),
     })),
+    chart: stage.chart && {
+      title: stage.chart.title,
+      sliders: stage.chart.sliders,
+      code: stage.chart.code,
+    },
   };
 }
 

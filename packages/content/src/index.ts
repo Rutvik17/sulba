@@ -1,8 +1,10 @@
+export { type ChartRunner, checkCharts } from './chart-check.ts';
 export { duplicateIds, prove, type Runner } from './check.ts';
 export { drawnCharacters, italicOf } from './glyphs.ts';
 export { idPattern, prefixes } from './ids.ts';
 export {
   type CatchProblem,
+  type Chart,
   type Course,
   courseSlugs,
   type Dataset,

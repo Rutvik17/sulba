@@ -1,6 +1,11 @@
 import { Slider } from '@sulba/ui/slider';
 
-/** Sliders in a React island: a fraction, a whole number, and one that can't be moved. */
+const decays = [0.0001, 0.001, 0.01, 0.1];
+
+/**
+ * Sliders in a React island: a fraction, a whole number, one through a list of stops, and one that
+ * can't be moved.
+ */
 export default function SliderDemo() {
   return (
     <>
@@ -13,6 +18,13 @@ export default function SliderDemo() {
         formatOptions={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
       />
       <Slider label="Epochs" defaultValue={20} minValue={1} maxValue={100} />
+      <Slider
+        label="Weight decay"
+        defaultValue={2}
+        minValue={0}
+        maxValue={decays.length - 1}
+        valueText={(index) => String(decays[index])}
+      />
       <Slider
         label="Batch size"
         defaultValue={32}

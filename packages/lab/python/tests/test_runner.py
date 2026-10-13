@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from sulba_runner import figures, run
+from sulba_runner import chart, figures, run
 
 FIXTURES = Path(__file__).parents[2] / "fixtures"
 
@@ -110,3 +110,82 @@ def test_batch_mode_answers_a_figures_request() -> None:
         check=True,
     )
     assert json.loads(done.stdout)["figures"] == {"yes": "2", "share": "0.6667"}
+
+
+SHARES = {
+    "data/votes.csv": "choice\nyes\nno\nyes\n",
+    "tally.py": "def share(votes, choice):\n    return votes.count(choice) / len(votes)\n",
+    "chart.py": (
+        "import csv\n\n"
+        "import numpy as np\n\n"
+        "from tally import share\n\n\n"
+        "def chart(votes):\n"
+        "    with open('data/votes.csv', encoding='utf-8') as file:\n"
+        "        cast = [row['choice'] for row in csv.DictReader(file)][:votes]\n"
+        "    yes = share(cast, 'yes')\n"
+        "    return {\n"
+        "        'x': {'min': 0, 'max': 1, 'step': 1, 'label': 'votes'},\n"
+        "        'y': {'min': 0, 'max': 1, 'step': 0.5, 'label': 'share'},\n"
+        "        'lines': [\n"
+        "            {'style': 'main', 'label': 'Yes', 'x': np.array([0.0, 1.0]),\n"
+        "             'y': (0.0, np.log(yes))},\n"
+        "        ],\n"
+        "        'points': [{'x': 1, 'y': np.float64(yes)}],\n"
+        "        'readouts': [{'label': f'share of {votes}', 'value': f'{yes:.4f}'}],\n"
+        "        'description': f'The share of yes votes in the first {votes}',\n"
+        "    }\n"
+    ),
+}
+
+
+def test_a_chart_is_what_chart_py_draws_with_the_values_as_json_holds_it() -> None:
+    answer = json.loads(chart(json.dumps(SHARES), json.dumps({"votes": 2})))
+    assert answer == {
+        "chart": {
+            "x": {"min": 0, "max": 1, "step": 1, "label": "votes"},
+            "y": {"min": 0, "max": 1, "step": 0.5, "label": "share"},
+            "lines": [
+                {"style": "main", "label": "Yes", "x": [0.0, 1.0], "y": [0.0, -0.6931471805599453]}
+            ],
+            "points": [{"x": 1, "y": 0.5}],
+            "readouts": [{"label": "share of 2", "value": "0.5000"}],
+            "description": "The share of yes votes in the first 2",
+        },
+        "problem": None,
+    }
+
+
+@pytest.mark.filterwarnings("ignore:divide by zero")
+def test_a_value_that_is_not_finite_draws_nothing() -> None:
+    files = {**SHARES, "data/votes.csv": "choice\nno\n"}
+    answer = json.loads(chart(json.dumps(files), json.dumps({"votes": 1})))
+    assert answer["chart"]["lines"][0]["y"] == [0.0, None]
+
+
+def test_a_chart_that_fails_gives_the_error() -> None:
+    answer = json.loads(chart(json.dumps(SHARES), json.dumps({"votes": 0})))
+    assert answer == {
+        "chart": None,
+        "problem": {"kind": "ZeroDivisionError", "message": "division by zero"},
+    }
+
+
+def test_a_chart_whose_code_exits_gives_the_error() -> None:
+    files = {**SHARES, "tally.py": "import sys\n\nsys.exit(1)\n"}
+    answer = json.loads(chart(json.dumps(files), json.dumps({"votes": 2})))
+    assert answer == {"chart": None, "problem": {"kind": "SystemExit", "message": "1"}}
+
+
+def test_batch_mode_answers_a_chart_request() -> None:
+    done = subprocess.run(
+        [sys.executable, "sulba_runner.py"],
+        input=json.dumps({"files": SHARES, "chart": {"votes": 3}}) + "\n",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=Path(__file__).parents[1],
+        check=True,
+    )
+    assert json.loads(done.stdout)["chart"]["readouts"] == [
+        {"label": "share of 3", "value": "0.6667"}
+    ]
