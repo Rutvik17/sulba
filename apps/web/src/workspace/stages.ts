@@ -1,6 +1,7 @@
 // What each stage of a lab starts from and runs against. A stage builds on the learner's own code
-// from the stages before it, never on the solutions, except after a Catch review that missed a
-// problem: then the fixed code carries on.
+// from the stages before it, never on the solutions, with two exceptions: after a Catch review that
+// missed a problem, the fixed code carries on, and a stage passed on another device carries on its
+// solution, since the learner's code stays on the device it was written on.
 import { addStarter } from '@sulba/content/runs';
 import type { ChartRequest, RunRequest } from '@sulba/lab/protocol';
 import type { LabView } from '../lib/labs';
@@ -40,7 +41,8 @@ export function codeOf(lab: LabView, index: number, kept: Kept): string {
 
 /**
  * The code a stage passes on to the stages after it: the learner's own, unless the stage is a
- * Catch stage whose review didn't catch every problem, when its fixed code goes on instead.
+ * Catch stage whose review didn't catch every problem, or a stage passed without its code in this
+ * browser, when its solution goes on instead.
  */
 export function carriedOn(lab: LabView, index: number, kept: Kept): string {
   const stage = lab.stages[index];
@@ -49,6 +51,7 @@ export function carriedOn(lab: LabView, index: number, kept: Kept): string {
     const caught = kept.review(stage.id)?.caught ?? [];
     if (!stage.problems.every((problem) => caught.includes(problem.check))) return stage.solution;
   }
+  if (kept.passed(stage.id) && kept.code(stage.id) === null) return stage.solution;
   return codeOf(lab, index, kept);
 }
 

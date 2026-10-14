@@ -11,7 +11,7 @@ pnpm install
 pnpm dev
 ```
 
-The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production, and http://localhost:4321/gallery/ shows every component in each of its states. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
+The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production, and http://localhost:4321/gallery/ shows every component in each of its states. Sign-in uses the hosted Supabase project, which sends a sign-in back to loopback addresses but not to `localhost` by name, so open http://127.0.0.1:4321 to sign in while developing. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
 
 | Command | What it does |
 | --- | --- |
@@ -25,6 +25,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm test:python` | Runs the lab's Python tests in CPython |
 | `pnpm check:content` | Checks every course, and runs every stage in Pyodide and CPython |
 | `pnpm test:db` | Runs the database's migrations in a local Supabase, and the tests of its row-level security |
+| `pnpm --filter @sulba/data types` | Writes the database's TypeScript types from the local Supabase |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
 | `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
@@ -39,7 +40,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | `packages/editor` | The code editor |
 | `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
 | `packages/content` | Reads and checks the courses |
-| `packages/data` | The database: its migrations and their tests |
+| `packages/data` | The database, its migrations and tests, and the site's connection to Supabase |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content, laid out as [its README](courses/README.md) describes |
 | `tools` | Scripts that build course data |

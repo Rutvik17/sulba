@@ -1,6 +1,7 @@
 // What the workspace keeps in this browser: each stage's code, the stages passed, and each
 // finished Catch review. Storage can be blocked or cleared, so every read falls back and every
-// write may fail without harm. Accounts will keep progress once they exist (Phase 3).
+// write may fail without harm. A signed-in learner's passes and reviews also go to their account,
+// and come back from it on another device (sync.ts); their code stays here.
 import type { Kept, Review } from './stages';
 
 function read(key: string): string | null {

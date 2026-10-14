@@ -2,10 +2,25 @@
   "name": "@sulba/data",
   "private": true,
   "type": "module",
+  "exports": {
+    "./session": "./src/session.ts",
+    "./outbox": "./src/outbox.ts",
+    "./client": "./src/client.ts",
+    "./account": "./src/account.ts",
+    "./sync": "./src/sync.ts"
+  },
   "scripts": {
-    "test:db": "supabase db start && supabase db reset && supabase test db"
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:db": "supabase db start && supabase db reset && supabase test db",
+    "types": "supabase gen types typescript --local --schema public > src/database.ts && biome format --write src/database.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.3"
   },
   "devDependencies": {
-    "supabase": "2.120.0"
+    "supabase": "2.120.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
   }
 }

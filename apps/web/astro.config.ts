@@ -22,6 +22,19 @@ export default defineConfig({
         access: 'public',
         default: '1x00000000000000000000AA',
       }),
+      // Supabase's address and publishable key are public, and every row they reach is guarded by
+      // row-level security. They default to the hosted project, so sign-in works in development and
+      // previews too; the end-to-end tests stand in for it.
+      PUBLIC_SUPABASE_URL: envField.string({
+        context: 'client',
+        access: 'public',
+        default: 'https://cqsfhuxtpkzvlemqkqoa.supabase.co',
+      }),
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: envField.string({
+        context: 'client',
+        access: 'public',
+        default: 'sb_publishable_Ra21s8nwLu6-iB6LRLYeCA_q_dU74OB',
+      }),
       // The contact form's secrets are Worker secrets, read when a message is sent. Without all
       // four the form answers that it can't send, and never sends unchecked.
       RESEND_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),

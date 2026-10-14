@@ -2,6 +2,7 @@
 import '@sulba/ui/tokens.css';
 import '@sulba/ui/base.css';
 import { Font } from 'astro:assets';
+import { sessionKey } from '@sulba/data/session';
 import Footer from '../components/Footer.astro';
 import TopBar from '../components/TopBar.astro';
 
@@ -18,13 +19,15 @@ const { title } = Astro.props;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{title}</title>
-    <script is:inline>
-    // A saved theme applies before the first paint, so the page never flashes the other one.
+    <script is:inline define:vars={{ sessionKey }}>
+    // A saved theme applies before the first paint, so the page never flashes the other one, and so
+    // does the top bar's Account link when this browser holds a session.
     try {
       const theme = localStorage.getItem('sulba:theme');
       if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      if (localStorage.getItem(sessionKey) !== null) document.documentElement.dataset.signedIn = '';
     } catch {
-      // Storage is blocked: the page follows the device's setting.
+      // Storage is blocked: the page follows the device's setting, signed out.
     }
     </script>
     <Font cssVariable="--font-sans" />

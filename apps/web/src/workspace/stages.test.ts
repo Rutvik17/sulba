@@ -97,6 +97,15 @@ test("a later stage on a file opens with its starter below the learner's code", 
   );
 });
 
+test('a stage passed on another device carries on its solution in this browser', () => {
+  expect(codeOf(lab, 1, keeping({}, ['one']))).toBe(
+    'def a():\n    pass\n# solved\n\n\ndef b():\n    pass\n',
+  );
+  expect(runOf(lab, 2, 'x = 1\n', keeping({ one: 'A\n' }, ['one', 'two'])).files['model.py']).toBe(
+    lab.stages[1]?.solution,
+  );
+});
+
 test("a Catch run has the lab's data, the learner's code, the assistant's tests and the checks", () => {
   const run = runOf(
     lab,

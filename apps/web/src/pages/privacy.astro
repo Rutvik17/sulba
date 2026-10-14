@@ -5,6 +5,24 @@ import Legal from '../layouts/Legal.astro';
 
 const providers = [
   {
+    name: 'Supabase, Inc.',
+    href: 'https://supabase.com/privacy',
+    does: 'Runs accounts and sign-in, and keeps your progress',
+    where: 'United States',
+  },
+  {
+    name: 'GitHub, Inc.',
+    href: 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement',
+    does: 'Confirms who you are when you sign in with GitHub',
+    where: 'United States',
+  },
+  {
+    name: 'Google LLC',
+    href: 'https://policies.google.com/privacy',
+    does: 'Confirms who you are when you sign in with Google',
+    where: 'Around the world',
+  },
+  {
     name: 'Cloudflare, Inc.',
     href: 'https://www.cloudflare.com/privacypolicy/',
     does: 'Hosts the site, counts visits, runs the bot check, and passes your message to Resend',
@@ -25,10 +43,11 @@ const providers = [
 ] as const;
 ---
 
-<Legal title="Privacy Policy" updated="12 October 2026">
+<Legal title="Privacy Policy" updated="14 October 2026">
   <p class="lede">
-    You can read all of Sulba without telling us who you are. Sulba sets no cookies and shows no
-    ads. If you write to us, we use what you send only to answer you.
+    You can read all of Sulba, and work through every lab, without telling us who you are. Sulba
+    sets no cookies and shows no ads. If you sign in, your account keeps your progress; if you write
+    to us, we use what you send only to answer you.
   </p>
 
   <h2>Who is responsible</h2>
@@ -72,6 +91,43 @@ const providers = [
       removes a stage's code, and clearing your browser's data for sulba.dev removes all of it.
     </li>
     <li><strong>Fonts.</strong> The site's fonts come from sulba.dev itself.</li>
+  </ul>
+
+  <h2>When you sign in</h2>
+  <p>
+    You don't need an account. If you sign in, you do it with your GitHub or Google account, and
+    Supabase runs the account for us.
+  </p>
+  <ul>
+    <li>
+      <strong>Your account.</strong>{' '}
+      GitHub or Google tells us your email address, your name, your profile picture's address, your
+      account's id there and, for GitHub, your username. Supabase keeps them with your account,
+      along with when you signed in and the IP address and browser of each session.
+    </li>
+    <li>
+      <strong>Your progress.</strong>{' '}
+      While you're signed in, each lab sends your account what you do in it: each run of the tests
+      and how many passed, the hints you open, when you view a solution, when you pass a stage and,
+      in a Catch stage, which problems you caught. Each comes with the time you spent on the stage
+      and the date. Your code isn't sent. We use this to keep your progress on every device you sign
+      in on, and to see how long stages take, so the course's time estimates are right.
+    </li>
+    <li>
+      <strong>In your browser.</strong>{' '}
+      Your browser keeps your session, and the one-time code that started each sign-in, under keys
+      that start with <code>sulba:session</code>. Attempts not yet sent, such as while you're
+      offline, wait as <code>sulba:outbox</code>, and the page to return to after signing in waits
+      as{' '}
+      <code>sulba:next</code>
+      until you close the tab. Signing out removes your session and anything waiting to be sent.
+    </li>
+    <li>
+      <strong>Closing your account.</strong>{' '}
+      We keep your account and progress until you close your account. Closing it, on the{' '}
+      <a href="/account/">Account page</a>, deletes both at once. What your browser keeps on its
+      own, such as your code, stays until you clear it.
+    </li>
   </ul>
 
   <h2>When you write to us</h2>
@@ -135,6 +191,10 @@ const providers = [
   <h2>Our legal basis</h2>
   <ul>
     <li>
+      <strong>Your account and progress:</strong>{' '}
+      to provide the account you asked for.
+    </li>
+    <li>
       <strong>Answering you:</strong>{' '}
       you asked us to, and we have a legitimate interest in answering.
     </li>
@@ -143,19 +203,21 @@ const providers = [
       our legitimate interest in running a secure site and knowing how it's used.
     </li>
   </ul>
-  <p>In Canada, you consent to what's described here when you write to us.</p>
+  <p>In Canada, you consent to what's described here when you sign in or write to us.</p>
 
   <h2>Where it's kept</h2>
   <p>
-    Your message is processed in the United States by Resend and kept there by Apple, and requests
-    pass through Cloudflare's network. Information kept outside Canada may be accessible to the
-    courts and authorities of the country where it's kept.
+    Your account and progress are kept in the United States by Supabase. Your message is processed
+    in the United States by Resend and kept there by Apple, and requests pass through Cloudflare's
+    network. Information kept outside Canada may be accessible to the courts and authorities of the
+    country where it's kept.
   </p>
 
   <h2>Your rights</h2>
   <p>
     Depending on where you live, you can ask to see the information we hold about you, to correct it
-    or to delete it, and you can object to how we use it. To ask, use the{' '}
+    or to delete it, and you can object to how we use it. You can close your account yourself on the
+    <a href="/account/">Account page</a>. To ask for anything else, use the{' '}
     <a href="/contact/">contact page</a>. We'll answer within 30 days, and it costs nothing. You can
     also complain to a privacy authority: in Canada, the{' '}
     <a href="https://www.priv.gc.ca/">Office of the Privacy Commissioner of Canada</a>; in the
@@ -164,8 +226,9 @@ const providers = [
 
   <h2>Children</h2>
   <p>
-    We don't knowingly collect information from children under 13. If a child under 13 has written
-    to us, tell us through the <a href="/contact/">contact page</a> and we'll delete the message.
+    We don't knowingly collect information from children under 13. If a child under 13 has signed in
+    or written to us, tell us through the <a href="/contact/">contact page</a> and we'll delete
+    their account or message.
   </p>
 
   <h2>Changes to this policy</h2>
