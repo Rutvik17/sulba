@@ -14,6 +14,7 @@
     "test": "pnpm --recursive test",
     "test:python": "uv run --directory packages/lab/python pytest",
     "check:content": "pnpm --filter @sulba/content check",
+    "test:db": "pnpm --filter @sulba/data test:db",
     "test:e2e": "pnpm --filter @sulba/web test:e2e",
     "brand": "pnpm --filter @sulba/web brand",
     "lint": "biome check",

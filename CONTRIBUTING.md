@@ -19,6 +19,8 @@ pnpm test:python
 pnpm check:content
 ```
 
+When you change the database, also run `pnpm test:db`, which needs Docker.
+
 CI runs the end-to-end and accessibility tests on the first of each month, and when started by hand from the Actions tab. Pull requests and pushes to `main` don't run them.
 
 ## Screenshots

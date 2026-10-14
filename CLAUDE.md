@@ -23,10 +23,11 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | `pnpm test` | Vitest unit tests |
 | `pnpm test:python` | The lab's Python tests, in CPython through uv |
 | `pnpm check:content` | Every course's files against their schemas, and every stage in Pyodide and CPython |
+| `pnpm test:db` | The database's migrations in a local Supabase, and the pgTAP tests of its row-level security (needs Docker) |
 | `pnpm test:e2e` | Playwright end-to-end and axe accessibility tests in Chromium, Firefox and WebKit, on desktop and phone |
 | `pnpm build` | Builds the site |
 
-Run lint, lint:python, typecheck, test, test:python and check:content before calling work done. On Windows, run the Python ones in Docker if uv isn't installed.
+Run lint, lint:python, typecheck, test, test:python and check:content before calling work done, and test:db when the database changes. On Windows, run the Python ones in Docker if uv isn't installed.
 
 End-to-end tests are written with each feature, and run only when the founder asks. CI runs them on the first of each month and when started by hand (`e2e.yml`), never on a pull request or a push to `main`; fix anything a run shows broken in the next pull request.
 
@@ -46,6 +47,7 @@ End-to-end tests are written with each feature, and run only when the founder as
 - The gallery at `/gallery/` shows every component in each of its states. `astro dev`, the end-to-end tests and previews have it; sulba.dev doesn't (`apps/web/gallery.ts`). A new component, or a new state, joins the gallery and its screenshot tests in the same pull request.
 - CI's Screenshots job compares the gallery with the pictures in `apps/web/screenshots`, taken in Playwright's Linux image; they never run on Windows. When the look changes on purpose, commit the new screenshots the failed job attaches (CONTRIBUTING.md).
 - Every lab, and every model a lab uses, runs on the learner's device: in the browser, or on their machine through the `sulba` command. Sulba runs no learner code and no model, so there are no hosted models, cloud GPUs or certificates, and each level states the machine it needs before it begins (decision record 17).
+- `packages/data` holds the database: migrations in `supabase/migrations` and pgTAP tests in `supabase/tests`, which CI runs in a local Supabase. Every table has row-level security, and a learner reads only their own rows. Progress is a log of attempts: the browser adds them, and Postgres folds them into each stage's progress and each day studied (decision record 18).
 - `packages/lab` runs a session's tests and speaks one protocol for every runner (decision record 17): files and tests go in, a result per test comes out. In the browser, Pyodide runs in a Web Worker, and a run past the time limit is stopped by ending the worker. Both Pyodide and CPython call the same pytest plugin (`python/sulba_runner.py`), and the fixtures in `fixtures/` must give the same results in each. Checks outside a browser run requests through `src/node.ts`: in Pyodide, or in CPython through uv.
 - `pnpm --filter @sulba/lab pyodide`, which `pnpm test` runs first, puts Pyodide's files together in `packages/lab/pyodide`: its core from npm, and each package's wheel, checked against the sha256 in Pyodide's lock file. The site serves them at `/pyodide/<version>/` (`apps/web/pyodide.ts`), cached for good. The CPython packages in `packages/lab/python/uv.lock` are pinned to the versions Pyodide ships, and a test fails when they differ, so Renovate leaves them alone.
 - Formulas in a course's prose are TeX, which Temml renders to MathML at build time, set in Noto Sans Math from `packages/ui/src/fonts` (decision record 15). Numbers in prose come from the stage's `figures.py`, never typed. Both the content check and the build fail on a formula that doesn't render, a figure missing or never shown, figures that differ between Pyodide and CPython, or a character the math font can't draw.

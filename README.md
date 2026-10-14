@@ -4,7 +4,7 @@ Sulba is the school of the AI era. Engineers learn the fundamentals by hand, the
 
 ## Run it locally
 
-You need [Node.js 24](https://nodejs.org/) and [pnpm 12](https://pnpm.io/installation), and [uv](https://docs.astral.sh/uv/getting-started/installation/) for the Python checks.
+You need [Node.js 24](https://nodejs.org/) and [pnpm 12](https://pnpm.io/installation), [uv](https://docs.astral.sh/uv/getting-started/installation/) for the Python checks, and [Docker](https://docs.docker.com/get-started/get-docker/) for the database tests.
 
 ```sh
 pnpm install
@@ -24,6 +24,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm test` | Runs the unit tests |
 | `pnpm test:python` | Runs the lab's Python tests in CPython |
 | `pnpm check:content` | Checks every course, and runs every stage in Pyodide and CPython |
+| `pnpm test:db` | Runs the database's migrations in a local Supabase, and the tests of its row-level security |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
 | `pnpm brand` | Draws the profile pictures and banners in `brand` |
 
@@ -38,6 +39,7 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | `packages/editor` | The code editor |
 | `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
 | `packages/content` | Reads and checks the courses |
+| `packages/data` | The database: its migrations and their tests |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content, laid out as [its README](courses/README.md) describes |
 | `tools` | Scripts that build course data |
