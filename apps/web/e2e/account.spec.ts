@@ -7,6 +7,14 @@ const lab = '/demo/counting/tallies/';
 const solved =
   'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n';
 
+// Days studied, as study_days holds them: three in a row up to 14 October 2026, and one before.
+const studyDays = [
+  { day: '2026-10-01', seconds: 1500 },
+  { day: '2026-10-12', seconds: 600 },
+  { day: '2026-10-13', seconds: 3900 },
+  { day: '2026-10-14', seconds: 300 },
+];
+
 // A page's first run waits for Python to load, which takes longer while other tests load it too.
 const loaded = { timeout: 60_000 };
 test.describe.configure({ timeout: 90_000 });
@@ -65,6 +73,39 @@ test('the account page shows who is signed in, and signs them out', async ({ pag
   expect(calls.logouts).toBe(1);
 });
 
+test('the account page shows the streak, and the days it comes from', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-14T12:00:00'));
+  await standIn(page, { studyDays });
+  await signedIn(page);
+  await page.goto('/account/');
+
+  await expect(page.locator('.streak')).toHaveText('3 days in a row, up to today');
+  await expect(page.getByText('You studied on 4 of the last 84 days.')).toBeVisible();
+  await expect(page.locator('.day[data-studied="streak"]')).toHaveCount(3);
+  await expect(page.locator('.day[data-studied=""]')).toHaveCount(1);
+  await expect(page.locator('.day[data-today]')).toHaveAttribute(
+    'title',
+    'Wednesday 14 October 2026: 5 minutes',
+  );
+  await expect(
+    page.getByRole('list', { name: 'Days studied in the last 84 days' }).getByRole('listitem'),
+  ).toHaveText([
+    'Thursday 1 October 2026: 25 minutes',
+    'Monday 12 October 2026: 10 minutes, in your streak',
+    'Tuesday 13 October 2026: 1 hour 5 minutes, in your streak',
+    'Wednesday 14 October 2026: 5 minutes, in your streak',
+  ]);
+});
+
+test('a streak lasts through a day not yet studied', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-15T08:00:00'));
+  await standIn(page, { studyDays });
+  await signedIn(page);
+  await page.goto('/account/');
+
+  await expect(page.locator('.streak')).toHaveText('3 days in a row, up to yesterday');
+});
+
 test('closing an account asks first, then deletes it', async ({ page }) => {
   const calls = await standIn(page);
   await signedIn(page);
@@ -85,7 +126,7 @@ test('closing an account asks first, then deletes it', async ({ page }) => {
 });
 
 test('signed in, a lab opens the stages passed on another device', async ({ page }) => {
-  await standIn(page, [{ stage_id: 'stg_demo01', caught: null, problems: null }]);
+  await standIn(page, { passed: [{ stage_id: 'stg_demo01', caught: null, problems: null }] });
   await signedIn(page);
   await page.goto(lab);
   await islandsHydrated(page);

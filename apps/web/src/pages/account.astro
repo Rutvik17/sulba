@@ -1,5 +1,6 @@
 ---
 import { buttonClass } from '@sulba/ui/button';
+import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 ---
 
@@ -12,6 +13,26 @@ import Page from '../layouts/Page.astro';
         Your account keeps the stages you've passed in each lab. Your code stays on the device you
         wrote it on.
       </p>
+      <section class="study" aria-labelledby="days-studied" data-study hidden>
+        <SectionHeading id="days-studied" text="Days studied" />
+        <div data-study-loaded hidden>
+          <p class="streak">
+            <span class="count" data-streak-count></span>{' '}<span data-streak-words></span>
+          </p>
+          <div class="scroll">
+            <div class="calendar" aria-hidden="true" data-calendar></div>
+          </div>
+          <p class="key" aria-hidden="true">
+            <span><span class="swatch" data-studied="streak"></span>In your streak</span>
+            <span><span class="swatch" data-studied></span>Other days studied</span>
+          </p>
+          <p class="summary" data-summary></p>
+          <ul class="unseen" data-studied-list></ul>
+        </div>
+        <p data-study-failed hidden>
+          Your days studied didn't load. Check your connection, then reload the page.
+        </p>
+      </section>
       <div class="actions" data-actions>
         <button class={buttonClass('outline')} type="button" data-sign-out>Sign out</button>
         <button class={buttonClass('ghost')} type="button" data-close>Close account</button>
@@ -43,9 +64,11 @@ import Page from '../layouts/Page.astro';
 import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
 import { closeAccount, currentLearner, providers, signOut } from '@sulba/data/account';
 import { connect } from '@sulba/data/client';
-import { Outbox } from '@sulba/data/outbox';
+import { localDay, Outbox } from '@sulba/data/outbox';
 import { localStore } from '@sulba/data/session';
+import { readStudyDays, type Streak, streakOf } from '@sulba/data/study';
 import { send } from '@sulba/data/sync';
+import { type Calendar, calendarOf } from '../lib/study';
 
 const root = document.querySelector<HTMLElement>('[data-account]');
 const find = <T extends HTMLElement>(selector: string) => root?.querySelector<T>(selector) ?? null;
@@ -82,6 +105,85 @@ async function show() {
   if (email) email.textContent = learner.email ?? 'your account';
   if (provider && learner.provider) provider.textContent = ` with ${providers[learner.provider]}`;
   if (signedIn) signedIn.hidden = false;
+  await showStudy();
+}
+
+/** The learner's streak and the calendar it comes from, after this browser's attempts are sent. */
+async function showStudy() {
+  const loaded = find('[data-study-loaded]');
+  const failed = find('[data-study-failed]');
+  try {
+    await send(client, outbox).catch(() => false);
+    const days = await readStudyDays(client);
+    const today = localDay(new Date());
+    const streak = streakOf(days, today);
+    drawStudy(streak, calendarOf(days, streak, today), today);
+    if (loaded) loaded.hidden = false;
+  } catch {
+    if (failed) failed.hidden = false;
+  }
+  const study = find('[data-study]');
+  if (study) study.hidden = false;
+}
+
+function drawStudy(streak: Streak, calendar: Calendar, today: string) {
+  const count = find('[data-streak-count]');
+  const words = find('[data-streak-words]');
+  const summary = find('[data-summary]');
+  const list = find('[data-studied-list]');
+  const until = streak.last === today ? 'today' : 'yesterday';
+  if (count) count.textContent = String(streak.days);
+  if (words) {
+    words.textContent = `${streak.days === 1 ? 'day' : 'days'} in a row${
+      streak.days > 0 ? `, up to ${until}` : ''
+    }`;
+  }
+  if (summary) {
+    summary.textContent = `You studied on ${calendar.studied.length} of the last ${calendar.span} days. A day counts when you work in a lab.`;
+  }
+  if (list) {
+    list.setAttribute('aria-label', `Days studied in the last ${calendar.span} days`);
+    list.replaceChildren(
+      ...calendar.studied.map((day) => {
+        const item = document.createElement('li');
+        item.textContent = `${day.label}${day.inStreak ? ', in your streak' : ''}`;
+        return item;
+      }),
+    );
+  }
+  const grid = find('[data-calendar]');
+  if (grid) drawCalendar(grid, calendar);
+}
+
+/** Months over the weeks, weekdays down the side, and a square a day. */
+function drawCalendar(grid: HTMLElement, calendar: Calendar) {
+  const place = (element: HTMLElement, column: number, row: number) => {
+    element.style.gridColumn = String(column);
+    element.style.gridRow = String(row);
+    return element;
+  };
+  const label = (text: string, kind: string) => {
+    const element = document.createElement('span');
+    element.className = kind;
+    element.textContent = text;
+    return element;
+  };
+  grid.style.setProperty('--weeks', String(calendar.weeks.length));
+  grid.replaceChildren(
+    ...calendar.months.map(({ week, name }) => place(label(name, 'month'), week + 2, 1)),
+    ...['Mon', 'Wed', 'Fri'].map((name, n) => place(label(name, 'weekday'), 1, n * 2 + 2)),
+    ...calendar.weeks.flatMap((days, week) =>
+      days.flatMap((day, weekday) => {
+        if (!day) return [];
+        const square = place(document.createElement('span'), week + 2, weekday + 2);
+        square.className = 'day';
+        square.title = day.label;
+        if (day.seconds > 0) square.dataset.studied = day.inStreak ? 'streak' : '';
+        if (day.today) square.dataset.today = '';
+        return [square];
+      }),
+    ),
+  );
 }
 
 find('[data-sign-out]')?.addEventListener('click', async () => {
@@ -172,5 +274,100 @@ h1 {
 
 .status:not(:empty) {
   margin-top: var(--space-6);
+}
+
+.study {
+  margin-top: var(--space-12);
+}
+
+.streak {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.count {
+  font: 400 3.5rem / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.scroll {
+  margin-top: var(--space-6);
+  overflow-x: auto;
+}
+
+.calendar {
+  --cell: 1rem;
+  display: grid;
+  grid-template-columns: auto repeat(var(--weeks), var(--cell));
+  grid-template-rows: auto repeat(7, var(--cell));
+  gap: 3px;
+  width: max-content;
+  font-size: var(--text-xs);
+  color: var(--dim);
+}
+
+/* The script draws the calendar's contents, which scoped styles don't reach. */
+.calendar :global(.month) {
+  padding-bottom: var(--space-1);
+  white-space: nowrap;
+}
+
+.calendar :global(.weekday) {
+  align-self: center;
+  padding-right: var(--space-2);
+}
+
+.calendar :global(.day),
+.swatch {
+  border-radius: 3px;
+  background: var(--raise);
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: var(--space-2);
+  vertical-align: -0.0625rem;
+}
+
+.calendar :global(.day[data-studied]),
+.swatch[data-studied] {
+  background: var(--dim);
+}
+
+.calendar :global(.day[data-studied="streak"]),
+.swatch[data-studied="streak"] {
+  background: var(--accent);
+}
+
+.calendar :global(.day[data-today]) {
+  outline: 1.5px solid var(--fg);
+  outline-offset: 1px;
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--dim);
+}
+
+.summary {
+  margin-top: var(--space-4);
+  color: var(--dim);
+}
+
+.unseen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 </style>

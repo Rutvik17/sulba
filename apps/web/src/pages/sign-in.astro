@@ -11,11 +11,12 @@ import Page from '../layouts/Page.astro';
       Your account keeps the stages you've passed in each lab, so you can carry on from another
       device. Your code stays on the device you wrote it on.
     </p>
+    {/* The buttons work once the script below has loaded, which enables them. */}
     <div class="providers">
-      <button class={buttonClass('primary')} type="button" data-provider="github">
+      <button class={buttonClass('primary')} type="button" data-provider="github" disabled>
         Continue with {providers.github}
       </button>
-      <button class={buttonClass('outline')} type="button" data-provider="google">
+      <button class={buttonClass('outline')} type="button" data-provider="google" disabled>
         Continue with {providers.google}
       </button>
     </div>
@@ -83,7 +84,13 @@ for (const button of buttons) {
       );
     }
   });
+  button.disabled = false;
 }
+
+// Coming back from the provider's page with the back button restores this page as it was left.
+addEventListener('pageshow', (event) => {
+  if (event.persisted) for (const button of buttons) button.disabled = false;
+});
 
 async function arrive() {
   if (params.has('error')) {

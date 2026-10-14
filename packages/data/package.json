@@ -7,7 +7,8 @@
     "./outbox": "./src/outbox.ts",
     "./client": "./src/client.ts",
     "./account": "./src/account.ts",
-    "./sync": "./src/sync.ts"
+    "./sync": "./src/sync.ts",
+    "./study": "./src/study.ts"
   },
   "scripts": {
     "typecheck": "tsc",
