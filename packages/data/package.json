@@ -1,0 +1,11 @@
+{
+  "name": "@sulba/data",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:db": "supabase db start && supabase db reset && supabase test db"
+  },
+  "devDependencies": {
+    "supabase": "2.120.0"
+  }
+}

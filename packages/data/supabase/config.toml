@@ -1,0 +1,10 @@
+# The local Supabase that development and CI run in Docker. Anything not set here takes the CLI's
+# default. The hosted project's own settings live in its dashboard.
+project_id = "sulba"
+
+[db]
+# The hosted project runs Postgres 17.
+major_version = 17
+
+[db.seed]
+enabled = false
