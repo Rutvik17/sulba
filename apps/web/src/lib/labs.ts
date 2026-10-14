@@ -49,7 +49,7 @@ export interface StageView {
   /**
    * A Catch or Ship stage's checks, by their path in a run, such as `tests/checks/test_screener.py`.
    * The page has them, as it has a Ship stage's tests, so a learner who reads its source can find
-   * them: runs in the browser are practice (decision record 5).
+   * them: runs in the browser are practice (decision record 17).
    */
   readonly checks: Readonly<Record<string, string>>;
   /** A Catch stage's problems, in the order its review lists them. Other stages have none. */

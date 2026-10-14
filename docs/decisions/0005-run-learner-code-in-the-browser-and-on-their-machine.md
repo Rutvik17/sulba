@@ -1,6 +1,6 @@
 # 5. Run learners' code in the browser and on their machine
 
-- Status: accepted
+- Status: superseded by [17. Run every lab and model on the learner's device](0017-run-every-lab-and-model-on-the-learners-device.md)
 - Date: 2026-10-09
 
 ## Context
