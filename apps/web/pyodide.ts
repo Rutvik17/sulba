@@ -14,7 +14,7 @@ const types: Record<string, string> = {
 };
 
 /**
- * Pyodide runs learners' Python from sulba.dev's own files (decision record 5). This puts them
+ * Pyodide runs learners' Python from sulba.dev's own files (decision record 17). This puts them
  * together before the site starts, serves them at `pyodidePath` while developing, and copies them
  * into each build.
  */

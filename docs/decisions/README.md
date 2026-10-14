@@ -8,7 +8,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [2. Use Astro 7, with React for the interactive parts](0002-use-astro-with-react-for-interactive-parts.md) | Accepted |
 | [3. Host on Cloudflare Workers](0003-host-on-cloudflare-workers.md) | Accepted |
 | [4. Keep learner data and sign-in in Supabase](0004-keep-learner-data-and-sign-in-in-supabase.md) | Accepted |
-| [5. Run learners' code in the browser and on their machine](0005-run-learner-code-in-the-browser-and-on-their-machine.md) | Accepted |
+| [5. Run learners' code in the browser and on their machine](0005-run-learner-code-in-the-browser-and-on-their-machine.md) | Superseded by 17 |
 | [6. Use CodeMirror 6 with language servers](0006-use-codemirror-with-language-servers.md) | Superseded by 14 |
 | [7. Keep course content as validated files with permanent ids](0007-keep-course-content-as-validated-files.md) | Accepted |
 | [8. Monitor with free services, each with one job](0008-monitor-with-free-services.md) | Accepted |
@@ -20,6 +20,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [14. Use CodeMirror 6, with each language's own browser build](0014-use-codemirror-with-each-languages-own-browser-build.md) | Accepted |
 | [15. Render formulas as MathML at build time, in Noto Sans Math](0015-render-formulas-as-mathml-in-noto-sans-math.md) | Accepted |
 | [16. Draw charts in SVG, from the data a stage's chart.py returns](0016-draw-charts-in-svg-from-data-chart-py-returns.md) | Accepted |
+| [17. Run every lab and model on the learner's device](0017-run-every-lab-and-model-on-the-learners-device.md) | Accepted |
 | [18. Keep progress as a log of attempts](0018-keep-progress-as-a-log-of-attempts.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

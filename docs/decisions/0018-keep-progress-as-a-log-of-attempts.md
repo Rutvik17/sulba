@@ -41,7 +41,7 @@ Attempts can only be added, and every way they change progress gives the same re
 
 ## Consequences
 
-The browser needs a queue of unsent attempts that survives a reload and waits when the network or the daily limit refuses it, and it reads progress once a visit; that comes with sync. Results remain practice: a learner can send any attempt they like. Old attempts have to be rolled up into progress before the database nears 500 MB. Profiles arrive with sign-in, and review cards with spaced review.
+The browser needs a queue of unsent attempts that survives a reload and waits when the network or the daily limit refuses it, and it reads progress once a visit; that comes with sync. Results remain practice, as [record 17](0017-run-every-lab-and-model-on-the-learners-device.md) has it: a learner can send any attempt they like. Old attempts have to be rolled up into progress before the database nears 500 MB. Profiles arrive with sign-in, and review cards with spaced review.
 
 ## Revisit when
 
