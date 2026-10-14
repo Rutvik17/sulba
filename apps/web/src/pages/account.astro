@@ -1,0 +1,176 @@
+---
+import { buttonClass } from '@sulba/ui/button';
+import Page from '../layouts/Page.astro';
+---
+
+<Page title="Account · Sulba">
+  <section class="sheet" data-account>
+    <h1>Account</h1>
+    <div data-when="in" hidden>
+      <p class="lede">Signed in as <strong data-email></strong><span data-provider></span>.</p>
+      <p class="about">
+        Your account keeps the stages you've passed in each lab. Your code stays on the device you
+        wrote it on.
+      </p>
+      <div class="actions" data-actions>
+        <button class={buttonClass('outline')} type="button" data-sign-out>Sign out</button>
+        <button class={buttonClass('ghost')} type="button" data-close>Close account</button>
+      </div>
+      <div class="confirm" data-confirm hidden>
+        <p>
+          Close your account? This deletes it and everything it recorded, and can't be undone. What
+          this browser keeps on its own, such as your code, stays here.
+        </p>
+        <div class="actions">
+          <button class={buttonClass('primary')} type="button" data-close-confirm>
+            Close account
+          </button>
+          <button class={buttonClass('outline')} type="button" data-close-cancel>Keep it</button>
+        </div>
+      </div>
+    </div>
+    <div data-when="out" hidden>
+      <p class="lede">You're not signed in.</p>
+      <div class="actions">
+        <a class={buttonClass('primary')} href="/sign-in/">Sign in</a>
+      </div>
+    </div>
+    <p class="status" role="status" data-status></p>
+  </section>
+</Page>
+
+<script>
+import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
+import { closeAccount, currentLearner, providers, signOut } from '@sulba/data/account';
+import { connect } from '@sulba/data/client';
+import { Outbox } from '@sulba/data/outbox';
+import { localStore } from '@sulba/data/session';
+import { send } from '@sulba/data/sync';
+
+const root = document.querySelector<HTMLElement>('[data-account]');
+const find = <T extends HTMLElement>(selector: string) => root?.querySelector<T>(selector) ?? null;
+const signedIn = find('[data-when="in"]');
+const signedOut = find('[data-when="out"]');
+const status = find('[data-status]');
+const actions = find('[data-actions]');
+const confirm = find('[data-confirm]');
+const client = connect(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+const outbox = new Outbox(localStore());
+
+function say(text: string) {
+  if (status) status.textContent = text;
+}
+
+function showSignedOut() {
+  delete document.documentElement.dataset.signedIn;
+  if (signedIn) signedIn.hidden = true;
+  if (signedOut) signedOut.hidden = false;
+}
+
+function busy(on: boolean) {
+  for (const button of root?.querySelectorAll('button') ?? []) button.disabled = on;
+}
+
+async function show() {
+  const learner = await currentLearner(client).catch(() => null);
+  if (!learner) {
+    showSignedOut();
+    return;
+  }
+  const email = find('[data-email]');
+  const provider = find('[data-provider]');
+  if (email) email.textContent = learner.email ?? 'your account';
+  if (provider && learner.provider) provider.textContent = ` with ${providers[learner.provider]}`;
+  if (signedIn) signedIn.hidden = false;
+}
+
+find('[data-sign-out]')?.addEventListener('click', async () => {
+  busy(true);
+  say('');
+  try {
+    // Attempts still waiting go to this account first, so none goes to the next one.
+    await send(client, outbox).catch(() => false);
+    outbox.clear();
+    await signOut(client);
+    showSignedOut();
+    say('You signed out of this browser.');
+  } catch {
+    say("Couldn't sign out. Check your connection, then try again.");
+  } finally {
+    busy(false);
+  }
+});
+
+find('[data-close]')?.addEventListener('click', () => {
+  if (actions) actions.hidden = true;
+  if (confirm) confirm.hidden = false;
+  find('[data-close-cancel]')?.focus();
+});
+
+find('[data-close-cancel]')?.addEventListener('click', () => {
+  if (confirm) confirm.hidden = true;
+  if (actions) actions.hidden = false;
+  find('[data-close]')?.focus();
+});
+
+find('[data-close-confirm]')?.addEventListener('click', async () => {
+  busy(true);
+  say('');
+  try {
+    outbox.clear();
+    await closeAccount(client);
+    showSignedOut();
+    say('Your account is closed, and everything it recorded is deleted.');
+  } catch {
+    say("Couldn't close your account. Check your connection, then try again.");
+  } finally {
+    busy(false);
+  }
+});
+
+void show();
+</script>
+
+<style>
+.sheet {
+  max-width: 34rem;
+  padding-block: var(--space-16) var(--space-10);
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin-top: var(--space-6);
+  font-size: var(--text-lg);
+}
+
+.about {
+  margin-top: var(--space-3);
+  color: var(--dim);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+
+.confirm {
+  margin-top: var(--space-8);
+  padding: var(--space-5);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+}
+
+.confirm .actions {
+  margin-top: var(--space-5);
+}
+
+.status:not(:empty) {
+  margin-top: var(--space-6);
+}
+</style>

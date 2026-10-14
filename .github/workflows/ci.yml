@@ -66,6 +66,8 @@ jobs:
       # The migrations, applied to a local Supabase in Docker, and the pgTAP tests of their
       # row-level security (packages/data).
       - run: pnpm test:db
+      # The TypeScript types must be the ones the migrations give.
+      - run: pnpm --filter @sulba/data types && git diff --exit-code packages/data/src/database.ts
 
   screenshots:
     name: Screenshots

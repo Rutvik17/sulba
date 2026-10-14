@@ -1,3 +1,5 @@
+import type { Event } from '@sulba/data/outbox';
+import type { Passed } from '@sulba/data/sync';
 import { Editor, type EditorHandle } from '@sulba/editor/editor';
 import { Lab } from '@sulba/lab/client';
 import { pyodidePath, type RunResult } from '@sulba/lab/protocol';
@@ -9,7 +11,9 @@ import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { ChartPanel } from './ChartPanel';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
+import { type Stopwatch, stopwatch } from './stopwatch';
 import { kept } from './storage';
+import { type Recorder, startSync } from './sync';
 import styles from './workspace.module.css';
 
 const css = classes(
@@ -60,6 +64,46 @@ function reviewsOf(lab: LabView): Record<string, Review> {
   return found;
 }
 
+/** Keeps in this browser the stages passed in the learner's account, with their reviews. */
+function takeIn(lab: LabView, passed: readonly Passed[]) {
+  for (const { stageId, caught, problems } of passed) {
+    const stage = lab.stages.find((each) => each.id === stageId);
+    if (!stage) continue;
+    if (stage.kind === 'catch' && caught && problems !== null && !kept.review(stage.id)) {
+      kept.finish(stage.id, { caught, total: problems });
+    } else if (!kept.passed(stage.id)) {
+      kept.pass(stage.id);
+    }
+  }
+}
+
+/** A stage's pass, with its review when it's a Catch stage. */
+function passOf(stage: StageView, review: Review | null): Event {
+  return {
+    kind: 'pass',
+    review:
+      stage.kind === 'catch' && review ? { caught: review.caught, problems: review.total } : null,
+  };
+}
+
+/** A run's tests and, in a Catch or Ship stage, its checks, counted apart. */
+function runEventOf(stage: StageView, result: RunResult): Event {
+  const ids = new Set([
+    ...stage.problems.map((problem) => problem.check),
+    ...stage.shipChecks.map((check) => check.check),
+  ]);
+  const isCheck = (test: RunResult['tests'][number]) => test.id !== null && ids.has(test.id);
+  const count = (tests: RunResult['tests']) => ({
+    passed: tests.filter((test) => test.status === 'pass').length,
+    total: tests.length,
+  });
+  return {
+    kind: 'run',
+    tests: count(result.tests.filter((test) => !isCheck(test))),
+    checks: ids.size > 0 ? count(result.tests.filter(isCheck)) : null,
+  };
+}
+
 /** A Catch run's review: the problems whose checks the code passed. */
 function reviewOf(problems: readonly ProblemView[], result: RunResult): Review {
   const caught = problems.filter((problem) =>
@@ -75,6 +119,25 @@ export default function Workspace({ lab }: { lab: LabView }) {
   const [reviews, setReviews] = useState(() => reviewsOf(lab));
   const [python, setPython] = useState<Lab | null>(null);
   const [loading, setLoading] = useState(true);
+  const recorder = useRef<Recorder | null>(null);
+
+  // While the learner is signed in, stages they passed on another device open here too, and the
+  // passes only this browser has go to their account.
+  useEffect(() => {
+    const sync = startSync((remote) => {
+      takeIn(lab, remote);
+      setPassed(lab.stages.filter((each) => kept.passed(each.id)));
+      setReviews(reviewsOf(lab));
+      const known = new Set(remote.map((each) => each.stageId));
+      for (const stage of lab.stages) {
+        if (kept.passed(stage.id) && !known.has(stage.id)) {
+          sync.record(stage, passOf(stage, kept.review(stage.id)), 0);
+        }
+      }
+    });
+    recorder.current = sync;
+    return () => sync.stop();
+  }, [lab]);
 
   useEffect(() => {
     const runner = new Lab({ indexURL: pyodidePath });
@@ -154,6 +217,7 @@ export default function Workspace({ lab }: { lab: LabView }) {
           setPassed(lab.stages.filter((each) => kept.passed(each.id)));
         }}
         onNext={index + 1 < lab.stages.length ? () => open(index + 1) : null}
+        record={(event, seconds) => recorder.current?.record(stage, event, seconds)}
       />
     </>
   );
@@ -171,6 +235,8 @@ interface StageProps {
   /** Keeps a Catch stage's review, which passes the stage. */
   readonly onFinish: (review: Review) => void;
   readonly onNext: (() => void) | null;
+  /** Keeps what the learner did, with the seconds since their last attempt in this stage. */
+  readonly record: (event: Event, seconds: number) => void;
 }
 
 function StageWorkspace({
@@ -183,6 +249,7 @@ function StageWorkspace({
   onPass,
   onFinish,
   onNext,
+  record,
 }: StageProps) {
   const stage = lab.stages[index] as StageView;
   const isCatch = stage.kind === 'catch';
@@ -201,6 +268,16 @@ function StageWorkspace({
   const [results, setResults] = useState<'tests' | 'output'>('tests');
   const [confirming, setConfirming] = useState(false);
   const [finishing, setFinishing] = useState(false);
+  const watch = useRef<Stopwatch | null>(null);
+  const viewedSolution = useRef(false);
+
+  useEffect(() => {
+    const each = stopwatch();
+    watch.current = each;
+    return () => each.stop();
+  }, []);
+
+  const lap = () => watch.current?.lap() ?? 0;
 
   // Once Finish review has kept the score, the score is where the learner's focus goes.
   useEffect(() => {
@@ -217,6 +294,7 @@ function StageWorkspace({
       const result = await python.run(runOf(lab, index, code(), kept));
       setRun({ state: 'done', result });
       setRuns((before) => before + 1);
+      record(runEventOf(stage, result), lap());
       return result;
     } catch {
       setRun({ state: 'failed' });
@@ -228,8 +306,14 @@ function StageWorkspace({
   const runTests = async () => {
     const result = await execute();
     if (result?.status !== 'pass') return;
-    if (!isCatch) onPass();
-    else if (!review) onFinish(reviewOf(stage.problems, result));
+    if (!isCatch) {
+      if (!passed) record(passOf(stage, null), lap());
+      onPass();
+    } else if (!review) {
+      const finished = reviewOf(stage.problems, result);
+      onFinish(finished);
+      record(passOf(stage, finished), lap());
+    }
   };
 
   // The score is the code as it stands: the review finishes only on a run that gave results. A
@@ -239,7 +323,9 @@ function StageWorkspace({
     if (!result || result.problem || result.tests.length === 0 || review) return;
     setFinishing(true);
     setConfirming(false);
-    onFinish(reviewOf(stage.problems, result));
+    const finished = reviewOf(stage.problems, result);
+    onFinish(finished);
+    record(passOf(stage, finished), lap());
   };
 
   const askToFinish = () => {
@@ -273,7 +359,16 @@ function StageWorkspace({
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
       <div className={css.left} ref={left}>
-        <Tabs selectedKey={tab} onSelectionChange={(key) => setTab(String(key))}>
+        <Tabs
+          selectedKey={tab}
+          onSelectionChange={(key) => {
+            setTab(String(key));
+            if (key === 'solution' && !viewedSolution.current) {
+              viewedSolution.current = true;
+              record({ kind: 'solution' }, lap());
+            }
+          }}
+        >
           <TabList aria-label="Stage">
             <Tab id="brief">Brief</Tab>
             {stage.hints.length > 0 && <Tab id="hints">Hints</Tab>}
@@ -305,7 +400,14 @@ function StageWorkspace({
                   </ol>
                 )}
                 {hints < stage.hints.length ? (
-                  <Button variant="outline" size="small" onPress={() => setHints(hints + 1)}>
+                  <Button
+                    variant="outline"
+                    size="small"
+                    onPress={() => {
+                      setHints(hints + 1);
+                      record({ kind: 'hint', hint: hints + 1 }, lap());
+                    }}
+                  >
                     {hints === 0 ? 'Show a hint' : 'Show the next hint'}
                   </Button>
                 ) : (

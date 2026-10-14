@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from './islands';
+import { supabase } from './supabase';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -36,10 +37,13 @@ for (const scheme of ['dark', 'light'] as const) {
     '/contact/',
     '/privacy/',
     '/terms/',
+    '/sign-in/',
+    '/account/',
     '/no-such-page/',
     '/gallery/',
   ]) {
     test(`${path} has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({ page }) => {
+      await page.route(`${supabase}/**`, (route) => route.abort());
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto(path);
 

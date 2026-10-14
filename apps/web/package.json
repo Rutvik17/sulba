@@ -20,6 +20,7 @@
     "@fontsource/instrument-serif": "5.3.0",
     "@markdoc/markdoc": "0.5.10",
     "@sulba/content": "workspace:*",
+    "@sulba/data": "workspace:*",
     "@sulba/editor": "workspace:*",
     "@sulba/lab": "workspace:*",
     "@sulba/ui": "workspace:*",

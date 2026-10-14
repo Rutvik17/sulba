@@ -1,0 +1,138 @@
+---
+import { providers } from '@sulba/data/account';
+import { buttonClass } from '@sulba/ui/button';
+import Page from '../layouts/Page.astro';
+---
+
+<Page title="Sign in · Sulba">
+  <section class="sheet" data-sign-in>
+    <h1>Sign in</h1>
+    <p class="lede">
+      Your account keeps the stages you've passed in each lab, so you can carry on from another
+      device. Your code stays on the device you wrote it on.
+    </p>
+    <div class="providers">
+      <button class={buttonClass('primary')} type="button" data-provider="github">
+        Continue with {providers.github}
+      </button>
+      <button class={buttonClass('outline')} type="button" data-provider="google">
+        Continue with {providers.google}
+      </button>
+    </div>
+    <p class="status" role="status" data-status></p>
+    <p class="note">
+      By signing in, you agree to the <a href="/terms/">Terms of Use</a>. The{' '}
+      <a href="/privacy/">Privacy Policy</a>
+      says what your account keeps.
+    </p>
+  </section>
+</Page>
+
+<script>
+// A provider sends the learner back here with a code, which the client trades for a session as it
+// starts; then they go back to the page they signed in from.
+import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
+import { currentLearner, type Provider, providers, signIn } from '@sulba/data/account';
+import { connect } from '@sulba/data/client';
+
+const nextKey = 'sulba:next';
+const root = document.querySelector<HTMLElement>('[data-sign-in]');
+const status = root?.querySelector<HTMLElement>('[data-status]');
+const buttons = [...(root?.querySelectorAll<HTMLButtonElement>('[data-provider]') ?? [])];
+const params = new URLSearchParams(location.search);
+const client = connect(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+
+/** A page on this site to go back to, never another site. */
+function pageOf(path: string | null): string | null {
+  return path?.startsWith('/') && !path.startsWith('//') ? path : null;
+}
+
+function remember(path: string | null) {
+  try {
+    if (path) sessionStorage.setItem(nextKey, path);
+  } catch {
+    // Storage is blocked: sign-in ends on the Account page.
+  }
+}
+
+function recalled(): string {
+  try {
+    return pageOf(sessionStorage.getItem(nextKey)) ?? '/account/';
+  } catch {
+    return '/account/';
+  }
+}
+
+function say(text: string) {
+  if (status) status.textContent = text;
+}
+
+remember(pageOf(params.get('next')));
+
+for (const button of buttons) {
+  button.addEventListener('click', async () => {
+    const provider = button.dataset.provider as Provider;
+    for (const each of buttons) each.disabled = true;
+    say('');
+    try {
+      await signIn(client, provider, `${location.origin}/sign-in/`);
+    } catch {
+      for (const each of buttons) each.disabled = false;
+      say(
+        `Sign-in with ${providers[provider]} couldn't start. Check your connection, then try again.`,
+      );
+    }
+  });
+}
+
+async function arrive() {
+  if (params.has('error')) {
+    say("Sign-in didn't finish. Try again.");
+    return;
+  }
+  const learner = await currentLearner(client).catch(() => null);
+  if (learner) {
+    document.documentElement.dataset.signedIn = '';
+    location.replace(recalled());
+  } else if (params.has('code')) {
+    say("Sign-in didn't finish. Try again.");
+  }
+}
+
+void arrive();
+</script>
+
+<style>
+.sheet {
+  max-width: 34rem;
+  padding-block: var(--space-16) var(--space-10);
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin-top: var(--space-6);
+  font-size: var(--text-lg);
+  color: var(--dim);
+}
+
+.providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+
+.status:not(:empty) {
+  margin-top: var(--space-4);
+}
+
+.note {
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--dim);
+}
+</style>
