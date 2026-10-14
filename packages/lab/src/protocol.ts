@@ -1,6 +1,6 @@
 /**
  * The run protocol every runner speaks: files and tests go in, a result per test comes out. The
- * workspace never knows which runner answered (decision record 5).
+ * workspace never knows which runner answered (decision record 17).
  */
 
 /** Run these test files against these files. */

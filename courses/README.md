@@ -66,7 +66,7 @@ The checks hold each Catch stage to these, besides the solution passing every te
 - Each problem's edit appears once in the starter. Made alone, it passes the assistant's tests and that problem's check, and no other check.
 - Each check belongs to exactly one problem.
 
-A run shows the assistant's tests by name and only how many checks pass. When the learner finishes the review, the checks their code passes become their score, and each problem opens with what it costs and its fix, beside the explanation and the solution. The problems follow the explanation, or sit inside it where a line of `---` in `explanation.md` divides it. The page carries the checks, so a learner who reads its source can find them: runs in the browser are practice (decision record 5). A later stage on the same file builds on the learner's code if they caught every problem, and on the solution if they didn't.
+A run shows the assistant's tests by name and only how many checks pass. When the learner finishes the review, the checks their code passes become their score, and each problem opens with what it costs and its fix, beside the explanation and the solution. The problems follow the explanation, or sit inside it where a line of `---` in `explanation.md` divides it. The page carries the checks, so a learner who reads its source can find them: runs in the browser are practice (decision record 17). A later stage on the same file builds on the learner's code if they caught every problem, and on the solution if they didn't.
 
 ## Ship stages
 
