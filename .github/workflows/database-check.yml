@@ -1,0 +1,36 @@
+name: Hosted database
+
+# The hosted Supabase project is on the free plan, which pauses a project after a week with too
+# little use; a few requests to the database each day keep it running
+# (https://supabase.com/docs/guides/platform/free-project-pausing). Each day this asks for every
+# learner table without signing in, and the database must refuse each request.
+on:
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    name: Learner tables refuse visitors who aren't signed in
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      # The public address and key the site's build uses (apps/web/astro.config.ts).
+      SUPABASE_URL: https://cqsfhuxtpkzvlemqkqoa.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_Ra21s8nwLu6-iB6LRLYeCA_q_dU74OB
+    steps:
+      - name: Ask for each learner table
+        run: |
+          for table in attempts progress study_days; do
+            answer=$(curl --silent --show-error --retry 3 --max-time 30 --write-out '\n%{http_code}' \
+              --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+              "$SUPABASE_URL/rest/v1/$table?select=learner_id&limit=1")
+            status=${answer##*$'\n'}
+            body=${answer%$'\n'*}
+            printf '%s: HTTP %s %s\n' "$table" "$status" "$body"
+            # Postgres refuses with insufficient_privilege (42501), which the Data API answers
+            # with 401. A paused project answers 540.
+            [[ $status == 401 && $body == *'"code":"42501"'* ]] || exit 1
+          done
