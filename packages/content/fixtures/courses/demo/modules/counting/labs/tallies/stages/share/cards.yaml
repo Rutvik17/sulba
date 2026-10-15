@@ -1,0 +1,4 @@
+cards:
+  - id: crd_demo03
+    front: What is a choice's share of the votes?
+    back: Its count divided by the total.

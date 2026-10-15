@@ -1,0 +1,23 @@
+cards:
+  - id: crd_kocxiz
+    front: >-
+      What is the gradient of the mean squared error with respect to the weights?
+    back: |-
+      ```math
+      \frac{\partial\,\mathrm{MSE}}{\partial w} = \frac{2}{n} X^\top (\hat{y} - y)
+      ```
+
+      `$X$` holds the samples, one row each, and `$\hat{y} - y$` the misses.
+  - id: crd_lbt3wb
+    front: >-
+      How large can gradient descent's learning rate be on a mean squared error?
+    back: >-
+      Less than `$2/\lambda_{\max}$`, where `$\lambda_{\max}$` is the error's largest curvature.
+      Past it, each step lands further from the minimum than the last, and the loss grows
+      without end.
+  - id: crd_nhxq8o
+    front: >-
+      Why does standardizing the measurements speed up gradient descent?
+    back: >-
+      It lowers the condition number. Unscaled, a column with a large mean and a small spread,
+      such as air pressure, pulls against the bias.

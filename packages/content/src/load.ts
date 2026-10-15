@@ -8,9 +8,11 @@ import Markdoc from '@markdoc/markdoc';
 import { parse } from 'yaml';
 import type { z } from 'zod';
 import {
+  type Card,
   type CatchProblem,
   type ChartFile,
   type CourseFile,
+  cardsFile,
   courseFile,
   type LabFile,
   labFile,
@@ -27,7 +29,7 @@ export interface Problem {
   readonly message: string;
 }
 
-export type { CatchProblem, ChartFile, ShipCheck } from './schema.ts';
+export type { Card, CatchProblem, ChartFile, ShipCheck } from './schema.ts';
 
 /** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
 export interface Chart extends ChartFile {
@@ -68,7 +70,9 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks' | 'chart'> 
   readonly figures: string | null;
   /** The chart that draws the learner's code once the stage is passed, if it has one. */
   readonly chart: Chart | null;
-  /** A hash of every file in the stage, so progress can tell when a stage has changed. */
+  /** The review cards that come back for spaced review once the stage is passed. */
+  readonly cards: readonly Card[];
+  /** A hash of every file in the stage but its cards, so progress can tell when it has changed. */
   readonly version: string;
 }
 
@@ -200,7 +204,7 @@ class Reader {
       folder,
       ['stage.yaml', 'brief.md', 'explanation.md'],
       ['starter', 'solution', 'tests', ...(hasChecks ? ['checks'] : [])],
-      ['hints.md', 'figures.py', 'chart.py'],
+      ['hints.md', 'figures.py', 'chart.py', 'cards.yaml'],
     );
     if (!file) return null;
     await this.entries(join(folder, 'starter'), [file.file], []);
@@ -224,6 +228,7 @@ class Reader {
     ]);
     const figures = present.has('figures.py') ? await this.text(join(folder, 'figures.py')) : null;
     const chart = await this.chart(folder, file.chart, present.has('chart.py'));
+    const cards = present.has('cards.yaml') ? await this.cards(join(folder, 'cards.yaml')) : [];
     if (brief === null || hints === null || explanation === null) return null;
     if (starter === null || solution === null) return null;
     const hintList = hasHints ? hints.split(/^---$/m).map((hint) => hint.trim()) : [];
@@ -275,8 +280,23 @@ class Reader {
       checks,
       figures,
       chart,
+      cards,
       version,
     };
+  }
+
+  /**
+   * A stage's review cards. They stay out of the stage's version: a card can change without the
+   * stage changing.
+   */
+  async cards(path: string): Promise<Card[]> {
+    const file = await this.yaml(path, cardsFile);
+    file?.cards.forEach((card, index) => {
+      for (const side of ['front', 'back'] as const) {
+        this.yamlProse(path, `cards.${index}.${side}`, card[side]);
+      }
+    });
+    return file?.cards ?? [];
   }
 
   /**

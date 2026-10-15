@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { pyodideEngine } from '@sulba/lab/node';
 import { beforeAll, expect, test } from 'vitest';
-import { type Course, loadCourse } from './load.ts';
+import { type Course, loadCourse, type Stage } from './load.ts';
 import { mathFontCharacters } from './math-font.ts';
 import { computeFigures, type FiguresRunner, proseProblems } from './prose-check.ts';
 
@@ -20,8 +20,8 @@ beforeAll(async () => {
 
 const countStage = () => course.levels[0]?.modules[0]?.labs[0]?.stages[0];
 
-/** The fixture course with one stage's explanation, or figures, replaced. */
-function changed(change: { explanation?: string; figures?: string }): Course {
+/** The fixture course with the first stage's explanation, figures or cards replaced. */
+function changed(change: Partial<Pick<Stage, 'explanation' | 'figures' | 'cards'>>): Course {
   const [level] = course.levels;
   const [module] = level?.modules ?? [];
   const [lab] = module?.labs ?? [];
@@ -59,9 +59,28 @@ test('figures that differ between runtimes are a problem', async () => {
 
 test('a figure the prose never shows is a problem', async () => {
   const { figures } = await computeFigures([course], { Pyodide: pyodide });
-  const course2 = changed({ explanation: 'The poll has {% $fig.total %} votes.\n' });
+  const course2 = changed({ explanation: 'The poll has {% $fig.total %} votes.\n', cards: [] });
   expect(proseProblems([course2], figures, mathFontCharacters())).toEqual([
     { path: `${count}/figures.py`, message: 'The prose never shows yes.' },
+  ]);
+});
+
+test('a review card shows figures, and is checked like the rest', async () => {
+  const { figures } = await computeFigures([course], { Pyodide: pyodide });
+  const shownInCard = changed({ explanation: 'The poll has {% $fig.total %} votes.\n' });
+  expect(proseProblems([shownInCard], figures, mathFontCharacters())).toEqual([]);
+  const broken = changed({
+    cards: [
+      { id: 'crd_demo01', front: 'How many votes are yes?', back: '{% $fig.no %}' },
+      { id: 'crd_demo02', front: 'What is `$\\sqrt{2$`?', back: 'A number.' },
+    ],
+  });
+  expect(proseProblems([broken], figures, mathFontCharacters())).toEqual([
+    { path: `${count}/cards.yaml`, message: "Undefined variable: 'fig.no'" },
+    {
+      path: `${count}/cards.yaml`,
+      message: expect.stringMatching(/^The formula \\sqrt\{2 doesn't render: /),
+    },
   ]);
 });
 
@@ -69,11 +88,10 @@ test('a character the math font lacks is a problem', async () => {
   const { figures } = await computeFigures([course], { Pyodide: pyodide });
   const font = mathFontCharacters();
   font.delete(0x2211);
+  const message = 'The math font has no ∑ (U+2211), so it would come from another font.';
   expect(proseProblems([course], figures, font)).toEqual([
-    {
-      path: `${count}/explanation.md`,
-      message: 'The math font has no ∑ (U+2211), so it would come from another font.',
-    },
+    { path: `${count}/explanation.md`, message },
+    { path: `${count}/cards.yaml`, message },
   ]);
 });
 

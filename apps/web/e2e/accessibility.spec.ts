@@ -39,6 +39,7 @@ for (const scheme of ['dark', 'light'] as const) {
     '/terms/',
     '/sign-in/',
     '/account/',
+    '/review/',
     '/no-such-page/',
     '/gallery/',
   ]) {
@@ -68,6 +69,35 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto('/account/');
     await expect(page.getByText('You studied on 3 of the last 84 days.')).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a review card, with its answer and history, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('sulba:passed:stg_demo01', '1');
+      localStorage.setItem(
+        'sulba:reviews',
+        JSON.stringify([
+          {
+            id: '10000000-0000-4000-8000-000000000001',
+            card_id: 'crd_demo02',
+            rating: 4,
+            reviewed_at: '2026-10-01T09:00:00.000Z',
+          },
+        ]),
+      );
+    });
+    await page.clock.setFixedTime(new Date('2026-10-15T09:00:00Z'));
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/review/');
+    await page.getByRole('button', { name: 'Show answer' }).click();
+    await page.getByText('History').click();
+    await expect(page.locator('[data-history-list] li')).toHaveCount(1);
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 

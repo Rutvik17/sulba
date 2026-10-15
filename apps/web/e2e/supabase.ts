@@ -42,6 +42,7 @@ export function session() {
 export interface Calls {
   readonly authorize: URL[];
   readonly attempts: Record<string, unknown>[];
+  readonly reviews: Record<string, unknown>[];
   logouts: number;
   closed: number;
 }
@@ -52,6 +53,8 @@ export interface Held {
   readonly passed?: { stage_id: string; caught: string[] | null; problems: number | null }[];
   /** A study_days row for each day studied. */
   readonly studyDays?: { day: string; seconds: number }[];
+  /** The reviews given on other devices. */
+  readonly reviews?: { id: string; card_id: string; rating: number; reviewed_at: string }[];
 }
 
 /**
@@ -60,9 +63,9 @@ export interface Held {
  */
 export async function standIn(
   page: Page,
-  { passed = [], studyDays = [] }: Held = {},
+  { passed = [], studyDays = [], reviews = [] }: Held = {},
 ): Promise<Calls> {
-  const calls: Calls = { authorize: [], attempts: [], logouts: 0, closed: 0 };
+  const calls: Calls = { authorize: [], attempts: [], reviews: [], logouts: 0, closed: 0 };
   const answer = (status: number, body?: unknown) => ({
     status,
     headers: { ...cors, 'content-type': 'application/json' },
@@ -98,6 +101,13 @@ export async function standIn(
   await page.route(`${supabase}/rest/v1/attempts**`, (route) => {
     if (route.request().method() === 'OPTIONS') return route.fulfill(answer(204));
     calls.attempts.push(...(route.request().postDataJSON() as Record<string, unknown>[]));
+    return route.fulfill(answer(201));
+  });
+  await page.route(`${supabase}/rest/v1/reviews**`, (route) => {
+    const method = route.request().method();
+    if (method === 'OPTIONS') return route.fulfill(answer(204));
+    if (method === 'GET') return route.fulfill(answer(200, reviews));
+    calls.reviews.push(...(route.request().postDataJSON() as Record<string, unknown>[]));
     return route.fulfill(answer(201));
   });
   await page.route(`${supabase}/rest/v1/rpc/close_account**`, (route) => {

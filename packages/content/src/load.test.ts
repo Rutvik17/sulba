@@ -100,6 +100,31 @@ test('a Catch stage being drafted loads with no problems yet, and each check sti
   );
 });
 
+test("a stage's review cards come from cards.yaml, and a stage without one has none", async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const [count, share, check] = course?.levels[0]?.modules[0]?.labs[0]?.stages ?? [];
+  expect(count?.cards.map((card) => card.id)).toEqual(['crd_demo01', 'crd_demo02']);
+  expect(count?.cards[0]?.front).toBe("How many of the poll's {% $fig.total %} votes are yes?");
+  expect(share?.cards).toEqual([
+    {
+      id: 'crd_demo03',
+      front: "What is a choice's share of the votes?",
+      back: 'Its count divided by the total.',
+    },
+  ]);
+  expect(check?.cards).toEqual([]);
+});
+
+test("a stage's version stays the same when only its cards change", async () => {
+  const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
+  const { course } = await loadChanged((root) =>
+    edit(join(root, stages, 'share/cards.yaml'), 'divided by', 'over'),
+  );
+  const after = course?.levels[0]?.modules[0]?.labs[0];
+  expect(after?.stages[1]?.cards[0]?.back).toBe('Its count over the total.');
+  expect(after?.stages[1]?.version).toBe(before?.stages[1]?.version);
+});
+
 test("a Catch stage's version changes when a check does", async () => {
   const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
   const { course } = await loadChanged((root) =>
@@ -390,6 +415,45 @@ test.each([
     problem: {
       path: `${stages}/count/chart.py`,
       message: 'stage.yaml has no chart for it to draw.',
+    },
+  },
+  {
+    name: 'a card with an id of the wrong kind',
+    change: (root: string) =>
+      edit(join(root, stages, 'share/cards.yaml'), 'crd_demo03', 'stg_demo03'),
+    problem: {
+      path: `${stages}/share/cards.yaml`,
+      message: 'cards.0.id: Expected a card id such as ^crd_[0-9a-z]{6}$',
+    },
+  },
+  {
+    name: 'a card without an answer',
+    change: (root: string) =>
+      edit(
+        join(root, stages, 'share/cards.yaml'),
+        '    back: Its count divided by the total.\n',
+        '',
+      ),
+    problem: {
+      path: `${stages}/share/cards.yaml`,
+      message: 'cards.0.back: Invalid input: expected string, received undefined',
+    },
+  },
+  {
+    name: 'a cards.yaml with no cards',
+    change: (root: string) => writeFile(join(root, stages, 'share/cards.yaml'), 'cards: []\n'),
+    problem: {
+      path: `${stages}/share/cards.yaml`,
+      message: 'cards: Too small: expected array to have >=1 items',
+    },
+  },
+  {
+    name: 'a tag in a card',
+    change: (root: string) =>
+      edit(join(root, stages, 'share/cards.yaml'), 'divided by', 'divided {% video /%} by'),
+    problem: {
+      path: `${stages}/share/cards.yaml`,
+      message: "cards.0.back: Undefined tag: 'video'",
     },
   },
   {

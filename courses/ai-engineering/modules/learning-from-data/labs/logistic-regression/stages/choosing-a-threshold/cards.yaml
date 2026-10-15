@@ -1,0 +1,23 @@
+cards:
+  - id: crd_bmnq2a
+    front: >-
+      What is precision?
+    back: >-
+      The share of the samples predicted positive that are positive: `$TP / (TP + FP)$`.
+  - id: crd_bxidqb
+    front: >-
+      What is recall?
+    back: >-
+      The share of the positive samples that are predicted positive: `$TP / (TP + FN)$`.
+  - id: crd_cc2dhj
+    front: >-
+      Which threshold reaches a recall of `$r$` with the fewest samples predicted positive?
+    back: >-
+      Sort the positive samples' probabilities from highest to lowest, and take the one at
+      position `$k = \lceil rP \rceil$`, where `$P$` is how many positive samples there are.
+  - id: crd_cjzj8c
+    front: >-
+      What is the difference between `np.sort(p)` and `p.sort()`?
+    back: >-
+      `np.sort(p)` returns a sorted copy. `p.sort()` sorts `p` itself, so the caller's array
+      changes.

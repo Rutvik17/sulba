@@ -23,5 +23,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [17. Run every lab and model on the learner's device](0017-run-every-lab-and-model-on-the-learners-device.md) | Accepted |
 | [18. Keep progress as a log of attempts](0018-keep-progress-as-a-log-of-attempts.md) | Accepted |
 | [19. Sign in with GitHub or Google, in the browser](0019-sign-in-with-github-or-google-in-the-browser.md) | Accepted |
+| [20. Schedule review with FSRS, from a log of reviews](0020-schedule-review-with-fsrs-from-a-log-of-reviews.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

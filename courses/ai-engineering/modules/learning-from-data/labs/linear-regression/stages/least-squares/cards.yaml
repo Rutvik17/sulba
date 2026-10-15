@@ -1,0 +1,14 @@
+cards:
+  - id: crd_iqyb0w
+    front: >-
+      What are the normal equations of least squares?
+    back: >-
+      `$A^\top A \, \theta = A^\top y$`, where `$A$` holds the training measurements with a
+      column of ones, and `$\theta$` the weights, then the bias.
+  - id: crd_k2n3vf
+    front: >-
+      Why solve least squares with `np.linalg.lstsq` rather than by inverting `$A^\top A$`?
+    back: >-
+      Forming `$A^\top A$` squares the condition number, so the inverse loses digits to
+      rounding. `lstsq` works from `$A$` itself, and when one column repeats another, it still
+      returns one answer: the shortest.

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_cn0ypx
+    front: >-
+      What does a weight in a linear regression mean?
+    back: >-
+      How much the forecast changes when its measurement rises by one unit and the others stay
+      as they are.
+  - id: crd_elg58d
+    front: >-
+      Why does the mean squared error square each miss?
+    back: >-
+      So that a miss in either direction counts against the model, and one large miss counts far
+      more than several small ones.
+  - id: crd_igecer
+    front: >-
+      What is the simplest forecast a regression model has to beat?
+    back: >-
+      The mean of the training outputs, given for every sample whatever its measurements.

@@ -1,0 +1,20 @@
+cards:
+  - id: crd_9nmhwf
+    front: >-
+      In what order are the columns of scikit-learn's `predict_proba`?
+    back: >-
+      In the order of `model.classes_`. With labels 0 and 1, column 1 is the probability of
+      class 1.
+  - id: crd_9yp2un
+    front: >-
+      What goes wrong when a model scores new samples after `fit_transform`?
+    back: >-
+      The scaler learns new means and standard deviations from every batch: training–serving
+      skew. A sample scored on its own becomes all zeros. `transform` reuses the numbers learned
+      from the training set.
+  - id: crd_bjsxkb
+    front: >-
+      What does `class_weight="balanced"` do to a logistic regression?
+    back: >-
+      It counts the rarer class's samples more heavily in training, so it fits a different
+      model, with different probabilities.

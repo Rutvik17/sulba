@@ -1,5 +1,6 @@
-// Every course, level, module, lab, stage and test has a permanent id: written once and never
-// changed, so progress stored against it survives renaming or reordering (decision record 7).
+// Every course, level, module, lab, stage, test and review card has a permanent id: written once
+// and never changed, so progress stored against it survives renaming or reordering (decision
+// record 7).
 
 export const prefixes = {
   course: 'crs',
@@ -8,6 +9,7 @@ export const prefixes = {
   lab: 'lab',
   stage: 'stg',
   test: 'tst',
+  card: 'crd',
 } as const;
 
 export type IdKind = keyof typeof prefixes;

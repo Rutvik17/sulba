@@ -1,0 +1,14 @@
+cards:
+  - id: crd_0otbfq
+    front: >-
+      How does logistic regression turn a sample's measurements into a probability?
+    back: >-
+      It weights and adds them into a score, `$z = w \cdot x + b$`, and takes the score's
+      sigmoid, `$\sigma(z) = \frac{1}{1 + e^{-z}}$`.
+  - id: crd_1f16hy
+    front: >-
+      Why can't `sigmoid` compute `$1 / (1 + e^{-z})$` for every score?
+    back: >-
+      For a large negative score, `$e^{-z}$` is too large for a float. For negative scores, use
+      the same number in another form, `$e^{z} / (e^{z} + 1)$`, where `$e^{z}$` is between 0 and
+      1.

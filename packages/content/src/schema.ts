@@ -133,6 +133,16 @@ const problem = z.strictObject({
   edit: z.strictObject({ replace: z.string().min(1), with: z.string() }),
 });
 
+/**
+ * A stage's review cards, which come back for spaced review once the stage is passed (decision
+ * record 20). Each side is Markdoc, with the stage's figures.
+ */
+export const cardsFile = z.strictObject({
+  cards: z.array(z.strictObject({ id: id('card'), front: title, back: title })).min(1),
+});
+
+export type Card = z.infer<typeof cardsFile>['cards'][number];
+
 /** One check a Ship stage's code must pass before it ships. Its text is Markdoc. */
 const shipCheck = z.strictObject({
   /** The id of the check in `checks/`. */

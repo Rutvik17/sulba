@@ -211,7 +211,7 @@ function report(page: Page) {
 }
 
 /** A Catch run's summary, which leads with the production checks. */
-const checked = (page: Page) => page.getByText(/production checks? (pass|passes|fails)\./);
+const checked = (page: Page) => page.getByText(/production checks? (passed|failed)\./);
 
 test('a Catch stage shows the assistant’s tests, and only a count of its production checks', async ({
   page,

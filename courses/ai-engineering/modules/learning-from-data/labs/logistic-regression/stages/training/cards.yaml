@@ -1,0 +1,19 @@
+cards:
+  - id: crd_4s1nl1
+    front: >-
+      Why standardize the columns before training by gradient descent?
+    back: >-
+      Columns on very different scales need very different learning rates: one small enough for
+      the largest column is far too small for the smallest. Standardized, every column has mean
+      0 and standard deviation 1.
+  - id: crd_5znwua
+    front: >-
+      Whose means and standard deviations scale the test set?
+    back: >-
+      The training set's. A model meets new samples after it is trained, often one at a time, so
+      their own numbers aren't known.
+  - id: crd_98wz1v
+    front: >-
+      What goes wrong when gradient descent's learning rate is too large?
+    back: >-
+      A step jumps past the minimum, so the loss goes up instead of down.

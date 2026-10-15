@@ -4,18 +4,20 @@
 import { getCollection } from 'astro:content';
 import Page from '../../../layouts/Page.astro';
 import { labFacts } from '../../../lib/lab-facts';
-import type { LabView } from '../../../lib/labs';
+import type { LabEntry } from '../../../lib/labs';
 import Workspace from '../../../workspace/Workspace';
 
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
   return labs.map(({ data }) => {
     const [course, module, lab] = data.path.split('/');
-    return { params: { course, module, lab }, props: { lab: data } };
+    return { params: { course, module, lab }, props: { entry: data } };
   });
 }
 
-const { lab } = Astro.props as { lab: LabView };
+// The review cards belong to the Review page, so the workspace isn't sent them.
+const { entry } = Astro.props as { entry: LabEntry };
+const { cards: _, ...lab } = entry;
 const facts = labFacts(lab);
 ---
 

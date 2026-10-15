@@ -49,7 +49,7 @@ test('the about page says what Sulba is, where its name comes from, what it valu
   ]);
 });
 
-test('the Privacy Policy names who handles a message, and the Terms the law that governs them', async ({
+test('the Privacy Policy names who handles your information, and the Terms the law that governs them', async ({
   page,
 }) => {
   const privacy = await page.goto('/privacy/');
@@ -58,6 +58,9 @@ test('the Privacy Policy names who handles a message, and the Terms the law that
   await expect(page).toHaveTitle('Privacy Policy · Sulba');
   await expect(page.getByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeVisible();
   await expect(page.getByRole('table').getByRole('link')).toHaveText([
+    'Supabase, Inc.',
+    'GitHub, Inc.',
+    'Google LLC',
     'Cloudflare, Inc.',
     'Resend (Plus Five Five, Inc.)',
     'Apple Inc.',
@@ -65,6 +68,9 @@ test('the Privacy Policy names who handles a message, and the Terms the law that
   // Words either side of a link, a label or code keep their space.
   await expect(page.getByRole('main')).toContainText(
     'The bot check. Before your message is sent, Cloudflare Turnstile checks',
+  );
+  await expect(page.getByRole('main')).toContainText(
+    'in your browser (as sulba:reviews), so it can work out',
   );
   await expect(page.getByRole('main')).toContainText(
     'runs in a frame from challenges.cloudflare.com. It sends',

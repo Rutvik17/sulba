@@ -187,7 +187,10 @@ test('two courses that share an id is a problem', async () => {
     'The id mod_demo01 is already used by demo/modules/counting/module.yaml.',
     'The id lab_demo01 is already used by demo/modules/counting/labs/tallies/lab.yaml.',
     `The id stg_demo01 is already used by ${count}/stage.yaml.`,
+    `The id crd_demo01 is already used by ${count}/cards.yaml.`,
+    `The id crd_demo02 is already used by ${count}/cards.yaml.`,
     `The id stg_demo02 is already used by ${share}/stage.yaml.`,
+    `The id crd_demo03 is already used by ${share}/cards.yaml.`,
     `The id stg_demo03 is already used by ${check}/stage.yaml.`,
     `The id stg_demo04 is already used by ${ship}/stage.yaml.`,
   ]);

@@ -1,0 +1,25 @@
+cards:
+  - id: crd_qnxbwm
+    front: >-
+      In what order must a model's measurements come when it forecasts?
+    back: >-
+      In the order it was fitted with. In any other order, every weight meets the wrong
+      measurement, and nothing raises an error.
+  - id: crd_rlth6o
+    front: >-
+      How do you make a table with one row per sample from columns that may be single numbers?
+    back: >-
+      `np.column_stack(columns)`. `np.array(columns).T` gives a flat row when each column is a
+      single number.
+  - id: crd_ry0lg7
+    front: >-
+      What should a forecaster do with an hour that has no weather?
+    back: >-
+      Raise an error that names the hour. Dropping it moves every later forecast onto the wrong
+      hour.
+  - id: crd_ryskay
+    front: >-
+      Why not clip forecasts to the range of the outputs in the history?
+    back: >-
+      An unusual hour then gets a number that looks right, and nobody learns that the model
+      forecast something else.

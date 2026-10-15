@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Ask for each learner table
         run: |
-          for table in attempts progress study_days; do
+          for table in attempts progress study_days reviews; do
             answer=$(curl --silent --show-error --retry 3 --max-time 30 --write-out '\n%{http_code}' \
               --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \
               "$SUPABASE_URL/rest/v1/$table?select=learner_id&limit=1")
