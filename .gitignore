@@ -11,3 +11,5 @@ packages/lab/pyodide/
 .venv/
 __pycache__/
 .ruff_cache/
+# A Catch stage's drafts, which an author chooses from (courses/README.md).
+.drafts.yaml

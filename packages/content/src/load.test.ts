@@ -84,6 +84,22 @@ test('a stage with a chart has what stage.yaml says of it, and chart.py', async 
   expect(share?.chart?.code).toMatch(/^import csv\n/);
 });
 
+test('a Catch stage being drafted loads with no problems yet, and each check still needs one', async () => {
+  const { course, problems } = await loadChanged(async (root) => {
+    const path = join(root, stages, 'check/stage.yaml');
+    const text = await readFile(path, 'utf8');
+    await writeFile(path, `${text.slice(0, text.indexOf('problems:'))}problems: []\n`);
+  });
+  const lab = course?.levels[0]?.modules[0]?.labs[0];
+  expect(lab?.stages.find((stage) => stage.slug === 'check')?.problems).toEqual([]);
+  expect(problems).toEqual(
+    ['tst_demo06', 'tst_demo07'].map((id) => ({
+      path: `${stages}/check/checks/test_report.py`,
+      message: `No problem in stage.yaml names the check ${id}.`,
+    })),
+  );
+});
+
 test("a Catch stage's version changes when a check does", async () => {
   const before = (await loadCourse(fixtures, 'demo')).course?.levels[0]?.modules[0]?.labs[0];
   const { course } = await loadChanged((root) =>

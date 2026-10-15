@@ -6,6 +6,7 @@ export {
   type CatchProblem,
   type Chart,
   type Course,
+  checkIds,
   courseSlugs,
   type Dataset,
   type Lab,

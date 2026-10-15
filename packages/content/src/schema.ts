@@ -151,7 +151,8 @@ const shipCheck = z.strictObject({
  */
 export const stageFile = z.discriminatedUnion('kind', [
   z.strictObject({ ...stageFields, kind: z.literal('build') }),
-  z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem).min(1) }),
+  // A Catch stage being drafted lists no problems yet, and fails its checks until it does.
+  z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem) }),
   z.strictObject({ ...stageFields, kind: z.literal('ship'), checks: z.array(shipCheck).min(1) }),
 ]);
 

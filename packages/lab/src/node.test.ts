@@ -7,7 +7,13 @@ import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
 import { shares } from './chart.fixture.ts';
 import { counted } from './figures.fixture.ts';
-import { chartsInCPython, figuresInCPython, pyodideEngine, runInCPython } from './node.ts';
+import {
+  chartsInCPython,
+  figuresInCPython,
+  pyodideEngine,
+  runEachInCPython,
+  runInCPython,
+} from './node.ts';
 import { pythonPackages, type RunRequest, type RunResult } from './protocol.ts';
 
 const hasUv = spawnSync('uv', ['--version']).status === 0;
@@ -58,4 +64,23 @@ test.skipIf(!hasUv)(
     expect(await chartsInCPython(requests)).toEqual(requests.map(engine.chart));
   },
   180_000,
+);
+
+test.skipIf(!hasUv)(
+  'a run that never ends is stopped, and the next one still runs',
+  async () => {
+    const passes = await request('passes');
+    const endless = {
+      ...passes,
+      files: { ...passes.files, 'stats.py': 'while True:\n    pass\n' },
+    };
+    const [stopped, ran] = await runEachInCPython([endless, passes], 10_000);
+    expect(stopped?.problem).toEqual({
+      kind: 'TimeLimit',
+      message: 'Stopped after 10 seconds.',
+      location: null,
+    });
+    expect(ran?.status).toBe('pass');
+  },
+  60_000,
 );

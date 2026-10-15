@@ -68,6 +68,24 @@ The checks hold each Catch stage to these, besides the solution passing every te
 
 A run shows the assistant's tests by name and only how many checks pass. When the learner finishes the review, the checks their code passes become their score, and each problem opens with what it costs and its fix, beside the explanation and the solution. The problems follow the explanation, or sit inside it where a line of `---` in `explanation.md` divides it. The page carries the checks, so a learner who reads its source can find them: runs in the browser are practice (decision record 17). A later stage on the same file builds on the learner's code if they caught every problem, and on the solution if they didn't.
 
+### Drafting problems
+
+A code model on your machine drafts a Catch stage's problems, and you choose among them. First write the stage's solution, the assistant's tests and the checks, with the solution as the starter for now and `problems: []` in `stage.yaml`. Then serve a code model with llama.cpp's `llama-server`, such as Qwen3-Coder:
+
+```sh
+llama-server -hf unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M
+```
+
+On a GPU without room for the whole model, `--n-cpu-moe` keeps some of its layers on the CPU. Then draft:
+
+```sh
+pnpm --filter @sulba/content draft courses/<course>/modules/<module>/labs/<lab>/stages/<stage>
+```
+
+The model is shown the solution with its lines numbered, the assistant's tests, the name of each check, and the kinds of bug in `packages/content/src/faults.ts`. For each bug it names a line and writes what the assistant put there instead. A draft is kept only when the assistant's tests pass with it and exactly one check fails, and each run stops after a minute. The drafts kept go to the stage's `.drafts.yaml`, under the check each fails, with the edit that fixes it. `--server` gives another address than `http://127.0.0.1:8080`, `--rounds` how many times to ask (3), and `--count` how many drafts each time (8).
+
+Choose one draft for each check: put its bug in the starter, and its edit in `problems` with a title, its cost and its fix. A kept draft fails the right check, but whether an assistant would write it, and whether it's worth a learner's time, is for you to judge. `.drafts.yaml` is never committed.
+
 ## Ship stages
 
 In a Ship stage the learner's code must pass hidden tests, then the checks it needs before it ships. `tests/` holds the tests: a run shows each one by name and whether it passed, never what it was given, expected or printed. `checks/` holds the checks, and `stage.yaml` lists them in the order they show, each part a line of Markdoc:
