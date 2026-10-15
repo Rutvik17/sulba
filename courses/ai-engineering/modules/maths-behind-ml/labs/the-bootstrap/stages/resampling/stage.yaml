@@ -1,0 +1,14 @@
+id: stg_uftiei
+kind: build
+title: Resampling
+builds: A new `bootstrap.py`.
+file: bootstrap.py
+packages: [numpy, scipy]
+minutes: 35
+chart:
+  title: The clinic's accuracy over resamples
+  sliders:
+    - name: repeats
+      label: Resamples
+      stops: [100, 1000, 9999]
+      value: 9999

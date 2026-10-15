@@ -1,0 +1,19 @@
+cards:
+  - id: crd_z31vc2
+    front: >-
+      Why does resampling without replacement give a bootstrap interval of no width?
+    back: >-
+      Each resample holds every sample once, so a statistic such as the accuracy comes out the
+      same on every one.
+  - id: crd_a9emt6
+    front: >-
+      A model's predictions are resampled to bootstrap its accuracy. What must be resampled
+      with them?
+    back: >-
+      The labels of the same samples, with the same row numbers, so that each prediction still
+      meets its own sample's label.
+  - id: crd_u9mz7r
+    front: >-
+      At what quantile levels does a percentile interval at confidence `$c$` take its ends?
+    back: >-
+      At `$(1 - c)/2$` and `$(1 + c)/2$`, leaving `$(1 - c)/2$` outside on each side.

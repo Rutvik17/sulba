@@ -1,0 +1,9 @@
+id: stg_3lgzpm
+kind: build
+title: Confidence intervals
+builds: Your `bootstrap.py` from stage 1.
+file: bootstrap.py
+packages: [numpy, scipy]
+minutes: 40
+chart:
+  title: How often a 95% interval covers the mean

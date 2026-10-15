@@ -1,0 +1,44 @@
+id: stg_e00fc2
+kind: ship
+title: Comparing two models
+builds: Your `bootstrap.py` from stage 3.
+file: bootstrap.py
+packages: [numpy, scipy]
+minutes: 50
+checks:
+  - check: tst_fvcatb
+    title: The same intervals as resampling the samples
+    requires: >-
+      For the clinic's two rules, and for two models tested on {% $fig.synthetic %} samples,
+      the interval's ends must be those SciPy's `bootstrap` gives by resampling the samples,
+      within what the resampling itself varies.
+    failure: >-
+      Its intervals differ from those that resampling the samples gives.
+  - check: tst_rlnvyp
+    title: A model against itself
+    requires: >-
+      A model compared with itself must get an interval from 0 to 0.
+    failure: >-
+      It found a difference between a model and itself.
+  - check: tst_oya800
+    title: A model never worse
+    requires: >-
+      When model b is right on none of the samples model a gets wrong, no resample can put b
+      ahead, so the interval must not start below 0. Here, on {% $fig.never_n %} samples,
+      model a alone gets {% $fig.never_extra %} right.
+    failure: >-
+      It put model b ahead, which no resample can.
+  - check: tst_lqa74p
+    title: "Fast on {% $fig.million %} samples"
+    requires: >-
+      `paired_difference` must compare two models on {% $fig.million %} samples, with
+      {% $fig.repeats %} resamples, in under a second.
+    failure: >-
+      The limit is a second, and drawing every sample of every resample can't keep to it.
+  - check: tst_fxlxiq
+    title: Results from different samples
+    requires: >-
+      Given results on different numbers of samples, `paired_difference` must raise a
+      `ValueError`.
+    failure: >-
+      It compared results that can't be paired.
