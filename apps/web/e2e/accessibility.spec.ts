@@ -40,6 +40,7 @@ for (const scheme of ['dark', 'light'] as const) {
     '/sign-in/',
     '/account/',
     '/review/',
+    '/demo/',
     '/no-such-page/',
     '/gallery/',
   ]) {
@@ -69,6 +70,19 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto('/account/');
     await expect(page.getByText('You studied on 3 of the last 84 days.')).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a course page with a lab's stages done has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/demo/');
+    await expect(page.getByText('1 of 4 stages done')).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 
