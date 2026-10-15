@@ -1,0 +1,55 @@
+id: stg_h0ghv1
+kind: catch
+title: The assistant's report
+builds: Your `report.py` from stages 1 to 3.
+file: monthly.py
+packages: [pandas]
+minutes: 35
+problems:
+  - check: tst_voqmx6
+    title: It described the sources with the admission types
+    cost: >-
+      It joined the admission sources to the admission types' table, where the emergency
+      room's code means {% $fig.er_type %}. The {% $fig.er %} patients who came through the
+      emergency room were reported under {% $fig.er_type %}.
+    fix: >-
+      The fix: describe the sources with the table for `admission_source_id`.
+    edit:
+      replace: '["admission_type_id"]'
+      with: '["admission_source_id"]'
+  - check: tst_z1yvw1
+    title: It dropped patients whose source the mapping lacks
+    cost: >-
+      An inner join keeps only the codes both tables hold. Every code in this extract is in
+      the mapping, but next month the patients of a source the mapping lacks would drop out of
+      every row, All sources included.
+    fix: >-
+      The fix: `how="left"`, which keeps every patient and leaves a code the mapping lacks
+      without a description, so that it counts as Unknown.
+    edit:
+      replace: 'how="inner"'
+      with: 'how="left"'
+  - check: tst_gj84ir
+    title: It averaged the shares
+    cost: >-
+      The mean of the sources' shares counts each of the {% $fig.single %} sources with a
+      single patient as much as the emergency room's {% $fig.er %}. It gave All sources
+      {% $fig.mean_share %}, against {% $fig.pooled %} of all {% $fig.patients %} patients.
+    fix: >-
+      The fix: All sources' readmissions over its patients,
+      `rows["readmitted"].sum() / rows["patients"].sum()`.
+    edit:
+      replace: 'rows["share"].mean()'
+      with: 'rows["readmitted"].sum() / rows["patients"].sum()'
+  - check: tst_svorvu
+    title: It counted encounters, not patients
+    cost: >-
+      `drop_duplicates("encounter_id")` drops nothing, since every encounter has an id of its
+      own. The report counted {% $fig.counted %} encounters as patients,
+      {% $fig.share_every %} of them readmitted, against {% $fig.patients %} patients and
+      {% $fig.pooled %}.
+    fix: >-
+      The fix: sort by `encounter_id`, then `drop_duplicates("patient_nbr")`.
+    edit:
+      replace: 'table.drop_duplicates("encounter_id")'
+      with: 'table.sort_values("encounter_id").drop_duplicates("patient_nbr")'

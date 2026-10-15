@@ -1,0 +1,38 @@
+id: stg_o36rau
+kind: ship
+title: History for a model
+builds: Your `report.py` from stages 1 to 3.
+file: report.py
+packages: [pandas]
+minutes: 40
+checks:
+  - check: tst_p1gq6s
+    title: Encounters in any order
+    requires: >-
+      Given the extract's encounters in another order, `history` gives each the same history.
+    failure: >-
+      It counted in the table's order. Sort by `encounter_id` before counting what came before.
+  - check: tst_ou05my
+    title: The table's index
+    requires: >-
+      The data scientists join the result to the encounters on the table's index. Given some of
+      the extract's rows, in another order and with their own index, the result has the same
+      index, in the same order.
+    failure: >-
+      Its index isn't the table's. `merge` gives its result a new index, and sorting moves the
+      rows: put them back with `.loc[table.index]`.
+  - check: tst_piwf6d
+    title: A discharge the mapping lacks
+    requires: >-
+      An encounter whose discharge code the mapping lacks keeps its row, and the patient's next
+      encounter has no `previous_discharge`.
+    failure: >-
+      It dropped the encounter. Join with `how="left"`, or look the codes up with `map`.
+  - check: tst_iwr5jc
+    title: "Fast on {% $fig.big %} encounters"
+    requires: >-
+      `history` gives the history of {% $fig.copies %} copies of the extract, each of other
+      patients, {% $fig.big %} encounters in all, in under a second.
+    failure: >-
+      The limit is a second. Work on every patient at once with `groupby`, never patient by
+      patient or row by row.

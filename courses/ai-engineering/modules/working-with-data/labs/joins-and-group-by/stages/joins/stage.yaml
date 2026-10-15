@@ -1,0 +1,7 @@
+id: stg_yalb5v
+kind: build
+title: Joins
+builds: Your `report.py` from stage 1.
+file: report.py
+packages: [pandas]
+minutes: 35

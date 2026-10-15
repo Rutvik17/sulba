@@ -1,0 +1,19 @@
+cards:
+  - id: crd_zezuae
+    front: >-
+      Why isn't the share for all groups the mean of the groups' shares?
+    back: >-
+      The mean counts a group of one patient as much as a group of thousands. Divide all the
+      readmissions by all the patients.
+  - id: crd_8wdh2d
+    front: >-
+      What does `drop_duplicates("encounter_id")` drop from a table of encounters?
+    back: >-
+      Nothing, since each encounter has an id of its own. Patients repeat, so keep one row per
+      `patient_nbr`.
+  - id: crd_emqj17
+    front: >-
+      How do you test a report's joins and groupings?
+    back: >-
+      Count a small extract by hand, such as one patient with two encounters and one code the
+      lookup lacks, and compare the report with it.

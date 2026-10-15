@@ -1,0 +1,17 @@
+cards:
+  - id: crd_33fv69
+    front: >-
+      How do you read CSV text held in a string with pandas?
+    back: >-
+      `pd.read_csv(io.StringIO(text))`: `io.StringIO` makes the string act as a file.
+  - id: crd_wzapak
+    front: >-
+      Why read the ID mapping with `keep_default_na=False`?
+    back: >-
+      By default `read_csv` reads `NULL` as missing. With it, `NULL` stays the description the
+      file gives.
+  - id: crd_qulrwv
+    front: >-
+      Why trim the spaces around text values before joining or grouping on them?
+    back: >-
+      A value with a space before it is a different value, so one group would split in two.

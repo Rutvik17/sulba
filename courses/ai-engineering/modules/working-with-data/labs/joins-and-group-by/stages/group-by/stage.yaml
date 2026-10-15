@@ -1,0 +1,14 @@
+id: stg_ubdsgt
+kind: build
+title: Group-by
+builds: Your `report.py` from stages 1 and 2.
+file: report.py
+packages: [pandas]
+minutes: 35
+chart:
+  title: Readmissions by age
+  sliders:
+    - name: smallest
+      label: Smallest group
+      stops: [1, 30, 100]
+      value: 1

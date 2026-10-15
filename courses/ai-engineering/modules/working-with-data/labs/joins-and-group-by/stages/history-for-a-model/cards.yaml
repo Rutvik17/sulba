@@ -1,0 +1,19 @@
+cards:
+  - id: crd_72sz6z
+    front: >-
+      How do you count, for each row, the rows of its group that came before it?
+    back: >-
+      Sort the rows into order, then `groupby(...).cumcount()`, which numbers each group's rows
+      in order.
+  - id: crd_4xffzs
+    front: >-
+      Why can't a model used at discharge count a patient's later encounters?
+    back: >-
+      They aren't known at discharge, and a readmission is itself a later encounter, so they'd
+      hand the model part of what it's meant to predict.
+  - id: crd_nggu5c
+    front: >-
+      Does `merge` keep the left table's index?
+    back: >-
+      No. Joining columns on columns, it ignores both indexes and gives the result a new one.
+      `map` keeps the caller's index.
