@@ -1,0 +1,18 @@
+cards:
+  - id: crd_fxhjaq
+    front: >-
+      Why does `x NOT IN (SELECT ...)` keep no rows when the subquery gives a `NULL`?
+    back: >-
+      A value is never `NOT IN` a list that holds a `NULL`: the condition is `NULL`, and `WHERE`
+      drops the row. `NOT EXISTS` is true when no row matches.
+  - id: crd_vvb7v0
+    front: >-
+      What does `WHERE` do with a row whose condition is `NULL`?
+    back: >-
+      It drops it: `WHERE` keeps only the rows whose condition is true.
+  - id: crd_w5vvq7
+    front: >-
+      Joining each patient to their first encounter, what must the join match?
+    back: >-
+      Both the patient and the encounter. Matching the patient alone brings every encounter of
+      the patient through.

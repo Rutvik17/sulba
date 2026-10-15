@@ -1,0 +1,18 @@
+cards:
+  - id: crd_pw4mks
+    front: >-
+      How do you count, in SQL, the rows of each row's group that came before it?
+    back: >-
+      A window function with a frame that stops at the row before:
+      `COUNT(*) OVER (PARTITION BY g ORDER BY t ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)`.
+  - id: crd_y9yw8s
+    front: >-
+      Which rows does an ordered window's frame hold by default?
+    back: >-
+      From the partition's first row up to and including the current one, so an aggregate counts
+      the current row too.
+  - id: crd_c87gm8
+    front: >-
+      What does `SUM` give over no rows?
+    back: >-
+      `NULL`, where `COUNT(*)` counts none. `COALESCE(SUM(x), 0)` replaces it.

@@ -1,0 +1,26 @@
+id: lab_obrn1u
+title: Querying with SQL
+summary: >-
+  Ask a hospital network's questions of a database, in SQL: load the extract into SQLite, join
+  its codes without losing an encounter, count by group with NULL kept, and build each
+  encounter's history with window functions, with answers that agree with pandas.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages: [loading-the-tables, joins-in-sql, group-by-in-sql, the-assistants-queries, history-in-sql]

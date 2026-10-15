@@ -1,0 +1,7 @@
+id: stg_br2340
+kind: build
+title: Loading the tables
+builds: A new `queries.py`.
+file: queries.py
+packages: [pandas]
+minutes: 30

@@ -1,0 +1,7 @@
+id: stg_stje5y
+kind: build
+title: Joins in SQL
+builds: Your `queries.py` from stage 1.
+file: queries.py
+packages: [pandas]
+minutes: 35

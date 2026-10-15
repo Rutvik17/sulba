@@ -1,0 +1,59 @@
+id: stg_wccs6l
+kind: catch
+title: The assistant's queries
+builds: Your `queries.py` from stages 1 to 3.
+file: dashboard.py
+packages: [pandas]
+minutes: 35
+problems:
+  - check: tst_ae343s
+    title: It divided in whole numbers
+    cost: >-
+      `SUM(soon) / COUNT(*)` divides one whole number by another, and SQLite gives a whole
+      number: {% $fig.between %} of the {% $fig.sources %} sources' shares came out as {% $fig.whole %}, the
+      emergency room's {% $fig.er_share %} among them.
+    fix: >-
+      The fix: `AVG(soon)`, the share as a fraction.
+    edit:
+      replace: "SUM(soon) / COUNT(*) AS share"
+      with: "AVG(soon) AS share"
+  - check: tst_mqhyb3
+    title: It dropped patients whose source the mapping lacks
+    cost: >-
+      With the column's name in `WHERE`, a patient whose source the mapping lacks matches no
+      code, or another column's, and `WHERE` drops them: the left join acts as an inner one.
+      Every code in this extract is in the mapping, but next month the patients of a new source
+      would drop out of every row, All sources included.
+    fix: >-
+      The fix: match the column's name in `ON`, beside the code.
+    edit:
+      replace: |-
+        ON s.code = p.admission_source_id
+            WHERE s.column_name = 'admission_source_id'
+                AND p.discharge_disposition_id
+      with: |-
+        ON s.column_name = 'admission_source_id' AND s.code = p.admission_source_id
+            WHERE p.discharge_disposition_id
+  - check: tst_og3y2a
+    title: It counted every encounter
+    cost: >-
+      The join to each patient's first encounter matched only `patient_nbr`, so every encounter
+      of the patient came through: {% $fig.counted %} encounters counted as patients,
+      {% $fig.share_every %} of them readmitted, against {% $fig.patients %} patients and
+      {% $fig.pooled %}.
+    fix: >-
+      The fix: match the first encounter too, `AND f.first_id = e.encounter_id`.
+    edit:
+      replace: "ON f.patient_nbr = e.patient_nbr"
+      with: "ON f.patient_nbr = e.patient_nbr AND f.first_id = e.encounter_id"
+  - check: tst_md06z1
+    title: A blank row in the opt-out table emptied the report
+    cost: >-
+      A value is never `NOT IN` a list that holds a `NULL`: SQL can't say a patient isn't the
+      unknown one, so the condition is `NULL` and `WHERE` drops the row. One blank row in
+      `opted_out` and the report counts no one.
+    fix: >-
+      The fix: `NOT EXISTS`, true for a patient no row of `opted_out` names.
+    edit:
+      replace: "AND p.patient_nbr NOT IN (SELECT patient_nbr FROM opted_out)"
+      with: "AND NOT EXISTS (SELECT 1 FROM opted_out AS o WHERE o.patient_nbr = p.patient_nbr)"

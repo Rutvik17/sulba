@@ -1,0 +1,17 @@
+cards:
+  - id: crd_o8pf5r
+    front: >-
+      What does SQL's `GROUP BY` do with `NULL`?
+    back: >-
+      It keeps the `NULL`s as one group of their own.
+  - id: crd_df2dhk
+    front: >-
+      Why does `SUM(x) / COUNT(*)` give a whole number in SQLite, and what gives the share?
+    back: >-
+      Dividing one whole number by another gives a whole number. `AVG(x)` gives the share as a
+      fraction.
+  - id: crd_ia665q
+    front: >-
+      How do you put a column's name into a query safely, when a `?` can't hold one?
+    back: >-
+      Check it against the table's own column names first, and refuse any other.

@@ -3,7 +3,8 @@
 # dependencies = ["numpy==2.4.6"]
 # ///
 """Builds the hospital encounter files from UCI's Diabetes 130-US Hospitals for Years
-1999-2008. Two labs hold a copy: cleaning data, and joins and group-by.
+1999-2008. Three labs hold a copy: cleaning data, joins and group-by, and querying with
+SQL.
 
 `encounters.csv` is UCI's `diabetic_data.csv` for one in ten of its patients, chosen at random
 (NumPy's default_rng, seed 0), with every encounter of each, in UCI's order. `ids-mapping.csv`
