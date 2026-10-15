@@ -1,0 +1,36 @@
+id: stg_vsguen
+kind: ship
+title: Adjusting for prevalence
+builds: Your `report.py` from stage 4.
+file: report.py
+packages: [numpy, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_7oysq4
+    title: "Calibrated at {% $fig.one_in %}"
+    requires: >-
+      On {% $fig.drawn %} candidates from the validation and test sets with {% $fig.one_in %}
+      a pulsar, its probabilities must add up to within 10% of the pulsars there.
+    failure: >-
+      Its probabilities add up to more than 10% away from the pulsars there, so the survey
+      would plan for the wrong number.
+  - check: tst_cr2prx
+    title: The classifier's order
+    requires: >-
+      It must put the test candidates in the order the survey's classifier puts them.
+    failure: >-
+      It put some candidates out of the classifier's order, so its follow-ups would differ
+      from the classifier's.
+  - check: tst_m1tffm
+    title: Unchanged at the training set's share
+    requires: >-
+      At the training set's own share of pulsars, its probabilities must be the classifier's.
+    failure: >-
+      At the training set's own share, its probabilities differ from the classifier's.
+  - check: tst_em3wv0
+    title: "Fast on {% $fig.night %} candidates"
+    requires: >-
+      `follow_ups` must choose {% $fig.follow_ups %} of {% $fig.night %} candidates in under 1
+      second.
+    failure: >-
+      The limit is 1 second.

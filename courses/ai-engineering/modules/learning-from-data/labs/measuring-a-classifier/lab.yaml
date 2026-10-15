@@ -1,0 +1,18 @@
+id: lab_hqtkh5
+title: Measuring a classifier
+summary: >-
+  Measure a pulsar survey's classifier the way its astronomers will use it: how well it ranks
+  the candidates, what share of those it flags are pulsars, and whether its probabilities can
+  be counted on.
+data:
+  - file: pulsars.csv
+    title: HTRU2
+    creators: [Robert Lyon]
+    url: https://doi.org/10.24432/C5DK6R
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Each column named, and the candidates split at random into training, validation and test
+      sets, with the same share of pulsars in each.
+stages: [the-roc-curve, precision-and-recall, calibration, the-assistants-report, adjusting-for-prevalence]

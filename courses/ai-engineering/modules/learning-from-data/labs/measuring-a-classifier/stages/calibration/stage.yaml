@@ -1,0 +1,14 @@
+id: stg_d05rsm
+kind: build
+title: Calibration
+builds: Your `metrics.py` from stages 1 and 2.
+file: metrics.py
+packages: [numpy, scikit-learn]
+minutes: 45
+chart:
+  title: Reliability
+  sliders:
+    - name: weight
+      label: Pulsar weight
+      stops: [1, 2, 5, 10]
+      value: 1

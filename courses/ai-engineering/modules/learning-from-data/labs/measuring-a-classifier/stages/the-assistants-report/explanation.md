@@ -1,0 +1,5 @@
+The assistant's tests checked that the AUC beats chance, that the precision is a share and that the expected count fits among the candidates, so they passed. The survey relies on more: on probabilities that add up to the pulsars there are, on measures taken with a night's share of pulsars, on an AUC that ranks by probability, and on a count that uses each candidate's probability. Each problem shows up only there. Together they would have reported an AUC of {% $fig.told_auc %}, a precision of {% $fig.told_precision %} and {% $fig.told_expected %} pulsars to expect, where the classifier's AUC is {% $fig.auc %}, {% $fig.precision %} of its flags are pulsars, and its probabilities expect {% $fig.plain_sum %} pulsars in a test set that holds {% $fig.pulsars %}.
+
+---
+
+Each problem changed what a number means without making it look wrong: every number stayed in range, and nothing failed or warned. A measure carries the share of pulsars it was taken at, the scores it was given and the model that made them, and the report has to keep all three as the survey will meet them.

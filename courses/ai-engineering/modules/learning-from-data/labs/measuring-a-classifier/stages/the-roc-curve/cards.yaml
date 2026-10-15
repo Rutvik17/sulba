@@ -1,0 +1,25 @@
+cards:
+  - id: crd_69exha
+    front: >-
+      What does a point on a ROC curve show?
+    back: >-
+      At one threshold, the share of positives flagged, the true positive rate, against the
+      share of negatives flagged, the false positive rate.
+  - id: crd_82xicm
+    front: >-
+      What chance is the ROC AUC?
+    back: >-
+      The chance that a randomly chosen positive scores higher than a randomly chosen negative,
+      with a tie counting half.
+  - id: crd_7hyk40
+    front: >-
+      Why doesn't a ROC curve change when positives become rarer?
+    back: >-
+      Each of its rates counts within one class, so changing how many of each class there are
+      leaves both rates as they were.
+  - id: crd_gtf424
+    front: >-
+      Why does accuracy say little when one class is rare?
+    back: >-
+      Always predicting the common class scores that class's share, {% $fig.always_no %} of the
+      pulsar candidates here, without finding a single positive.
