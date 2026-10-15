@@ -72,6 +72,30 @@ test('passing every test finishes the stage, and the next builds on the learnerâ
   await expect(summary(page)).toHaveText('The test failed.', loaded);
 });
 
+test("the lab's data isn't in its page: it comes once a visit, from a file cached for good", async ({
+  page,
+}) => {
+  const fetched: string[] = [];
+  page.on('request', (request) => {
+    const { pathname } = new URL(request.url());
+    if (pathname.startsWith('/data/')) fetched.push(pathname);
+  });
+  const data = page.waitForResponse((response) =>
+    new URL(response.url()).pathname.startsWith('/data/'),
+  );
+  const opened = await page.goto(path);
+  expect(await opened?.text()).not.toContain('choice\nyes\nno\nyes');
+  expect((await data).headers()['cache-control']).toBe('public, max-age=31536000, immutable');
+  await expect(code(page)).toBeVisible();
+
+  await write(code(page), solved.count);
+  await runTests(page);
+  await expect(summary(page)).toHaveText('Both tests passed.', loaded);
+  await runTests(page);
+  await expect(summary(page)).toHaveText('Both tests passed.', loaded);
+  expect(fetched).toEqual([expect.stringMatching(/^\/data\/[0-9a-f]{16}\/votes\.csv$/)]);
+});
+
 test('the brief says what its stage builds on', async ({ page }) => {
   await openLab(page);
   await expect(page.getByRole('tabpanel', { name: 'Brief' })).toContainText(

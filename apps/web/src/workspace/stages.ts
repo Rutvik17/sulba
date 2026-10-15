@@ -6,6 +6,9 @@ import { addStarter } from '@sulba/content/runs';
 import type { ChartRequest, RunRequest } from '@sulba/lab/protocol';
 import type { LabView } from '../lib/labs';
 
+/** The text of each of a lab's datasets, by its path in a run, such as `data/votes.csv`. */
+export type LabData = Readonly<Record<string, string>>;
+
 /** A finished Catch review: the ids of the checks the learner's code passed, of how many. */
 export interface Review {
   readonly caught: readonly string[];
@@ -61,10 +64,16 @@ export function packagesOf(lab: LabView, index: number): RunRequest['packages'] 
 }
 
 /** The lab's data, the code each earlier stage carried on for its file, and the stage's code. */
-function filesOf(lab: LabView, index: number, code: string, kept: Kept): Record<string, string> {
+function filesOf(
+  lab: LabView,
+  data: LabData,
+  index: number,
+  code: string,
+  kept: Kept,
+): Record<string, string> {
   const stage = lab.stages[index];
   if (!stage) throw new Error(`The lab has no stage ${index + 1}.`);
-  const files: Record<string, string> = { ...lab.files };
+  const files: Record<string, string> = { ...data };
   for (let before = 0; before < index; before++) {
     const earlier = lab.stages[before];
     if (earlier) files[earlier.file] = carriedOn(lab, before, kept);
@@ -73,11 +82,17 @@ function filesOf(lab: LabView, index: number, code: string, kept: Kept): Record<
 }
 
 /** A stage's run: the learner's files, with the tests, then a Catch or Ship stage's checks. */
-export function runOf(lab: LabView, index: number, code: string, kept: Kept): RunRequest {
+export function runOf(
+  lab: LabView,
+  data: LabData,
+  index: number,
+  code: string,
+  kept: Kept,
+): RunRequest {
   const stage = lab.stages[index];
   if (!stage) throw new Error(`The lab has no stage ${index + 1}.`);
   return {
-    files: { ...stage.tests, ...stage.checks, ...filesOf(lab, index, code, kept) },
+    files: { ...stage.tests, ...stage.checks, ...filesOf(lab, data, index, code, kept) },
     tests: [...Object.keys(stage.tests), ...Object.keys(stage.checks)],
     packages: packagesOf(lab, index),
   };
@@ -86,6 +101,7 @@ export function runOf(lab: LabView, index: number, code: string, kept: Kept): Ru
 /** A stage's chart, drawn with the learner's files, as a run has them. */
 export function chartOf(
   lab: LabView,
+  data: LabData,
   index: number,
   code: string,
   kept: Kept,
@@ -93,19 +109,20 @@ export function chartOf(
 ): ChartRequest {
   const chart = lab.stages[index]?.chart;
   if (!chart) throw new Error(`Stage ${index + 1} has no chart.`);
-  const files = { ...filesOf(lab, index, code, kept), 'chart.py': chart.code };
+  const files = { ...filesOf(lab, data, index, code, kept), 'chart.py': chart.code };
   return { files, values, packages: packagesOf(lab, index) };
 }
 
 /** A stage's chart before it is passed, drawn with every stage's solution up to it. */
 export function previewOf(
   lab: LabView,
+  data: LabData,
   index: number,
   values: ChartRequest['values'],
 ): ChartRequest {
   const chart = lab.stages[index]?.chart;
   if (!chart) throw new Error(`Stage ${index + 1} has no chart.`);
-  const files: Record<string, string> = { ...lab.files };
+  const files: Record<string, string> = { ...data };
   for (const stage of lab.stages.slice(0, index + 1)) files[stage.file] = stage.solution;
   return { files: { ...files, 'chart.py': chart.code }, values, packages: packagesOf(lab, index) };
 }

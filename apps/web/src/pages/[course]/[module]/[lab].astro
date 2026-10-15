@@ -15,9 +15,10 @@ export async function getStaticPaths() {
   });
 }
 
-// The review cards belong to the Review page, so the workspace isn't sent them.
+// The review cards belong to the Review page, and the data's text is served on its own
+// (src/pages/data), so the workspace is sent neither.
 const { entry } = Astro.props as { entry: LabEntry };
-const { cards: _, ...lab } = entry;
+const { cards: _, files: __, ...lab } = entry;
 const facts = labFacts(lab);
 ---
 
