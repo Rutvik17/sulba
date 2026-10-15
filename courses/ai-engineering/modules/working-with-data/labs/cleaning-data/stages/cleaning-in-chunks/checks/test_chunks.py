@@ -9,9 +9,10 @@ from cleaning import clean_chunks
 PATH = "data/encounters.csv"
 # The memory check's chunks: copies of the extract's first rows, each with later encounters of
 # the same patients; and how many chunks' rows it allows. The speed check's chunks, copies of
-# the whole extract, and its seconds.
+# the whole extract, its seconds, and the chunks it times first, which stop it early when they
+# take more than twice their share of the seconds.
 HELD_ROWS, HELD_COPIES, HELD = 2000, 6, 3
-COPIES, LIMIT = 10, 1.0
+COPIES, LIMIT, TRIAL = 10, 1.0, 2
 
 
 @pytest.fixture(scope="module")
@@ -81,11 +82,13 @@ def test_fast(table, record_property):
     """Fast"""
     chunks = list(copies(table, COPIES))
     start = time.perf_counter()
-    clean_chunks(iter(chunks[:2]))
+    clean_chunks(iter(chunks[:TRIAL]))
     trial = time.perf_counter() - start
-    if trial > 2 * LIMIT / COPIES:
+    if trial > 2 * LIMIT * TRIAL / COPIES:
         record_property(
-            "note", f"{trial:.2f} s for 2 chunks, so about {trial * 5:.0f} s for 10."
+            "note",
+            f"{trial:.2f} s for {TRIAL} chunks, so about {trial * COPIES / TRIAL:.0f} s for "
+            f"{COPIES}.",
         )
         pytest.fail("Too slow.")
     start = time.perf_counter()
