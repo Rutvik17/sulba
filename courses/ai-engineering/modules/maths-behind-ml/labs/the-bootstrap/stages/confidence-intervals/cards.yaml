@@ -1,0 +1,18 @@
+cards:
+  - id: crd_19rxjo
+    front: >-
+      What does a 95% confidence interval promise?
+    back: >-
+      That the method covers the true value for 95% of the samples it could be given. One
+      interval either covers it or doesn't.
+  - id: crd_xxtygw
+    front: >-
+      Which quantiles of a bootstrap distribution bound a 95% percentile interval?
+    back: >-
+      Its 2.5% and 97.5% quantiles, which leave 2.5% of the resamples outside on each side.
+  - id: crd_tpfuez
+    front: >-
+      How does a basic interval use the bootstrap distribution's quantiles?
+    back: >-
+      It reflects them about the estimate: from twice the estimate minus the high quantile to
+      twice the estimate minus the low one.

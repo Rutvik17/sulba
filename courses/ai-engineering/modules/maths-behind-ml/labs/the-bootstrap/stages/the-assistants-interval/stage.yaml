@@ -1,0 +1,58 @@
+id: stg_4laxxx
+kind: catch
+title: The assistant's interval
+builds: Your `bootstrap.py` from stages 1 to 3.
+file: evaluation.py
+packages: [numpy, scipy]
+minutes: 35
+problems:
+  - check: tst_asoi7v
+    title: It shuffled the samples instead of resampling them
+    cost: >-
+      `rng.permuted` shuffles each row, so every resample held each of the {% $fig.new %}
+      samples exactly once, and every resampled accuracy was the {% $fig.accuracy %}
+      measured. The interval ran from {% $fig.accuracy %} to {% $fig.accuracy %}, as if the
+      accuracy were known exactly.
+    fix: >-
+      The fix: `rng.integers(0, n, (repeats, n))`, row numbers drawn with replacement.
+    edit:
+      replace: "rng.permuted(np.tile(np.arange(n), (repeats, 1)), axis=1)"
+      with: "rng.integers(0, n, (repeats, n))"
+  - check: tst_ps06xz
+    title: It left the labels in their first order
+    cost: >-
+      `predictions[rows] == labels` set each resampled prediction against another sample's
+      label. The rule calls {% $fig.said %} of the samples malignant and {% $fig.malignant %}
+      are, so predictions and labels matched at random agree on {% $fig.chance %} of them, and
+      the resampled accuracies averaged {% $fig.unpaired_mean %}. The interval ran from
+      {% $fig.unpaired_low %} to {% $fig.unpaired_high %}, far below the
+      {% $fig.accuracy %} measured.
+    fix: >-
+      The fix: resample the labels with the same rows, `labels[rows]`.
+    edit:
+      replace: "np.mean(predictions[rows] == labels, axis=1)"
+      with: "np.mean(predictions[rows] == labels[rows], axis=1)"
+  - check: tst_8eof09
+    title: It left twice the share outside the interval
+    cost: >-
+      `[1 - confidence, confidence]` leaves `1 - confidence` outside on each side, twice the
+      share it should, so the {% $fig.level %} interval was a {% $fig.narrow_level %} one:
+      {% $fig.narrow_low %} to {% $fig.narrow_high %}, where the {% $fig.level %} interval
+      runs from {% $fig.low %} to {% $fig.high %}.
+    fix: >-
+      The fix: `[(1 - confidence) / 2, (1 + confidence) / 2]`.
+    edit:
+      replace: "[1 - confidence, confidence]"
+      with: "[(1 - confidence) / 2, (1 + confidence) / 2]"
+  - check: tst_pclp9x
+    title: It reflected the basic interval's ends without swapping them
+    cost: >-
+      `2 * estimate - low` is the basic interval's high end, not its low one, so the interval
+      came back as {% $fig.basic_high %} to {% $fig.basic_low %}, its low end above its high
+      end. Code that asks whether a value lies inside it, `low <= value <= high`, finds
+      nothing inside.
+    fix: >-
+      The fix: `return 2 * estimate - high, 2 * estimate - low`.
+    edit:
+      replace: "return 2 * estimate - low, 2 * estimate - high"
+      with: "return 2 * estimate - high, 2 * estimate - low"

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_x1ovz1
+    front: >-
+      What does BCa's bias correction `$z_0$` measure?
+    back: >-
+      How far the estimate sits from the middle of the bootstrap distribution: the standard
+      normal quantile of the share of resamples below it, counting a tie as half.
+  - id: crd_rxvs1t
+    front: >-
+      For a mean, what is BCa's acceleration `$a$`?
+    back: >-
+      The sample's skewness over `$6\sqrt{n}$`: the jackknife's `$u_i$` is `$x_i$` minus the
+      sample's mean.
+  - id: crd_38yhxx
+    front: >-
+      When is a BCa interval the same as the percentile interval?
+    back: >-
+      When `$z_0 = a = 0$`: the estimate sits in the middle of the bootstrap distribution, and
+      the jackknife shows no skew.

@@ -1,0 +1,18 @@
+id: lab_t3xge6
+title: The bootstrap
+summary: >-
+  Put an interval around a number measured on a sample, in NumPy: resample the clinic's
+  results, read confidence intervals off the bootstrap distribution, correct them for bias
+  and skew, and compare two models on the same samples.
+data:
+  - file: breast-cancer.csv
+    title: Breast Cancer Wisconsin (Diagnostic)
+    creators: [William Wolberg, Olvi Mangasarian, Nick Street, W. Street]
+    url: https://doi.org/10.24432/C5DW2B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Split into a training set and a test set, with malignant coded as 1 and each column
+      named.
+stages: [resampling, confidence-intervals, bias-corrected-intervals, the-assistants-interval, comparing-two-models]

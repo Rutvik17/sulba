@@ -1,0 +1,19 @@
+cards:
+  - id: crd_uqcwxd
+    front: >-
+      How is a bootstrap resample of a sample of `$n$` drawn?
+    back: >-
+      As `$n$` rows drawn from the sample with replacement, so some rows come more than once
+      and others not at all.
+  - id: crd_vgs08v
+    front: >-
+      What does the standard deviation of a bootstrap distribution estimate?
+    back: >-
+      The statistic's standard error: how far it would vary over new samples of the same
+      size.
+  - id: crd_693y51
+    front: >-
+      A share `$p$` is measured on `$n$` samples. What standard error does the bootstrap come
+      close to?
+    back: >-
+      `$\sqrt{p(1 - p)/n}$`, the formula for a share.

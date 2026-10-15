@@ -1,0 +1,7 @@
+For a mean, `$u_i$` is just `$x_i$` minus the sample's mean, so the acceleration is the sample's skewness over `$6\sqrt{n}$`. It is positive when a long tail of large values pulls the mean up, and negative when the long tail runs the other way.
+
+The clinic's accuracy, {% $fig.accuracy %}, is the mean of a 1 for each sample the rule got right and a 0 for each it got wrong. Mostly 1s, its long tail runs toward 0, so `$a = \fig{a_right}$`, and the resamples fall below the estimate less often than above it, so `$z_0 = \fig{z0_right}$`. Both move the levels down: the BCa interval runs from {% $fig.bca_right_low %} to {% $fig.bca_right_high %}, where the percentile interval runs from {% $fig.percentile_right_low %} to {% $fig.percentile_right_high %}.
+
+The new samples' worst areas have a skewness of {% $fig.skew %}, so their mean, {% $fig.area_mean %}, has `$a = \fig{a}$`, with `$z_0 = \fig{z0}$`. The chart shows the resamples' means with both intervals. The BCa interval, {% $fig.bca_low %} to {% $fig.bca_high %}, moves toward the long tail of large masses, where the percentile interval runs from {% $fig.percentile_low %} to {% $fig.percentile_high %}.
+
+That move is what the percentile interval lacked. Drawing {% $fig.samples %} samples of {% $fig.size %} from the clinic's records, BCa intervals covered the records' mean worst area for {% $fig.bca_covered %} of them, and percentile intervals for {% $fig.percentile_covered %}: closer to the promise, and still short of it. No interval made from a sample alone can show the large masses the sample missed.

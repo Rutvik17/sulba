@@ -1,0 +1,18 @@
+cards:
+  - id: crd_owfpnx
+    front: >-
+      Why resample two models' results together to compare their accuracies?
+    back: >-
+      The samples they agree on move both accuracies together and cancel, so the interval for
+      the difference is narrower than resampling each model's results apart.
+  - id: crd_w5zr1m
+    front: >-
+      On a resample, what decides the difference between two models' accuracies?
+    back: >-
+      Only how many of its samples each model alone gets right: `$(c_a - c_b)/n$`.
+  - id: crd_qosfwx
+    front: >-
+      How can a paired bootstrap of two models' accuracies skip drawing every sample?
+    back: >-
+      By drawing how many samples land in each group, a alone right, b alone right and the
+      rest, with `rng.multinomial`: three numbers a resample.
