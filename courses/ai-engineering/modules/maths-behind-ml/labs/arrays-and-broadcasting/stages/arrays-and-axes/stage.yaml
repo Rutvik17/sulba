@@ -1,0 +1,7 @@
+id: stg_d2kzpg
+kind: build
+title: Arrays and axes
+builds: A new `similar.py`.
+file: similar.py
+packages: [numpy, scikit-learn]
+minutes: 35

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qj5nm7
+    front: >-
+      Why are new samples never standardized with their own batch's mean and standard
+      deviation?
+    back: >-
+      Their scale would then depend on the batch, so a sample's nearest records would too.
+      Alone, a sample has no spread to divide by.
+  - id: crd_gk4z8u
+    front: >-
+      What does `X -= mean` do to an array the caller passed in?
+    back: >-
+      It changes the caller's array: an in-place operator writes into it. `X - mean` makes a
+      new array.
+  - id: crd_wskvwp
+    front: >-
+      For a batch, what does `diagnoses[near].mean()` give, with no axis?
+    back: >-
+      One number for the whole batch, the mean over every row. `axis=1` gives one per row.

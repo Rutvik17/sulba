@@ -1,0 +1,26 @@
+cards:
+  - id: crd_27lt4d
+    front: >-
+      When can NumPy broadcast two shapes together?
+    back: >-
+      Compared from the last axis back, each pair of lengths is equal or one of them is 1. An
+      axis one shape lacks counts as 1.
+  - id: crd_mkgwmz
+    front: >-
+      `A` has the shape (m, d) and `B` the shape (n, d). What shape is
+      `A[:, None, :] - B[None, :, :]`?
+    back: >-
+      (m, n, d): every row of `A` against every row of `B`.
+  - id: crd_jz13tu
+    front: >-
+      Why are new samples standardized with the records' mean and standard deviation?
+    back: >-
+      So every sample is on the records' scale, and a sample that arrives alone can still be
+      standardized: one row has no spread of its own.
+  - id: crd_maax65
+    front: >-
+      Before standardizing, how much of the squared distance between the samples came from
+      the two area columns?
+    back: >-
+      {% $fig.area_share %}, so the nearest records were little more than those with the
+      nearest areas.

@@ -1,0 +1,16 @@
+cards:
+  - id: crd_3kysvb
+    front: >-
+      What does `np.mean(X, axis=0)` give for an array with a row per sample?
+    back: >-
+      One mean per column: axis 0 runs down the rows, and the reduction collapses it.
+  - id: crd_riukst
+    front: >-
+      What does scikit-learn's `StandardScaler` divide by in each standard deviation?
+    back: >-
+      The number of rows, as `np.std` does by default. `ddof=1` divides by one fewer.
+  - id: crd_67ev1q
+    front: >-
+      Does indexing an array with a boolean mask give a view or a copy?
+    back: >-
+      A copy: a mask is advanced indexing, which always copies. A slice is a view.

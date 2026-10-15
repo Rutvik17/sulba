@@ -1,0 +1,9 @@
+id: stg_vsosf1
+kind: build
+title: Broadcasting
+builds: Your `similar.py` from stage 1.
+file: similar.py
+packages: [numpy, scipy, scikit-learn]
+minutes: 45
+chart:
+  title: Each measurement's share of the distance

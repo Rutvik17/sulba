@@ -1,0 +1,20 @@
+cards:
+  - id: crd_8z3igm
+    front: >-
+      Why does looking up new samples in chunks find the same records as looking them up all
+      at once?
+    back: >-
+      Each sample's distances form its own row, so chunks change how many rows are worked on
+      at once, not the answer.
+  - id: crd_paihqw
+    front: >-
+      How many bytes do the differences between r samples and n records of d measurements
+      take, in 64-bit floats?
+    back: >-
+      r × n × d × 8, and their squares as many again.
+  - id: crd_p0p18t
+    front: >-
+      In a loop over chunks, why can memory hold two chunks' arrays at once?
+    back: >-
+      The last chunk's arrays stay alive until their names are given the new ones, while the
+      next chunk's are made.
