@@ -1,0 +1,20 @@
+id: lab_e14m3m
+title: k-means and PCA
+summary: >-
+  Find the groups in the beans' shapes without their varieties: put the measurements' variance
+  into a few principal components, group the beans with k-means, choose how many groups by how
+  well they separate, and estimate a new harvest's make-up from named groups.
+data:
+  - file: beans.csv
+    title: Dry Bean
+    creators: [Murat Koklu, Ilker Ali Özkan]
+    url: https://doi.org/10.24432/C50S4B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in four beans, chosen at random; comma-separated, under a header that names each
+      measurement as UCI's variable table does and the class column variety; and the beans
+      split at random into training, validation and test sets, with the same share of each
+      variety in each.
+stages: [principal-components, k-means]
