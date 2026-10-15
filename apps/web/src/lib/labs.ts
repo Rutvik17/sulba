@@ -117,6 +117,8 @@ export interface CardView {
 
 /** A lab as the site stores it: what its page shows, its datasets' text, and its review cards. */
 export interface LabEntry extends LabView {
+  /** Its place in its course, counting every level's modules' labs in the course's order. */
+  readonly order: number;
   /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
   readonly files: Readonly<Record<string, string>>;
   readonly cards: readonly CardView[];
@@ -189,27 +191,27 @@ function cardViews(stage: Stage, figures: Figures): CardView[] {
 }
 
 export function labEntries(course: Course, figures: Figures = new Map()): LabEntry[] {
-  return course.levels.flatMap((level) =>
-    level.modules.flatMap((module) =>
-      module.labs.map((lab) => ({
-        id: lab.id,
-        path: `${course.slug}/${module.slug}/${lab.slug}`,
-        title: lab.title,
-        summary: lab.summary,
-        course: course.title,
-        level: level.title,
-        module: module.title,
-        data: lab.data.map(({ text, ...set }) => ({
-          ...set,
-          path: `data/${set.file}`,
-          served: servedAt(set.file, text),
-        })),
-        files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
-        stages: lab.stages.map((stage) => stageView(stage, figures)),
-        cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),
-      })),
-    ),
+  const placed = course.levels.flatMap((level) =>
+    level.modules.flatMap((module) => module.labs.map((lab) => ({ level, module, lab }))),
   );
+  return placed.map(({ level, module, lab }, order) => ({
+    id: lab.id,
+    order,
+    path: `${course.slug}/${module.slug}/${lab.slug}`,
+    title: lab.title,
+    summary: lab.summary,
+    course: course.title,
+    level: level.title,
+    module: module.title,
+    data: lab.data.map(({ text, ...set }) => ({
+      ...set,
+      path: `data/${set.file}`,
+      served: servedAt(set.file, text),
+    })),
+    files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
+    stages: lab.stages.map((stage) => stageView(stage, figures)),
+    cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),
+  }));
 }
 
 /** The folder of courses: the repository's own, or SULBA_COURSES, which the end-to-end tests set. */

@@ -1,0 +1,187 @@
+---
+// A course's page: its levels, each level's modules and each module's labs, with what each lab
+// builds, its stages and its time. Its script shows how many of each lab's stages the learner has
+// passed, in this browser and, signed in, in their account.
+import { getCollection } from 'astro:content';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Page from '../../layouts/Page.astro';
+import { type CourseOutline, courseOutlines } from '../../lib/course';
+import { labFacts } from '../../lib/lab-facts';
+
+export async function getStaticPaths() {
+  const labs = (await getCollection('labs')).map(({ data }) => data);
+  return courseOutlines(labs).map((course) => ({
+    params: { course: course.slug },
+    props: { course },
+  }));
+}
+
+const { course } = Astro.props as { course: CourseOutline };
+---
+
+<Page title={`${course.title} · Sulba`}>
+  <header class="intro">
+    <p class="label">Course</p>
+    <h1>{course.title}</h1>
+  </header>
+
+  {course.levels.map((level, at) => (
+    <section class="level" aria-labelledby={`level-${at + 1}`}>
+      <SectionHeading id={`level-${at + 1}`} text={level.title} />
+      {level.modules.map((module) => (
+        <section class="module" id={module.slug} aria-labelledby={`${module.slug}-title`}>
+          <h3 id={`${module.slug}-title`}>{module.title}</h3>
+          <ol class="labs">
+            {module.labs.map((lab) => (
+              <li class="lab">
+                <h4>
+                  <a href={`/${lab.path}/`}>{lab.title}</a>
+                </h4>
+                <p class="summary">{lab.summary}</p>
+                <dl class="facts">
+                  {labFacts(lab).map(({ term, value }) => (
+                    <div>
+                      <dt>{term}</dt>
+                      <dd>{value}</dd>
+                    </div>
+                  ))}
+                  <div data-stages={lab.stages.map((stage) => stage.id).join(' ')} hidden>
+                    <dt>Progress</dt>
+                    <dd />
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </section>
+  ))}
+</Page>
+
+<script>
+import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
+import { hasSession, localStore } from '@sulba/data/session';
+import { kept } from '../../workspace/storage';
+
+// Each lab's Progress fact, which lists the ids of the lab's stages.
+const progress = [...document.querySelectorAll<HTMLElement>('[data-stages]')];
+// The stages the learner's account has passed, which may include some this browser hasn't.
+const fromAccount = new Set<string>();
+
+/** Each lab's stages passed, in this browser or the account, out of all its stages. */
+function show() {
+  for (const fact of progress) {
+    const stages = (fact.dataset.stages ?? '').split(' ').filter(Boolean);
+    const done = stages.filter((id) => kept.passed(id) || fromAccount.has(id)).length;
+    const text = done === stages.length ? 'Done' : `${done} of ${stages.length} stages done`;
+    fact.querySelector('dd')?.replaceChildren(text);
+    fact.hidden = done === 0;
+  }
+}
+
+show();
+
+// Signed in, the account's passes come once a visit, and supabase-js loads only then.
+if (hasSession(localStore())) {
+  void (async () => {
+    const [{ connect }, { readPassed }] = await Promise.all([
+      import('@sulba/data/client'),
+      import('@sulba/data/sync'),
+    ]);
+    const client = connect(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+    const { data } = await client.auth.getSession();
+    if (!data.session) return;
+    for (const { stageId } of await readPassed(client)) fromAccount.add(stageId);
+    show();
+  })().catch(() => undefined);
+}
+</script>
+
+<style>
+.intro {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-16) var(--space-10);
+}
+
+.label {
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1.4 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+h1 {
+  font: 400 clamp(2.75rem, 6vw, 5rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.level {
+  padding-bottom: var(--space-16);
+}
+
+.module + .module {
+  margin-top: var(--space-12);
+}
+
+.module h3 {
+  font: 400 2.25rem / 1.1 var(--font-display);
+}
+
+.labs {
+  display: grid;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.lab {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-bottom: 1px solid var(--line);
+}
+
+.lab h4 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.summary {
+  max-width: 62ch;
+  color: var(--dim);
+  line-height: var(--leading);
+}
+
+/* The same columns for every lab, so each fact sits under the one above it. */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 13rem));
+  gap: var(--space-3) var(--space-6);
+  margin: 0;
+}
+
+@media (max-width: 40rem) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.facts dt {
+  font: 500 var(--text-xs) / 1.4 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.facts dt {
+  color: var(--dim);
+}
+
+.facts dd {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+}
+</style>

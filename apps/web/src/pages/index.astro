@@ -1,10 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import LabScroll from '../components/LabScroll.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SessionClip from '../components/SessionClip.astro';
 import Page from '../layouts/Page.astro';
+import { courseOutlines } from '../lib/course';
 
 const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
+// The first course, whose name links its page once it has labs to list.
+const [course] = courseOutlines((await getCollection('labs')).map(({ data }) => data));
+const href = course && `/${course.slug}/`;
+const title = course?.title ?? 'AI Engineering';
 ---
 
 <Page title="Sulba · The school of the AI era">
@@ -18,7 +24,7 @@ const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
       <dl class="meta">
         <div>
           <dt>First course</dt>
-          <dd>AI Engineering</dd>
+          <dd>{href ? <a href={href}>{title}</a> : title}</dd>
         </div>
         <div>
           <dt>Status</dt>
@@ -42,7 +48,7 @@ const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
     <SectionHeading id="courses" text="Courses" />
     <article class="course">
       <div>
-        <h3>AI Engineering</h3>
+        <h3>{href ? <a href={href}>{title}</a> : title}</h3>
         <p class="pill">In development</p>
       </div>
       <div>

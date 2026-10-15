@@ -18,13 +18,16 @@ export async function getStaticPaths() {
 // The review cards belong to the Review page, and the data's text is served on its own
 // (src/pages/data), so the workspace is sent neither.
 const { entry } = Astro.props as { entry: LabEntry };
-const { cards: _, files: __, ...lab } = entry;
+const { cards: _, files: __, order: ___, ...lab } = entry;
 const facts = labFacts(lab);
+const [course, module] = lab.path.split('/');
 ---
 
 <Page title={`${lab.title} · Sulba`}>
   <header class="intro">
-    <p class="label">{lab.level} · {lab.module}</p>
+    <p class="label">
+      <a href={`/${course}/#${module}`}>{lab.level} · {lab.module}</a>
+    </p>
     <h1>{lab.title}</h1>
     <p class="lede">{lab.summary}</p>
   </header>
