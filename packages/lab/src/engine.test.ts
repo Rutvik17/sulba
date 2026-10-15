@@ -8,7 +8,7 @@ import { shares } from './chart.fixture.ts';
 import type { Engine } from './engine.ts';
 import { counted } from './figures.fixture.ts';
 import { pyodideEngine } from './node.ts';
-import { pythonPackages, type RunResult } from './protocol.ts';
+import { importNames, pythonPackages, type RunResult } from './protocol.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/', import.meta.url));
 
@@ -36,9 +36,10 @@ beforeAll(async () => {
   engine = await pyodideEngine();
 }, 120_000);
 
-// First in the file: a run that imports scikit-learn would leave it imported for later runs.
+// First in the file: a run that imports a package would leave it imported for later runs.
 test('packages are imported as they load, so a run never waits for an import', () => {
-  const test = 'import sys\n\n\ndef test_imported():\n    assert "sklearn" in sys.modules\n';
+  const names = JSON.stringify(pythonPackages.map((name) => importNames[name]));
+  const test = `import sys\n\n\ndef test_imported():\n    assert [name for name in ${names} if name not in sys.modules] == []\n`;
   const result = engine.run({
     files: { 'tests/test_imported.py': test },
     tests: ['tests/test_imported.py'],
