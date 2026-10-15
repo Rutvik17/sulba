@@ -1,0 +1,17 @@
+id: lab_4okbfj
+title: Linear regression
+summary: >-
+  Build a model in NumPy that forecasts a power plant's electrical output for each hour from
+  the weather around it.
+data:
+  - file: power-plant.csv
+    title: Combined Cycle Power Plant
+    creators: [Pınar Tüfekci, Heysem Kaya]
+    url: https://doi.org/10.24432/C5002N
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      The first of its five shuffles of the hours, with each column named and a random fifth
+      of the hours marked as a test set.
+stages: [the-model, least-squares, gradient-descent, the-assistants-forecaster, forecast-intervals]

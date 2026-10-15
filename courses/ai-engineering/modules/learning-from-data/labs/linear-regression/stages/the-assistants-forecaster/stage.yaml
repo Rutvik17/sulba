@@ -1,0 +1,58 @@
+id: stg_plc72i
+kind: catch
+title: The assistant's forecaster
+builds: Your `model.py` from stages 1 to 3.
+file: forecaster.py
+packages: [numpy, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_qjj1l0
+    title: It read the weather in the wrong order
+    cost: >-
+      `sorted(weather)` puts the measurements in alphabetical order, humidity first, but the
+      model learned them in the history's order, temperature first. Every weight met the
+      wrong measurement: on the test hours it forecast between {% $fig.misordered_low %} and
+      {% $fig.misordered_high %} MW, where your model forecasts between {% $fig.yours_low %}
+      and {% $fig.yours_high %} MW.
+    fix: >-
+      The fix: take the measurements in the history's order, `COLUMNS`.
+    edit:
+      replace: "sorted(weather)"
+      with: "COLUMNS"
+  - check: tst_jqdzkb
+    title: One hour at a time broke it
+    cost: >-
+      For one hour, each measurement is a single number, so `np.array(columns).T` is a flat
+      row of numbers, not a table with a row per hour, and scikit-learn refused to forecast
+      from it.
+    fix: >-
+      The fix: `np.column_stack(columns)`, which makes a row per hour from single numbers and
+      from arrays alike.
+    edit:
+      replace: "np.array(columns, dtype=float).T"
+      with: "np.column_stack(columns).astype(float)"
+  - check: tst_j4u8zv
+    title: It dropped hours without saying
+    cost: >-
+      An hour without a full forecast was skipped, so a day with a gap came back a forecast
+      short, and every forecast after the gap moved up an hour: the plant would schedule each
+      later hour with the next hour's forecast.
+    fix: >-
+      The fix: raise an error that names the hours without weather, so they get a forecast
+      some other way.
+    edit:
+      replace: "# Skip hours the weather service has no forecast for.\n        X = X[~np.isnan(X).any(axis=1)]"
+      with: "missing = np.isnan(X).any(axis=1)\n        if missing.any():\n            raise ValueError(f\"No weather for hours {np.flatnonzero(missing).tolist()}\")"
+  - check: tst_si8a2y
+    title: It capped forecasts at the history's range
+    cost: >-
+      `np.clip` held every forecast between the lowest and highest outputs in the history,
+      {% $fig.lowest %} and {% $fig.highest %} MW. On hours colder than any in the history,
+      the model forecasts {% $fig.cold_1 %} and {% $fig.cold_2 %} MW, and the plant was told
+      {% $fig.highest %} MW for both.
+    fix: >-
+      The fix: return the model's forecasts as they are, as the plant asked. An unusual hour
+      is for the plant to judge.
+    edit:
+      replace: "return np.clip(self.model.predict(X), self.lowest, self.highest)"
+      with: "return self.model.predict(X)"
