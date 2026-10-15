@@ -1,0 +1,22 @@
+cards:
+  - id: crd_fb80kz
+    front: >-
+      What does `np.argsort(D, axis=1)` return?
+    back: >-
+      For each row of `D`, the column positions that would sort it, smallest first.
+  - id: crd_xc4mfs
+    front: >-
+      Why sort with `kind="stable"` when equal values are possible?
+    back: >-
+      A stable sort keeps equal values in the order they came. The default sort promises no
+      order for them.
+  - id: crd_wrruyz
+    front: >-
+      What order does `np.argpartition` leave the `k` smallest values in?
+    back: >-
+      No promised order: it only puts them before the rest, so they must be sorted after it.
+  - id: crd_psyt2w
+    front: >-
+      `near` has the shape (m, k). What shape does `diagnoses[near]` have?
+    back: >-
+      (m, k): indexing with an array of positions gives an array of their shape.

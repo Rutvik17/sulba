@@ -1,0 +1,14 @@
+id: stg_ye8f0o
+kind: build
+title: The nearest records
+builds: Your `similar.py` from stage 2.
+file: similar.py
+packages: [numpy, scipy, scikit-learn]
+minutes: 40
+chart:
+  title: What the nearest records were
+  sliders:
+    - name: k
+      label: Records per sample
+      stops: [1, 3, 5, 11, 25]
+      value: 5

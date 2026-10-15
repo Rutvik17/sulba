@@ -1,0 +1,58 @@
+id: stg_u478zw
+kind: catch
+title: The assistant's search
+builds: Your `similar.py` from stages 1 to 3.
+file: search.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_n7l9iy
+    title: It scaled new samples by their own statistics
+    cost: >-
+      It standardized each batch of new samples with the batch's own mean and standard
+      deviation, so the records a sample gets depend on the samples it comes with. In the batch
+      of {% $fig.new %}, {% $fig.batch_wrong %} samples got records other than their
+      {% $fig.k %} nearest. Alone, a sample has no spread at all: every one comes out at the
+      records' mean and gets the same {% $fig.k %} records.
+    fix: >-
+      The fix: scale the new samples by the records, `rescale(new, records)`.
+    edit:
+      replace: "rescale(new, new)"
+      with: "rescale(new, records)"
+  - check: tst_aevk2n
+    title: It divided by a standard deviation of 0
+    cost: >-
+      A measurement that is the same in every record has a standard deviation of 0. Dividing by
+      it made that measurement `nan` for every record, and so every distance. The sort left the
+      `nan` distances in the records' order, so every new sample got the first {% $fig.k %}
+      records, whatever its measurements.
+    fix: >-
+      The fix: divide a column with no spread by 1, as `StandardScaler` does, with
+      `std[std == 0] = 1`.
+    edit:
+      replace: "    std = reference.std(axis=0)\n"
+      with: "    std = reference.std(axis=0)\n    std[std == 0] = 1\n"
+  - check: tst_3ctqre
+    title: It changed the arrays it was given
+    cost: >-
+      It subtracted and divided in place, inside the arrays the system passed in. After one
+      search the clinic's records held standardized numbers: the first record's worst area read
+      {% $fig.worst_area_after %} where it had been {% $fig.worst_area_before %}, for everything
+      else in the system that reads them.
+    fix: >-
+      The fix: return a new array, `(X - mean) / std`, and leave `X` as it was.
+    edit:
+      replace: "    # In place, so a large set of records isn't copied.\n    X -= mean\n    X /= std\n    return X\n"
+      with: "    return (X - mean) / std\n"
+  - check: tst_deuu63
+    title: It gave the whole batch one share
+    cost: >-
+      It averaged the diagnoses of every record found in the batch, so every sample was shown
+      the same share, {% $fig.batch_share %}. That included {% $fig.all_malignant %} malignant
+      samples whose {% $fig.k %} nearest records were all malignant, and
+      {% $fig.none_malignant %} benign samples whose records were all benign.
+    fix: >-
+      The fix: average along each row, `diagnoses[near].mean(axis=1)`.
+    edit:
+      replace: "diagnoses[near].mean()"
+      with: "diagnoses[near].mean(axis=1)"

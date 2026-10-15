@@ -1,0 +1,36 @@
+id: stg_5noc6b
+kind: ship
+title: Searching within memory
+builds: Your `search.py` from stage 4.
+file: search.py
+packages: [numpy, scipy]
+minutes: 50
+checks:
+  - check: tst_ekkp1c
+    title: "Within {% $fig.budget_mb %} MB"
+    requires: >-
+      Made over {% $fig.big_records %} records, `Search` must look up {% $fig.lookups %} new
+      samples with no more than {% $fig.budget_mb %} MB of arrays at once.
+    failure: >-
+      The limit is {% $fig.budget_mb %} MB.
+  - check: tst_jhmzf6
+    title: "Fast on {% $fig.big_records %} records"
+    requires: >-
+      `find` must look up {% $fig.lookups %} new samples among {% $fig.big_records %} records
+      in under 1 second.
+    failure: >-
+      The limit is 1 second.
+  - check: tst_qz9ggs
+    title: The search's records
+    requires: >-
+      For the lab's {% $fig.new %} new samples among its {% $fig.records %} records, `find`
+      must give the records, distances and shares the search gives in one step.
+    failure: >-
+      It gave other records, distances or shares than the search in one step.
+  - check: tst_uken04
+    title: Any number of samples
+    requires: >-
+      A batch of any size, one sample included, must get the records it gets as part of a
+      larger batch.
+    failure: >-
+      Some samples got other records in a batch of another size.
