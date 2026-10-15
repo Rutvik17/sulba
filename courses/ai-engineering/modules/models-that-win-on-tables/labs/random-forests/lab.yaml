@@ -1,0 +1,20 @@
+id: lab_ohkdaj
+title: Random forests
+summary: >-
+  Rank the bank's clients with a forest of decision trees: grow each tree on its own sample
+  of the calls, give each split columns drawn at random, estimate the forest from the calls
+  each tree left out, and measure which details of a client its ranking leans on.
+data:
+  - file: calls.csv
+    title: Bank Marketing
+    creators: [Sérgio Moro, Paulo Rita, Paulo Cortez]
+    url: https://doi.org/10.24432/C5K306
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in eight calls of the file with social and economic context, chosen at random;
+      comma-separated, without quotes, with the outcome column named subscribed; and the calls
+      split at random into training, validation and test sets, with the same share subscribing
+      in each.
+stages: [bagging, columns-at-random, out-of-bag-estimates, the-assistants-report, which-columns-matter]

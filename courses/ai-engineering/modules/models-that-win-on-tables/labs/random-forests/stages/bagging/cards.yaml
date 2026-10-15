@@ -1,0 +1,19 @@
+cards:
+  - id: crd_617gr8
+    front: >-
+      What is a bootstrap sample of n rows?
+    back: >-
+      n rows drawn at random from the n, with replacement: some rows come twice or more and
+      others not at all.
+  - id: crd_xd43om
+    front: >-
+      What share of the distinct rows does a large bootstrap sample hold?
+    back: >-
+      About `$1 - 1/e$`, 63%, since each row is missed by all n draws with a chance of
+      `$(1 - 1/n)^n$`, near `$1/e$`.
+  - id: crd_u8wxuh
+    front: >-
+      How does a bagged forest of trees score a row?
+    back: >-
+      It averages the shares of yes its trees, each grown on its own bootstrap sample, give
+      the row.

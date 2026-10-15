@@ -1,0 +1,62 @@
+id: stg_o7j5es
+kind: catch
+title: The assistant's report
+builds: Your `forest.py` from stages 1 to 3.
+file: report.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+problems:
+  - check: tst_wytjya
+    title: It grew every tree on the same sample
+    cost: >-
+      `grow` made a new generator from `SEED` for every tree, so every tree drew the same
+      sample and the same seed: the forest was one tree {% $fig.trees %} times. It ranked the
+      validation calls at {% $fig.one %}, where {% $fig.trees %} trees on samples of their own
+      reach {% $fig.forest %}.
+    fix: >-
+      The fix: one generator for the whole forest, the one `run` passes in, so that each tree
+      draws a sample and a seed of its own.
+    edit:
+      replace: "        rng = np.random.default_rng(SEED)\n        sample = rng.integers(0, len(X), size=len(X))\n"
+      with: "        sample = rng.integers(0, len(X), size=len(X))\n"
+  - check: tst_aqbs89
+    title: Its estimate scored calls with the trees grown on them
+    cost: >-
+      `expected_auc` counted every call as left out by every tree, so each tree scored the
+      calls it was grown on, and remembered them. The report promised an AUC of
+      {% $fig.in_sample %}. Scored out of bag, the training calls give {% $fig.oob %}, and the
+      validation calls give {% $fig.forest %}.
+    fix: >-
+      The fix: `left_out[sample] = False`, so that each call is scored only by the trees whose
+      sample left it out.
+    edit:
+      replace: "        left_out = np.ones(len(X), dtype=bool)\n"
+      with: "        left_out = np.ones(len(X), dtype=bool)\n        left_out[sample] = False\n"
+  - check: tst_d9wv5c
+    title: It measured importance on the training calls
+    cost: >-
+      On the training calls, which the trees remember, shuffling `education` cost
+      {% $fig.education_train %} of AUC, the third largest fall, and `marital`
+      {% $fig.marital_train %}. On the validation calls the falls are
+      {% $fig.education_validation %} and {% $fig.marital_validation %}: the report would have
+      told the bank its ranking leans on two details that make no difference to it for new
+      clients.
+    fix: >-
+      The fix: the validation calls for `importance`.
+    edit:
+      replace: "    return auc, importance(trees, train, categories, rng)\n"
+      with: "    return auc, importance(trees, validation, categories, rng)\n"
+  - check: tst_l1ikz1
+    title: It gave another report each time it ran
+    cost: >-
+      `run` made its generator without a seed, so each run grew another forest and shuffled
+      the columns another way. Three runs from three seeds give `contact`, the most important
+      column each time, falls of {% $fig.contact_0 %}, {% $fig.contact_1 %} and
+      {% $fig.contact_2 %}. No one could reproduce a report, or tell whether a change in one
+      came from the calls or from chance.
+    fix: >-
+      The fix: `np.random.default_rng(SEED)` in `run`, so that the forest and the shuffles come
+      out the same each time.
+    edit:
+      replace: "    rng = np.random.default_rng()\n"
+      with: "    rng = np.random.default_rng(SEED)\n"

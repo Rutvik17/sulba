@@ -1,0 +1,7 @@
+id: stg_0g4vzn
+kind: build
+title: Bagging
+builds: A new `forest.py`.
+file: forest.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 30

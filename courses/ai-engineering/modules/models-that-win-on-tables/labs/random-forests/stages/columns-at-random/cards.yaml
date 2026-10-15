@@ -1,0 +1,18 @@
+cards:
+  - id: crd_0av06n
+    front: >-
+      What does a random forest add to bagging?
+    back: >-
+      Each split chooses among a few columns drawn at random, so the trees differ more from
+      one another.
+  - id: crd_4ktjqy
+    front: >-
+      How many columns does scikit-learn give each split with `max_features="sqrt"`?
+    back: >-
+      The square root of the number of columns, rounded down, drawn afresh for every split.
+  - id: crd_dz15jy
+    front: >-
+      Why do bagged trees that choose among every column look alike?
+    back: >-
+      The strongest column wins the first split in nearly every sample, and the splits below
+      follow from it.

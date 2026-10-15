@@ -1,0 +1,18 @@
+cards:
+  - id: crd_joqat4
+    front: >-
+      Why seed a forest's random generator once, rather than once for each tree?
+    back: >-
+      Seeded once, each tree draws a sample of its own and the forest can be grown again
+      exactly. Seeded for each tree, every tree draws the same sample.
+  - id: crd_2rob27
+    front: >-
+      On which rows should permutation importance be measured?
+    back: >-
+      Rows the model wasn't trained on, such as validation rows. On its training rows, columns
+      it only memorised look important.
+  - id: crd_5w57iq
+    front: >-
+      Which trees may score a training row in a forest's out-of-bag estimate?
+    back: >-
+      Only the trees whose bootstrap samples left that row out.
