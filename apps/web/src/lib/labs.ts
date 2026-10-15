@@ -95,12 +95,12 @@ export interface LabView {
   readonly level: string;
   readonly module: string;
   /**
-   * Each dataset, with its path in a run, such as `data/votes.csv`, and the address the site serves
-   * it at, which changes with its text.
+   * Each dataset, with its own page for the credit (`url`), its path in a run, such as
+   * `data/votes.csv`, and the address the site serves it at, which changes with its text.
    */
   readonly data: readonly (Omit<Lab['data'][number], 'text'> & {
     readonly path: string;
-    readonly url: string;
+    readonly served: string;
   })[];
   readonly stages: readonly StageView[];
 }
@@ -123,7 +123,7 @@ export interface LabEntry extends LabView {
 }
 
 /** Where the site serves a dataset: a folder named for its text, so it can be cached for good. */
-function dataUrl(file: string, text: string): string {
+function servedAt(file: string, text: string): string {
   const hash = createHash('sha256').update(text).digest('hex').slice(0, 16);
   return `/data/${hash}/${file}`;
 }
@@ -202,7 +202,7 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
         data: lab.data.map(({ text, ...set }) => ({
           ...set,
           path: `data/${set.file}`,
-          url: dataUrl(set.file, text),
+          served: servedAt(set.file, text),
         })),
         files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
         stages: lab.stages.map((stage) => stageView(stage, figures)),

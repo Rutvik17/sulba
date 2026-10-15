@@ -10,9 +10,9 @@ export function labData(lab: LabView): Promise<LabData> {
   const known = fetched.get(lab.id);
   if (known) return known;
   const loading = Promise.all(
-    lab.data.map(async ({ path, url }) => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`${url} answered ${response.status}.`);
+    lab.data.map(async ({ path, served }) => {
+      const response = await fetch(served);
+      if (!response.ok) throw new Error(`${served} answered ${response.status}.`);
       return [path, await response.text()] as const;
     }),
   ).then((entries): LabData => Object.fromEntries(entries));

@@ -8,10 +8,10 @@ import type { APIRoute, GetStaticPaths } from 'astro';
 export const getStaticPaths = (async () => {
   const files = new Map<string, string>();
   for (const { data: lab } of await getCollection('labs')) {
-    for (const set of lab.data) files.set(set.url, lab.files[set.path] ?? '');
+    for (const set of lab.data) files.set(set.served, lab.files[set.path] ?? '');
   }
-  return [...files].map(([url, text]) => {
-    const [hash, file] = url.split('/').slice(-2);
+  return [...files].map(([served, text]) => {
+    const [hash, file] = served.split('/').slice(-2);
     return { params: { hash, file }, props: { text } };
   });
 }) satisfies GetStaticPaths;

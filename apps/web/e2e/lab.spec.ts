@@ -96,6 +96,19 @@ test("the lab's data isn't in its page: it comes once a visit, from a file cache
   expect(fetched).toEqual([expect.stringMatching(/^\/data\/[0-9a-f]{16}\/votes\.csv$/)]);
 });
 
+test("the data's credit links the dataset's own page and its licence", async ({ page }) => {
+  await page.goto(path);
+  const credit = page.locator('p', { hasText: 'Data:' });
+  await expect(credit.getByRole('link', { name: 'Votes' })).toHaveAttribute(
+    'href',
+    'https://example.com/votes',
+  );
+  await expect(credit.getByRole('link', { name: 'CC0 1.0' })).toHaveAttribute(
+    'href',
+    'https://creativecommons.org/publicdomain/zero/1.0/',
+  );
+});
+
 test('the brief says what its stage builds on', async ({ page }) => {
   await openLab(page);
   await expect(page.getByRole('tabpanel', { name: 'Brief' })).toContainText(
