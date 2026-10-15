@@ -16,6 +16,11 @@ type Outcome = Omit<RunResult, 'status'>;
 export interface Engine {
   /** Load packages a run will need, so loading isn't counted in the run's time. */
   load(packages: RunRequest['packages']): Promise<void>;
+  /**
+   * Import the modules a request's files import from its packages, which must be loaded, so
+   * importing them isn't counted in its time either.
+   */
+  prepare(request: Pick<RunRequest, 'files' | 'packages'>): void;
   run(request: RunRequest): RunResult;
   /** The numbers the files' figures.py gives, for prose to show. */
   figures(files: RunRequest['files']): Figures;
@@ -32,6 +37,7 @@ export async function createEngine(pyodide: PyodideAPI, runner: string): Promise
   pyodide.runPython('import sys\nsys.path.insert(0, "/sulba")');
   const module = pyodide.pyimport('sulba_runner');
   const run = module.run as (files: string, tests: string) => string;
+  const prepare = module.prepare as (files: string, packages: string) => void;
   const figures = module.figures as (files: string) => string;
   const chart = module.chart as (files: string, values: string) => string;
   return {
@@ -39,6 +45,11 @@ export async function createEngine(pyodide: PyodideAPI, runner: string): Promise
       await pyodide.loadPackage([...packages], quiet);
       // Importing is part of loading: scikit-learn takes seconds to import the first time.
       for (const name of packages) pyodide.runPython(`import ${importNames[name]}`);
+    },
+    prepare({ files, packages }) {
+      // Importing a package doesn't import all of it: SciPy loads scipy.stats when it is first
+      // imported, which takes seconds in a browser.
+      prepare(JSON.stringify(files), JSON.stringify(packages.map((name) => importNames[name])));
     },
     run(request) {
       const outcome = JSON.parse(

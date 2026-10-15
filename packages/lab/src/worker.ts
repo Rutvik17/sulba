@@ -41,6 +41,7 @@ scope.addEventListener('message', ({ data }) => {
         return scope.postMessage({ type: 'loaded', id });
       }
       await ready.load(data.request.packages);
+      ready.prepare(data.request);
       scope.postMessage({ type: 'started', id });
       if (data.type === 'chart') {
         return scope.postMessage({ type: 'drawn', id, result: ready.chart(data.request) });

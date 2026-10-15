@@ -47,6 +47,28 @@ test('packages are imported as they load, so a run never waits for an import', (
   expect(result.status).toBe('pass');
 });
 
+test("the package modules a run's files import are imported before it, and the files aren't", () => {
+  const assertion = (imported: string) =>
+    `import sys\n\n\ndef test_imported():\n    assert ("scipy.signal" in sys.modules) is ${imported}\n    assert "helpers" not in sys.modules\n`;
+  const files = {
+    'filters.py': 'from scipy import signal\n\nimport helpers\n',
+    'helpers.py': 'raise RuntimeError("a session file ran")\n',
+  };
+  const before = engine.run({
+    files: { ...files, 'tests/test_imported.py': assertion('False') },
+    tests: ['tests/test_imported.py'],
+    packages: pythonPackages,
+  });
+  const request = {
+    files: { ...files, 'tests/test_imported.py': assertion('True') },
+    tests: ['tests/test_imported.py'],
+    packages: pythonPackages,
+  };
+  engine.prepare(request);
+  expect(before.status).toBe('pass');
+  expect(engine.run(request).status).toBe('pass');
+});
+
 test.each((await readdir(fixtures)).sort())('%s gives its expected result', async (name) => {
   const expected = JSON.parse(await readFile(join(fixtures, name, 'expected.json'), 'utf8'));
   expect(withoutTimes(engine.run(await session(name)))).toEqual(expected);
