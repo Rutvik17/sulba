@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ku2lpb
+    front: >-
+      What is the slope of f at x along a vector v, in terms of its gradient?
+    back: >-
+      `$\nabla f(x) \cdot v$`, the dot product of the gradient with v.
+  - id: crd_rrx5un
+    front: >-
+      Why does checking a gradient along a random direction find a wrong gradient?
+    back: >-
+      A wrong gradient g + e is off along v by e · v, which is 0 only when v is at a right
+      angle to e, and a random direction almost never is.
+  - id: crd_6ptw57
+    front: >-
+      Why measure a directional check's error against the gradient's length rather than the
+      slope along the direction?
+    back: >-
+      The slope along a random direction can be close to 0 even when the gradient isn't, and
+      the gradient's length keeps the tolerance the same at every scale.

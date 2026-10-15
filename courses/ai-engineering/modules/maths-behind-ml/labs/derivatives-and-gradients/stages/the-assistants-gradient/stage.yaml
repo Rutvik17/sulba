@@ -1,0 +1,55 @@
+id: stg_m0t3zu
+kind: catch
+title: The assistant's gradient
+builds: Your `gradients.py` from stages 1 to 3.
+file: network.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_xjwwpv
+    title: It took tanh's slope as 1 − A
+    cost: >-
+      tanh's derivative is `$1 - A^2$`, and the assistant wrote `1 - hidden`. At random
+      weights the hidden layer's gradient had a relative error of {% $fig.tanh_off %}. At zero
+      weights, where its own check ran, every hidden output is 0 and the two agree.
+    fix: >-
+      The fix: `1 - hidden**2`.
+    edit:
+      replace: "np.outer(ds, w2) * (1 - hidden)"
+      with: "np.outer(ds, w2) * (1 - hidden**2)"
+  - check: tst_8msk9r
+    title: It left weight decay out of the hidden layer's gradient
+    cost: >-
+      The loss decays `W1`, but the gradient didn't, so training would never pull the hidden
+      layer's weights toward 0. With `l2` at {% $fig.l2 %} and the weights at random, the
+      decay makes up {% $fig.decay_share %} of the length of `W1`'s gradient. At zero weights
+      there was nothing to decay.
+    fix: >-
+      The fix: add `l2 * W1` to `dW1`, as the assistant added `l2 * w2` to `dw2`.
+    edit:
+      replace: "    dW1 = Z.T @ dpre\n"
+      with: "    dW1 = Z.T @ dpre + l2 * W1\n"
+  - check: tst_pop4e7
+    title: It used the hidden layer's inputs for w2's gradient
+    cost: >-
+      `w2` multiplies the hidden layer's outputs, `tanh(pre)`, but the assistant multiplied the
+      slopes by its inputs, `pre`. At random weights `w2`'s gradient had a relative error of
+      {% $fig.w2_off %}. At zero weights both are 0.
+    fix: >-
+      The fix: `hidden.T @ ds`.
+    edit:
+      replace: "dw2 = pre.T @ ds"
+      with: "dw2 = hidden.T @ ds"
+  - check: tst_8x0phj
+    title: Its loss overflowed for a confident network
+    cost: >-
+      `np.exp(s)` overflows float64 once `s` passes {% $fig.overflow %}. With the output
+      weights {% $fig.scale %} times larger, {% $fig.above %} of the {% $fig.records %} records
+      scored past it, up to {% $fig.max_score %}, and the loss came out infinite where it is
+      {% $fig.big_loss %}.
+    fix: >-
+      The fix: `np.logaddexp(0, s)`, which gives `$\log(1 + e^s)$` and stays finite for scores
+      of any size, as your `network_loss` does.
+    edit:
+      replace: "np.log(1 + np.exp(s))"
+      with: "np.logaddexp(0, s)"

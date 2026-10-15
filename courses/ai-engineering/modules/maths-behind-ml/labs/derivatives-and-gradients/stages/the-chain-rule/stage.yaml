@@ -1,0 +1,9 @@
+id: stg_1d9ji9
+kind: build
+title: The chain rule
+builds: Your `gradients.py` from stage 2.
+file: gradients.py
+packages: [numpy, scipy]
+minutes: 50
+chart:
+  title: The loss along your gradient

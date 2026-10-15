@@ -1,0 +1,9 @@
+id: stg_9ke1g2
+kind: build
+title: Gradients
+builds: Your `gradients.py` from stage 1.
+file: gradients.py
+packages: [numpy, scipy]
+minutes: 40
+chart:
+  title: Each measurement's pull on the distance

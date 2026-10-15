@@ -1,0 +1,18 @@
+cards:
+  - id: crd_p1mnkx
+    front: >-
+      What is the derivative of the mean log loss with respect to one sample's score?
+    back: >-
+      `$(\sigma(s) - y)/n$`: the sample's probability less its diagnosis, over the number of
+      samples.
+  - id: crd_fiu79z
+    front: >-
+      What is the derivative of tanh?
+    back: >-
+      `$1 - \tanh^2$`, so the backward pass can take it from the forward pass's outputs.
+  - id: crd_tggxi0
+    front: >-
+      Why do numerical gradients check a gradient rather than train with one?
+    back: >-
+      They take two evaluations of the loss for each parameter, where backpropagation gives
+      the whole gradient for a few times the cost of one.
