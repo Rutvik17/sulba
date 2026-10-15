@@ -1,0 +1,19 @@
+cards:
+  - id: crd_7w1hqg
+    front: >-
+      What does each tree of a gradient-boosted model fit?
+    back: >-
+      The residuals the trees before it left: what each training row said, less the share the
+      model gives it so far.
+  - id: crd_tkp5tx
+    front: >-
+      What value does a boosted tree's leaf take, for the log loss?
+    back: >-
+      `$\sum (y - p) / \sum p(1 - p)$` over its rows: one Newton step in the log-odds towards
+      their least log loss.
+  - id: crd_wybfoe
+    front: >-
+      Where does the learning rate enter a boosted model?
+    back: >-
+      Each tree's values are multiplied by it before they're added to the log-odds, so each tree
+      moves the scores only part of the way.

@@ -1,0 +1,20 @@
+id: lab_ad00rv
+title: Gradient boosting
+summary: >-
+  Rank the bank's clients with boosted trees: grow each tree on what the trees before it got
+  wrong, choose the learning rate and the rounds on validation calls, work out the splits
+  XGBoost makes, and ship a LightGBM model that never raises a client for being called again.
+data:
+  - file: calls.csv
+    title: Bank Marketing
+    creators: [Sérgio Moro, Paulo Rita, Paulo Cortez]
+    url: https://doi.org/10.24432/C5K306
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in eight calls of the file with social and economic context, chosen at random;
+      comma-separated, without quotes, with the outcome column named subscribed; and the calls
+      split at random into training, validation and test sets, with the same share subscribing
+      in each.
+stages: [boosting-by-hand, learning-rate-and-rounds, xgboosts-splits, the-assistants-ranking, a-rule-for-the-call-list]
