@@ -46,13 +46,21 @@ export interface Calls {
   closed: number;
 }
 
+/** What the stand-in account holds. */
+export interface Held {
+  /** A progress row for each stage passed. */
+  readonly passed?: { stage_id: string; caught: string[] | null; problems: number | null }[];
+  /** A study_days row for each day studied. */
+  readonly studyDays?: { day: string; seconds: number }[];
+}
+
 /**
  * Stands in for Supabase: sign-in hands back a code, the code a session, and the account holds the
- * progress rows given, one for each stage passed.
+ * rows given.
  */
 export async function standIn(
   page: Page,
-  passed: { stage_id: string; caught: string[] | null; problems: number | null }[] = [],
+  { passed = [], studyDays = [] }: Held = {},
 ): Promise<Calls> {
   const calls: Calls = { authorize: [], attempts: [], logouts: 0, closed: 0 };
   const answer = (status: number, body?: unknown) => ({
@@ -81,6 +89,11 @@ export async function standIn(
     route.request().method() === 'OPTIONS'
       ? route.fulfill(answer(204))
       : route.fulfill(answer(200, passed)),
+  );
+  await page.route(`${supabase}/rest/v1/study_days**`, (route) =>
+    route.request().method() === 'OPTIONS'
+      ? route.fulfill(answer(204))
+      : route.fulfill(answer(200, studyDays)),
   );
   await page.route(`${supabase}/rest/v1/attempts**`, (route) => {
     if (route.request().method() === 'OPTIONS') return route.fulfill(answer(204));

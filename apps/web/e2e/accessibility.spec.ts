@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from './islands';
-import { supabase } from './supabase';
+import { signedIn, standIn, supabase } from './supabase';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -52,6 +52,27 @@ for (const scheme of ['dark', 'light'] as const) {
       expect(results.violations).toEqual([]);
     });
   }
+
+  test(`the account page, signed in with days studied, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.clock.setFixedTime(new Date('2026-10-14T12:00:00'));
+    await standIn(page, {
+      studyDays: [
+        { day: '2026-10-01', seconds: 1500 },
+        { day: '2026-10-13', seconds: 600 },
+        { day: '2026-10-14', seconds: 300 },
+      ],
+    });
+    await signedIn(page);
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/account/');
+    await expect(page.getByText('You studied on 3 of the last 84 days.')).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
 
   test(`the contact form's messages have no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
