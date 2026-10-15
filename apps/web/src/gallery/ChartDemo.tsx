@@ -13,7 +13,11 @@ const drawing: Drawing = {
     { style: 'base', x: [-8, 8], y: [0.1, 0.9] },
     { style: 'main', x: xs, y: xs.map((x) => sigmoid(2 * x - 1)) },
   ],
-  points: [{ x: 0.5, y: 0.5 }],
+  // The second point sits on the axes' ends, where it shows whole.
+  points: [
+    { x: 0.5, y: 0.5 },
+    { x: 8, y: 1 },
+  ],
   description: 'A sigmoid with w = 2 and b = -1, crossing 0.5 at x = 0.50.',
 };
 

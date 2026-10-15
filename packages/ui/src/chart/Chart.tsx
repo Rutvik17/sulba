@@ -1,7 +1,7 @@
 import { type ReactNode, useId, useLayoutEffect, useRef, useState } from 'react';
 import { classes } from '../classes';
 import styles from './chart.module.css';
-import { type Axis, labelEvery, pathOf, ticksOf } from './plot';
+import { type Axis, labelEvery, pathOf, ticksOf, within } from './plot';
 
 export { type Axis, decimalsOf } from './plot';
 
@@ -166,16 +166,17 @@ function Plot({ drawing, width, height, clip, hidden }: PlotProps) {
           // biome-ignore lint/suspicious/noArrayIndexKey: a chart's lines keep their order.
           <path key={index} className={css[line.style]} d={pathOf(line.x, line.y, place)} />
         ))}
-        {drawing.points.map(
-          (point, index) =>
-            point.y !== null &&
-            Number.isFinite(point.x) &&
-            Number.isFinite(point.y) && (
-              // biome-ignore lint/suspicious/noArrayIndexKey: a chart's points keep their order.
-              <circle key={index} className={css.point} cx={toX(point.x)} cy={toY(point.y)} r={4} />
-            ),
-        )}
       </g>
+      {/* Points aren't clipped, so one at an axis's end shows whole. One off the axes isn't drawn. */}
+      {drawing.points.map(
+        (point, index) =>
+          point.y !== null &&
+          within(x, point.x) &&
+          within(y, point.y) && (
+            // biome-ignore lint/suspicious/noArrayIndexKey: a chart's points keep their order.
+            <circle key={index} className={css.point} cx={toX(point.x)} cy={toY(point.y)} r={4} />
+          ),
+      )}
     </svg>
   );
 }
