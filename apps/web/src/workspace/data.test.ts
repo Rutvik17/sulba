@@ -7,10 +7,11 @@ function labWith(id: string): LabView {
     file,
     title: file,
     creators: [],
-    url: `/data/0123456789abcdef/${file}`,
+    url: `https://example.com/${file}`,
     licence: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
     changes: '',
     path: `data/${file}`,
+    served: `/data/0123456789abcdef/${file}`,
   });
   return {
     id,
