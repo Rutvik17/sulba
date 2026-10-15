@@ -1,0 +1,26 @@
+id: stg_6vx1yf
+kind: ship
+title: Repeated cross-validation
+builds: Your `tuning.py` from stage 4.
+file: tuning.py
+packages: [numpy, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_tp8t97
+    title: Within 8 MPa on the test set
+    requires: >-
+      Fit on every record, its RMSE on the test set must be no more than 8 MPa.
+    failure: >-
+      Its RMSE on the test set is more than 8 MPa.
+  - check: tst_qlwmr0
+    title: The same choice with other shuffles
+    requires: >-
+      Tuned with seeds 2 and 3 instead, it must choose the same degree and penalty.
+    failure: >-
+      Other shuffles of the folds chose another pair, so a rerun could change the model.
+  - check: tst_1jx6zu
+    title: One mix at a time
+    requires: >-
+      `predict` must give one strength for a single mix, given as one flat row.
+    failure: >-
+      It didn't give one strength for one mix.

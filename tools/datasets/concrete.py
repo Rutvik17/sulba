@@ -2,9 +2,10 @@
 # requires-python = "==3.14.2"
 # dependencies = ["numpy==2.4.6", "scikit-learn==1.8.0"]
 # ///
-"""Builds the overfitting lab's data file from UCI's Concrete Compressive Strength.
+"""Builds the data file of the overfitting and cross-validation labs from UCI's Concrete
+Compressive Strength.
 
-UCI's rows are used as they are, with three changes, which the lab's credit lists: a header
+UCI's rows are used as they are, with three changes, which each lab's credit lists: a header
 names each column, a `mix` column numbers each mix of ingredients in the order it first appears,
 and a `set` column puts each mix, with every test of it, in the training (0), validation (1) or
 test (2) set: 60%, 20% and 20% of the mixes, at random (scikit-learn's train_test_split, seed 0).

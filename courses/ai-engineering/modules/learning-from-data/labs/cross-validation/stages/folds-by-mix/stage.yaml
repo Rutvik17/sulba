@@ -1,0 +1,14 @@
+id: stg_9m1v81
+kind: build
+title: Folds by mix
+builds: A new `cv.py`.
+file: cv.py
+packages: [numpy, scikit-learn]
+minutes: 45
+chart:
+  title: Error in each fold
+  sliders:
+    - name: k
+      label: Folds
+      stops: [2, 3, 5, 10]
+      value: 5

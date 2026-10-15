@@ -1,0 +1,7 @@
+id: stg_vx5ahm
+kind: build
+title: Nested cross-validation
+builds: Your `cv.py` from stages 1 and 2.
+file: cv.py
+packages: [numpy, scikit-learn]
+minutes: 45

@@ -1,0 +1,59 @@
+id: stg_7imvqg
+kind: catch
+title: The assistant's tuning job
+builds: Your `cv.py` from stages 1 to 3.
+file: tuning.py
+packages: [numpy, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_6dc1ir
+    title: It tuned on the test set
+    cost: >-
+      It kept every test in the plant's table, so it tuned and fit on all
+      {% $fig.all_tests %} of them, the {% $fig.test_tests %} held back as the test set included.
+      The test set's error then measured a model on tests it had been fit on:
+      {% $fig.leaked_new %} MPa, where the model tuned on the records alone gives
+      {% $fig.final_new %} MPa.
+    fix: >-
+      The fix: keep only sets 0 and 1, `table[:, 0] < 2`, as the records.
+    edit:
+      replace: "    return table[:, 3:], table[:, 2], table[:, 1]"
+      with: "    kept = table[:, 0] < 2\n    return table[kept, 3:], table[kept, 2], table[kept, 1]"
+  - check: tst_yge40q
+    title: It dealt tests, not mixes
+    cost: >-
+      Its folds dealt the tests at random, whatever their mix, so {% $fig.shared %} of the
+      {% $fig.records %} held-out tests had their mix among their fold's fit tests. The pair
+      it chose scored {% $fig.leaky_score %} MPa that way, where folds by mix give
+      {% $fig.chosen_score %} MPa.
+    fix: >-
+      The fix: deal the shuffled mixes to the folds in turn, as `folds` does.
+    edit:
+      replace: "    order = np.random.default_rng(seed).permutation(len(mixes))\n    fold = np.empty(len(mixes), dtype=int)\n    fold[order] = np.arange(len(mixes)) % K"
+      with: "    order = np.random.default_rng(seed).permutation(np.unique(mixes))\n    fold_of = {mix: number % K for number, mix in enumerate(order)}\n    fold = np.array([fold_of[mix] for mix in mixes])"
+  - check: tst_p3uha8
+    title: It standardized before the folds
+    cost: >-
+      It took each feature's mean and spread from every record at once, so each fold's model
+      was scaled with numbers its held-out tests had helped make. Here that moved the scores by
+      up to {% $fig.moved %} MPa, and lowered the chosen pair's from {% $fig.chosen_score %} to
+      {% $fig.once_chosen %} MPa. With fewer records, or a step that learns more, the held-out
+      tests say more about the model that predicts them.
+    fix: >-
+      The fix: standardize inside each fold, with the fold's fit tests' means and standard
+      deviations.
+    edit:
+      replace: "        # Standardized once for every fold, so no fold has to do it again.\n        Z = (P - P.mean(axis=0)) / P.std(axis=0)\n        for fit, held in splits(mixes, seed):\n            for j, (w, b) in enumerate(ridge(Z[fit], y[fit], PENALTIES)):\n                errors[j] += np.sqrt(np.mean((y[held] - (Z[held] @ w + b)) ** 2)) / K"
+      with: "        for fit, held in splits(mixes, seed):\n            mean, std = P[fit].mean(axis=0), P[fit].std(axis=0)\n            Z_fit, Z_held = (P[fit] - mean) / std, (P[held] - mean) / std\n            for j, (w, b) in enumerate(ridge(Z_fit, y[fit], PENALTIES)):\n                errors[j] += np.sqrt(np.mean((y[held] - (Z_held @ w + b)) ** 2)) / K"
+  - check: tst_comtjs
+    title: It reported the winner's own score
+    cost: >-
+      It gave the chosen pair's cross-validated error, {% $fig.chosen_score %} MPa, the lowest
+      of the {% $fig.pairs %} it tried, as the error to expect. Nested cross-validation, which makes the
+      choice afresh in each fold, gives {% $fig.nested %} MPa.
+    fix: >-
+      The fix: choose again in each fold, on its fit tests, and score the choice on its
+      held-out tests.
+    edit:
+      replace: "    found = scores(X, y, mixes)\n    return found[choose(found)]"
+      with: "    errors = []\n    for fit, held in splits(mixes):\n        degree, penalty = choose(scores(X[fit], y[fit], mixes[fit]))\n        model = fitted(features(X[fit], degree), y[fit], penalty)\n        errors.append(np.sqrt(np.mean((y[held] - model(features(X[held], degree))) ** 2)))\n    return float(np.mean(errors))"
