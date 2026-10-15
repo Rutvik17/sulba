@@ -101,7 +101,7 @@ def figures():
 
     # The first validation client, as if called 1 to 6 times.
     client = validation.iloc[[0]]
-    found["client_job"] = f"`{client['job'].iloc[0]}`"
+    found["client_job"] = str(client["job"].iloc[0])
     found["client_age"] = str(client["age"].iloc[0])
     followed = {name: [] for name in models}
     for calls in FOLLOWED:

@@ -78,8 +78,8 @@ def figures():
     assert Xf[0, len(NUMBERS)] == Tf[0, len(NUMBERS)] == 0
     assert (encode(test.iloc[[1]], categories, True)[0, len(NUMBERS) :] == 0).all()
     factorized = fit(Xf, y, Vf, v)
-    found["first_train"] = f"`{first_train}`"
-    found["first_test"] = f"`{first_test}`"
+    found["first_train"] = str(first_train)
+    found["first_test"] = str(first_test)
     found["factorized"] = f"{roc_auc_score(t, factorized.predict_proba(Tf)[:, 1]):.3f}"
 
     # Early stopping on the training calls, watched last.
