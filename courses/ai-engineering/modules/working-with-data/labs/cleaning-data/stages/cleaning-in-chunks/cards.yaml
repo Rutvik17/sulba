@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qz2655
+    front: >-
+      How do you find each patient's earliest encounter when the rows come in chunks?
+    back: >-
+      Keep each patient's earliest encounter so far. Join each chunk to it with `pd.concat`,
+      and keep the earliest of each patient again with `first_encounters`.
+  - id: crd_wdwzve
+    front: >-
+      Why can't deaths and hospice care be left out chunk by chunk?
+    back: >-
+      Whether an encounter is a patient's first is known only once every chunk has been read.
+      Leaving one out early counts the patient at a later encounter.
+  - id: crd_fjbhg6
+    front: >-
+      Why can a column read in chunks come out with different types?
+    back: >-
+      `read_csv` works out each chunk's types from that chunk alone. Giving it `dtype` makes
+      every chunk read alike.

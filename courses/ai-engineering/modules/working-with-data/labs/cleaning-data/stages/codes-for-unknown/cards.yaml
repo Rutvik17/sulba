@@ -1,0 +1,16 @@
+cards:
+  - id: crd_8mupk6
+    front: >-
+      Which pandas type holds whole numbers and missing values?
+    back: >-
+      `Int64`, with a capital I. A missing value in an `int64` column turns it into `float64`.
+  - id: crd_mwa9zc
+    front: >-
+      Why read a code such as NULL or Not Mapped as missing?
+    back: >-
+      It records that there was no answer. Left as a code, it counts as a category of its own.
+  - id: crd_lhcalj
+    front: >-
+      What does `dropna()` do to a table with a column that's mostly missing?
+    back: >-
+      It drops nearly every row, since it keeps only the rows with no missing value.

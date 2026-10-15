@@ -1,0 +1,40 @@
+id: stg_nd6d9k
+kind: ship
+title: Cleaning in chunks
+builds: Your `cleaning.py` from stages 1 to 3.
+file: cleaning.py
+packages: [pandas]
+minutes: 40
+checks:
+  - check: tst_m0d1nb
+    title: One chunk at a time
+    requires: >-
+      Cleaning {% $fig.held_copies %} chunks of {% $fig.held_rows %} encounters of the same
+      patients, `clean_chunks` holds no more than {% $fig.held %} rows, as much as
+      {% $fig.held_chunks %} chunks, while it reads the last one.
+    failure: >-
+      It held on to earlier chunks. Keep each patient's first encounter so far, and let each
+      chunk go once it's folded in.
+  - check: tst_up4a94
+    title: An earliest encounter in a later chunk
+    requires: >-
+      A patient whose earliest encounter comes in a later chunk than their others is counted
+      at the earliest.
+    failure: >-
+      It kept the first encounter it met. Compare each chunk's encounters with those kept from
+      the chunks before.
+  - check: tst_9f4h6n
+    title: A first encounter in hospice care
+    requires: >-
+      A patient whose first encounter ended in hospice care is left out, whichever chunk that
+      encounter comes in.
+    failure: >-
+      It counted the patient at a later encounter. Leave out deaths and hospice care once every
+      chunk has been read, when each patient's first encounter is known.
+  - check: tst_wr3y5h
+    title: "Fast on {% $fig.big %} encounters"
+    requires: >-
+      `clean_chunks` cleans {% $fig.copies %} chunks of {% $fig.encounters %} encounters,
+      {% $fig.big %} in all, in under a second.
+    failure: >-
+      The limit is a second. Work on each chunk as a whole with pandas, never row by row.

@@ -1,0 +1,17 @@
+cards:
+  - id: crd_l4xx09
+    front: >-
+      How do you keep each patient's earliest encounter in pandas?
+    back: >-
+      Sort by `encounter_id`, then `drop_duplicates("patient_nbr")`, which keeps the first row
+      of each patient.
+  - id: crd_ss2nop
+    front: >-
+      Why measure a readmission rate over each patient's first encounter, not every encounter?
+    back: >-
+      Patients who come back often count once for every encounter, which inflates the rate.
+  - id: crd_zh4opb
+    front: >-
+      What does `isin` give for a missing value?
+    back: >-
+      `False`, so a filter on `~isin(codes)` keeps it.
