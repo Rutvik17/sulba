@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from sulba_runner import chart, figures, run
+from sulba_runner import chart, figures, imported, prepare, run
 
 FIXTURES = Path(__file__).parents[2] / "fixtures"
 
@@ -44,6 +44,29 @@ def test_a_second_run_uses_the_new_code() -> None:
     second = json.loads(run(json.dumps(files), json.dumps(tests)))
     assert [test["status"] for test in first["tests"]] == ["pass", "fail", "error"]
     assert [test["status"] for test in second["tests"]] == ["fail", "fail", "error"]
+
+
+def test_imported_lists_each_module_the_python_files_import() -> None:
+    files = {
+        "model.py": (
+            "import numpy as np, os\nfrom scipy import stats\n"
+            "from scipy.stats import norm\nfrom . import local\n"
+        ),
+        "broken.py": "def f(:\n",
+        "notes.txt": "import email\n",
+    }
+    assert imported(files) == ["numpy", "os", "scipy", "scipy.stats", "scipy.stats.norm"]
+
+
+def test_prepare_imports_the_packages_modules_and_never_the_sessions_files() -> None:
+    files = {
+        "server.py": "from wsgiref import validate\nimport helpers\n",
+        "helpers.py": "raise RuntimeError('a session file ran')\n",
+    }
+    assert "wsgiref.validate" not in sys.modules
+    prepare(json.dumps(files), json.dumps(["wsgiref"]))
+    assert "wsgiref.validate" in sys.modules
+    assert "helpers" not in sys.modules
 
 
 def test_files_outside_the_session_are_refused() -> None:

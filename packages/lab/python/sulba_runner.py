@@ -7,6 +7,7 @@ JavaScript into Python without conversion.
 
 from __future__ import annotations
 
+import ast
 import importlib
 import io
 import json
@@ -15,7 +16,7 @@ import os
 import sys
 import tempfile
 import time
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -43,6 +44,41 @@ def run(files_json: str, tests_json: str) -> str:
         result = report.result(int(exit_code))
         result["durationMs"] = round((time.perf_counter() - started) * 1000)
     return json.dumps(result)
+
+
+def prepare(files_json: str, packages_json: str) -> None:
+    """Import the modules that the session's Python files import from these packages.
+
+    The first import of a module such as scipy.stats can take seconds in a browser, and the
+    browser times a run from after this, so a run's time goes on the session's own code. Only
+    the packages' modules are imported, never the session's files.
+    """
+    packages = set(json.loads(packages_json))
+    for name in imported(json.loads(files_json)):
+        if name.split(".")[0] in packages:
+            # A module that isn't there fails again in the run, which reports it.
+            with suppress(Exception):
+                importlib.import_module(name)
+
+
+def imported(files: dict[str, str]) -> list[str]:
+    """Every module the Python files import, first to last. A name a from-import takes may be
+    a module too, as in `from scipy import stats`, so it is listed under the module's name."""
+    found: dict[str, None] = {}
+    for name, text in files.items():
+        if not name.endswith(".py"):
+            continue
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                found.update(dict.fromkeys(alias.name for alias in node.names))
+            elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+                found[node.module] = None
+                found.update(dict.fromkeys(f"{node.module}.{alias.name}" for alias in node.names))
+    return list(found)
 
 
 def figures(files_json: str) -> str:
