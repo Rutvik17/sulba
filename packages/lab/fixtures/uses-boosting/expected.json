@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_xgbt01",
+      "name": "XGBoost separates two groups",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_lgbm01",
+      "name": "LightGBM separates two groups",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
