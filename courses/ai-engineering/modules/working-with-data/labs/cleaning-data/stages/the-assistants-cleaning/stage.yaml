@@ -1,0 +1,53 @@
+id: stg_isufcy
+kind: catch
+title: The assistant's cleaning
+builds: Your `cleaning.py` from stages 1 to 3.
+file: clean.py
+packages: [pandas]
+minutes: 35
+problems:
+  - check: tst_7szgrf
+    title: It read tests not done as missing
+    cost: >-
+      With `read_csv`'s defaults, each `None` came back missing, though {% $fig.not_done %} of
+      patients had no A1C test. `value_counts(normalize=True)` skips missing values, so it
+      gave {% $fig.over8_wrong %} of patients an A1C result over 8, against
+      {% $fig.over8_right %} of all patients.
+    fix: >-
+      The fix: `keep_default_na=False`, so that `?` is the only value read as missing.
+    edit:
+      replace: 'na_values=["?"])'
+      with: 'na_values=["?"], keep_default_na=False)'
+  - check: tst_rt8717
+    title: It kept each patient's first row, not their first encounter
+    cost: >-
+      `drop_duplicates` keeps the first row it meets. This extract lists each patient's
+      encounters in order, so here it worked. In another order, {% $fig.wrong_first %} of the
+      {% $fig.multiple %} patients with more than one encounter were counted at a later one.
+    fix: >-
+      The fix: sort by `encounter_id` before `drop_duplicates`.
+    edit:
+      replace: "table.drop_duplicates("
+      with: 'table.sort_values("encounter_id").drop_duplicates('
+  - check: tst_du5bd3
+    title: It kept patients sent to hospice care
+    cost: >-
+      `LEFT_OUT` held the deaths but not hospice care, codes {% $fig.hospice_codes %}. The
+      {% $fig.hospice %} patients whose first encounter ended in hospice care were counted,
+      {% $fig.hospice_soon %} of them readmitted within {% $fig.days %} days.
+    fix: >-
+      The fix: add codes {% $fig.hospice_codes %} to `LEFT_OUT`.
+    edit:
+      replace: "LEFT_OUT = [11, 19, 20, 21]"
+      with: "LEFT_OUT = [11, 13, 14, 19, 20, 21]"
+  - check: tst_ivppss
+    title: It counted every readmission
+    cost: >-
+      `!= "NO"` is `True` for a readmission after {% $fig.days %} days too, so
+      {% $fig.share_wrong %} of patients counted as readmitted, against
+      {% $fig.share_right %} within {% $fig.days %} days.
+    fix: >-
+      The fix: `kept["readmitted"] == "<30"`.
+    edit:
+      replace: 'kept["readmitted"] != "NO"'
+      with: 'kept["readmitted"] == "<30"'

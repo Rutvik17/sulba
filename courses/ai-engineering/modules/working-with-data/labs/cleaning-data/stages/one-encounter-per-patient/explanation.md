@@ -1,0 +1,5 @@
+`sort_values("encounter_id")` puts each patient's encounters in order, and `drop_duplicates("patient_nbr")` keeps the first row it meets of each patient, so together they keep each patient's earliest encounter. `drop_duplicates` alone would keep whichever row comes first in the table, which is the earliest only while the table happens to be in order.
+
+{% $fig.multiple %} patients have more than one encounter, and they're the ones who come back. As the chart shows, {% $fig.share_once %} of the encounters of patients seen once were followed by a readmission within {% $fig.days %} days, against {% $fig.share_most %} for patients with {% $fig.most %} encounters or more. Counted over every encounter, those patients count again and again: {% $fig.share_all %} of encounters were followed by a readmission, against {% $fig.share_first %} of patients' first encounters.
+
+Of the first encounters, {% $fig.deaths %} ended in death and {% $fig.hospice %} in hospice care. That leaves {% $fig.kept %} patients, {% $fig.share_kept %} of them readmitted within {% $fig.days %} days. `isin` is `False` for a missing value, so an encounter whose discharge is unknown stays.

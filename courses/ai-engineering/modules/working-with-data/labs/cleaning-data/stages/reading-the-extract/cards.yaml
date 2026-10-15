@@ -1,0 +1,17 @@
+cards:
+  - id: crd_7xesaw
+    front: >-
+      With `na_values=["?"]` and `keep_default_na=False`, which strings does `read_csv` read as
+      missing?
+    back: >-
+      Only `?`.
+  - id: crd_4nsbps
+    front: >-
+      Why keep `None` in `A1Cresult` as a value, rather than read it as missing?
+    back: >-
+      It records that the test wasn't done, which is information, not a gap in the record.
+  - id: crd_8gin8u
+    front: >-
+      What does `table.isna().mean()` give?
+    back: >-
+      The share of each column's values that are missing.

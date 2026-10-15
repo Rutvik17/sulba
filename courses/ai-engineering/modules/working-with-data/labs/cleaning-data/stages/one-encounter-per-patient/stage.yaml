@@ -1,0 +1,9 @@
+id: stg_j7u2ib
+kind: build
+title: One encounter per patient
+builds: Your `cleaning.py` from stage 2.
+file: cleaning.py
+packages: [pandas]
+minutes: 35
+chart:
+  title: Readmissions by encounters per patient

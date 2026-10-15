@@ -1,0 +1,16 @@
+cards:
+  - id: crd_wmjjej
+    front: >-
+      What does `value_counts(normalize=True)` do with missing values?
+    back: >-
+      It skips them, so each share is out of the values present, not out of every row.
+  - id: crd_sp5ukq
+    front: >-
+      `drop_duplicates("patient_nbr")` keeps which of a patient's rows?
+    back: >-
+      The first it meets in the table's order, whatever that order is.
+  - id: crd_7svpxe
+    front: >-
+      How do you test that a cleaning step doesn't depend on the order of its input?
+    back: >-
+      Clean the input in another order, such as shuffled rows, and compare the results.

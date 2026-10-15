@@ -1,0 +1,7 @@
+id: stg_gl8md8
+kind: build
+title: Reading the extract
+builds: A new `cleaning.py`.
+file: cleaning.py
+packages: [pandas]
+minutes: 30

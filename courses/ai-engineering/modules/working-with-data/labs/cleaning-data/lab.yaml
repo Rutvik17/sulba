@@ -1,0 +1,26 @@
+id: lab_gyjb0a
+title: Cleaning data
+summary: >-
+  Turn a hospital network's raw extract into a table you can trust, in pandas: read its missing
+  values right, mark the codes that mean unknown, keep each patient's first stay, and clean an
+  extract too big to read at once.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages: [reading-the-extract, codes-for-unknown, one-encounter-per-patient, the-assistants-cleaning, cleaning-in-chunks]
