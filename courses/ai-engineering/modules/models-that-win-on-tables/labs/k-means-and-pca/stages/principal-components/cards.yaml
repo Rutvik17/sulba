@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ohoag4
+    front: >-
+      What is the first principal component of a set of rows?
+    back: >-
+      The direction of length 1 along which their scores vary most: the eigenvector of their
+      covariance matrix with the largest eigenvalue, which is that variance.
+  - id: crd_a9yu85
+    front: >-
+      In what order does `np.linalg.eigh` give eigenvalues, and where are the eigenvectors?
+    back: >-
+      From the smallest up, with the eigenvectors as the columns of its second array, in the
+      same order.
+  - id: crd_zsv0aj
+    front: >-
+      Why scale measurements before finding their principal components?
+    back: >-
+      Unscaled, the measurement with the widest spread takes the first component almost alone.
+      Among the beans, the areas in pixels take almost all the variance.

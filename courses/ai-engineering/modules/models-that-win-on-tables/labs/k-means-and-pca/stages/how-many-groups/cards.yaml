@@ -1,0 +1,19 @@
+cards:
+  - id: crd_st02ou
+    front: >-
+      How does k-means++ choose its starting centres?
+    back: >-
+      The first is a row drawn at random, and each next one a row drawn with a chance in
+      proportion to its squared distance to the nearest centre so far.
+  - id: crd_nd90qx
+    front: >-
+      What does a row's silhouette compare?
+    back: >-
+      Its mean distance to the other rows of its group, a, with its mean distance to the rows
+      of the nearest other group, b: (b − a) / max(a, b).
+  - id: crd_h6lpgo
+    front: >-
+      Why run k-means from several starts?
+    back: >-
+      Each start can end in other groups. Keeping the run with the least inertia guards
+      against an unlucky start.

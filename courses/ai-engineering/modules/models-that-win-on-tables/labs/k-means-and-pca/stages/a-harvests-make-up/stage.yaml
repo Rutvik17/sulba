@@ -1,0 +1,38 @@
+id: stg_dsa06g
+kind: ship
+title: A harvest's make-up
+builds: Your `groups.py` from stages 1 to 3.
+file: groups.py
+packages: [numpy, pandas, scipy, scikit-learn]
+minutes: 40
+checks:
+  - check: tst_6isx91
+    title: The harvest's make-up
+    requires: >-
+      Grouped from seed 0, each variety's share of the {% $fig.harvest %} validation beans lies
+      within {% $fig.tolerance %} of the share of them that are of that variety.
+    failure: >-
+      A variety's share is further off. The groups are the fewest that name every variety,
+      each named by the commonest variety among its own training beans.
+  - check: tst_ifgmab
+    title: A share for every variety, adding up to 1
+    requires: >-
+      The make-up names every variety, in alphabetical order, and its shares add up to 1.
+    failure: >-
+      A variety is missing, the order differs, or the shares don't add up to 1. Each name's
+      share is the fraction of the harvest's beans given that name.
+  - check: tst_3bpvuc
+    title: A bean named alone as among the harvest
+    requires: >-
+      Each of the first {% $fig.alone %} validation beans, named on its own, gets the name it
+      gets among the whole harvest.
+    failure: >-
+      A bean's name depends on the beans around it. Scale every batch by the training beans'
+      statistics, and put each bean in the group whose centre is nearest it.
+  - check: tst_8xd046
+    title: The harvest left as it was
+    requires: >-
+      After `make_up`, the harvest's measurements are those it held before.
+    failure: >-
+      The harvest changed. Scale a copy of the measurements, never the measurements
+      themselves.

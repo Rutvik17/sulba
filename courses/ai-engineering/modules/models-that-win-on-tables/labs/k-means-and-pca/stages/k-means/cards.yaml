@@ -1,0 +1,19 @@
+cards:
+  - id: crd_h7jw3n
+    front: >-
+      What are the two steps k-means repeats?
+    back: >-
+      Each row joins the group of its nearest centre, then each centre moves to the mean of
+      its group's rows, until no row changes group.
+  - id: crd_pf896f
+    front: >-
+      Why can't a round of k-means raise the inertia?
+    back: >-
+      Joining its nearest centre can only shorten a row's distance, and a group's mean is the
+      point with the least sum of squared distances to its rows.
+  - id: crd_kr7war
+    front: >-
+      Why might the groups k-means finds not match the classes in the data?
+    back: >-
+      It groups rows by distance alone: a class spread wide can take two groups, and one that
+      lies among others can take none.

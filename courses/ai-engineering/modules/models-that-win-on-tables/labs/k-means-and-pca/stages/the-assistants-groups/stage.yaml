@@ -1,0 +1,61 @@
+id: stg_5z26fj
+kind: catch
+title: The assistant's groups
+builds: Your `groups.py` from stages 1 to 3.
+file: report.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+problems:
+  - check: tst_fp9xb9
+    title: It plotted the two directions that vary least
+    cost: >-
+      `np.linalg.eigh` gives the eigenvalues from the smallest up, and `plot_axes` took the
+      first two. The inspectors' plot would have shown the beans along the two directions in
+      which they vary least, which carry {% $fig.least %} of the variance, where the two that
+      vary most carry {% $fig.most %}.
+    fix: >-
+      The fix: the last two eigenvectors, the last first, and the last two eigenvalues.
+    edit:
+      replace: "    return vectors[:, :2].T, variances[:2].sum() / variances.sum()\n"
+      with: "    return vectors[:, [-1, -2]].T, variances[-2:].sum() / variances.sum()\n"
+  - check: tst_uy93cd
+    title: It grouped the beans by their unscaled measurements
+    cost: >-
+      `fit_groups` scaled the training beans, then fitted k-means to the raw ones, so the
+      groups followed the area in pixels: {% $fig.largest_groups %} of the {% $fig.k %} groups
+      were {% $fig.largest %}, the largest beans. Set against centres in pixels, the
+      harvest's scaled measurements all fell into one group: every one of the
+      {% $fig.harvest %} harvest beans was named {% $fig.single %}, and {% $fig.single_right %}
+      of them rightly, where groups of the scaled measurements name {% $fig.right %} right.
+    fix: >-
+      The fix: k-means on `Z`, the scaled measurements, the same scale the harvest is scored
+      on.
+    edit:
+      replace: "    return KMeans(K, n_init=STARTS, random_state=SEED).fit(train)\n"
+      with: "    return KMeans(K, n_init=STARTS, random_state=SEED).fit(Z)\n"
+  - check: tst_sqktcb
+    title: It counted each variety among all the training beans
+    cost: >-
+      `key=list(varieties).count` picked, of the varieties in a group, the one with the most
+      training beans in all, not in the group. {% $fig.misnamed %} of the {% $fig.k %} groups
+      got the wrong name, {% $fig.overall_groups %} of them {% $fig.overall %}, the commonest
+      variety overall, and {% $fig.counted_right %} of the harvest beans would have been named
+      right, against {% $fig.right %}.
+    fix: >-
+      The fix: count each variety among the group's own beans, with `key=list(found).count`.
+    edit:
+      replace: "        names.append(max(set(found), key=list(varieties).count))\n"
+      with: "        names.append(max(set(found), key=list(found).count))\n"
+  - check: tst_73q1ow
+    title: It grouped the harvest afresh
+    cost: >-
+      `harvest_groups` ran a new k-means on the harvest, which found groups of its own and
+      numbered them afresh, so a harvest bean's group number pointed at a training group it
+      had nothing to do with. {% $fig.afresh_right %} of the harvest beans would have been
+      named right, against {% $fig.right %} by their nearest training centre.
+    fix: >-
+      The fix: `model.predict`, which puts each harvest bean in the training group whose
+      centre is nearest it.
+    edit:
+      replace: "    return KMeans(K, n_init=STARTS, random_state=SEED).fit_predict(H)\n"
+      with: "    return model.predict(H)\n"

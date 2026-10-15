@@ -1,0 +1,9 @@
+id: stg_mogsxq
+kind: build
+title: How many groups
+builds: Your `groups.py` from stages 1 and 2.
+file: groups.py
+packages: [numpy, pandas, scipy, scikit-learn]
+minutes: 35
+chart:
+  title: Silhouette by number of groups
