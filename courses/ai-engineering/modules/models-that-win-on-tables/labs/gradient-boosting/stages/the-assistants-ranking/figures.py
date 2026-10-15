@@ -73,7 +73,9 @@ def figures():
     Xf, Vf, Tf = (
         encode(calls, categories, True) for calls in (train, validation, test)
     )
-    # The cost says a client scored alone has every category coded 0.
+    # The cost says the first call's job is coded 0 in each set, and a client scored alone
+    # has every category coded 0.
+    assert Xf[0, len(NUMBERS)] == Tf[0, len(NUMBERS)] == 0
     assert (encode(test.iloc[[1]], categories, True)[0, len(NUMBERS) :] == 0).all()
     factorized = fit(Xf, y, Vf, v)
     found["first_train"] = f"`{first_train}`"
