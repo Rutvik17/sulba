@@ -1,0 +1,18 @@
+id: lab_s8udyu
+title: Sampling
+summary: >-
+  Draw the random batches a model trains on, in NumPy: shuffle every epoch, work out how far
+  a batch's average strays from the whole, balance the classes by weighted sampling, and
+  share each epoch's batches out across workers.
+data:
+  - file: breast-cancer.csv
+    title: Breast Cancer Wisconsin (Diagnostic)
+    creators: [William Wolberg, Olvi Mangasarian, Nick Street, W. Street]
+    url: https://doi.org/10.24432/C5DW2B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Split into a training set and a test set, with malignant coded as 1 and each column
+      named.
+stages: [random-batches, expectation-and-variance, weighted-sampling, the-assistants-batches, batches-across-workers]

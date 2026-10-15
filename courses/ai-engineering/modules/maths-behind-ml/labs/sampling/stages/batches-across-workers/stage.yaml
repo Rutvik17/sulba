@@ -1,0 +1,41 @@
+id: stg_alpj9l
+kind: ship
+title: Batches across workers
+builds: Your `sampling.py` from stage 3.
+file: sampling.py
+packages: [numpy]
+minutes: 45
+checks:
+  - check: tst_c7gpnn
+    title: Every record, every epoch
+    requires: >-
+      On {% $fig.fewest %} to {% $fig.most %} workers, each epoch must use every one of the
+      {% $fig.records %} records, and use again only as many as equal shares need:
+      {% $fig.again4 %} on {% $fig.workers %} workers, and {% $fig.again16 %} on
+      {% $fig.most %}.
+    failure: >-
+      An epoch left a record out, or used more records again than equal shares need.
+  - check: tst_n4svig
+    title: The same number of steps on every worker
+    requires: >-
+      Every worker must get the same number of records, and so the same number of batches,
+      on {% $fig.fewest %} to {% $fig.most %} workers, with batches of {% $fig.smallest %} to
+      {% $fig.largest %} rows.
+    failure: >-
+      The workers got different numbers of batches, so they couldn't take every step
+      together.
+  - check: tst_ishkjv
+    title: A new order for every seed and epoch
+    requires: >-
+      No two of the first {% $fig.epochs %} epochs of seeds 0 to {% $fig.last_seed %} may
+      share an order, seeds and epochs that add up to the same number included.
+    failure: >-
+      Two seeds and epochs gave the same order.
+  - check: tst_kv0noa
+    title: More workers than records
+    requires: >-
+      With fewer records than workers, such as {% $fig.few %} records on {% $fig.many %}
+      workers or {% $fig.one %} on {% $fig.four %}, every worker must still get one record, in
+      a batch of its own.
+    failure: >-
+      A worker got no record, or more than one.

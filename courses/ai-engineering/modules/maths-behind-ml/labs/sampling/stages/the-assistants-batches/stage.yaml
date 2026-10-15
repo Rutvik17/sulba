@@ -1,0 +1,55 @@
+id: stg_d2u9w0
+kind: catch
+title: The assistant's batches
+builds: Your `sampling.py` from stages 1 to 3.
+file: batches.py
+packages: [numpy]
+minutes: 35
+problems:
+  - check: tst_ku6ili
+    title: It drew the same order every epoch
+    cost: >-
+      `epoch` made its generator from the seed alone, so every epoch started from the same
+      state and drew the same order. Over {% $fig.epochs %} epochs, a record shared batches
+      with {% $fig.mates %} other records on average, the same ones every epoch, against
+      {% $fig.shuffled_mates %} with a new order each epoch.
+    fix: >-
+      The fix: make the generator from the seed and the epoch's number together,
+      `np.random.default_rng([self.seed, number])`.
+    edit:
+      replace: "np.random.default_rng(self.seed)"
+      with: "np.random.default_rng([self.seed, number])"
+  - check: tst_2wfkai
+    title: It drew records with replacement
+    cost: >-
+      `rng.choice(self.n, self.n)` draws with replacement. In the first epoch,
+      {% $fig.missed %} of the {% $fig.records %} records, {% $fig.missed_share %}, weren't
+      drawn at all, and others were drawn up to {% $fig.most %} times.
+    fix: >-
+      The fix: `rng.permutation(self.n)`, every row number once in a random order.
+    edit:
+      replace: "rng.choice(self.n, self.n)"
+      with: "rng.permutation(self.n)"
+  - check: tst_c5fdqy
+    title: It dropped the last, short batch
+    cost: >-
+      The batches started only where a whole batch of {% $fig.size %} fitted, so the
+      {% $fig.left %} records after the {% $fig.full %} full batches were left out of every
+      epoch.
+    fix: >-
+      The fix: start a batch every `size` rows, `range(0, self.n, self.size)`. The last slice
+      stops at the end by itself.
+    edit:
+      replace: "range(0, self.n - self.size + 1, self.size)"
+      with: "range(0, self.n, self.size)"
+  - check: tst_nqoqhk
+    title: It averaged a short batch over the full size
+    cost: >-
+      `average` divided by `self.size` whatever the batch held. The last batch of the first
+      epoch holds {% $fig.left %} records, {% $fig.last_malignant %} of them malignant, a
+      share of {% $fig.last_share %}, but its average came out {% $fig.last_wrong %}.
+    fix: >-
+      The fix: divide by the rows in the batch, `len(batch)`.
+    edit:
+      replace: "/ self.size"
+      with: "/ len(batch)"

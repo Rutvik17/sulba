@@ -1,0 +1,21 @@
+cards:
+  - id: crd_soji8y
+    front: >-
+      How does a uniform number pick a row with a probability in proportion to its weight?
+    back: >-
+      Scaled by the weights' total, it lands in one of the stretches between running totals,
+      each as long as a row's weight. The first running total above it names the row.
+  - id: crd_tnsor3
+    front: >-
+      Why scale the uniform number by the weights' total, rather than trust weights that add
+      up to 1?
+    back: >-
+      They add up to 1 only to within rounding. A running total that ends a little under 1
+      lets the largest uniform numbers land past the last row.
+  - id: crd_f3i74c
+    front: >-
+      A batch is drawn with probabilities `$p_i$`. How does it estimate the mean over all
+      `$n$` records?
+    back: >-
+      By counting each row's value `$v_i$` as `$v_i / (n p_i)$`. The reweighted mean is right
+      on average.

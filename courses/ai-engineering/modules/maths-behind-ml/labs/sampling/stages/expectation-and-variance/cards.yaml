@@ -1,0 +1,20 @@
+cards:
+  - id: crd_lg0zzz
+    front: >-
+      What is the expectation of a random batch's mean?
+    back: >-
+      The mean of all the records, for any batch size: on its own, each draw is equally likely
+      to be any record.
+  - id: crd_uvcw48
+    front: >-
+      What is the variance of the mean of a batch of `$b$` rows drawn without replacement from
+      `$n$` records whose values have variance `$\sigma^2$`?
+    back: >-
+      `$\frac{\sigma^2}{b} \cdot \frac{n-b}{n-1}$`: the variance with replacement,
+      `$\sigma^2/b$`, times a factor that is 1 for one row and 0 for every record.
+  - id: crd_5l8q6h
+    front: >-
+      A batch is made four times as large. How much less does its mean stray?
+    back: >-
+      About half as much: its standard deviation falls like `$1/\sqrt{b}$`. Drawn without
+      replacement, it falls a little further.

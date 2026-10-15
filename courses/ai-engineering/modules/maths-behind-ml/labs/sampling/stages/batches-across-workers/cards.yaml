@@ -1,0 +1,20 @@
+cards:
+  - id: crd_x7dpi5
+    front: >-
+      Why must every worker draw the epoch's order from the same seed?
+    back: >-
+      So that they share one order and take turns through it. Orders drawn separately
+      overlap, and leave records out.
+  - id: crd_3wmus1
+    front: >-
+      Why does a generator seeded with seed + epoch repeat orders across runs?
+    back: >-
+      Pairs that add up to the same number get the same stream: seed 1's first epoch is seed
+      0's second. A generator made from `[seed, epoch]` gives every pair its own.
+  - id: crd_scp1sc
+    front: >-
+      How does PyTorch's `DistributedSampler` give every process the same number of records
+      when the processes don't divide them?
+    back: >-
+      It carries the order on from its start until they do, so a few records are used twice,
+      unless it is told to drop the remainder instead.

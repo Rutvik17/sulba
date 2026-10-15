@@ -1,0 +1,9 @@
+id: stg_ggia65
+kind: build
+title: Expectation and variance
+builds: Your `sampling.py` from stage 1.
+file: sampling.py
+packages: [numpy, scipy]
+minutes: 45
+chart:
+  title: How far a batch's share strays
