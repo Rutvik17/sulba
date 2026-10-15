@@ -1,0 +1,7 @@
+id: stg_n49de8
+kind: build
+title: Out-of-bag estimates
+builds: Your `forest.py` from stages 1 and 2.
+file: forest.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 30

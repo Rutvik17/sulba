@@ -1,0 +1,40 @@
+id: stg_zbyhhi
+kind: ship
+title: Which columns matter
+builds: Your `forest.py` from stages 1 to 3.
+file: forest.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+checks:
+  - check: tst_349rfo
+    title: Each column on the validation calls
+    requires: >-
+      Each column's mean fall in AUC and its standard deviation, measured on the
+      {% $fig.validation %} validation calls with {% $fig.check_repeats %} shuffles, are those the
+      brief describes.
+    failure: >-
+      A column's fall differs. Each repeat draws one order with `rng.permutation`, the groups
+      in the order they come and the repeats in turn, and the fall is the AUC on the calls as
+      they are less the AUC on the shuffled copy.
+  - check: tst_iwem0b
+    title: The bank's earlier contact, shuffled as one
+    requires: >-
+      `pdays`, `previous` and `poutcome`, shuffled together in one order, give the fall the
+      brief describes, larger than any of the three gives alone.
+    failure: >-
+      The group's fall differs. Each column of a group takes its values in the same order, so
+      that every call keeps its three values together.
+  - check: tst_ea0908
+    title: No importance for a column the forest doesn't read
+    requires: >-
+      Shuffling `day_of_week`, which the forest doesn't read, gives a fall of 0 and a spread of
+      0.
+    failure: >-
+      Shuffling a column the forest doesn't read moved the AUC. The fall compares the shuffled
+      copy with the calls as they are, both scored by the same forest.
+  - check: tst_xh9fmi
+    title: The validation calls left as they were
+    requires: >-
+      After `importances`, the validation calls hold the values they held before.
+    failure: >-
+      The calls changed. Shuffle a copy of the calls, never the calls themselves.

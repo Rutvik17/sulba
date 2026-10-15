@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qar3fh
+    front: >-
+      How does permutation importance measure a column?
+    back: >-
+      By how far the model's score on rows it wasn't trained on falls when that column's
+      values are shuffled among the rows.
+  - id: crd_xyx221
+    front: >-
+      Why can each of several correlated columns look unimportant?
+    back: >-
+      Shuffled one at a time, each leaves the model the same information in the others.
+      Shuffled together, they show what they carry.
+  - id: crd_g7w0uw
+    front: >-
+      What doesn't a column's permutation importance tell you?
+    back: >-
+      Why the outcome happens: a column can matter to the model because it stands in for
+      something else, such as when a call was made.

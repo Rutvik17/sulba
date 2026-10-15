@@ -1,0 +1,19 @@
+cards:
+  - id: crd_0l6tx2
+    front: >-
+      What are a tree's out-of-bag rows?
+    back: >-
+      The training rows its bootstrap sample left out, about a third of them.
+  - id: crd_0ky4lt
+    front: >-
+      How can a forest estimate its AUC without a validation set?
+    back: >-
+      Score each training row only by the trees whose samples left it out, and take the AUC of
+      those shares.
+  - id: crd_nzyr3p
+    front: >-
+      Why can't a forest's AUC on its own training rows, scored by every tree, estimate its AUC
+      on new rows?
+    back: >-
+      Each tree scores rows it was grown on, which it remembers, so the AUC comes out far too
+      high.

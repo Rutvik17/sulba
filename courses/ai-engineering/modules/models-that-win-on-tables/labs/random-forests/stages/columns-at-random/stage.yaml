@@ -1,0 +1,14 @@
+id: stg_sf8kl5
+kind: build
+title: Columns at random
+builds: Your `forest.py` from stage 1.
+file: forest.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 30
+chart:
+  title: Validation AUC by trees
+  sliders:
+    - name: min_leaf
+      label: Smallest leaf, in calls
+      stops: [1, 5, 10, 25, 50]
+      value: 10
