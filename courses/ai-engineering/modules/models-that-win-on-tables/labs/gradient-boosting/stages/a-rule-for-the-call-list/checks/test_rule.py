@@ -25,9 +25,8 @@ def chances(model, calls):
 
 def chances_after(model, calls, most):
     """Each call's chance with 1 to most calls more, a row for each number of calls."""
-    later = pd.concat(
-        [calls.assign(campaign=calls["campaign"] + extra) for extra in range(1, most + 1)]
-    )
+    extras = range(1, most + 1)
+    later = pd.concat([calls.assign(campaign=calls["campaign"] + k) for k in extras])
     return chances(model, later).reshape(most, len(calls))
 
 
