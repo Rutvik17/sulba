@@ -1,0 +1,7 @@
+id: stg_0gbmgj
+kind: build
+title: A contract for the extract
+builds: A new `checks.py`.
+file: checks.py
+packages: [pandas]
+minutes: 35

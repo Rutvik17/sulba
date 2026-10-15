@@ -1,0 +1,38 @@
+id: stg_truvf0
+kind: ship
+title: Comparing batches
+builds: Your `checks.py` from stages 1 to 3.
+file: checks.py
+packages: [pandas]
+minutes: 40
+checks:
+  - check: tst_092twp
+    title: A value new this month
+    requires: >-
+      A value that only the current extract holds is reported, with no share of the previous
+      one's rows.
+    failure: >-
+      It dropped the value. Join the two batches' shares so that a value in either is kept, and
+      fill the share it lacks with `fillna(0)`.
+  - check: tst_2gnamu
+    title: A value gone this month
+    requires: >-
+      A value that only the previous extract holds is reported, with no share of the current
+      one's rows.
+    failure: >-
+      It looked only at the current extract's values. Keep the values of both.
+  - check: tst_h1s2aq
+    title: A column going missing
+    requires: >-
+      When a watched column's values go missing in many more rows, the missing value's share is
+      reported.
+    failure: >-
+      It left missing values out of the shares. `value_counts(dropna=False)` counts them as a
+      value of their own.
+  - check: tst_xz5w8z
+    title: Batches of different sizes
+    requires: >-
+      Comparing an extract with one {% $fig.copies %} times its size whose values have the same
+      shares reports nothing.
+    failure: >-
+      It compared counts. Divide each value's count by its batch's rows.

@@ -1,0 +1,17 @@
+cards:
+  - id: crd_o9wmxx
+    front: >-
+      Why is `values.isin(allowed).any()` the wrong test of a column's values?
+    back: >-
+      It's true when a single value is allowed, so it passes a column with one value wrong.
+      `.all()` stops it.
+  - id: crd_42vlqi
+    front: >-
+      Why does `(x < low) | (x > high)` let a missing value through?
+    back: >-
+      A comparison with a missing value is false. `~x.between(low, high)` is true for it.
+  - id: crd_tp6334
+    front: >-
+      How should a data check be tested?
+    back: >-
+      On the smallest break it must stop, one at a time, and on data you know to be good.

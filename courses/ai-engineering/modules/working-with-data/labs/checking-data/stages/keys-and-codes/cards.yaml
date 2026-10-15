@@ -1,0 +1,19 @@
+cards:
+  - id: crd_m9w44m
+    front: >-
+      How do you mark every row of a value that repeats, the first one included?
+    back: >-
+      `duplicated(keep=False)`. By default `duplicated` leaves the first row of each value
+      unmarked.
+  - id: crd_2rbjnh
+    front: >-
+      Why check a lookup table's codes as well as the data's?
+    back: >-
+      A code listed twice doubles every row it describes in a join, so the lookup table has a
+      key to keep too.
+  - id: crd_2m6fhc
+    front: >-
+      What should a check do with a code the lookup table lacks?
+    back: >-
+      Report how many rows have it, rather than fold them into unknown: it may be a new code
+      the table hasn't caught up with.

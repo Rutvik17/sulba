@@ -1,0 +1,7 @@
+id: stg_mt47vy
+kind: build
+title: Across a patient's encounters
+builds: Your `checks.py` from stages 1 and 2.
+file: checks.py
+packages: [pandas]
+minutes: 35
