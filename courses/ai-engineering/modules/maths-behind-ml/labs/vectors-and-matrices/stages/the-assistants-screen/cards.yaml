@@ -1,0 +1,18 @@
+cards:
+  - id: crd_lffub9
+    front: >-
+      Why doesn't ranking records by their dot product with a sample find the nearest ones?
+    back: >-
+      A dot product grows with both lengths, so it favours records far from the average in the
+      sample's direction. Nearness takes the distance.
+  - id: crd_obfcm8
+    front: >-
+      Scores taken along `mu1 - mu0`, not along a vector of length 1: what changes?
+    back: >-
+      Every score is multiplied by the length of `mu1 - mu0`. The signs stay, but the scores
+      are no longer in standard deviations.
+  - id: crd_c1ebnr
+    front: >-
+      Why isn't the records' mean the midpoint of the two class means?
+    back: >-
+      It weights each class's mean by its count, so it sits nearer the larger class's mean.

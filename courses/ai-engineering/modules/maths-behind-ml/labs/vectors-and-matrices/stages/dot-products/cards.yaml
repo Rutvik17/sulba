@@ -1,0 +1,17 @@
+cards:
+  - id: crd_nt5jhe
+    front: >-
+      What does the dot product of two vectors equal, in terms of their lengths?
+    back: >-
+      The product of their lengths and the cosine of the angle between them.
+  - id: crd_bcek1t
+    front: >-
+      What does a cosine of 0 between two vectors say?
+    back: >-
+      They are at a right angle: neither points any way along the other.
+  - id: crd_xqwxww
+    front: >-
+      Why do the two class means of standardized records point in opposite directions?
+    back: >-
+      Standardized, the records average 0, so the class means, each weighted by its count,
+      add up to 0.

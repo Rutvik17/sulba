@@ -1,0 +1,59 @@
+id: stg_17r00m
+kind: catch
+title: The assistant's screen
+builds: Your `vectors.py` from stages 1 to 3.
+file: screen.py
+packages: [numpy, scipy, scikit-learn]
+minutes: 40
+problems:
+  - check: tst_wqtafv
+    title: Its scores weren't in standard deviations
+    cost: >-
+      It scored along `mu1 - mu0`, which is {% $fig.apart %} standard deviations long, so every
+      score came out {% $fig.apart %} times too large. The new samples' scores ran from
+      {% $fig.wrong_low %} to {% $fig.wrong_high %}, where their distances past the midpoint run
+      from {% $fig.low %} to {% $fig.high %} standard deviations.
+    fix: >-
+      The fix: divide the direction by its length, `(mu1 - mu0) / np.linalg.norm(mu1 - mu0)`,
+      so that it has a length of 1.
+    edit:
+      replace: "self.direction = mu1 - mu0\n"
+      with: "self.direction = (mu1 - mu0) / np.linalg.norm(mu1 - mu0)\n"
+  - check: tst_gpvuyv
+    title: It measured from the records' mean
+    cost: >-
+      With {% $fig.benign %} benign records to {% $fig.malignant %} malignant ones, the records'
+      mean sits {% $fig.shift %} standard deviations from the midpoint, toward the benign mean.
+      Every score came out that much higher, and {% $fig.flips %} new samples nearer the benign
+      mean scored above 0: {% $fig.flips_benign %} benign and {% $fig.flips_malignant %}
+      malignant.
+    fix: >-
+      The fix: measure from the midpoint of the two means, `(mu0 + mu1) / 2`.
+    edit:
+      replace: "self.centre = self.records.mean(axis=0)"
+      with: "self.centre = (mu0 + mu1) / 2"
+  - check: tst_0wk722
+    title: It showed squared distances
+    cost: >-
+      It gave each record's squared distance as its distance: the first new sample's nearest
+      record, {% $fig.nearest %} away, was shown at {% $fig.nearest_squared %}.
+    fix: >-
+      The fix: take the square root, counting anything below 0 as 0, as your `fast_distances`
+      does.
+    edit:
+      replace: "np.take_along_axis(squared, near, axis=1)"
+      with: "np.sqrt(np.maximum(np.take_along_axis(squared, near, axis=1), 0))"
+  - check: tst_qqmuh0
+    title: It ranked the records by dot product
+    cost: >-
+      A dot product grows with both lengths, so the largest ones belong to records far from the
+      average in the sample's direction, not to the nearest records. The records it found were
+      {% $fig.dot_mean %} away on average, where the nearest are {% $fig.near_mean %}, and for
+      {% $fig.none %} of the {% $fig.new %} new samples none of the {% $fig.k %} it found was among
+      the {% $fig.k %} nearest.
+    fix: >-
+      The fix: rank by distance, smallest first. The smallest squared distance is the smallest
+      distance, so `np.argsort(squared, ...)` does it.
+    edit:
+      replace: "        # The most similar records have the largest dot products.\n        near = np.argsort(-dots, axis=1"
+      with: "        near = np.argsort(squared, axis=1"

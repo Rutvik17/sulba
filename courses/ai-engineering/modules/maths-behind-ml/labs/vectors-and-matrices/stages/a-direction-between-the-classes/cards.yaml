@@ -1,0 +1,18 @@
+cards:
+  - id: crd_a5ctlo
+    front: >-
+      When is a sample nearer the malignant mean than the benign one?
+    back: >-
+      When its position along the direction from the benign mean to the malignant one,
+      measured from their midpoint, is above 0.
+  - id: crd_p4k6kt
+    front: >-
+      `Z` has the shape (n, d) and `u` has d numbers. What does `Z @ u` give?
+    back: >-
+      n numbers: each row's dot product with `u`.
+  - id: crd_ijcyrk
+    front: >-
+      What shape does the boundary of the nearest-centroid rule between two classes have?
+    back: >-
+      A flat hyperplane, halfway between the two means and at a right angle to the line
+      joining them.

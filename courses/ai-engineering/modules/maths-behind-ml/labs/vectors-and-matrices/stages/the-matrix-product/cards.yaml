@@ -1,0 +1,17 @@
+cards:
+  - id: crd_mm7rpf
+    front: >-
+      `A` has the shape (m, d) and `B` the shape (n, d). What does `A @ B.T` hold?
+    back: >-
+      The dot product of each row of `A` with each row of `B`, in an array of shape (m, n).
+  - id: crd_jbrabn
+    front: >-
+      How does a squared distance come from dot products?
+    back: >-
+      `$\lVert a - b \rVert^2 = a \cdot a + b \cdot b - 2\, a \cdot b$`
+  - id: crd_isgb6l
+    front: >-
+      Why can distances worked out from dot products go wrong for samples far from 0?
+    back: >-
+      Their squared lengths are large and nearly equal, so subtracting them leaves mostly
+      rounding: catastrophic cancellation.

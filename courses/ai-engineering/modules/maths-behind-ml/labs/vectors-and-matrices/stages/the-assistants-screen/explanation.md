@@ -1,0 +1,5 @@
+The assistant's tests checked that each sample got a score and its records, that malignant samples scored higher on average, and that the records found mostly shared the sample's diagnosis, so they passed. Each problem kept all of that. Scores {% $fig.apart %} times too large, or every one {% $fig.shift %} too high, still put malignant samples above benign ones on average. Squared distances are 0 or more, as distances are. And records far out in a sample's direction mostly share its diagnosis: {% $fig.dot_same %} of them did, against {% $fig.near_same %} of the nearest records.
+
+---
+
+The clinic reads each number as it is: a score as a distance in standard deviations past the midpoint, and a record's distance as how far it lies from the sample. The dot product and the distance are tied together by `$\lVert a - b \rVert^2 = a \cdot a + b \cdot b - 2\, a \cdot b$`, but ranking by the dot product alone leaves out the records' squared lengths, and with them how far each record sits from the average.
