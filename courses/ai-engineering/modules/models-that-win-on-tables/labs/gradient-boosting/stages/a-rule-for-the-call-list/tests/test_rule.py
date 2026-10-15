@@ -33,6 +33,10 @@ def bank():
     return table[table["set"] == 0], table[table["set"] == 1]
 
 
+def said_yes(calls):
+    return (calls["subscribed"] == "yes").to_numpy()
+
+
 def columns(calls):
     found = calls[NUMBERS + CATEGORIES].copy()
     for name in CATEGORIES:
@@ -48,8 +52,8 @@ def reference(train, validation, constraints):
     )
     model.fit(
         columns(train),
-        (train["subscribed"] == "yes").to_numpy(),
-        eval_set=[(columns(validation), (validation["subscribed"] == "yes").to_numpy())],
+        said_yes(train),
+        eval_set=[(columns(validation), said_yes(validation))],
         callbacks=[early_stopping(PATIENCE, verbose=False)],
     )
     return model

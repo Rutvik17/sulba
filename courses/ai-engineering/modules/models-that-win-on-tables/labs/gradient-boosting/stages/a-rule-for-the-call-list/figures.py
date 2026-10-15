@@ -86,9 +86,10 @@ def figures():
         for extra in range(1, MORE + 1):
             later = called(validation, validation["campaign"] + extra)
             higher |= chances(model, later) > now
+        test_auc = roc_auc_score(said_yes(test), chances(model, test))
         found[f"{name}_kept"] = str(model.best_iteration_)
         found[f"{name}_validation"] = f"{roc_auc_score(said_yes(validation), now):.3f}"
-        found[f"{name}_test"] = f"{roc_auc_score(said_yes(test), chances(model, test)):.3f}"
+        found[f"{name}_test"] = f"{test_auc:.3f}"
         found[f"{name}_raised"] = str(higher.sum())
     # The explanation says the rule moves no client up.
     assert found["ruled_raised"] == "0"
