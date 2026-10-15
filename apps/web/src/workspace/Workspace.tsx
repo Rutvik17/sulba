@@ -10,6 +10,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { ChartPanel } from './ChartPanel';
+import { labData } from './data';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
@@ -145,6 +146,12 @@ export default function Workspace({ lab }: { lab: LabView }) {
     setPython(runner);
     return () => runner.dispose();
   }, []);
+
+  // The lab's data comes while Python loads, so the first run doesn't wait for it. A run that
+  // finds it missing fetches it again.
+  useEffect(() => {
+    labData(lab).catch(() => undefined);
+  }, [lab]);
 
   // Each stage loads the packages it needs when it opens, so an early stage never waits for a
   // later stage's. A run tries again and says so if Python still won't load.
@@ -292,7 +299,7 @@ function StageWorkspace({
     setResults('tests');
     setTried(true);
     try {
-      const result = await python.run(runOf(lab, index, code(), kept));
+      const result = await python.run(runOf(lab, await labData(lab), index, code(), kept));
       setRun({ state: 'done', result });
       setRuns((before) => before + 1);
       record(runEventOf(stage, result), lap());

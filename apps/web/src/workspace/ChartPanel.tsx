@@ -6,6 +6,7 @@ import { Slider } from '@sulba/ui/slider';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChartView, LabView } from '../lib/labs';
 import styles from './chart.module.css';
+import { labData } from './data';
 import { latestOnly } from './latest';
 import { chartOf, previewOf } from './stages';
 import { kept } from './storage';
@@ -57,8 +58,8 @@ export function ChartPanel({ lab, index, python, passed, code, runs }: Props) {
     () =>
       python &&
       latestOnly(
-        ({ request }: { live: boolean; request: ChartRequest }) =>
-          python.chart(request).catch(() => 'failed' as const),
+        ({ request }: { live: boolean; request: Promise<ChartRequest> }) =>
+          request.then((ready) => python.chart(ready)).catch(() => 'failed' as const),
         ({ live }, result: Drawn['result']) => {
           if (shown.current) setDrawn({ live, result });
         },
@@ -68,11 +69,14 @@ export function ChartPanel({ lab, index, python, passed, code, runs }: Props) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs isn't read, but each run that finishes redraws the chart with the code as it stands.
   useEffect(() => {
+    const now = passed ? code() : null;
     draw?.({
       live: passed,
-      request: passed
-        ? chartOf(lab, index, code(), kept, values)
-        : previewOf(lab, index, firstValues(chart)),
+      request: labData(lab).then((data) =>
+        now === null
+          ? previewOf(lab, data, index, firstValues(chart))
+          : chartOf(lab, data, index, now, kept, values),
+      ),
     });
   }, [draw, passed, values, runs, lab, index, chart, code]);
 

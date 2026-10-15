@@ -2,6 +2,7 @@
 // loader in Node when it builds or starts, and pages read what it stored, since pages are
 // prerendered in workerd, which can't read the repository's files.
 
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import {
   type Chart,
@@ -93,9 +94,14 @@ export interface LabView {
   readonly course: string;
   readonly level: string;
   readonly module: string;
-  readonly data: readonly (Omit<Lab['data'][number], 'text'> & { readonly path: string })[];
-  /** Each dataset's text, by its path in a run, such as `data/votes.csv`. */
-  readonly files: Readonly<Record<string, string>>;
+  /**
+   * Each dataset, with its path in a run, such as `data/votes.csv`, and the address the site serves
+   * it at, which changes with its text.
+   */
+  readonly data: readonly (Omit<Lab['data'][number], 'text'> & {
+    readonly path: string;
+    readonly url: string;
+  })[];
   readonly stages: readonly StageView[];
 }
 
@@ -109,9 +115,17 @@ export interface CardView {
   readonly back: string;
 }
 
-/** A lab as the site stores it: what its page shows, and its stages' review cards. */
+/** A lab as the site stores it: what its page shows, its datasets' text, and its review cards. */
 export interface LabEntry extends LabView {
+  /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
+  readonly files: Readonly<Record<string, string>>;
   readonly cards: readonly CardView[];
+}
+
+/** Where the site serves a dataset: a folder named for its text, so it can be cached for good. */
+function dataUrl(file: string, text: string): string {
+  const hash = createHash('sha256').update(text).digest('hex').slice(0, 16);
+  return `/data/${hash}/${file}`;
 }
 
 type Figures = ReadonlyMap<string, Readonly<Record<string, string>>>;
@@ -185,7 +199,11 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
         course: course.title,
         level: level.title,
         module: module.title,
-        data: lab.data.map(({ text: _, ...set }) => ({ ...set, path: `data/${set.file}` })),
+        data: lab.data.map(({ text, ...set }) => ({
+          ...set,
+          path: `data/${set.file}`,
+          url: dataUrl(set.file, text),
+        })),
         files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
         stages: lab.stages.map((stage) => stageView(stage, figures)),
         cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),

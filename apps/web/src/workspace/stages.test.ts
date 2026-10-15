@@ -52,6 +52,9 @@ const review: StageView = {
   ],
 };
 
+/** The lab's data, as the workspace fetches it. */
+const data = { 'data/votes.csv': 'choice\nyes\n' };
+
 const lab: LabView = {
   id: 'lab_test01',
   path: 'course/module/lab',
@@ -61,7 +64,6 @@ const lab: LabView = {
   level: 'Level',
   module: 'Module',
   data: [],
-  files: { 'data/votes.csv': 'choice\nyes\n' },
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
     stage('two', 'model.py', 'def b():\n    pass\n'),
@@ -101,14 +103,15 @@ test('a stage passed on another device carries on its solution in this browser',
   expect(codeOf(lab, 1, keeping({}, ['one']))).toBe(
     'def a():\n    pass\n# solved\n\n\ndef b():\n    pass\n',
   );
-  expect(runOf(lab, 2, 'x = 1\n', keeping({ one: 'A\n' }, ['one', 'two'])).files['model.py']).toBe(
-    lab.stages[1]?.solution,
-  );
+  expect(
+    runOf(lab, data, 2, 'x = 1\n', keeping({ one: 'A\n' }, ['one', 'two'])).files['model.py'],
+  ).toBe(lab.stages[1]?.solution);
 });
 
 test("a Catch run has the lab's data, the learner's code, the assistant's tests and the checks", () => {
   const run = runOf(
     lab,
+    data,
     2,
     'class Screener:\n    ok = True\n',
     keeping({ one: 'A\n', two: 'B\n' }),
@@ -154,8 +157,8 @@ test("a later stage's runs use the code the Catch stage carried on", () => {
   const caught = keeping({ three: 'mine\n' }, passed, {
     three: { caught: ['tst_three1', 'tst_three2'], total: 2 },
   });
-  expect(runOf(later, 3, 'x = 1\n', missed).files['screener.py']).toBe(review.solution);
-  expect(runOf(later, 3, 'x = 1\n', caught).files['screener.py']).toBe('mine\n');
+  expect(runOf(later, data, 3, 'x = 1\n', missed).files['screener.py']).toBe(review.solution);
+  expect(runOf(later, data, 3, 'x = 1\n', caught).files['screener.py']).toBe('mine\n');
 });
 
 test("a chart draws with the learner's files, as a run has them, and chart.py", () => {
@@ -164,7 +167,7 @@ test("a chart draws with the learner's files, as a run has them, and chart.py", 
     ...lab,
     stages: lab.stages.map((each, at) => (at === 1 ? { ...each, chart } : each)),
   };
-  expect(chartOf(charted, 1, 'mine\n', keeping({ one: 'A\n' }), { w: 1 })).toEqual({
+  expect(chartOf(charted, data, 1, 'mine\n', keeping({ one: 'A\n' }), { w: 1 })).toEqual({
     files: { 'data/votes.csv': 'choice\nyes\n', 'model.py': 'mine\n', 'chart.py': '# draws\n' },
     values: { w: 1 },
     packages: ['numpy'],
@@ -177,7 +180,7 @@ test("a chart's preview draws with every stage's solution up to it", () => {
     ...lab,
     stages: lab.stages.map((each, at) => (at === 2 ? { ...each, chart } : each)),
   };
-  expect(previewOf(charted, 2, {}).files).toEqual({
+  expect(previewOf(charted, data, 2, {}).files).toEqual({
     'data/votes.csv': 'choice\nyes\n',
     'model.py': 'def b():\n    pass\n# solved\n',
     'screener.py': 'class Screener:\n    draft = True\n# solved\n',
