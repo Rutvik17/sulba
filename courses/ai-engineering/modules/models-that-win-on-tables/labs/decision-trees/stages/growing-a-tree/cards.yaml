@@ -1,0 +1,19 @@
+cards:
+  - id: crd_cd74fu
+    front: >-
+      How does a decision tree score a new call?
+    back: >-
+      It follows the call's answers from the root to a leaf, and gives the share of yes among
+      the training calls in that leaf.
+  - id: crd_9ce6c8
+    front: >-
+      How does a category such as a job become columns a tree can split?
+    back: >-
+      One column for each category, 1 for the calls in it and 0 for the rest. A split at 0.5
+      asks whether a call is in that category.
+  - id: crd_evx91m
+    front: >-
+      Why is a decision tree called greedy?
+    back: >-
+      Each node takes the best split for its own calls, without looking ahead to the splits
+      below it.

@@ -1,0 +1,20 @@
+id: lab_ohmopq
+title: Decision trees
+summary: >-
+  Rank a bank's clients by their chance of buying a term deposit with a decision tree grown in
+  NumPy: find the split that leaves the least impurity, grow the tree split by split, choose
+  its depth, and turn it into rules a call centre can read.
+data:
+  - file: calls.csv
+    title: Bank Marketing
+    creators: [Sérgio Moro, Paulo Rita, Paulo Cortez]
+    url: https://doi.org/10.24432/C5K306
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in eight calls of the file with social and economic context, chosen at random;
+      comma-separated, without quotes, with the outcome column named subscribed; and the calls
+      split at random into training, validation and test sets, with the same share subscribing
+      in each.
+stages: [the-best-split, growing-a-tree, choosing-the-depth, the-assistants-call-list, rules-for-the-call-centre]

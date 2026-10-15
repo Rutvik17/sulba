@@ -1,0 +1,19 @@
+cards:
+  - id: crd_68l64u
+    front: >-
+      Why does a tree grown deep hold every shallower tree?
+    back: >-
+      Each node's split depends only on its own calls, not on how deep the tree may grow below
+      it, so cutting the deep tree at a depth gives the tree grown to that depth.
+  - id: crd_x3ccb7
+    front: >-
+      As a tree grows deeper, what happens to its AUC on its training data and on validation
+      data?
+    back: >-
+      The training AUC keeps rising. The validation AUC rises, peaks and falls, as the deeper
+      splits fit the training data's chance patterns.
+  - id: crd_wqldmh
+    front: >-
+      Which two limits keep a decision tree from fitting its training data too closely?
+    back: >-
+      Its depth, and the fewest training rows a leaf may hold.

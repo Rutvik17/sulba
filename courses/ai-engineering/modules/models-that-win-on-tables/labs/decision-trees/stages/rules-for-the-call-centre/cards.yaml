@@ -1,0 +1,18 @@
+cards:
+  - id: crd_2f5bi8
+    front: >-
+      How does a decision tree become a list of rules?
+    back: >-
+      One rule for each leaf: the conditions on the path from the root to it, each column's
+      splits merged into one condition, with the leaf's counts.
+  - id: crd_r6ye6y
+    front: >-
+      Why write a rule's category condition as the categories it rules out?
+    back: >-
+      It then holds for every other category, including one the training data never had, just
+      as the tree sends that category down the same path.
+  - id: crd_5cy678
+    front: >-
+      How can anyone check a rule's share of yes without the model?
+    back: >-
+      Count the training rows that meet its conditions, and those of them that said yes.

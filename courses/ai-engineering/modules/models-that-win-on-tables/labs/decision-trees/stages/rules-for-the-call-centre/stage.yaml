@@ -1,0 +1,39 @@
+id: stg_no0v7d
+kind: ship
+title: Rules for the call centre
+builds: Your `tree.py` from stages 1 to 3.
+file: tree.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+checks:
+  - check: tst_r4t2r3
+    title: Every client meets one rule
+    requires: >-
+      Each of the {% $fig.validation %} validation calls meets the conditions of exactly one
+      rule.
+    failure: >-
+      A call met no rule, or more than one. Each condition holds all the splits on its column
+      along the path, and a number's range takes in its upper bound and not its lower.
+  - check: tst_u8fzq8
+    title: Each rule's counts traced to its calls
+    requires: >-
+      Counted afresh, the training calls that meet each rule's conditions are its `calls`, and
+      those that said yes its `yes`.
+    failure: >-
+      A rule's conditions don't pick out its leaf's calls: a split on the path is missing from
+      them, or its two sides are swapped.
+  - check: tst_ax804c
+    title: Each client's rule gives the tree's share
+    requires: >-
+      For each validation call, the rule it meets gives the share of yes that the tree scores
+      it with.
+    failure: >-
+      A call's rule gives another share than the leaf the tree sends it to.
+  - check: tst_j1jr71
+    title: A client in a category the training calls never had
+    requires: >-
+      The test call whose client had defaulted on credit, which no training call had, meets
+      one rule: that of the leaf the tree sends it to.
+    failure: >-
+      The call met no rule. A condition on a category the path went left on lists the
+      categories it rules out, which leaves in every category it doesn't name.

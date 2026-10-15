@@ -1,0 +1,17 @@
+cards:
+  - id: crd_93v321
+    front: >-
+      Why can't the length of a call rank the clients to call?
+    back: >-
+      It is known only once the call ends, so clients not yet called have none.
+  - id: crd_hy6oys
+    front: >-
+      Why can't a tree's AUC on its training data choose its depth?
+    back: >-
+      It never falls as the tree deepens, so it favours the deepest tree, however that tree
+      does on new data.
+  - id: crd_kf4wfc
+    front: >-
+      What should one-hot encoding give a category the training data never had?
+    back: >-
+      0 in every column of its category column, rather than an error.
