@@ -36,6 +36,11 @@ export function labelEvery(spacing: number, room: number): number {
   return Math.max(1, Math.ceil(room / spacing));
 }
 
+/** Whether a value lies on an axis, its ends included. */
+export function within(axis: Axis, value: number): boolean {
+  return value >= axis.min && value <= axis.max;
+}
+
 /** Far enough outside any chart to stand for a value off it, near enough for SVG to draw. */
 const FAR = 1e6;
 
