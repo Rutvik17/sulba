@@ -1,0 +1,21 @@
+cards:
+  - id: crd_l0dey1
+    front: >-
+      Why should a model refuse an input outside the ranges of its training data?
+    back: >-
+      Nothing it was fit on shows how it behaves there, and a flexible model can miss there by
+      far more than the error measured inside the ranges.
+  - id: crd_pkmttu
+    front: >-
+      Why is checking each input against its training range a first guard, not a complete one?
+    back: >-
+      The ranges are taken one input at a time, so an input can sit inside every range and still
+      combine them in a way no training example comes near.
+  - id: crd_g2wbjz
+    front: >-
+      Why does the validation error of the chosen model tend to understate its error on new
+      data?
+    back: >-
+      It is the lowest of the errors of every model tried, and a model can come out lowest in
+      part by suiting the validation data. The error to report comes from a test set used once,
+      after the choice.

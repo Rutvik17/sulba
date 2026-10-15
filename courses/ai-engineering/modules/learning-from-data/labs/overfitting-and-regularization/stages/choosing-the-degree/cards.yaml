@@ -1,0 +1,25 @@
+cards:
+  - id: crd_vxvuwg
+    front: >-
+      Why does least squares' training error fall at every degree?
+    back: >-
+      Each degree's features include the last degree's, so it can always do at least as well
+      on the training data, by giving the new features no weight.
+  - id: crd_c41bwg
+    front: >-
+      What is overfitting?
+    back: >-
+      A model fitting its training data much better than it predicts new data: its extra
+      flexibility fits the noise in the training data.
+  - id: crd_j0h52l
+    front: >-
+      Why are the concrete tests split by mix, not one by one?
+    back: >-
+      A mix is tested at several ages. Split one by one, a held-out test's mix is often among
+      the training tests, and the error measures memory, not prediction.
+  - id: crd_6ykp7i
+    front: >-
+      What are the training, validation and test sets each for?
+    back: >-
+      The training set fits the weights, the validation set chooses between models, and the
+      test set, used once at the end, gives the honest error on new data.

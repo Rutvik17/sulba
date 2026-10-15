@@ -1,0 +1,19 @@
+cards:
+  - id: crd_dym4o1
+    front: >-
+      What does ridge regression add to least squares?
+    back: >-
+      A penalty on large weights: it minimizes the mean squared error plus `$\lambda \lVert w
+      \rVert^2$`, with the bias left out of the penalty.
+  - id: crd_k1dkj0
+    front: >-
+      Why are the features standardized before ridge regression?
+    back: >-
+      The penalty counts every weight alike, so a feature on a large scale, whose weight is
+      small whatever its effect, would barely be penalized.
+  - id: crd_fld9um
+    front: >-
+      Which `alpha` in scikit-learn's `Ridge` matches a penalty `$\lambda$` on the mean squared
+      error, with `$n$` training rows?
+    back: >-
+      `$n\lambda$`: `Ridge` penalizes the sum of the squared errors, not their mean.

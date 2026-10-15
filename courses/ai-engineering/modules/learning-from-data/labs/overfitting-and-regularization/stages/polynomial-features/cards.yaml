@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ydzd88
+    front: >-
+      What are the polynomial features of degree 2 of some measurements?
+    back: >-
+      The measurements themselves, and every product of two of them, each measurement times
+      itself included.
+  - id: crd_kvu91u
+    front: >-
+      Why is a model on polynomial features still fit by least squares?
+    back: >-
+      It is still linear in its weights: the products are only more columns in the table it is
+      fit to.
+  - id: crd_8m77lh
+    front: >-
+      How many polynomial features do `$n$` measurements make, up to degree `$d$`?
+    back: >-
+      `$\binom{n + d}{d} - 1$`: every product of up to `$d$` of them, without the column of
+      ones.

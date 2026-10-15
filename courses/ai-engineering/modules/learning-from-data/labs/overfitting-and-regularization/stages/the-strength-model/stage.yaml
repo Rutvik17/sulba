@@ -1,0 +1,27 @@
+id: stg_g1hjva
+kind: ship
+title: The strength model
+builds: Your `strength.py` from stage 4.
+file: strength.py
+packages: [numpy, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_chmseo
+    title: Within 7 MPa on the new mixes it accepts
+    requires: >-
+      On the test mixes inside its ranges, its RMSE must be no more than 7 MPa.
+    failure: >-
+      Its RMSE on the test mixes it accepts is more than 7 MPa.
+  - check: tst_v3ur0z
+    title: Refuses the new mixes outside its ranges
+    requires: >-
+      `accepts` must refuse exactly the test mixes with a measurement outside the ranges of the
+      training mixes, and `predict` must refuse to give them a strength.
+    failure: >-
+      It accepted a test mix outside its ranges, or refused one inside them.
+  - check: tst_rjzses
+    title: One mix at a time
+    requires: >-
+      `predict` must give one strength for a single mix, given as one flat row.
+    failure: >-
+      It didn't give one strength for one mix.

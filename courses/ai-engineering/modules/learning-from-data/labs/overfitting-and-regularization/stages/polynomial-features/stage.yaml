@@ -1,0 +1,7 @@
+id: stg_e7bjls
+kind: build
+title: Polynomial features
+builds: A new `model.py`.
+file: model.py
+packages: [numpy, scikit-learn]
+minutes: 40

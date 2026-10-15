@@ -1,0 +1,14 @@
+id: stg_u9aaf3
+kind: build
+title: Choosing the degree
+builds: Your `model.py` from stage 1.
+file: model.py
+packages: [numpy, scikit-learn]
+minutes: 50
+chart:
+  title: Error by degree
+  sliders:
+    - name: mixes
+      label: Training mixes
+      stops: [64, 128, 192, 256]
+      value: 256

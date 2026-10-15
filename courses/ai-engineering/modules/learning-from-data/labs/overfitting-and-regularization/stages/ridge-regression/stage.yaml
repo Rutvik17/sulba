@@ -1,0 +1,14 @@
+id: stg_00xtrz
+kind: build
+title: Ridge regression
+builds: Your `model.py` from stages 1 and 2.
+file: model.py
+packages: [numpy, scikit-learn]
+minutes: 50
+chart:
+  title: Predicted and measured strength
+  sliders:
+    - name: penalty
+      label: Penalty λ, at degree 3
+      stops: [0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
+      value: 0.0001

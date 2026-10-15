@@ -1,0 +1,17 @@
+id: lab_pn7oig
+title: Overfitting and regularization
+summary: >-
+  Build a model in NumPy that predicts a concrete mix's compressive strength from its recipe
+  and age, and find how flexible a model the plant's records can support.
+data:
+  - file: concrete.csv
+    title: Concrete Compressive Strength
+    creators: [I-Cheng Yeh]
+    url: https://doi.org/10.24432/C5PK67
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Each column named, each mix of ingredients numbered, and the mixes split at random into
+      training, validation and test sets, with every test of a mix in the same set.
+stages: [polynomial-features, choosing-the-degree, ridge-regression, the-assistants-model, the-strength-model]
