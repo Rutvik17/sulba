@@ -1,3 +1,3 @@
 id: mod_cdayid
 title: The maths behind ML, as code
-labs: [arrays-and-broadcasting, vectors-and-matrices, derivatives-and-gradients]
+labs: [arrays-and-broadcasting, vectors-and-matrices, derivatives-and-gradients, sampling]

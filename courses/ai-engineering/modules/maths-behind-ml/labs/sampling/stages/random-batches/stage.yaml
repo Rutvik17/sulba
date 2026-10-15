@@ -1,0 +1,14 @@
+id: stg_7fwvi6
+kind: build
+title: Random batches
+builds: A new `sampling.py`.
+file: sampling.py
+packages: [numpy]
+minutes: 35
+chart:
+  title: Each batch's share of malignant records
+  sliders:
+    - name: size
+      label: Batch size
+      stops: [8, 16, 32, 64, 128]
+      value: 32

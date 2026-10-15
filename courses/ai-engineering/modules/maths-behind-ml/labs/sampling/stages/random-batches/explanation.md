@@ -1,0 +1,5 @@
+`rng.permutation(n)` puts the row numbers in a random order, every order as likely as any other. Cut into consecutive batches, it makes each batch a random sample drawn without replacement: no record twice in a batch, and none twice in an epoch. The {% $fig.records %} records in batches of {% $fig.size %} make {% $fig.full %} full batches and one of {% $fig.last %}.
+
+A generator's numbers follow from its seed. `np.random.default_rng` turns the seed into a starting state through a `SeedSequence`, which mixes every bit of the seed, so that nearby seeds give unrelated streams and the same seed gives the same numbers in every run. A training run can then be repeated exactly.
+
+The records hold {% $fig.malignant %} malignant samples, {% $fig.share %} of them. A batch's share wanders around that: across one epoch of batches of {% $fig.size %}, from {% $fig.low %} to {% $fig.high %}, and the chart shows how the spread narrows as the batches grow. Weighted by their sizes, an epoch's batch means average to the mean of all the records exactly, since together the batches hold every record once.

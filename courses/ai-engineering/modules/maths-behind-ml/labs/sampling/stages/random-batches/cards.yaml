@@ -1,0 +1,18 @@
+cards:
+  - id: crd_i2847u
+    front: >-
+      How do shuffled batches use each record exactly once in an epoch?
+    back: >-
+      They cut one random order of all the row numbers, from `rng.permutation(n)`, into
+      consecutive batches.
+  - id: crd_o6tmx9
+    front: >-
+      What does a generator made with the same seed give?
+    back: >-
+      The same numbers, every run, so a training run can be repeated exactly.
+  - id: crd_jucvgl
+    front: >-
+      An epoch's batches have different sizes. How do their means combine into the mean of all
+      the records?
+    back: >-
+      Weighted by their sizes: together the batches hold every record once.

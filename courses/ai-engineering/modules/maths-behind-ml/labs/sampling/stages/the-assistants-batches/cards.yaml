@@ -1,0 +1,20 @@
+cards:
+  - id: crd_t7gtp1
+    front: >-
+      Why does a sampler that makes its generator from the seed alone give the same batches
+      every epoch?
+    back: >-
+      Its generator starts from the same state each epoch, so it draws the same order. Make it
+      from the seed and the epoch's number together.
+  - id: crd_9sd6a2
+    front: >-
+      An epoch draws `$n$` row numbers with replacement from `$n$` records. About what share of
+      the records does it leave out?
+    back: >-
+      About `$1/e$`: each record is missed by every draw with probability `$(1 - 1/n)^n$`.
+  - id: crd_6lvpa5
+    front: >-
+      A batch's per-record losses are added up. What should the total be divided by?
+    back: >-
+      The number of rows in that batch. Dividing by the size asked for shrinks the average of
+      the last, shorter batch.

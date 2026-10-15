@@ -1,0 +1,9 @@
+id: stg_6cuhlc
+kind: build
+title: Weighted sampling
+builds: Your `sampling.py` from stage 2.
+file: sampling.py
+packages: [numpy]
+minutes: 45
+chart:
+  title: Malignant records in a batch
