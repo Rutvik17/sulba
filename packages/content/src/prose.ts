@@ -18,6 +18,7 @@ export interface RenderedProse {
 }
 
 const inline = /^\$(.+)\$$/s;
+const tag = /\{%.*?%\}/s;
 const figure = /\\fig\{([A-Za-z_]\w*)\}/g;
 const placeholder = /<sulba-formula index="(\d+)"><\/sulba-formula>/g;
 const { Tag } = Markdoc;
@@ -66,6 +67,12 @@ export function renderProse(
     return displayMode ? scrolling(placed) : placed;
   };
 
+  // Markdoc reads no tags inside code, so a figure there would reach the page as written.
+  const shownAsWritten = (code: string) => {
+    const found = tag.exec(code);
+    if (found) errors.push(`Code shows ${found[0]} as written.`);
+  };
+
   const config: Config = {
     variables: { fig: figures },
     nodes: {
@@ -79,6 +86,7 @@ export function renderProse(
         transform(node) {
           const { content, language } = node.attributes as { content: string; language?: string };
           if (language === 'math') return formula(content, true);
+          shownAsWritten(content);
           const code = new Tag('code', language ? { 'data-language': language } : {}, [content]);
           return new Tag('pre', {}, [code]);
         },
@@ -88,7 +96,9 @@ export function renderProse(
         transform(node) {
           const { content } = node.attributes as { content: string };
           const math = inline.exec(content);
-          return math ? formula(math[1] ?? '', false) : new Tag('code', {}, [content]);
+          if (math) return formula(math[1] ?? '', false);
+          shownAsWritten(content);
+          return new Tag('code', {}, [content]);
         },
       },
     },

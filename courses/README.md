@@ -139,6 +139,7 @@ A table wider than the text scrolls sideways too. A table's header row is set in
 Numbers are never typed. `figures.py` defines `figures()`, which returns each number as a string, formatted as the prose shows it. It runs beside the lab's data. A formula shows one as `\fig{name}`, and a sentence as `{% $fig.name %}`. The checks fail on any of these:
 
 - a formula that doesn't render;
+- a tag inside code, which code shows as written, so a figure goes outside the code;
 - a figure the prose names that `figures.py` doesn't give, or one it gives that the prose never shows;
 - figures that differ between Pyodide and CPython;
 - a character in a formula that the math font has no glyph for.
