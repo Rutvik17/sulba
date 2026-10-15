@@ -25,13 +25,14 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
         checks/test_*.py    a Catch or Ship stage's checks, written like tests
         figures.py          optional: computes the numbers the stage's prose shows
         chart.py            optional: draws the stage's chart with the learner's code
+        cards.yaml          optional: the stage's review cards
 ```
 
 A folder's name is its address in the URL. Order comes from the YAML files, which must list every folder there is and nothing else. A file the course doesn't use is an error. Hidden files and folders, whose names start with a dot, are left out.
 
 ## Ids
 
-Every course, level, module, lab, stage and test has a permanent id: a prefix (`crs`, `lvl`, `mod`, `lab`, `stg`, `tst`), an underscore and six lowercase letters or digits, such as `stg_8k2m4q`. Progress is stored against ids, so an id is never changed or reused, even when its folder is renamed or moved.
+Every course, level, module, lab, stage, test and review card has a permanent id: a prefix (`crs`, `lvl`, `mod`, `lab`, `stg`, `tst`, `crd`), an underscore and six lowercase letters or digits, such as `stg_8k2m4q`. Progress and reviews are stored against ids, so an id is never changed or reused, even when its folder is renamed or moved.
 
 ## Stages
 
@@ -103,6 +104,19 @@ checks:
 A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
 
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
+
+## Review cards
+
+Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:
+
+```yaml
+cards:
+  - id: crd_4n7q2x
+    front: What does the sigmoid of a score give?
+    back: The probability that the sample is in class 1.
+```
+
+A card asks one thing, and its answer is short enough to recall in full. Reviews are stored against a card's id, so a card that is reworded keeps its id and its schedule, and a card that asks something else takes a new id. Changing a card leaves its stage's version as it was.
 
 ## Prose, formulas and numbers
 

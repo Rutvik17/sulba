@@ -5,6 +5,7 @@
   "exports": {
     "./session": "./src/session.ts",
     "./outbox": "./src/outbox.ts",
+    "./reviews": "./src/reviews.ts",
     "./client": "./src/client.ts",
     "./account": "./src/account.ts",
     "./sync": "./src/sync.ts",

@@ -16,8 +16,11 @@ const signIn = ['/sign-in/', '/account/'].includes(here)
       <span>Sulba</span>
     </a>
     <div class="end">
-      <a class="account signed-out" href={signIn}>Sign in</a>
-      <a class="account signed-in" href="/account/">Account</a>
+      <a class="link" href="/review/" aria-current={here === '/review/' ? 'page' : undefined}>
+        Review
+      </a>
+      <a class="link signed-out" href={signIn}>Sign in</a>
+      <a class="link signed-in" href="/account/">Account</a>
       <ThemeControl />
     </div>
   </div>
@@ -60,7 +63,7 @@ const signIn = ['/sign-in/', '/account/'].includes(here)
   margin-left: auto;
 }
 
-.account {
+.link {
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
@@ -68,7 +71,8 @@ const signIn = ['/sign-in/', '/account/'].includes(here)
   text-decoration: none;
 }
 
-.account:hover {
+.link:hover,
+.link[aria-current="page"] {
   background: var(--line);
 }
 

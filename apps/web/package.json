@@ -26,7 +26,8 @@
     "@sulba/ui": "workspace:*",
     "astro": "7.3.7",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "ts-fsrs": "5.4.2"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",

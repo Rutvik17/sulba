@@ -7,7 +7,7 @@ const providers = [
   {
     name: 'Supabase, Inc.',
     href: 'https://supabase.com/privacy',
-    does: 'Runs accounts and sign-in, and keeps your progress',
+    does: 'Runs accounts and sign-in, and keeps your progress and reviews',
     where: 'United States',
   },
   {
@@ -90,6 +90,12 @@ const providers = [
       off. Your code runs in your browser and isn't sent to us. It stays on your device: Reset
       removes a stage's code, and clearing your browser's data for sulba.dev removes all of it.
     </li>
+    <li>
+      <strong>Your reviews.</strong>{' '}
+      The Review page keeps each answer you give a card, which card, how you rated it and when, in
+      your browser (as <code>sulba:reviews</code>), so it can work out when each card is due again.
+      Clearing your browser's data for sulba.dev removes them.
+    </li>
     <li><strong>Fonts.</strong> The site's fonts come from sulba.dev itself.</li>
   </ul>
 
@@ -115,6 +121,12 @@ const providers = [
       time estimates are right.
     </li>
     <li>
+      <strong>Your reviews.</strong>{' '}
+      While you're signed in, the Review page sends your account the reviews your browser keeps,
+      including those from before you signed in, and brings back those from your other devices, so
+      each card is due at the same time on every device.
+    </li>
+    <li>
       <strong>In your browser.</strong>{' '}
       Your browser keeps your session, and the one-time code that started each sign-in, under keys
       that start with <code>sulba:session</code>. Attempts not yet sent, such as while you're
@@ -125,9 +137,9 @@ const providers = [
     </li>
     <li>
       <strong>Closing your account.</strong>{' '}
-      We keep your account and progress until you close your account. Closing it, on the{' '}
-      <a href="/account/">Account page</a>, deletes both at once. What your browser keeps on its
-      own, such as your code, stays until you clear it.
+      We keep your account, progress and reviews until you close your account. Closing it, on the{' '}
+      <a href="/account/">Account page</a>, deletes them all at once. What your browser keeps on its
+      own, such as your code and reviews, stays until you clear it.
     </li>
   </ul>
 
@@ -192,7 +204,7 @@ const providers = [
   <h2>Our legal basis</h2>
   <ul>
     <li>
-      <strong>Your account and progress:</strong>{' '}
+      <strong>Your account, progress and reviews:</strong>{' '}
       to provide the account you asked for.
     </li>
     <li>
@@ -208,10 +220,10 @@ const providers = [
 
   <h2>Where it's kept</h2>
   <p>
-    Your account and progress are kept in the United States by Supabase. Your message is processed
-    in the United States by Resend and kept there by Apple, and requests pass through Cloudflare's
-    network. Information kept outside Canada may be accessible to the courts and authorities of the
-    country where it's kept.
+    Your account, progress and reviews are kept in the United States by Supabase. Your message is
+    processed in the United States by Resend and kept there by Apple, and requests pass through
+    Cloudflare's network. Information kept outside Canada may be accessible to the courts and
+    authorities of the country where it's kept.
   </p>
 
   <h2>Your rights</h2>

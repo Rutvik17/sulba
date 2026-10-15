@@ -99,6 +99,21 @@ export interface LabView {
   readonly stages: readonly StageView[];
 }
 
+/** A review card, as the Review page shows it (decision record 20). */
+export interface CardView {
+  readonly id: string;
+  /** The id of the stage whose pass brings the card into review. */
+  readonly stage: string;
+  /** Its question and its answer, as HTML made like the rest of the prose. */
+  readonly front: string;
+  readonly back: string;
+}
+
+/** A lab as the site stores it: what its page shows, and its stages' review cards. */
+export interface LabEntry extends LabView {
+  readonly cards: readonly CardView[];
+}
+
 type Figures = ReadonlyMap<string, Readonly<Record<string, string>>>;
 
 function stageView(stage: Stage, figures: Figures): StageView {
@@ -149,7 +164,17 @@ function stageView(stage: Stage, figures: Figures): StageView {
   };
 }
 
-export function labViews(course: Course, figures: Figures = new Map()): LabView[] {
+function cardViews(stage: Stage, figures: Figures): CardView[] {
+  const values = figures.get(stage.id) ?? {};
+  return stage.cards.map(({ id, front, back }) => ({
+    id,
+    stage: stage.id,
+    front: renderProse(front, values).html,
+    back: renderProse(back, values).html,
+  }));
+}
+
+export function labEntries(course: Course, figures: Figures = new Map()): LabEntry[] {
   return course.levels.flatMap((level) =>
     level.modules.flatMap((module) =>
       module.labs.map((lab) => ({
@@ -163,6 +188,7 @@ export function labViews(course: Course, figures: Figures = new Map()): LabView[
         data: lab.data.map(({ text: _, ...set }) => ({ ...set, path: `data/${set.file}` })),
         files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
         stages: lab.stages.map((stage) => stageView(stage, figures)),
+        cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),
       })),
     ),
   );
@@ -222,7 +248,7 @@ export function labsLoader(): Loader {
         const figures = await figuresOf(courses, python);
         store.clear();
         for (const course of courses) {
-          for (const lab of labViews(course, figures))
+          for (const lab of labEntries(course, figures))
             store.set({ id: lab.path, data: { ...lab } });
         }
       };

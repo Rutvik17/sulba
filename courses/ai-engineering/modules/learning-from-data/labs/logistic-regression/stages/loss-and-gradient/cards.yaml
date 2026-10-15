@@ -1,0 +1,20 @@
+cards:
+  - id: crd_1yjfie
+    front: >-
+      What does cross-entropy cost a sample with label 1 that was given a probability `$p$`?
+    back: >-
+      `$-\ln p$`: 0 for a sure, right answer, growing without limit as a wrong answer becomes
+      sure.
+  - id: crd_238pf3
+    front: >-
+      In logistic regression, what is the derivative of a sample's cross-entropy with respect to
+      its score?
+    back: >-
+      The error, `$p - y$`. The sigmoid's slope, `$p(1 - p)$`, cancels the denominator of
+      `$\partial \ell / \partial p$`.
+  - id: crd_3ld1ag
+    front: >-
+      How do you check a gradient you worked out?
+    back: >-
+      Against central differences: move one weight by a small `$h$` each way, and divide the
+      change in the loss by `$2h$`.

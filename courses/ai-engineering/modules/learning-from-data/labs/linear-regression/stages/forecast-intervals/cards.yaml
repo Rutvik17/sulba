@@ -1,0 +1,20 @@
+cards:
+  - id: crd_uhxiwi
+    front: >-
+      Why are the misses for a forecast interval measured on hours the model wasn't fitted to?
+    back: >-
+      On the hours a model was fitted to, its misses tend to be smaller, so an interval built
+      from them would be too narrow.
+  - id: crd_vrkrw2
+    front: >-
+      From `$n$` held-back misses, which one sets the interval's half-width for a coverage of
+      `$1 - \alpha$`?
+    back: >-
+      The miss size at rank `$k = \lceil (n + 1)(1 - \alpha) \rceil$`, counting from the
+      smallest. When `$k$` is more than `$n$`, the interval has no end.
+  - id: crd_yskh1n
+    front: >-
+      What does an interval's coverage promise?
+    back: >-
+      That over hours like the held-back ones, at least that share of the outputs fall inside
+      their intervals, on average. It isn't promised for every kind of hour.

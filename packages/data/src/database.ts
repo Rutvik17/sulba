@@ -101,6 +101,34 @@ export type Database = {
         };
         Relationships: [];
       };
+      reviews: {
+        Row: {
+          card_id: string;
+          created_at: string;
+          id: string;
+          learner_id: string;
+          rating: number;
+          reviewed_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          card_id: string;
+          created_at?: string;
+          id: string;
+          learner_id?: string;
+          rating: number;
+          reviewed_at: string;
+        };
+        Update: {
+          card_id?: string;
+          created_at?: string;
+          id?: string;
+          learner_id?: string;
+          rating?: number;
+          reviewed_at?: string;
+        };
+        Relationships: [];
+      };
       study_days: {
         Row: {
           day: string;

@@ -47,7 +47,9 @@ export function duplicateIds(courses: readonly Course[]): Problem[] {
         for (const lab of module.labs) {
           note(lab.id, `${folder}/labs/${lab.slug}/lab.yaml`);
           for (const stage of lab.stages) {
-            note(stage.id, `${folder}/labs/${lab.slug}/stages/${stage.slug}/stage.yaml`);
+            const at = `${folder}/labs/${lab.slug}/stages/${stage.slug}`;
+            note(stage.id, `${at}/stage.yaml`);
+            for (const card of stage.cards) note(card.id, `${at}/cards.yaml`);
           }
         }
       }

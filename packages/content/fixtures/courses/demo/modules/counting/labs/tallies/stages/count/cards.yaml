@@ -1,0 +1,7 @@
+cards:
+  - id: crd_demo01
+    front: How many of the poll's {% $fig.total %} votes are yes?
+    back: '{% $fig.yes %}.'
+  - id: crd_demo02
+    front: What does `count` add up?
+    back: One for each choice that matches, so `$\operatorname{count}(c) = \sum_{i=1}^{n} [\, x_i = c \,]$`.

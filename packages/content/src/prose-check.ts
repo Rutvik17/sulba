@@ -1,7 +1,8 @@
 // Checks a course's prose once each stage's figures.py has run: the figures come out the same in
 // every runtime, every formula renders, every figure the prose names exists and every figure is
-// shown, and the math font has a glyph for every character a formula draws. A Catch stage's prose
-// includes what each problem costs and its fix, and a Ship stage's the text of each check.
+// shown, and the math font has a glyph for every character a formula draws. A stage's prose
+// includes its review cards, a Catch stage's what each problem costs and its fix, and a Ship
+// stage's the text of each check.
 import type { Figures, RunRequest } from '@sulba/lab/protocol';
 import { drawnCharacters } from './glyphs.ts';
 import type { Course, Lab, Problem, Stage } from './load.ts';
@@ -106,6 +107,10 @@ export function proseProblems(
           true,
         ]),
       ),
+      ...stage.cards.flatMap(({ front, back }): [string, string][] => [
+        ['cards.yaml', front],
+        ['cards.yaml', back],
+      ]),
     ];
     for (const [file, text, oneLine] of pieces) {
       const rendered = renderProse(text, values, { oneLine: oneLine ?? false });

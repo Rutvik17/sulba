@@ -1,6 +1,7 @@
 // The days a learner spent time in a lab, which Postgres keeps from their attempts (decision
 // record 18), and the streak they make. Days are dates on the learner's own calendar.
 import type { Client } from './client.ts';
+import { readAll } from './rows.ts';
 
 /** A day the learner spent time in a lab, and how long. */
 export interface StudyDay {
@@ -15,26 +16,14 @@ export interface Streak {
   readonly last: string | null;
 }
 
-/** The most rows the Data API returns for one request, as Supabase sets it by default. */
-const page = 1000;
-
 /**
  * Every day the learner spent time in a lab, oldest first. A day whose attempts carry no time,
  * such as a pass this browser held from before the learner signed in, isn't one.
  */
-export async function readStudyDays(client: Client): Promise<StudyDay[]> {
-  const days: StudyDay[] = [];
-  for (;;) {
-    const { data, error } = await client
-      .from('study_days')
-      .select('day, seconds')
-      .gt('seconds', 0)
-      .order('day')
-      .range(days.length, days.length + page - 1);
-    if (error) throw error;
-    days.push(...data);
-    if (data.length < page) return days;
-  }
+export function readStudyDays(client: Client): Promise<StudyDay[]> {
+  return readAll((from, to) =>
+    client.from('study_days').select('day, seconds').gt('seconds', 0).order('day').range(from, to),
+  );
 }
 
 /**
