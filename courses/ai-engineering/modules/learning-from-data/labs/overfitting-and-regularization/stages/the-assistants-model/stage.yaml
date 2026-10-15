@@ -1,0 +1,56 @@
+id: stg_ie3o6k
+kind: catch
+title: The assistant's model
+builds: Your `model.py` from stages 1 to 3.
+file: strength.py
+packages: [numpy, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_cse1qk
+    title: It penalized too little
+    cost: >-
+      `Ridge` penalizes the sum of the squared errors, not their mean, so on the
+      {% $fig.n %} training tests `alpha=penalty` was {% $fig.n %} times weaker than the
+      penalty you validated. Its strengths differed from your model's by up to
+      {% $fig.alpha_gap %} MPa.
+    fix: >-
+      The fix: `alpha=penalty * rows`, for `rows` training tests.
+    edit:
+      replace: "Ridge(alpha=penalty),"
+      with: "Ridge(alpha=penalty * rows),"
+  - check: tst_x4pxul
+    title: It chose by the training mixes
+    cost: >-
+      It scored each degree and penalty on the tests it had just fit, where the most flexible
+      model always looks best. It chose degree {% $fig.train_degree %} with a penalty of
+      {% $fig.train_penalty %}, whose validation RMSE is {% $fig.train_choice_val %} MPa,
+      against {% $fig.best_val %} MPa for degree {% $fig.best_degree %} with
+      {% $fig.best_penalty %}, the validation mixes' choice.
+    fix: >-
+      The fix: score each on the validation mixes, `X_val` and `y_val`.
+    edit:
+      replace: "root_mean_squared_error(y, fitted.predict(X))"
+      with: "root_mean_squared_error(y_val, fitted.predict(X_val))"
+  - check: tst_rhg4fy
+    title: It held out tests, not mixes
+    cost: >-
+      `train_test_split` held out a fifth of the tests at random, so {% $fig.twins %} of the
+      {% $fig.held %} held-out tests had their mix among the tests it fit on. The error it
+      gave, {% $fig.row_error %} MPa, measured how well the model remembers those mixes: on
+      mixes it hasn't seen, the error is {% $fig.mix_error %} MPa.
+    fix: >-
+      The fix: hold out whole mixes, with `GroupShuffleSplit` and the mixes as its groups.
+    edit:
+      replace: "return model_selection.train_test_split(tests, test_size=0.2, random_state=0)"
+      with: "held = model_selection.GroupShuffleSplit(test_size=0.2, random_state=0)\n    return next(held.split(tests, groups=mixes))"
+  - check: tst_1sbebq
+    title: It scored tests it had fit
+    cost: >-
+      It fit on every test, the held-out ones included, and then scored the held-out ones, so
+      it gave {% $fig.seen_error %} MPa for tests it had already fit, against
+      {% $fig.mix_error %} MPa on mixes it hadn't.
+    fix: >-
+      The fix: fit only on the tests `split` keeps for fitting, `X[fit]` and `y[fit]`.
+    edit:
+      replace: "fitted = model(degree, penalty, len(y)).fit(X, y)\n    return"
+      with: "fitted = model(degree, penalty, len(fit)).fit(X[fit], y[fit])\n    return"

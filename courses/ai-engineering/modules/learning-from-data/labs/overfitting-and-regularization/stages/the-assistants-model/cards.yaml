@@ -1,0 +1,20 @@
+cards:
+  - id: crd_mag0nt
+    front: >-
+      Why does choosing a model by its training error go wrong?
+    back: >-
+      The training error always favors the most flexible model, which fits the training data's
+      noise. A choice needs data the fit never saw, such as a validation set.
+  - id: crd_ac2zg0
+    front: >-
+      When the data has several rows per unit, such as tests of one mix, how should rows be held
+      out?
+    back: >-
+      By whole units, with every row of a unit on the same side, as `GroupShuffleSplit` does.
+      Otherwise the error measures memory of the units, not prediction for new ones.
+  - id: crd_mmjioq
+    front: >-
+      Why does a mistake that leaks training data into scoring often go unnoticed?
+    back: >-
+      Nothing fails: the code still returns numbers, and they look better than they should, so
+      the mistake hides behind a good result.
