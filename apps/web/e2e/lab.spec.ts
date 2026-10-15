@@ -116,6 +116,15 @@ test('the brief says what its stage builds on', async ({ page }) => {
   );
 });
 
+test('a name too long for its line breaks to fit the brief', async ({ page }) => {
+  await openLab(page);
+  const brief = page.getByRole('tabpanel', { name: 'Brief' });
+  const panel = await brief.boundingBox();
+  const name = await brief.locator('code', { hasText: 'count([' }).boundingBox();
+  if (!panel || !name) throw new Error('The brief and its code are on screen.');
+  expect(name.x + name.width).toBeLessThanOrEqual(panel.x + panel.width);
+});
+
 test('the solution opens after the first run', async ({ page }) => {
   await openLab(page);
   const solution = page.getByRole('tab', { name: 'Solution' });
