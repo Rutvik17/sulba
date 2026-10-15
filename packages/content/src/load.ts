@@ -385,12 +385,7 @@ class Reader {
     },
   ) {
     const path = join(folder, 'stage.yaml');
-    const found = new Map<string, string>();
-    for (const [name, text] of Object.entries(checks)) {
-      for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
-        found.set(id as string, name);
-      }
-    }
+    const found = checkIds(checks);
     named.forEach(({ check }, index) => {
       const at = `${say.field}.${index}.check`;
       if (!found.has(check)) this.problem(path, `${at}: No check in checks/ has the id ${check}.`);
@@ -536,6 +531,17 @@ function hidden(name: string): boolean {
 }
 
 /** The courses in the folder of courses: each folder in it that isn't hidden. */
+/** The id of each check in a stage's check files, and the file it's in. */
+export function checkIds(checks: Readonly<Record<string, string>>): Map<string, string> {
+  const found = new Map<string, string>();
+  for (const [name, text] of Object.entries(checks)) {
+    for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
+      found.set(id as string, name);
+    }
+  }
+  return found;
+}
+
 export async function courseSlugs(root: string): Promise<string[]> {
   return (await readdir(root, { withFileTypes: true }))
     .filter((entry) => entry.isDirectory() && !hidden(entry.name))
