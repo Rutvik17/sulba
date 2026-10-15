@@ -1,0 +1,18 @@
+cards:
+  - id: crd_9nlyxb
+    front: >-
+      Halve the step of a central difference. What happens to its truncation error?
+    back: >-
+      It falls to about a quarter: it is in proportion to the square of the step. A forward
+      difference's only halves.
+  - id: crd_b2r6zh
+    front: >-
+      Why does a finite difference get worse when its step is too small?
+    back: >-
+      Each value of f is rounded to about machine epsilon times its size, and dividing that
+      rounding by a tiny step makes it large.
+  - id: crd_tza1n4
+    front: >-
+      About what step suits a central difference in float64?
+    back: >-
+      The cube root of machine epsilon, `$\fig{cbrt_eps}$`, times |x| when |x| is above 1.

@@ -1,0 +1,37 @@
+id: stg_no6aou
+kind: ship
+title: Checking a large model
+builds: Your `gradients.py` from stage 3.
+file: gradients.py
+packages: [numpy]
+minutes: 50
+checks:
+  - check: tst_hwdnqs
+    title: "Fast on {% $fig.big_parameters %} parameters"
+    requires: >-
+      For the network with {% $fig.big_hidden %} hidden units, `gradient_agrees` must check
+      the gradient of all {% $fig.big_parameters %} parameters in under 1 second.
+    failure: >-
+      The limit is 1 second, and a check that evaluates the loss for each parameter can't
+      keep to it.
+  - check: tst_uimqfw
+    title: The assistant's mistakes
+    requires: >-
+      Given each of the three wrong gradients from stage 4, and the first again with the loss
+      `$\fig{small_scale}$` times as large, `gradient_agrees` must say they don't agree.
+    failure: >-
+      It accepted a wrong gradient.
+  - check: tst_kogsg6
+    title: One wrong slope among many
+    requires: >-
+      A gradient wrong in a single one of the {% $fig.parameters %} parameters, by
+      {% $fig.one_off %}, or with only the output bias's sign flipped, must not agree.
+    failure: >-
+      It accepted a gradient wrong in a single parameter.
+  - check: tst_qkkinj
+    title: Right gradients at any scale
+    requires: >-
+      The right gradient must agree with a loss `$\fig{small_scale}$` or `$\fig{big_scale}$`
+      times as large, and at zero weights.
+    failure: >-
+      It rejected a right gradient.

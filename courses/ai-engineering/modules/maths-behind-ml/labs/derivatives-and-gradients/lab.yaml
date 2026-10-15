@@ -1,0 +1,18 @@
+id: lab_4i4v0j
+title: Derivatives and gradients
+summary: >-
+  Estimate derivatives from finite differences in NumPy, find the step where rounding takes
+  over, work out the gradient of the clinic's first neural network by the chain rule, and
+  check a large model's gradient along random directions.
+data:
+  - file: breast-cancer.csv
+    title: Breast Cancer Wisconsin (Diagnostic)
+    creators: [William Wolberg, Olvi Mangasarian, Nick Street, W. Street]
+    url: https://doi.org/10.24432/C5DW2B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Split into a training set and a test set, with malignant coded as 1 and each column
+      named.
+stages: [derivatives, gradients, the-chain-rule, the-assistants-gradient, checking-a-large-model]

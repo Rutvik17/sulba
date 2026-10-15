@@ -1,0 +1,19 @@
+cards:
+  - id: crd_815q27
+    front: >-
+      What is element i of a function's gradient?
+    back: >-
+      The function's slope as element i of its input alone changes: its partial derivative
+      along that element.
+  - id: crd_1j64j2
+    front: >-
+      What is the gradient of the distance from z to a fixed point r?
+    back: >-
+      `$(z - r)/\lVert z - r \rVert$`: the vector of length 1 that points away from r.
+  - id: crd_1y3ou1
+    front: >-
+      Why compare two gradients by their relative error, not by the length of their
+      difference?
+    back: >-
+      The length of the difference is small for any small gradient, right or wrong. As a
+      share of the longer gradient, it says how many digits agree at any scale.

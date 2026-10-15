@@ -1,0 +1,9 @@
+id: stg_3y0oyu
+kind: build
+title: Derivatives
+builds: A new `gradients.py`.
+file: gradients.py
+packages: [numpy, scipy]
+minutes: 35
+chart:
+  title: The step and the error

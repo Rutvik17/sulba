@@ -1,0 +1,17 @@
+cards:
+  - id: crd_pulsmr
+    front: >-
+      Why can a gradient check at zero weights pass a wrong gradient?
+    back: >-
+      Many terms are 0 there whatever the code says, such as tanh's outputs and the weights
+      the decay acts on, so mistakes in them don't show. Check at random weights.
+  - id: crd_x036vc
+    front: >-
+      What does weight decay of `$\frac{l_2}{2} w^2$` add to a weight's gradient?
+    back: >-
+      `$l_2 w$`: the weight times `l2`.
+  - id: crd_g31rc3
+    front: >-
+      How do you work out `$\log(1 + e^s)$` for large scores without overflow?
+    back: >-
+      `np.logaddexp(0, s)`, which stays finite where `np.exp(s)` overflows.
