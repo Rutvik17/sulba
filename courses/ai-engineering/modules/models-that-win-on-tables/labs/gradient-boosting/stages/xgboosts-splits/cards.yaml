@@ -1,0 +1,19 @@
+cards:
+  - id: crd_doxxe2
+    front: >-
+      What weight does XGBoost give a leaf?
+    back: >-
+      `$-G / (H + \lambda)$`: the sum of its rows' gradients over the sum of their hessians
+      plus lambda, with the sign turned.
+  - id: crd_3m06ny
+    front: >-
+      Why does XGBoost's lambda shrink a light leaf's weight more than a heavy one's?
+    back: >-
+      It's added to the leaf's sum of hessians, which is small for a light leaf, so it changes
+      that leaf's ratio much more.
+  - id: crd_e15sof
+    front: >-
+      What does XGBoost's min_child_weight count?
+    back: >-
+      The sum of the hessians in each part of a split, so a row whose share is near 0 or 1
+      counts for little.

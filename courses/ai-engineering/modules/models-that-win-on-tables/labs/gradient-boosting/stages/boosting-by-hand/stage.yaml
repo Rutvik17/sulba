@@ -1,0 +1,7 @@
+id: stg_pni5v1
+kind: build
+title: Boosting by hand
+builds: A new `boost.py`.
+file: boost.py
+packages: [numpy, pandas, scipy, scikit-learn]
+minutes: 30

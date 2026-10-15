@@ -1,0 +1,7 @@
+id: stg_jzgunu
+kind: build
+title: XGBoost's splits
+builds: Your `boost.py` from stages 1 and 2.
+file: boost.py
+packages: [numpy, pandas, scipy, scikit-learn, xgboost]
+minutes: 30

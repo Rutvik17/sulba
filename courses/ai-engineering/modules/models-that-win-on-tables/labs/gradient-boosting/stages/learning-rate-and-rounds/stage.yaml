@@ -1,0 +1,14 @@
+id: stg_gjwiuy
+kind: build
+title: Learning rate and rounds
+builds: Your `boost.py` from stage 1.
+file: boost.py
+packages: [numpy, pandas, scipy, scikit-learn, xgboost]
+minutes: 30
+chart:
+  title: Log loss by round
+  sliders:
+    - name: rate
+      label: Learning rate
+      stops: [0.03, 0.1, 0.3, 1.0]
+      value: 0.1

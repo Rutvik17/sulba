@@ -1,0 +1,62 @@
+id: stg_lxaxy5
+kind: catch
+title: The assistant's ranking
+builds: Your `boost.py` from stages 1 to 3.
+file: ranking.py
+packages: [numpy, pandas, scikit-learn, xgboost]
+minutes: 40
+problems:
+  - check: tst_7coqi4
+    title: It coded each set of calls its own way
+    cost: >-
+      `pd.factorize` numbers a column's categories in the order they first appear in the calls
+      it's given, so each set of calls had codes of its own: a job coded 0 was the first
+      call's, {% $fig.first_train %} among the training calls and {% $fig.first_test %} among
+      the test calls. The model ranked the test calls at an AUC of {% $fig.factorized %},
+      where codes from the training calls give {% $fig.auc %}, and a client scored alone had
+      every category coded 0.
+    fix: >-
+      The fix: codes from `categories`, the training calls' categories, so that a code means
+      the same category in any calls, and a category the training calls never had is missing.
+    edit:
+      replace: "        codes, _ = pd.factorize(calls[name])\n        columns.append(codes.astype(float))\n"
+      with: "        codes = {category: code for code, category in enumerate(categories[name])}\n        columns.append(calls[name].map(codes).to_numpy(dtype=float))\n"
+  - check: tst_2yex6u
+    title: It stopped early on the training calls
+    cost: >-
+      XGBoost stops early on the last set in `eval_set`, and the last was the training calls,
+      whose log loss fell every round: the model kept all {% $fig.rounds %} rounds, where the
+      validation calls choose {% $fig.kept %}. On the test calls its log loss was
+      {% $fig.overfit_loss %} and its AUC {% $fig.overfit_auc %}, against {% $fig.loss %} and
+      {% $fig.auc %}.
+    fix: >-
+      The fix: the validation calls last in `eval_set`, so that early stopping watches them.
+    edit:
+      replace: "eval_set=[(V, said_yes(validation)), (X, y)]"
+      with: "eval_set=[(X, y), (V, said_yes(validation))]"
+  - check: tst_w6f60p
+    title: It weighted the yes calls
+    cost: >-
+      `scale_pos_weight` counted each yes call as {% $fig.weight %} calls, and the chances went
+      up with it: on the {% $fig.test %} test calls they add up to {% $fig.weighted_sum %}
+      subscriptions, where {% $fig.subscribed %} clients subscribed, and the unweighted
+      model's add up to {% $fig.sum %}. A call centre that plans by the chances would have
+      planned for {% $fig.times %} times the subscriptions it got.
+    fix: >-
+      The fix: no `scale_pos_weight`, so that a yes call and a no call weigh the same, and the
+      chances add up to about the subscriptions.
+    edit:
+      replace: "        # Few calls say yes: this weighs the yes calls as much as the no calls.\n        scale_pos_weight=(y == 0).sum() / y.sum(),\n"
+      with: ""
+  - check: tst_w5rvyv
+    title: It ranked the clients by a yes or a no
+    cost: >-
+      `predict` gives a client 1 when its chance is above {% $fig.threshold %} and 0 when it
+      isn't, so the list put the {% $fig.ones %} test clients with a 1 first and the other
+      {% $fig.zeros %} after them, tied. Ranked that way, the test calls' AUC is
+      {% $fig.labels_auc %}, where the chances give {% $fig.auc %}.
+    fix: >-
+      The fix: `predict_proba`, whose second column is each client's chance of yes.
+    edit:
+      replace: "model.predict(encode(clients, categories))"
+      with: "model.predict_proba(encode(clients, categories))[:, 1]"
