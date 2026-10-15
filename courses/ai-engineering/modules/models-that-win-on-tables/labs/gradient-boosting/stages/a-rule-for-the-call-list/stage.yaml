@@ -1,0 +1,41 @@
+id: stg_alqyr8
+kind: ship
+title: A rule for the call list
+builds: Your `boost.py` from stages 1 to 3.
+file: boost.py
+packages: [numpy, pandas, scikit-learn, lightgbm]
+minutes: 40
+checks:
+  - check: tst_4ppesb
+    title: Never moved up for another call
+    requires: >-
+      With the rule, no validation client gets a higher chance with up to {% $fig.most %} calls
+      more.
+    failure: >-
+      A client's chance rose with more calls. With the rule, `monotone_constraints` holds `-1`
+      for `campaign`, in the order of the frame's columns.
+  - check: tst_ijrezv
+    title: The clients moved up without the rule
+    requires: >-
+      Without the rule, `raised` counts the {% $fig.free_raised %} of the
+      {% $fig.validation %} validation clients that up to {% $fig.more %} calls more would move
+      up.
+    failure: >-
+      The count differs. A client counts once if its chance with any number of calls more, up
+      to `more`, is above its chance as it is, and an equal chance doesn't count.
+  - check: tst_9j8dk5
+    title: A category the training calls never had
+    requires: >-
+      A test client whose `default` is `yes`, which no training call has, gets the chance the
+      model gives it with `default` missing.
+    failure: >-
+      Its chance differs. Give LightGBM each category column as a pandas category: it codes
+      the categories of the calls it scores by the training calls', and a category they never
+      had as missing.
+  - check: tst_c3jxwp
+    title: The clients left as they were
+    requires: >-
+      After `raised`, the validation calls hold the values they held before.
+    failure: >-
+      The calls changed. Add the calls to a copy of the clients, never to the clients
+      themselves.
