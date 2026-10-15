@@ -4,7 +4,7 @@
 name = "sulba-lab"
 version = "0"
 requires-python = "==3.14.2"
-dependencies = ["numpy==2.4.6", "pytest==9.0.2", "scikit-learn==1.8.0", "scipy==1.18.0"]
+dependencies = ["numpy==2.4.6", "pandas==3.0.2", "pytest==9.0.2", "scikit-learn==1.8.0", "scipy==1.18.0"]
 
 [dependency-groups]
 dev = ["ruff==0.16.10"]
@@ -12,7 +12,7 @@ dev = ["ruff==0.16.10"]
 [tool.uv]
 package = false
 required-version = "==0.12.23"
-# pytest's and scikit-learn's own dependencies, at the versions Pyodide ships. A test fails if
+# pytest's, pandas' and scikit-learn's own dependencies, at the versions Pyodide ships. A test fails if
 # any package in uv.lock and in Pyodide's lock file differ.
 constraint-dependencies = [
   "iniconfig==2.3.0",
@@ -20,7 +20,10 @@ constraint-dependencies = [
   "packaging==26.1",
   "pluggy==1.6.0",
   "pygments==2.20.0",
+  "python-dateutil==2.9.0.post0",
+  "six==1.17.0",
   "threadpoolctl==3.6.0",
+  "tzdata==2025.3",
 ]
 
 [tool.pytest.ini_options]
