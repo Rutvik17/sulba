@@ -1,0 +1,7 @@
+id: stg_tbskv3
+kind: build
+title: Least squares
+builds: Your `model.py` from stage 1.
+file: model.py
+packages: [numpy, scikit-learn]
+minutes: 45

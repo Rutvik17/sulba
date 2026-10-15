@@ -1,0 +1,37 @@
+id: stg_seqt2w
+kind: ship
+title: Forecast intervals
+builds: Your `forecaster.py` from stage 4.
+file: forecaster.py
+packages: [numpy, scikit-learn]
+minutes: 45
+chart:
+  title: Coverage
+  sliders:
+    - name: coverage
+      label: Coverage asked for
+      min: 0.5
+      max: 0.99
+      step: 0.01
+      value: 0.9
+checks:
+  - check: tst_dfk68y
+    title: Covers at least 90% of new hours
+    requires: >-
+      With 90% intervals, the output of at least 90% of the test hours must fall inside its
+      hour's interval.
+    failure: >-
+      Fewer than 90% of the test hours fell inside their intervals, so the plant would be
+      caught out more often than it was told.
+  - check: tst_fjzvod
+    title: No more than 15 MW wide
+    requires: >-
+      A 90% interval must be no more than 15 MW wide, or it is too wide to schedule with.
+    failure: >-
+      The interval is wider than 15 MW.
+  - check: tst_4a0lxi
+    title: One hour at a time
+    requires: >-
+      `intervals` must give one low and one high end for a single hour of weather.
+    failure: >-
+      It didn't give one interval for one hour.
