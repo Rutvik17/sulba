@@ -271,6 +271,7 @@ h3 {
 
 .prose {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   min-width: 0;
   max-width: 640px;
@@ -283,7 +284,19 @@ h3 {
 
 .prose :global(article) {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
+}
+
+.prose :global([data-scroll]) {
+  display: flex;
+  overflow-x: auto;
+  /* A formula's lines of text reach a little above and below it, which mustn't scroll. */
+  overflow-y: hidden;
+}
+
+.prose :global([data-scroll] > math) {
+  margin-inline: auto;
 }
 
 .code :global(.editor-demo) {

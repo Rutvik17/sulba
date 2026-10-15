@@ -8,6 +8,7 @@ import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
+import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { ChartPanel } from './ChartPanel';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
@@ -595,6 +596,15 @@ function Problems({ problems, review }: { problems: readonly ProblemView[]; revi
 
 /** Prose made from a course's Markdoc files when the site was built. */
 function Prose({ html }: { html: string }) {
-  // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
-  return <div className={css.prose} dangerouslySetInnerHTML={{ __html: html }} />;
+  const prose = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: html isn't read, but each new html puts new boxes in the page.
+  useEffect(() => (prose.current ? keyboardScrollBoxes(prose.current) : undefined), [html]);
+  return (
+    <div
+      ref={prose}
+      className={css.prose}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
 }

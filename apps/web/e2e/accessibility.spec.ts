@@ -190,6 +190,20 @@ for (const scheme of ['dark', 'light'] as const) {
     expect(results.violations).toEqual([]);
   });
 
+  test(`an explanation with a formula wider than its panel has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
+    await page.goto('/demo/counting/tallies/?stage=share');
+    await page.getByRole('tab', { name: 'Explanation' }).click();
+    await expect(page.locator('[data-scroll]')).toHaveAttribute('tabindex', '0');
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   test(`a Catch stage about to finish its review has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
   }) => {

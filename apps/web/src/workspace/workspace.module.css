@@ -193,10 +193,14 @@
   color: var(--bad);
 }
 
-/* Markdoc wraps each file's prose in an article, so the spacing goes between its children. */
+/*
+  Markdoc wraps each file's prose in an article, so the spacing goes between its children. One
+  column as wide as the panel keeps a wide table or formula from widening the text around it.
+*/
 .prose,
 .prose :global(article) {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   min-width: 0;
   line-height: var(--leading);
@@ -206,7 +210,21 @@
   margin: 0;
 }
 
+/* A table or a formula on its own lines scrolls sideways when it is wider than the text. */
+.prose :global([data-scroll]) {
+  display: flex;
+  overflow-x: auto;
+  /* A formula's lines of text reach a little above and below it, which mustn't scroll. */
+  overflow-y: hidden;
+}
+
+/* A formula is centred while it fits, and starts where the scrolling does when it doesn't. */
+.prose :global([data-scroll] > math) {
+  margin-inline: auto;
+}
+
 .prose :global(table) {
+  flex: auto;
   border-collapse: collapse;
 }
 

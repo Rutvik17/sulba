@@ -107,6 +107,38 @@ test('the explanation shows its formulas, with the numbers its figures.py comput
   await expect(panel.locator('math').last()).toContainText('2');
 });
 
+test('a formula wider than the explanation scrolls in its own box, from its start', async ({
+  page,
+}) => {
+  await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
+  await openLab(page, '?stage=share');
+
+  await page.getByRole('tab', { name: 'Explanation' }).click();
+
+  const panel = page.getByRole('tabpanel', { name: 'Explanation' });
+  const box = panel.locator('[data-scroll]');
+  // The keyboard reaches the box once it scrolls.
+  await expect(box).toHaveAttribute('tabindex', '0');
+  const widths = await panel.evaluate((element) => {
+    const scrolling = element.querySelector('[data-scroll]') as HTMLElement;
+    const formula = scrolling.querySelector('math') as Element;
+    return {
+      panel: element.getBoundingClientRect().width,
+      text: (element.querySelector('p') as Element).getBoundingClientRect().width,
+      box: scrolling.getBoundingClientRect(),
+      formula: formula.getBoundingClientRect(),
+    };
+  });
+  expect(widths.text).toBeLessThanOrEqual(widths.panel);
+  expect(widths.box.width).toBeLessThanOrEqual(widths.panel);
+  expect(widths.formula.width).toBeGreaterThan(widths.box.width);
+  expect(widths.formula.left).toBeGreaterThanOrEqual(widths.box.left);
+
+  await box.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(() => box.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+});
+
 test('hints open one at a time', async ({ page }) => {
   await openLab(page);
   await page.getByRole('tab', { name: 'Hints' }).click();

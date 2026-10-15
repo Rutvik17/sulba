@@ -3,7 +3,8 @@
 // Temml renders each one to MathML when the site is built, so a page needs no script to show it
 // and screen readers read it. Numbers come from the stage's figures.py: `\fig{name}` inside a
 // formula, and `{% $fig.name %}` in the text. A line of text, such as a check's title, renders
-// without a paragraph around it.
+// without a paragraph around it. Each table and each formula on its own lines sits in a box marked
+// `data-scroll`, which the page lets scroll sideways when it is wider than the text.
 import Markdoc, { type Config, type Node, type RenderableTreeNodes } from '@markdoc/markdoc';
 import temml from 'temml';
 
@@ -21,6 +22,10 @@ const figure = /\\fig\{([A-Za-z_]\w*)\}/g;
 const placeholder = /<sulba-formula index="(\d+)"><\/sulba-formula>/g;
 const { Tag } = Markdoc;
 type Tag = InstanceType<typeof Tag>;
+
+function scrolling(wide: Tag): Tag {
+  return new Tag('div', { 'data-scroll': '' }, [wide]);
+}
 
 function variablesIn(ast: Node): string[] {
   const names: string[] = [];
@@ -57,12 +62,18 @@ export function renderProse(
       errors.push(`The formula ${tex.trim()} doesn't render: ${(error as Error).message}`);
       formulas.push('');
     }
-    return new Tag('sulba-formula', { index: formulas.length - 1 });
+    const placed = new Tag('sulba-formula', { index: formulas.length - 1 });
+    return displayMode ? scrolling(placed) : placed;
   };
 
   const config: Config = {
     variables: { fig: figures },
     nodes: {
+      table: {
+        transform(node, config) {
+          return scrolling(new Tag('table', {}, node.transformChildren(config)));
+        },
+      },
       fence: {
         attributes: { content: { type: String }, language: { type: String } },
         transform(node) {
