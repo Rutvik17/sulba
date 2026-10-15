@@ -17,4 +17,4 @@ data:
       measurement as UCI's variable table does and the class column variety; and the beans
       split at random into training, validation and test sets, with the same share of each
       variety in each.
-stages: [principal-components, k-means]
+stages: [principal-components, k-means, how-many-groups]
