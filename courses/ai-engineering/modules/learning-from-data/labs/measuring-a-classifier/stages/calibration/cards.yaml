@@ -1,0 +1,24 @@
+cards:
+  - id: crd_mjcobi
+    front: >-
+      What makes a classifier's probabilities calibrated?
+    back: >-
+      They come true as often as they say: of the items given about 0.8, about 80% are
+      positive.
+  - id: crd_0dxfe1
+    front: >-
+      With calibrated probabilities, how many positives should you expect among some items?
+    back: >-
+      The sum of their probabilities.
+  - id: crd_bc3kd8
+    front: >-
+      Why doesn't a lower Brier score by itself show better calibration?
+    back: >-
+      The Brier score rewards a sharp ranking as well as calibration, so a model can score
+      lower with probabilities that run too high or too low.
+  - id: crd_ose0c1
+    front: >-
+      What does weighting the positive class in training do to a model's probabilities?
+    back: >-
+      It fits the model to data where positives are that much more common, so its
+      probabilities run high, while its ranking barely changes.

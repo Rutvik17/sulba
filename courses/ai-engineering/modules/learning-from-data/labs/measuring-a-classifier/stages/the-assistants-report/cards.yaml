@@ -1,0 +1,20 @@
+cards:
+  - id: crd_nhbe2b
+    front: >-
+      Why does a ROC AUC computed from a classifier's yes-or-no answers come out lower?
+    back: >-
+      Answers of 0 and 1 have one threshold, so the curve has one corner, and its area is the
+      mean of the true positive and true negative rates there.
+  - id: crd_vo7cl3
+    front: >-
+      Why can't precision measured on a balanced sample be used for a rare class?
+    back: >-
+      Precision depends on the share of positives: a sample with more of them than the real
+      data reads higher than the real data will.
+  - id: crd_i7sxvr
+    front: >-
+      Why is counting the items at or above 0.5 the wrong way to estimate how many positives
+      there are?
+    back: >-
+      Items below the threshold still hold positives, and those above it aren't all positive.
+      With calibrated probabilities, the expected count is their sum.

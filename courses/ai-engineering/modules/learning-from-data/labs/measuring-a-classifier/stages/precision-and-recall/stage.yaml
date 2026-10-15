@@ -1,0 +1,14 @@
+id: stg_dsv0dk
+kind: build
+title: Precision and recall
+builds: Your `metrics.py` from stage 1.
+file: metrics.py
+packages: [numpy, scikit-learn]
+minutes: 45
+chart:
+  title: Precision and recall
+  sliders:
+    - name: share
+      label: Share of pulsars
+      stops: [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.2, 0.5]
+      value: 0.01

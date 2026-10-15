@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xb197t
+    front: >-
+      How do you move a classifier's probabilities to a new share of positives?
+    back: >-
+      Multiply each probability's odds by the new share's odds over the odds of the share it
+      was fit on, then turn the odds back into a probability.
+  - id: crd_xvxedy
+    front: >-
+      What does moving probabilities to a new share of positives leave unchanged?
+    back: >-
+      The order of the items, so the ROC curve and the list of the most likely ones stay the
+      same.
+  - id: crd_mrllp4
+    front: >-
+      What does adjusting probabilities to a new share of positives assume?
+    back: >-
+      That each class looks as it did in training, and only how common the classes are has
+      changed.

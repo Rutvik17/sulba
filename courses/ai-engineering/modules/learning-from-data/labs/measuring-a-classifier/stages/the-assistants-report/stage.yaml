@@ -1,0 +1,60 @@
+id: stg_i9tzsg
+kind: catch
+title: The assistant's report
+builds: Your `metrics.py` from stages 1 to 3.
+file: report.py
+packages: [numpy, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_2ydpjs
+    title: It balanced the classes
+    cost: >-
+      With `class_weight="balanced"`, each training pulsar counted {% $fig.balanced %} times as
+      much as each other candidate, so the classifier was fit as if pulsars were far more common
+      than they are. Its probabilities for the test set add up to {% $fig.weighted_sum %}, where
+      the test set holds {% $fig.pulsars %} pulsars: the survey would have planned for
+      {% $fig.times_over %} times the pulsars it would find. Unweighted, they add up to
+      {% $fig.plain_sum %}.
+    fix: >-
+      The fix: fit `LogisticRegression()` without class weights.
+    edit:
+      replace: "    # Pulsars are rare, so the classes are balanced: each counts as much as the other.\n    return make_pipeline(\n        StandardScaler(), LogisticRegression(class_weight=\"balanced\")\n    ).fit(X, y)"
+      with: "    return make_pipeline(StandardScaler(), LogisticRegression()).fit(X, y)"
+  - check: tst_1morqj
+    title: It measured on a balanced sample
+    cost: >-
+      It kept every pulsar and as many other candidates, {% $fig.sample %} in all, so half of
+      what it measured were pulsars, where {% $fig.test_share %} of the test set are. Precision
+      depends on that share: its flags read as {% $fig.sample_precision %} pulsars, where on the
+      test set as it is {% $fig.precision %} of them are.
+    fix: >-
+      The fix: measure on the test set as it is.
+    edit:
+      replace: "    # As many other candidates as pulsars, so the others don't swamp the measures.\n    rng = np.random.default_rng(0)\n    pulsars = np.flatnonzero(y == 1)\n    others = rng.choice(np.flatnonzero(y == 0), len(pulsars), replace=False)\n    rows = np.sort(np.concatenate([pulsars, others]))\n    return X[rows], y[rows]"
+      with: "    return X, y"
+  - check: tst_sxf6sq
+    title: It scored the yes-or-no answers
+    cost: >-
+      It gave `roc_auc_score` the classifier's answers at {% $fig.threshold %} instead of its
+      probabilities. Answers of 0 and 1 have one threshold between them, so the curve has one
+      corner, and its area is the mean of the true positive rate there, {% $fig.tpr %}, and the
+      true negative rate, {% $fig.tnr %}: {% $fig.hard_auc %}, where the probabilities rank with
+      an AUC of {% $fig.auc %}.
+    fix: >-
+      The fix: score the probabilities, `model.predict_proba(X)[:, 1]`.
+    edit:
+      replace: "roc_auc_score(y, model.predict(X))"
+      with: "roc_auc_score(y, model.predict_proba(X)[:, 1])"
+  - check: tst_sqhljg
+    title: It counted the flags as pulsars
+    cost: >-
+      It counted each candidate at or above {% $fig.threshold %} as a whole pulsar and every
+      other as none, so it expected {% $fig.flags %} pulsars in the test set. The probabilities
+      add up to {% $fig.plain_sum %}, and the test set holds {% $fig.pulsars %}: the
+      {% $fig.below %} candidates below the threshold hold {% $fig.missed %} pulsars, and
+      {% $fig.false %} of the flagged ones aren't pulsars.
+    fix: >-
+      The fix: add up the probabilities, `float(np.sum(p))`.
+    edit:
+      replace: "    return int((p >= THRESHOLD).sum())"
+      with: "    return float(np.sum(p))"

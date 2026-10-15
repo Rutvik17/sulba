@@ -1,0 +1,24 @@
+cards:
+  - id: crd_kgby6w
+    front: >-
+      What are precision and recall?
+    back: >-
+      Precision is the share of flagged items that are positive. Recall is the share of
+      positives that are flagged.
+  - id: crd_gts25z
+    front: >-
+      At the same threshold, why does precision fall when positives become rarer?
+    back: >-
+      The true and false positive rates stay the same, but each positive comes with more
+      negatives, so the false alarms grow against the positives found.
+  - id: crd_4otpd8
+    front: >-
+      About what average precision do scores in a random order get?
+    back: >-
+      About the share of positives, since their precision at any recall is about that share.
+  - id: crd_qn9h04
+    front: >-
+      How does average precision sum up a precision–recall curve?
+    back: >-
+      Each threshold's precision, weighted by the recall it adds over the next higher
+      threshold.
