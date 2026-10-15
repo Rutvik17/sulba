@@ -1,0 +1,7 @@
+id: stg_g7sa5t
+kind: build
+title: The nearest beans
+builds: Your `sorter.py` from stage 1.
+file: sorter.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 35

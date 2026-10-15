@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qiem98
+    front: >-
+      How can a nearest-neighbour model say an input is unlike anything it knows?
+    back: >-
+      Compare the input's distance to its nearest training row with how far the training rows
+      are from each other, and reject it when it is farther than any of them.
+  - id: crd_rf6unz
+    front: >-
+      Why send split votes to a person?
+    back: >-
+      The rows whose neighbours disagree are the ones the model gets wrong most often. Leaving
+      them out raises the accuracy on the rest, at the cost of a person's time.
+  - id: crd_1qi3ev
+    front: >-
+      Can a distance threshold catch a new class that looks like a known one?
+    back: >-
+      No: its rows are as near the known rows as those are to each other, so they are named as
+      a known class. A new class needs training rows of its own.

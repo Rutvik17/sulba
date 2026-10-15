@@ -1,0 +1,7 @@
+id: stg_llvbk9
+kind: build
+title: Measurements on one scale
+builds: A new `sorter.py`.
+file: sorter.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 25

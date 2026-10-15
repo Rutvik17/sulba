@@ -1,0 +1,19 @@
+cards:
+  - id: crd_sooxgo
+    front: >-
+      Why can't the training rows choose k for nearest neighbours?
+    back: >-
+      Each training row is its own nearest neighbour, so with k = 1 every one is named right,
+      and fewer neighbours always look better.
+  - id: crd_7h3ajx
+    front: >-
+      What goes wrong with too few neighbours voting, and with too many?
+    back: >-
+      Too few follow single rows, odd ones included. Too many bring in rows farther away, of
+      other classes too.
+  - id: crd_cp5l2x
+    front: >-
+      After choosing k on a validation set, why measure accuracy on a test set?
+    back: >-
+      The best of several tries on the validation set is optimistic, since the choice was made
+      to suit it. Rows that took no part in the choice give a fair figure.
