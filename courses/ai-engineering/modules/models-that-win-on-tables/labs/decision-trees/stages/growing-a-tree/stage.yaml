@@ -1,0 +1,7 @@
+id: stg_hubrt6
+kind: build
+title: Growing a tree
+builds: Your `tree.py` from stage 1.
+file: tree.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40

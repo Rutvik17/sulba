@@ -1,0 +1,7 @@
+id: stg_6eq9nq
+kind: build
+title: The best split
+builds: A new `tree.py`.
+file: tree.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 35

@@ -1,0 +1,63 @@
+id: stg_mentj3
+kind: catch
+title: The assistant's call list
+builds: Your `tree.py` from stages 1 to 3.
+file: call_list.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+problems:
+  - check: tst_42gt91
+    title: It ranked clients by the length of calls not yet made
+    cost: >-
+      `duration` is a call's length in seconds, known only once the call ends, and the tree
+      leaned on it: below its first split, of the clients not reached in the last
+      {% $fig.pdays_t %} days, the {% $fig.longer %} calls longer than {% $fig.length_t %}
+      seconds said yes {% $fig.longer_yes %} of the time, and the other {% $fig.shorter %}
+      calls {% $fig.shorter_yes %} of the time. It ranked the validation calls with an AUC of
+      {% $fig.length_auc %}, by how each call went. Tomorrow's clients have no call length, so
+      the list couldn't be made, and given a length of 0, as for a call not yet made, the
+      validation calls rank at {% $fig.blind_auc %}.
+    fix: >-
+      The fix: `duration` out of `NUMBERS`, leaving what the bank knows before it calls.
+    edit:
+      replace: "NUMBERS = [\"age\", \"duration\", \"campaign\", \"pdays\", \"previous\"]\n"
+      with: "NUMBERS = [\"age\", \"campaign\", \"pdays\", \"previous\"]\n"
+  - check: tst_vevp3j
+    title: It chose the depth on the training calls
+    cost: >-
+      `fit` passed the training calls to `choose_depth`, and a tree's AUC on its own training
+      calls never falls as it deepens. It chose depth {% $fig.trained_depth %}, at
+      {% $fig.trained_train %} on the training calls and {% $fig.trained_validation %} on the
+      validation calls, against {% $fig.best_validation %} at depth {% $fig.best %}, the
+      validation calls' choice.
+    fix: >-
+      The fix: `labelled(validation, categories)` for `choose_depth`.
+    edit:
+      replace: "    depth = choose_depth(tree, *labelled(train, categories))\n"
+      with: "    depth = choose_depth(tree, *labelled(validation, categories))\n"
+  - check: tst_78lmv3
+    title: It kept the smallest leaf on the left side of a split only
+    cost: >-
+      `best_split` checked that {% $fig.min_leaf %} calls went left and nothing about the
+      right, so a split could leave a single call on its right. The tree it chose,
+      {% $fig.left_depth %} deep, had {% $fig.left_small %} of its {% $fig.left_leaves %}
+      leaves under {% $fig.min_leaf %} calls, the smallest of {% $fig.left_smallest %}, and a
+      leaf whose {% $fig.left_certain %} calls all said yes would put any client who reached
+      it first on the list, at 100%.
+    fix: >-
+      The fix: `right >= min_leaf` as well as `left >= min_leaf`.
+    edit:
+      replace: "    possible = (values[1:] > values[:-1]) & (left >= min_leaf)\n"
+      with: "    possible = (values[1:] > values[:-1]) & (left >= min_leaf) & (right >= min_leaf)\n"
+  - check: tst_3uyna1
+    title: It failed on a category the training calls never had
+    cost: >-
+      None of the training calls had defaulted on credit, and {% $fig.default_yes %} of the
+      {% $fig.test %} test calls had. `categories[name].index` found no place for `yes` and
+      raised a `ValueError`, so a list with that client on it couldn't be made at all.
+    fix: >-
+      The fix: a column for each category, compared with `==`, which gives a category the
+      list doesn't have 0 in every column.
+    edit:
+      replace: "        codes = np.array([categories[name].index(value) for value in calls[name]])\n        for code in range(len(categories[name])):\n            columns.append((codes == code).astype(float))\n"
+      with: "        for category in categories[name]:\n            columns.append((calls[name] == category).to_numpy(dtype=float))\n"

@@ -1,0 +1,17 @@
+cards:
+  - id: crd_d3jq8c
+    front: >-
+      What is the Gini impurity of a group of calls with a share `$p$` of yes?
+    back: >-
+      `$2p(1 - p)$`: 0 when every call said the same, and 0.5 for an even mix.
+  - id: crd_4xdvbb
+    front: >-
+      What impurity does a split leave?
+    back: >-
+      The two sides' impurities, each weighted by its share of the calls.
+  - id: crd_mr5ef4
+    front: >-
+      Why does a decision tree need no scaling of its columns?
+    back: >-
+      A split compares a column with a threshold, so only the order of the column's values
+      counts, and scaling keeps that order.
