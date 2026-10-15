@@ -1,0 +1,14 @@
+id: stg_uf44yt
+kind: build
+title: A direction between the classes
+builds: Your `vectors.py` from stage 1.
+file: vectors.py
+packages: [numpy, scikit-learn]
+minutes: 45
+chart:
+  title: Each new sample's score
+  sliders:
+    - name: threshold
+      label: Threshold
+      stops: [-2, -1, 0, 1, 2]
+      value: 0

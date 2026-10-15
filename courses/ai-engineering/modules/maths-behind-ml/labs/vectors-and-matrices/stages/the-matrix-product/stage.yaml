@@ -1,0 +1,9 @@
+id: stg_k6l5f7
+kind: build
+title: The matrix product
+builds: Your `vectors.py` from stage 2.
+file: vectors.py
+packages: [numpy, scipy]
+minutes: 45
+chart:
+  title: The fast distance far from 0

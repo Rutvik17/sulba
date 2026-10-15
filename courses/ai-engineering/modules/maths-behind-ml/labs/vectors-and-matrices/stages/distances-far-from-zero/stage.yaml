@@ -1,0 +1,37 @@
+id: stg_epavkv
+kind: ship
+title: Distances far from zero
+builds: Your `vectors.py` from stage 3.
+file: vectors.py
+packages: [numpy, scipy]
+minutes: 50
+checks:
+  - check: tst_ugbjqx
+    title: The search's records
+    requires: >-
+      For the lab's {% $fig.new %} new samples among its {% $fig.records %} records,
+      standardized, `find` must give the {% $fig.k %} records nearest each, nearest first, at the
+      distances SciPy's `cdist` gives.
+    failure: >-
+      It gave other records or distances than `cdist`.
+  - check: tst_ucsu0s
+    title: Far from 0
+    requires: >-
+      With {% $fig.shift %} added to every measurement of every record and sample, `find` must
+      still give the records and distances `cdist` gives.
+    failure: >-
+      Its records or distances went wrong far from 0.
+  - check: tst_4x6s5j
+    title: Samples already in the records
+    requires: >-
+      Looked up, each of the {% $fig.records %} records, standardized or as measured, must come
+      back first, at a distance of exactly 0.
+    failure: >-
+      Some records came back at a distance other than 0, or not first.
+  - check: tst_6gd55k
+    title: "Within {% $fig.budget_mb %} MB"
+    requires: >-
+      Made over {% $fig.big_records %} records, `Nearest` must look up {% $fig.lookups %} new
+      samples with no more than {% $fig.budget_mb %} MB of arrays at once.
+    failure: >-
+      The limit is {% $fig.budget_mb %} MB.

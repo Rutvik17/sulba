@@ -1,0 +1,22 @@
+cards:
+  - id: crd_3gyb9r
+    front: >-
+      Why move every sample by the records' mean before working out distances from dot
+      products?
+    back: >-
+      It changes no distance, and it keeps the squared lengths, which are added and
+      subtracted, the size of the records' spread.
+  - id: crd_ehmo37
+    front: >-
+      Worked out from dot products, why can a sample's distance to its own copy come out above
+      0?
+    back: >-
+      `$a \cdot a + a \cdot a - 2\, a \cdot a$` is 0 only if every term rounds alike. A few
+      units in the last place off, its square root is far larger.
+  - id: crd_j54swv
+    front: >-
+      How do you get exact distances to a sample's k nearest records without an array of every
+      difference?
+    back: >-
+      Find the k with the dot products, then work out their distances again from their
+      differences.

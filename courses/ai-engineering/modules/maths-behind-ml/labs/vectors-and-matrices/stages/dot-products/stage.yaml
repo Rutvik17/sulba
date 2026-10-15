@@ -1,0 +1,9 @@
+id: stg_1dk5a1
+kind: build
+title: Dot products
+builds: A new `vectors.py`.
+file: vectors.py
+packages: [numpy, scipy, scikit-learn]
+minutes: 35
+chart:
+  title: The average samples

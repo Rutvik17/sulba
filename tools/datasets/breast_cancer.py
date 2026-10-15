@@ -2,8 +2,8 @@
 # requires-python = "==3.14.2"
 # dependencies = ["numpy==2.4.6", "scikit-learn==1.8.0"]
 # ///
-"""Builds the breast cancer data file from UCI's Breast Cancer Wisconsin (Diagnostic). The
-logistic regression lab and the arrays and broadcasting lab each hold a copy.
+"""Builds the breast cancer data file from UCI's Breast Cancer Wisconsin (Diagnostic). Three
+labs hold a copy: logistic regression, arrays and broadcasting, and vectors and matrices.
 
 UCI's file is used as it is, with three changes, which each lab's credit lists: a header names
 each column, malignant is coded as 1 and benign as 0, and a `test` column marks a stratified 20%
