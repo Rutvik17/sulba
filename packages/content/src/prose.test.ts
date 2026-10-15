@@ -48,6 +48,17 @@ test('figures fill \\fig{} in formulas and $fig in the text, and are counted as 
   expect([...used].sort()).toEqual(['sigma_2', 'top']);
 });
 
+test('a tag inside code is an error, since code shows it as written', () => {
+  const { errors } = renderProse(
+    `Set ${'`'}l2 = 1 / {% $fig.n %}${'`'}.\n\n${'```'}python\nprint("{% $fig.n %}")\n${'```'}\n`,
+    { n: '455' },
+  );
+  expect(errors).toEqual([
+    'Code shows {% $fig.n %} as written.',
+    'Code shows {% $fig.n %} as written.',
+  ]);
+});
+
 test('a formula that doesn’t render, and a figure that doesn’t exist, are errors', () => {
   const { errors } = renderProse(
     `${fence(String.raw`\frac{1}{`)}\n${String.raw`${'`'}$\fig{nope}$${'`'}`} and {% $fig.gone %}.`,
