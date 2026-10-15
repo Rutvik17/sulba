@@ -43,18 +43,21 @@ const cards = (await getCollection('labs')).flatMap(({ data: lab }) =>
       </div>
       <div class="answer" data-answer hidden>
         <div class="side back" tabindex="-1" data-back></div>
-        <fieldset class="ratings">
+        <fieldset class="ratings" aria-describedby="rating-hint">
           <legend>How well did you remember it?</legend>
           <div class="buttons">
             {ratings.map(({ rating, name }) => (
               <button class={buttonClass('outline')} type="button" data-rating={rating}>
-                <span>{name}</span> <span class="interval" data-interval={rating}></span>
+                <span>{name}</span>{' '}
+                <span class="interval">
+                  Back in <span data-interval={rating}></span>
+                </span>
               </button>
             ))}
           </div>
-          <p class="hint">
-            Again if you didn't remember it. Hard, Good or Easy if you did, by how much effort it
-            took.
+          <p class="hint" id="rating-hint">
+            Forgot if you couldn't recall it or got it wrong. Hard if you got it, but slowly or
+            unsure. Good if it took some effort. Easy if it took none.
           </p>
         </fieldset>
       </div>
@@ -418,17 +421,25 @@ h1 {
   gap: var(--space-2);
 }
 
+/* A rating's name, and beneath it when the card comes back, which wraps on a narrow phone. */
 .buttons button {
   flex-direction: column;
   height: auto;
-  padding-block: var(--space-2);
-  gap: 0;
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-1);
+  white-space: normal;
+  text-align: center;
 }
 
 .interval {
   color: var(--dim);
   font-size: var(--text-xs);
   font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.interval [data-interval] {
+  white-space: nowrap;
 }
 
 .hint {

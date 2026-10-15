@@ -24,9 +24,9 @@ const grades: Readonly<Record<Rating, Grade>> = {
   4: Grades.Easy,
 };
 
-/** The ratings, in the order their buttons show. */
+/** The ratings, in the order their buttons show. FSRS calls the first Again. */
 export const ratings: readonly { readonly rating: Rating; readonly name: string }[] = [
-  { rating: 1, name: 'Again' },
+  { rating: 1, name: 'Forgot' },
   { rating: 2, name: 'Hard' },
   { rating: 3, name: 'Good' },
   { rating: 4, name: 'Easy' },
@@ -112,7 +112,7 @@ export function nextDue<C>(scheduled: readonly Scheduled<C>[]): Date | null {
   return times.length > 0 ? new Date(Math.min(...times)) : null;
 }
 
-/** When the card comes back after each rating, as its button shows it: "10 minutes", "3 days". */
+/** How long until the card comes back after each rating: "10 minutes", "3 days". */
 export function intervals(memory: Memory | null, now: Date): Record<Rating, string> {
   const preview = scheduler.repeat(memory ?? createEmptyCard(now), now);
   const after = (rating: Rating) => intervalOf(preview[grades[rating]].card, now);
