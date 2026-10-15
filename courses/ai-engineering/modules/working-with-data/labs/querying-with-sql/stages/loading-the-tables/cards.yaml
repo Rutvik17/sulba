@@ -1,0 +1,18 @@
+cards:
+  - id: crd_9kurlz
+    front: >-
+      Why pass values to SQL as `?` placeholders rather than writing them into the statement?
+    back: >-
+      The database takes each as a value: a quote can't end the text early, and text from
+      outside can't add SQL of its own.
+  - id: crd_8s3jxy
+    front: >-
+      What happens to rows inserted with `sqlite3` if the connection closes before `commit()`?
+    back: >-
+      They're lost: an `INSERT` opens a transaction, and only `commit()` saves it.
+  - id: crd_uaq3cf
+    front: >-
+      How does a table refuse a second row for the same key?
+    back: >-
+      A primary key on the columns that make the key, such as `PRIMARY KEY (column_name, code)`:
+      inserting the same key again raises `IntegrityError`.

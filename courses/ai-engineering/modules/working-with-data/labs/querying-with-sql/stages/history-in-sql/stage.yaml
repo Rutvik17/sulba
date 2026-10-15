@@ -1,0 +1,31 @@
+id: stg_8fs6a5
+kind: ship
+title: History in SQL
+builds: Your `queries.py` from stages 1 to 3.
+file: queries.py
+packages: [pandas]
+minutes: 40
+checks:
+  - check: tst_007kt0
+    title: Encounters stored in any order
+    requires: >-
+      Given a database whose encounters were stored in another order, `history` gives each
+      encounter the same history.
+    failure: >-
+      It took the order the rows were stored in. Order each patient's rows with
+      `ORDER BY encounter_id` inside the window.
+  - check: tst_rk33uo
+    title: A discharge the mapping lacks
+    requires: >-
+      An encounter whose discharge code `codes` lacks keeps its row, and the patient's next
+      encounter has no `previous_discharge`.
+    failure: >-
+      It dropped the encounter. Join `codes` with a `LEFT JOIN`, the column's name in `ON`.
+  - check: tst_ykbake
+    title: "Fast on {% $fig.big %} encounters"
+    requires: >-
+      `history` gives the history of {% $fig.copies %} copies of the extract, each of other
+      patients, {% $fig.big %} encounters in all, in under {% $fig.limit %} seconds.
+    failure: >-
+      The limit is {% $fig.limit %} seconds. Use window functions, which sort the rows once,
+      not a subquery for each encounter.

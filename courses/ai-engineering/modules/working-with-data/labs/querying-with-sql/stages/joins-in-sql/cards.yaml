@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xonclg
+    front: >-
+      In a `LEFT JOIN`, why does a condition on the right table belong in `ON` rather than
+      `WHERE`?
+    back: >-
+      For a row that matches nothing, the right table's columns are `NULL`, so a `WHERE`
+      condition on them drops it, and the left join acts as an inner one.
+  - id: crd_cm6imo
+    front: >-
+      How do you join a lookup table that holds the codes of several columns?
+    back: >-
+      Once for each code column, under its own name, matching both the column's name and the
+      code.
+  - id: crd_afmwxn
+    front: >-
+      In what order does SQL return rows without `ORDER BY`?
+    back: >-
+      In no promised order. Name the order with `ORDER BY`.
