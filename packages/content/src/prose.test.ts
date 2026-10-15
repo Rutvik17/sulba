@@ -16,6 +16,18 @@ test('a math block renders as display MathML, and inline math in dollars sits in
   expect(html).toMatch(/The sigmoid <math>.*<mi>σ<\/mi>.*<\/math> is a probability\./);
 });
 
+test('a table and a formula on its own lines each sit in a box that can scroll sideways', () => {
+  const { html, errors } = renderProse(
+    `${fence('n + 1')}\nThe count ${'`'}$n$${'`'}.\n\n| Votes | Yes |\n| --- | --- |\n| 3 | 2 |\n`,
+    {},
+  );
+  expect(errors).toEqual([]);
+  expect(html).toMatch(
+    /^<article><div data-scroll=""><math display="block".*?<\/math><\/div><p>The count <math><mi>n<\/mi><\/math>\.<\/p>/s,
+  );
+  expect(html).toMatch(/<div data-scroll=""><table><thead>.*<\/table><\/div><\/article>$/s);
+});
+
 test('code that isn’t maths stays code', () => {
   const { html } = renderProse(
     `Call ${'`'}sigmoid(z)${'`'}.\n\n${'```'}python\nprint(1)\n${'```'}\n`,

@@ -90,6 +90,7 @@ import {
   schedule,
   whenDue,
 } from '../lib/review';
+import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { kept } from '../workspace/storage';
 
 interface Card {
@@ -132,6 +133,7 @@ const storage = localStore();
 const log = new ReviewLog(storage);
 const passed = new Set(cards.map((card) => card.stage).filter((stage) => kept.passed(stage)));
 let current: Scheduled<Card> | null = null;
+let stopScrollBoxes = () => {};
 // Signed in, the account may hold passes this browser doesn't, so an empty review waits for it.
 let waiting = hasSession(storage);
 
@@ -176,6 +178,8 @@ function render({ keep = false, focus = false } = {}) {
   view.new.hidden = memory !== null;
   view.front.replaceChildren(...sideOf(card, 'front'));
   view.back.replaceChildren(...sideOf(card, 'back'));
+  stopScrollBoxes();
+  stopScrollBoxes = keyboardScrollBoxes(view.card);
   view.reveal.hidden = false;
   view.answer.hidden = true;
   view.history.hidden = reviews.length === 0;
@@ -328,9 +332,13 @@ h1 {
   text-transform: uppercase;
 }
 
-/* A card's sides are Markdoc's HTML, which scoped styles don't reach. */
+/*
+  A card's sides are Markdoc's HTML, which scoped styles don't reach. One column as wide as the
+  card keeps a wide table or formula from widening the text around it.
+*/
 .side {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   min-width: 0;
   font-size: var(--text-lg);
@@ -343,11 +351,29 @@ h1 {
 
 .side :global(article) {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
 .side :global(:is(p, ul, ol, math)) {
   margin: 0;
+}
+
+/* A table or a formula on its own lines scrolls sideways when it is wider than the text. */
+.side :global([data-scroll]) {
+  display: flex;
+  overflow-x: auto;
+  /* A formula's lines of text reach a little above and below it, which mustn't scroll. */
+  overflow-y: hidden;
+}
+
+/* A formula is centred while it fits, and starts where the scrolling does when it doesn't. */
+.side :global([data-scroll] > math) {
+  margin-inline: auto;
+}
+
+.side :global(table) {
+  flex: auto;
 }
 
 .side :global(code) {

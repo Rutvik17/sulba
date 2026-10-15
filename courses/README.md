@@ -132,7 +132,9 @@ Formulas are TeX, rendered to MathML when the site is built (decision record 15)
 The sigmoid `$\sigma(z)$` is a probability.
 ````
 
-A displayed formula never breaks across lines by itself, so a long one is split with `aligned`, aligned at the `=`, to fit a phone.
+A displayed formula never breaks across lines by itself, and one wider than the text scrolls sideways, so a long one is split with `aligned`, aligned at the `=`, to fit a phone.
+
+A table wider than the text scrolls sideways too. A table's header row is set in capitals, so a symbol in it is written as a formula: `` `$\lambda$` `` shows λ, where a plain λ would show Λ.
 
 Numbers are never typed. `figures.py` defines `figures()`, which returns each number as a string, formatted as the prose shows it. It runs beside the lab's data. A formula shows one as `\fig{name}`, and a sentence as `{% $fig.name %}`. The checks fail on any of these:
 
