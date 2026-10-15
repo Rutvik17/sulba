@@ -1,0 +1,50 @@
+id: stg_rh2mo9
+kind: catch
+title: The assistant's checks
+builds: Your `checks.py` from stages 1 to 3.
+file: validate.py
+packages: [pandas]
+minutes: 35
+problems:
+  - check: tst_4tsaqj
+    title: It stopped a column only when every value was wrong
+    cost: >-
+      `isin(allowed).any()` is true when a single value is allowed, so the check stopped a
+      column only when none of its values was. One `female` among the genders went through, and
+      with it any value the next extract misspells.
+    fix: >-
+      The fix: `.all()`, which is false when any value isn't allowed.
+    edit:
+      replace: "if not table[column].isin(allowed).any():"
+      with: "if not table[column].isin(allowed).all():"
+  - check: tst_xb52v3
+    title: It let a missing length of stay through
+    cost: >-
+      A comparison with a missing value is false, so `(stay < low) | (stay > high)` passed a
+      missing length of stay, in a column the documentation says is never missing.
+    fix: >-
+      The fix: `~stay.between(low, high)`, which is true for a missing stay too.
+    edit:
+      replace: "if ((stay < low) | (stay > high)).any():"
+      with: "if (~stay.between(low, high)).any():"
+  - check: tst_ssw3he
+    title: It missed two encounters sharing an id
+    cost: >-
+      `table.duplicated()` compares whole rows, so it caught a row sent twice, but not two
+      different encounters given the same id, which every join on the id would match twice.
+    fix: >-
+      The fix: `table["encounter_id"].duplicated()`, which compares the ids alone.
+    edit:
+      replace: "if table.duplicated().any():"
+      with: 'if table["encounter_id"].duplicated().any():'
+  - check: tst_tupuf2
+    title: It knew one kind of death
+    cost: >-
+      `DEATHS = [11]` left out the other codes the mapping describes as a death,
+      {% $fig.death_codes %} in all. This extract holds {% $fig.other_deaths %} deaths coded
+      {% $fig.other_code %}, and an encounter after one of them would have gone through.
+    fix: >-
+      The fix: every code the mapping describes as a death, `DEATHS = [11, 19, 20, 21]`.
+    edit:
+      replace: "DEATHS = [11]\n"
+      with: "DEATHS = [11, 19, 20, 21]\n"

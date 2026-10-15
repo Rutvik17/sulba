@@ -1,0 +1,7 @@
+id: stg_aceksi
+kind: build
+title: Keys and codes
+builds: Your `checks.py` from stage 1.
+file: checks.py
+packages: [pandas]
+minutes: 30

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_lpska3
+    front: >-
+      Why compare two batches of data by shares rather than counts?
+    back: >-
+      Batches differ in size, and counts change with the size alone. Each value's share of its
+      batch's rows compares across sizes.
+  - id: crd_ii1kwr
+    front: >-
+      Comparing two batches, how do you keep a value only one of them holds?
+    back: >-
+      Line their shares up with an outer join, such as `pd.concat(..., axis=1)`, and fill the
+      side that lacks the value with `fillna(0)`.
+  - id: crd_n8nhf0
+    front: >-
+      Why does comparing shares need `value_counts(dropna=False)`?
+    back: >-
+      Without it, `value_counts` leaves missing values out, so a column going missing never
+      reports the missing value's share.

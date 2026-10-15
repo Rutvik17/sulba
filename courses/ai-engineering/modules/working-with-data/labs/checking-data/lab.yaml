@@ -1,0 +1,26 @@
+id: lab_5tc6ez
+title: Checking data
+summary: >-
+  Check a hospital network's monthly extract before anything uses it, in pandas: hold it to a
+  contract from the dataset's documentation, check its keys and codes, find what a patient's
+  encounters can't all say at once, and compare each month's extract with the last.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages: [a-contract-for-the-extract, keys-and-codes, across-a-patients-encounters, the-assistants-checks, comparing-batches]

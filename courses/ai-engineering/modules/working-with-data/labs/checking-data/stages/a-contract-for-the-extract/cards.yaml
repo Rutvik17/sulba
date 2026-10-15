@@ -1,0 +1,19 @@
+cards:
+  - id: crd_osbosi
+    front: >-
+      Why count only the values present when checking a column's allowed values or range?
+    back: >-
+      `isin` and `between` are `False` for a missing value, so a missing value would count
+      twice: as missing, and as a wrong value.
+  - id: crd_hl9keb
+    front: >-
+      How do you test a data contract before relying on it?
+    back: >-
+      Run it on data you know to be good. Whatever it reports there is a mistake in the
+      contract, such as the documentation's spelling of a value.
+  - id: crd_al8nbm
+    front: >-
+      What should a failed data check report?
+    back: >-
+      The column, the rule broken and how many rows break it, so the failure says where to
+      look.

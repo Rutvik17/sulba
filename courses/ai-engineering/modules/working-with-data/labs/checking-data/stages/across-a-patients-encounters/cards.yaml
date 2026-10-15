@@ -1,0 +1,19 @@
+cards:
+  - id: crd_fsnoqh
+    front: >-
+      How do you flag the rows of each group that come after a row with some property?
+    back: >-
+      Sort, then take the row's own flag off its group's running count:
+      `flag.groupby(group).cumsum() - flag > 0`.
+  - id: crd_5adq61
+    front: >-
+      How do you compare ordered categories, such as age groups?
+    back: >-
+      By their place in a list of the categories in order: map each to its rank, then compare
+      the ranks.
+  - id: crd_k2gwnx
+    front: >-
+      What should a check do with rows it can show contradict each other but can't correct?
+    back: >-
+      Hold them back and name them, for someone who knows the records to decide which value is
+      wrong.
