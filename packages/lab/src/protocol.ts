@@ -119,12 +119,13 @@ export interface ChartResult {
 }
 
 /** The Python packages sessions can load, from Pyodide's builds. pytest is always loaded. */
-export const pythonPackages = ['numpy', 'scikit-learn'] as const;
+export const pythonPackages = ['numpy', 'scipy', 'scikit-learn'] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
 /** The module each package is imported as. */
 export const importNames: Readonly<Record<PythonPackage, string>> = {
   numpy: 'numpy',
+  scipy: 'scipy',
   'scikit-learn': 'sklearn',
 };
 
