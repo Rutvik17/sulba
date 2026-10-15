@@ -55,12 +55,12 @@ test("a passed stage's cards come up new, and each comes back as its rating says
   await expect(page.locator('[data-back]')).toHaveText('2.');
   await expect(page.locator('[data-back]')).toBeFocused();
   for (const [name, interval] of [
-    ['Again', '1 minute'],
+    ['Forgot', '1 minute'],
     ['Hard', '6 minutes'],
     ['Good', '10 minutes'],
     ['Easy', '8 days'],
   ]) {
-    await expect(page.getByRole('button', { name: `${name} ${interval}` })).toBeVisible();
+    await expect(page.getByRole('button', { name: `${name} Back in ${interval}` })).toBeVisible();
   }
   await page.getByRole('button', { name: /^Good / }).click();
 

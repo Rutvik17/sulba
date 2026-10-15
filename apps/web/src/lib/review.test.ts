@@ -125,9 +125,12 @@ describe('when cards are due', () => {
     expect(whenDue(at(17, 0), at(15, 9))).toBe('on Saturday 17 October 2026');
   });
 
-  it('lists a review with its date, time and rating', () => {
+  it('lists a review with its date, time and rating, named as its button names it', () => {
     expect(reviewLine(review('crd_aaaaaa', 3, at(15, 9, 10)))).toBe(
       'Thursday 15 October 2026, 09:10: Good',
+    );
+    expect(reviewLine(review('crd_aaaaaa', 1, at(15, 9, 12)))).toBe(
+      'Thursday 15 October 2026, 09:12: Forgot',
     );
   });
 });
