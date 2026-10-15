@@ -1,0 +1,14 @@
+id: stg_o01m90
+kind: build
+title: Choosing by cross-validation
+builds: Your `cv.py` from stage 1.
+file: cv.py
+packages: [numpy, scikit-learn]
+minutes: 40
+chart:
+  title: Twenty estimates
+  sliders:
+    - name: penalty
+      label: Penalty λ, at degree 3
+      stops: [0.00001, 0.0001, 0.001, 0.01, 0.1]
+      value: 0.0001

@@ -1,0 +1,17 @@
+id: lab_ivgdz2
+title: Cross-validation
+summary: >-
+  Score the plant's concrete models on every one of its mixes in turn with k-fold
+  cross-validation, choose by it, and measure the error of the choosing itself.
+data:
+  - file: concrete.csv
+    title: Concrete Compressive Strength
+    creators: [I-Cheng Yeh]
+    url: https://doi.org/10.24432/C5PK67
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      Each column named, each mix of ingredients numbered, and the mixes split at random into
+      training, validation and test sets, with every test of a mix in the same set.
+stages: [folds-by-mix, choosing-by-cross-validation, nested-cross-validation, the-assistants-tuning-job, repeated-cross-validation]

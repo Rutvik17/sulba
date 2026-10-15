@@ -1,0 +1,18 @@
+cards:
+  - id: crd_itj4p4
+    front: >-
+      What is repeated cross-validation?
+    back: >-
+      k-fold cross-validation run with several shuffles of the folds, each candidate's error
+      averaged over them, so the choice doesn't turn on how one shuffle fell.
+  - id: crd_baeu4p
+    front: >-
+      What can't repeating cross-validation fix?
+    back: >-
+      The luck of which data was collected: every shuffle deals the same rows, so it steadies
+      only what depends on the shuffle.
+  - id: crd_zj4kui
+    front: >-
+      What does repeating cross-validation cost?
+    back: >-
+      A whole cross-validation for each shuffle: two shuffles fit twice the models of one.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_z6jlfo
+    front: >-
+      Why must the test set stay out of tuning?
+    back: >-
+      Its error is the estimate for new data only if nothing was chosen or fit on it. Tuned on
+      it, the model has seen those rows, and the test error reads too low.
+  - id: crd_1lybs5
+    front: >-
+      What is data leakage?
+    back: >-
+      Information the model wouldn't have when predicting, such as held-out rows or the test
+      set, reaching it while it is built, so its measured error reads better than it is.
+  - id: crd_rhg7fn
+    front: >-
+      Why does standardizing on every row before cross-validation leak?
+    back: >-
+      Each fold's scaling then comes partly from its held-out rows, so they help shape the model
+      that predicts them.

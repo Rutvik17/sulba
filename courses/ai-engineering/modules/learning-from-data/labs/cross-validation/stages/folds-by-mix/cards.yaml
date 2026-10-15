@@ -1,0 +1,20 @@
+cards:
+  - id: crd_6dwnk0
+    front: >-
+      What is k-fold cross-validation's estimate of a model's error?
+    back: >-
+      The mean of k errors: the data is dealt into k folds, and each fold's error is measured
+      on its own rows by a model fit on the other folds.
+  - id: crd_evjyc3
+    front: >-
+      Which preprocessing steps must be fit inside each fold of cross-validation?
+    back: >-
+      Any that learn from the data, such as a standardization's means and spreads. A step with
+      nothing to learn, such as products of the measurements, can be made once for every row.
+  - id: crd_6cfqls
+    front: >-
+      What does the number of folds trade off in k-fold cross-validation?
+    back: >-
+      More folds fit each model on more of the data, so its error is closer to that of a model
+      fit on all of it, but the models overlap more, so the estimate varies more from one
+      shuffle to another. Five and ten folds are the usual choices.

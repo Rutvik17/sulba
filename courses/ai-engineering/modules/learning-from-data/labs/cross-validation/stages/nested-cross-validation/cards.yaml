@@ -1,0 +1,19 @@
+cards:
+  - id: crd_gk5x4f
+    front: >-
+      Why does the best cross-validated error of many candidates read too low?
+    back: >-
+      Each candidate's error carries some luck, and the lowest is likely to be one whose luck
+      ran good, so it reads lower than that candidate's error on new data.
+  - id: crd_rkb2yt
+    front: >-
+      What does nested cross-validation measure?
+    back: >-
+      The error of the whole procedure, the choice included: each outer fold makes the choice
+      afresh on its own fit rows and scores it on rows the choice never saw.
+  - id: crd_v3tiqq
+    front: >-
+      What does nested cross-validation cost, with k outer folds?
+    back: >-
+      k times the fits of one cross-validation, plus a fit of each outer fold's choice: every
+      outer fold repeats the whole search.

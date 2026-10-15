@@ -1,0 +1,19 @@
+cards:
+  - id: crd_782nm2
+    front: >-
+      Why does an error measured on one validation split vary from split to split?
+    back: >-
+      It depends on which rows the split happens to hold out, and with few rows a handful of
+      hard ones can move it a long way.
+  - id: crd_15tems
+    front: >-
+      How does k-fold cross-validation choose between models?
+    back: >-
+      It scores every candidate on the same folds and keeps the one with the lowest mean error
+      over them.
+  - id: crd_i3c8x8
+    front: >-
+      Why are all the candidates scored on the same folds?
+    back: >-
+      So that a difference between their errors comes from the models, not from one of them
+      drawing easier folds.
