@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pyodideEngine } from '@sulba/lab/node';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
-import { duplicateIds, prove, type Runner } from './check.ts';
+import { duplicateIds, prove, type Runner, shard } from './check.ts';
 import { type Course, loadCourse } from './load.ts';
 
 // Each proof runs the fixture course's stages in Pyodide, several runs to a stage.
@@ -101,10 +101,10 @@ test('a test without an id is a problem', async () => {
 
 test('two tests with one id is a problem', async () => {
   const course = await changed(`${share}/tests/test_tally.py`, 'tst_demo03', 'tst_demo01');
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(duplicateIds([course])).toEqual([
     {
-      path: share,
-      message: `Pyodide: The test id tst_demo01 is already used by ${count} ("Two votes for yes").`,
+      path: `${share}/tests/test_tally.py`,
+      message: `The id tst_demo01 is already used by ${count}/tests/test_tally.py.`,
     },
   ]);
 });
@@ -189,9 +189,40 @@ test('two courses that share an id is a problem', async () => {
     `The id stg_demo01 is already used by ${count}/stage.yaml.`,
     `The id crd_demo01 is already used by ${count}/cards.yaml.`,
     `The id crd_demo02 is already used by ${count}/cards.yaml.`,
+    `The id tst_demo01 is already used by ${count}/tests/test_tally.py.`,
+    `The id tst_demo02 is already used by ${count}/tests/test_tally.py.`,
     `The id stg_demo02 is already used by ${share}/stage.yaml.`,
     `The id crd_demo03 is already used by ${share}/cards.yaml.`,
+    `The id tst_demo03 is already used by ${share}/tests/test_tally.py.`,
     `The id stg_demo03 is already used by ${check}/stage.yaml.`,
+    `The id tst_demo04 is already used by ${check}/tests/test_report.py.`,
+    `The id tst_demo05 is already used by ${check}/tests/test_report.py.`,
+    `The id tst_demo06 is already used by ${check}/checks/test_report.py.`,
+    `The id tst_demo07 is already used by ${check}/checks/test_report.py.`,
     `The id stg_demo04 is already used by ${ship}/stage.yaml.`,
+    `The id tst_demo08 is already used by ${ship}/tests/test_leader.py.`,
+    `The id tst_demo10 is already used by ${ship}/tests/test_leader.py.`,
+    `The id tst_demo11 is already used by ${ship}/checks/test_leader.py.`,
+    `The id tst_demo12 is already used by ${ship}/checks/test_leader.py.`,
   ]);
+});
+
+test('the labs are dealt in turn to the parts of a check, each to one', async () => {
+  const course = await load(fixtures);
+  const [level] = course.levels;
+  const [module] = level?.modules ?? [];
+  const [lab] = module?.labs ?? [];
+  if (!level || !module || !lab) throw new Error('The fixture course has no lab.');
+  const labs = ['a', 'b', 'c', 'd', 'e'].map((slug) => ({ ...lab, slug }));
+  const courses = [{ ...course, levels: [{ ...level, modules: [{ ...module, labs }] }] }];
+  const slugs = (part: number, parts: number) =>
+    shard(courses, part, parts)
+      .flatMap((each) => each.levels)
+      .flatMap((each) => each.modules)
+      .flatMap((each) => each.labs)
+      .map((each) => each.slug);
+  expect(slugs(1, 1)).toEqual(['a', 'b', 'c', 'd', 'e']);
+  expect(slugs(1, 2)).toEqual(['a', 'c', 'e']);
+  expect(slugs(2, 2)).toEqual(['b', 'd']);
+  expect(slugs(3, 4)).toEqual(['c']);
 });
