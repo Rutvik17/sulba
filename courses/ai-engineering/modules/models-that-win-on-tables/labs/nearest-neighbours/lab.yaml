@@ -1,0 +1,20 @@
+id: lab_5ql89z
+title: Nearest neighbours
+summary: >-
+  Name a bean's variety from the beans most like it, in NumPy: put its measurements on one
+  scale, find its nearest neighbours and take their vote, choose how many to ask, and sort a
+  whole line of beans, saying which it can't place.
+data:
+  - file: beans.csv
+    title: Dry Bean
+    creators: [Murat Koklu, Ilker Ali Özkan]
+    url: https://doi.org/10.24432/C50S4B
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in four beans, chosen at random; comma-separated, under a header that names each
+      measurement as UCI's variable table does and the class column variety; and the beans
+      split at random into training, validation and test sets, with the same share of each
+      variety in each.
+stages: [measurements-on-one-scale, the-nearest-beans, choosing-k, the-assistants-line, sorting-the-line]

@@ -1,0 +1,58 @@
+id: stg_mnoy73
+kind: catch
+title: The assistant's line
+builds: Your `sorter.py` from stages 1 to 3.
+file: line.py
+packages: [numpy, pandas]
+minutes: 35
+problems:
+  - check: tst_8vbebk
+    title: It scaled each batch by its own statistics
+    cost: >-
+      The training beans were scaled by their own mean and standard deviation, and each batch
+      by its own, so a batch's beans were moved to its middle. A sack of the
+      {% $fig.bombay %} Bombay beans of the validation set, the largest variety, came out
+      looking like average beans, and the line named {% $fig.bombay_named %} of them Bombay.
+    fix: >-
+      The fix: the training beans' mean and standard deviation for the batch too, whatever
+      the batch holds.
+    edit:
+      replace: "    batch_scaled = (batch - batch.mean(axis=0)) / batch.std(axis=0)\n"
+      with: "    batch_scaled = (batch - train.mean(axis=0)) / train.std(axis=0)\n"
+  - check: tst_qs7oj1
+    title: Its estimate counted each bean as its own neighbour
+    cost: >-
+      Each training bean was among its own nearest beans, at a distance of nothing, and voted
+      for its own variety. With one neighbour the estimate said {% $fig.itself_one %}, where
+      each bean named by the others gives {% $fig.others_one %}; with the line's
+      {% $fig.k %}, {% $fig.itself_k %} against {% $fig.others_k %}. It promised an accuracy
+      the line doesn't reach on beans it hasn't seen.
+    fix: >-
+      The fix: `distances[i] = np.inf`, so each bean is named by the others.
+    edit:
+      replace: "        distances = ((scaled - bean) ** 2).sum(axis=1)\n"
+      with: "        distances = ((scaled - bean) ** 2).sum(axis=1)\n        distances[i] = np.inf\n"
+  - check: tst_48f381
+    title: It gave a tied vote to the variety that sorts first
+    cost: >-
+      `np.unique` sorts the varieties, and `np.argmax` takes the first of the tied, so a tie
+      went to BARBUNYA ahead of SIRA however near the SIRA bean was. With the line's
+      {% $fig.k %} neighbours, it changed the variety of {% $fig.changed %} validation beans,
+      and the line named {% $fig.first %} of the validation beans right, against
+      {% $fig.nearer %} with the tie going to the nearest.
+    fix: >-
+      The fix: the first of the neighbours' varieties, nearest first, among the tied.
+    edit:
+      replace: "    names, counts = np.unique(varieties[nearest], return_counts=True)\n    return names[np.argmax(counts)]\n"
+      with: "    named = varieties[nearest]\n    names, counts = np.unique(named, return_counts=True)\n    tied = names[counts == counts.max()]\n    return next(name for name in named if name in tied)\n"
+  - check: tst_jsjwer
+    title: It named beans the camera measured only in part
+    cost: >-
+      A missing measurement made every distance from the bean missing, and NumPy sorts missing
+      values last, keeping their order. The bean was named by the first {% $fig.k %} training
+      beans in the file, which make it {% $fig.first_k %}, whatever it was.
+    fix: >-
+      The fix: `None` for a bean with a missing measurement, as the docstring says.
+    edit:
+      replace: "        named.append(named_by(varieties, np.argsort(distances, kind=\"stable\")[:k]))\n"
+      with: "        if np.isnan(bean).any():\n            named.append(None)\n        else:\n            named.append(named_by(varieties, np.argsort(distances, kind=\"stable\")[:k]))\n"

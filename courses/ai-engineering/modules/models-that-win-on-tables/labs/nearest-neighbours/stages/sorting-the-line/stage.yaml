@@ -1,0 +1,37 @@
+id: stg_sroa8d
+kind: ship
+title: Sorting the line
+builds: Your `sorter.py` from stages 1 to 3.
+file: sorter.py
+packages: [numpy, pandas]
+minutes: 40
+checks:
+  - check: tst_c8ufzz
+    title: A stone on the line
+    requires: >-
+      A stone among a batch of beans, larger than any bean, is UNKNOWN.
+    failure: >-
+      It named the stone. A bean farther from its nearest training bean than any training bean
+      is from its nearest other is UNKNOWN, whatever else its batch holds.
+  - check: tst_3zkfah
+    title: A batch of stones
+    requires: >-
+      Every stone of a batch of {% $fig.stones %} stones is UNKNOWN.
+    failure: >-
+      It took the stones' measure from the batch. The reach comes from the training beans
+      alone, set when the line is.
+  - check: tst_9zelch
+    title: Split votes sent to a person
+    requires: >-
+      Each test bean whose vote gives no variety more than half the votes is UNSURE, and the
+      rest are named by the variety with most votes.
+    failure: >-
+      A split vote went the wrong way. UNSURE takes a bean whose most common variety has half
+      the votes or fewer.
+  - check: tst_1ra17f
+    title: No bean taken for a stone
+    requires: >-
+      None of the validation beans is UNKNOWN.
+    failure: >-
+      It took beans for stones. The reach is the farthest any training bean is from its nearest
+      other training bean, leaving out its distance to itself.

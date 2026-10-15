@@ -1,0 +1,14 @@
+id: stg_hmu5q3
+kind: build
+title: Choosing k
+builds: Your `sorter.py` from stages 1 and 2.
+file: sorter.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 35
+chart:
+  title: Beans named right by k
+  sliders:
+    - name: k
+      label: Neighbours that vote
+      stops: [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40]
+      value: 15

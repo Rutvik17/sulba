@@ -1,0 +1,19 @@
+cards:
+  - id: crd_5uc93p
+    front: >-
+      Why standardize measurements before measuring distances between rows?
+    back: >-
+      Unscaled, the measurement with the widest spread decides the distance. Among the beans,
+      area in pixels outweighs every ratio, and the shape counts for almost nothing.
+  - id: crd_3fv5pw
+    front: >-
+      Which mean and standard deviation scale a new row?
+    back: >-
+      The training rows', kept fixed, so a row gets the same scaled values whatever batch it
+      comes in.
+  - id: crd_49iptz
+    front: >-
+      Why can NumPy and pandas give different standard deviations for the same column?
+    back: >-
+      NumPy's `std` divides by the number of values and pandas' `std` by one less, unless told
+      otherwise with `ddof`.

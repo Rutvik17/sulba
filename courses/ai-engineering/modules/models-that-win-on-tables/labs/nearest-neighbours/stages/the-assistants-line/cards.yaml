@@ -1,0 +1,19 @@
+cards:
+  - id: crd_yn0s0v
+    front: >-
+      Why are new rows scaled by the training rows' statistics rather than their own batch's?
+    back: >-
+      A batch's own statistics depend on what else it holds. A batch of one class is moved to
+      the middle, and its rows land among the wrong neighbours.
+  - id: crd_00xcva
+    front: >-
+      How do you estimate a nearest-neighbour model's accuracy from its training rows?
+    back: >-
+      Name each row by the others, leaving it out of its own neighbours. Counted among them, it
+      votes for itself, and one neighbour scores every row right.
+  - id: crd_u33nsa
+    front: >-
+      Where does NumPy's `argsort` put missing values?
+    back: >-
+      After every number, in their order. A row whose distances are all missing gets the first
+      rows as its nearest, unless it is caught first.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_mbtpv7
+    front: >-
+      Why can nearest neighbours be found from squared distances?
+    back: >-
+      Squaring keeps the order of distances, so the nearest rows are the same and no square
+      root is needed.
+  - id: crd_09owm6
+    front: >-
+      Why sort distances with `kind="stable"` when finding nearest neighbours?
+    back: >-
+      NumPy's default sort doesn't keep equal values in order, so rows at the same distance
+      could come in any order. A stable sort keeps them in the training order.
+  - id: crd_8zftru
+    front: >-
+      How does scikit-learn's `KNeighborsClassifier` break a tied vote?
+    back: >-
+      It takes the class that sorts first, whichever neighbour is nearer. Giving the tie to
+      the nearest of the tied neighbours is a different rule, and gives different predictions.
