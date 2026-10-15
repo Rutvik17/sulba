@@ -40,6 +40,8 @@ jobs:
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
+          # CPython comes from the cache too, rather than a download each run.
+          cache-python: true
           cache-dependency-glob: packages/lab/python/uv.lock
       - run: pnpm exec biome ci --reporter=github
       - run: pnpm lint:python
@@ -48,11 +50,16 @@ jobs:
       - run: pnpm test:python
       - run: pnpm build
 
-  content:
-    name: Course content
+  content-part:
+    name: Course content, part ${{ matrix.part }}
     runs-on: ubuntu-24.04
-    # Every stage of every lab runs in Pyodide and in CPython, so this grows with the courses.
-    timeout-minutes: 20
+    # Every stage of every lab runs in Pyodide and in CPython, so this grows with the courses. Each
+    # part checks every file and runs its share of the labs, dealt in turn. Add a part as they grow.
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [1, 2, 3, 4]
     env:
       UV_LOCKED: 1
     steps:
@@ -69,8 +76,21 @@ jobs:
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
+          cache-python: true
           cache-dependency-glob: packages/lab/python/uv.lock
-      - run: pnpm check:content
+      - run: pnpm check:content --shard ${{ matrix.part }}/${{ strategy.job-total }}
+
+  # The one check for the course content, which passes when every part passed.
+  content:
+    name: Course content
+    needs: content-part
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    steps:
+      - run: test "$PARTS" = success
+        env:
+          PARTS: ${{ needs.content-part.result }}
 
   database:
     name: Database

@@ -1,8 +1,8 @@
-// Checks across every course: no two things share an id, and every stage works. A stage works
-// when its solution passes its own tests and checks and every earlier stage's, and each of its
-// tests has an id of its own. A Build or Ship stage's starter fails at least one test or check. A
-// Catch stage's starter, the assistant's code, passes the assistant's tests and fails every hidden
-// check, and fixing any one of its problems alone passes that problem's check and no other.
+// Checks across every course: no two things share an id, test ids included, and every stage
+// works. A stage works when its solution passes its own tests and checks and every earlier stage's,
+// and each of its tests has an id. A Build or Ship stage's starter fails at least one test or check.
+// A Catch stage's starter, the assistant's code, passes the assistant's tests and fails every
+// hidden check, and fixing any one of its problems alone passes that problem's check and no other.
 import { type RunRequest, type RunResult, statusOf, type TestResult } from '@sulba/lab/protocol';
 import { idPattern } from './ids.ts';
 import type { Course, Problem, Stage } from './load.ts';
@@ -29,6 +29,9 @@ function stagesOf(course: Course): Placed<StageRuns>[] {
   );
 }
 
+/** The id a test or check is marked with: `@pytest.mark.id("tst_...")`. */
+const testIdMark = /@pytest\.mark\.id\(\s*"([^"]*)"\s*\)/g;
+
 export function duplicateIds(courses: readonly Course[]): Problem[] {
   const seen = new Map<string, string>();
   const problems: Problem[] = [];
@@ -50,6 +53,16 @@ export function duplicateIds(courses: readonly Course[]): Problem[] {
             const at = `${folder}/labs/${lab.slug}/stages/${stage.slug}`;
             note(stage.id, `${at}/stage.yaml`);
             for (const card of stage.cards) note(card.id, `${at}/cards.yaml`);
+            for (const [folder, files] of [
+              ['tests', stage.tests],
+              ['checks', stage.checks],
+            ] as const) {
+              for (const [name, text] of Object.entries(files)) {
+                for (const [, id] of text.matchAll(testIdMark)) {
+                  if (id) note(id, `${at}/${folder}/${name}`);
+                }
+              }
+            }
           }
         }
       }
@@ -146,7 +159,6 @@ export async function prove(
   ]);
   const results = [...(await runner(requests))];
   const problems: Problem[] = [];
-  const testIds = new Map<string, string>();
   for (const { path, item } of stages) {
     const solution = results.shift() as RunResult;
     const starter = results.shift() as RunResult;
@@ -168,12 +180,26 @@ export async function prove(
     for (const test of solution.tests) {
       if (!test.id || !idPattern('test').test(test.id)) {
         problem(`"${test.name}" needs an id: @pytest.mark.id("tst_" and 6 letters or digits).`);
-        continue;
       }
-      const first = testIds.get(test.id);
-      if (first) problem(`The test id ${test.id} is already used by ${first}.`);
-      else testIds.set(test.id, `${path} ("${test.name}")`);
     }
   }
   return problems;
+}
+
+/**
+ * The courses with every `parts`-th of their labs, from lab `part` on, counting from 1, so that
+ * checks of parts 1 to `parts` together cover each lab once.
+ */
+export function shard(courses: readonly Course[], part: number, parts: number): Course[] {
+  let index = 0;
+  return courses.map((course) => ({
+    ...course,
+    levels: course.levels.map((level) => ({
+      ...level,
+      modules: level.modules.map((module) => ({
+        ...module,
+        labs: module.labs.filter(() => index++ % parts === part - 1),
+      })),
+    })),
+  }));
 }
