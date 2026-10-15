@@ -14,7 +14,7 @@ CATEGORIES = [
     "contact",
     "poutcome",
 ]
-ROUNDS, RATE, LEAVES, PATIENCE = 500, 0.05, 8, 30
+ROUNDS, RATE, LEAVES, PATIENCE = 500, 0.05, 8, 20
 # The calls more that raised counts up to, the most calls more the checks give a client, and
 # the calls made for which the explanation follows one client.
 MORE, MOST = 5, 10

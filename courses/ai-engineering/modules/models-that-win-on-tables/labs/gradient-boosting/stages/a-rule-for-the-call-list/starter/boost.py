@@ -1,6 +1,6 @@
 # LightGBM's rounds at most, its learning rate and leaves a tree, and the rounds in a row
 # without a lower validation log loss after which it stops.
-ROUNDS, RATE, LEAVES, PATIENCE = 500, 0.05, 8, 30
+ROUNDS, RATE, LEAVES, PATIENCE = 500, 0.05, 8, 20
 
 
 def frame(calls):

@@ -15,6 +15,8 @@ from boost import (
     raised,
 )
 
+# The first calls of each set, enough to tell the models apart and quick to fit.
+TRAIN, VALIDATION = 1500, 500
 # A stand-in model's chance of yes for each number of calls, and for any other number.
 SHARES, OTHER = {1: 0.2, 2: 0.1, 3: 0.25, 4: 0.05}, 0.1
 
@@ -30,7 +32,8 @@ class Stub:
 @pytest.fixture(scope="module")
 def bank():
     table = pd.read_csv("data/calls.csv")
-    return table[table["set"] == 0], table[table["set"] == 1]
+    train = table[table["set"] == 0].head(TRAIN)
+    return train, table[table["set"] == 1].head(VALIDATION)
 
 
 def said_yes(calls):
