@@ -1,0 +1,19 @@
+cards:
+  - id: crd_tjp5dj
+    front: >-
+      When `eval_set` holds more than one set, which does XGBoost's early stopping watch?
+    back: >-
+      The last. With the training rows last, it watches their loss, which keeps falling, and
+      never stops early.
+  - id: crd_lvhity
+    front: >-
+      Why not code each set of rows with its own `pd.factorize`?
+    back: >-
+      `pd.factorize` numbers categories in the order they first appear, so each set gets codes
+      of its own, and a code means one category in the training rows and another in new ones.
+  - id: crd_iwe1zd
+    front: >-
+      What does `scale_pos_weight` above 1 do to XGBoost's chances?
+    back: >-
+      It moves them up, so they add up to more positives than there are. Leave it at 1 when
+      the chances are used as chances.

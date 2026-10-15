@@ -1,0 +1,20 @@
+cards:
+  - id: crd_9u0g42
+    front: >-
+      Why does a boosted model's validation loss turn up while its training loss goes on
+      falling?
+    back: >-
+      Each tree is fitted to the training rows, their noise included; past some round, the
+      trees fit noise that new rows don't share.
+  - id: crd_rfomml
+    front: >-
+      How does early stopping with a patience of 20 choose the rounds?
+    back: >-
+      It stops once 20 rounds in a row pass without a validation loss lower than the least so
+      far, and keeps the rounds up to that least.
+  - id: crd_dchzlo
+    front: >-
+      What does a smaller learning rate change in boosting?
+    back: >-
+      Each tree moves the scores less, so the validation loss takes more rounds to reach its
+      least, which tends to be lower.

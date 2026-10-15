@@ -1,0 +1,20 @@
+cards:
+  - id: crd_i5q3li
+    front: >-
+      What does each entry of LightGBM's `monotone_constraints` mean?
+    back: >-
+      There's one for each column, in order: `1` for a prediction that never falls as the
+      column rises, `-1` for one that never rises, and `0` for no constraint.
+  - id: crd_eyuuo2
+    front: >-
+      How does LightGBM code a pandas category column in rows it scores after training?
+    back: >-
+      By the training rows' categories, which it keeps with the model, and a category they
+      never had as missing.
+  - id: crd_wzv2zh
+    front: >-
+      Why can a boosted model move a client up a list for being called again?
+    back: >-
+      Its trees follow the ups and downs of the calls they learn from, such as clients called
+      three times saying yes more often than those called twice. A monotone constraint rules
+      it out.
