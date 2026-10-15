@@ -1,0 +1,18 @@
+cards:
+  - id: crd_rrz331
+    front: >-
+      Why not run k-means afresh on each new batch to group it?
+    back: >-
+      A new run finds groups of its own and numbers them afresh, so its group 3 needn't be the
+      training beans' group 3. New rows join the training groups, by their nearest centre.
+  - id: crd_5lrgr0
+    front: >-
+      Why scale measurements before k-means?
+    back: >-
+      k-means groups by distance, and unscaled the widest measurement decides it. Among the
+      beans, area in pixels splits the largest variety into several groups by size.
+  - id: crd_wuqalz
+    front: >-
+      How is a group of a clustering named from labelled training rows?
+    back: >-
+      By the commonest label among its own training rows, counted within the group.

@@ -1,0 +1,7 @@
+id: stg_k3ds4l
+kind: build
+title: k-means
+builds: Your `groups.py` from stage 1.
+file: groups.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 30

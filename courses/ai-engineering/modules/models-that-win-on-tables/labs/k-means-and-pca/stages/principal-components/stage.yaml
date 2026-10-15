@@ -1,0 +1,7 @@
+id: stg_lil4ja
+kind: build
+title: Principal components
+builds: A new `groups.py`.
+file: groups.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 30

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_xe9cdi
+    front: >-
+      How can groups found without labels estimate a batch's make-up?
+    back: >-
+      Name each group by the commonest label among its training rows, name each new row by its
+      group, and count the names.
+  - id: crd_qq7037
+    front: >-
+      Why choose enough groups for every class to name one?
+    back: >-
+      A class that names no group is never given to a row, so its share always comes out 0.
+  - id: crd_5bmrow
+    front: >-
+      Why can a make-up be closer than the names it counts?
+    back: >-
+      Rows of one class named another are partly balanced by rows of that class named the
+      first, so the counts err less than the names.
