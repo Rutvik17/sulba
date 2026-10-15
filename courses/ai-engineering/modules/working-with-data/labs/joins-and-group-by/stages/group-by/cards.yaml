@@ -1,0 +1,17 @@
+cards:
+  - id: crd_wr38fy
+    front: >-
+      What does `groupby` do with missing values by default?
+    back: >-
+      It leaves them out. `dropna=False` keeps them as a group of their own.
+  - id: crd_lco0dv
+    front: >-
+      How do you get each group's count of rows and of `True` values in one step?
+    back: >-
+      `.agg(encounters="size", readmitted="sum")` on the grouped `True` and `False` values.
+  - id: crd_a0j1cf
+    front: >-
+      Why leave small groups out of a report of shares?
+    back: >-
+      One encounter more or fewer moves a small group's share a long way, so its share says
+      little.

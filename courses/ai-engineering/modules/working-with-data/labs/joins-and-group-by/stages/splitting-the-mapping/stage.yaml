@@ -1,0 +1,7 @@
+id: stg_in8wla
+kind: build
+title: Splitting the mapping
+builds: A new `report.py`.
+file: report.py
+packages: [pandas]
+minutes: 30

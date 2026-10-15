@@ -1,0 +1,26 @@
+id: lab_v8a4cz
+title: Joins and group-by
+summary: >-
+  Count a hospital network's readmissions by what its codes mean, in pandas: split a file of
+  lookup tables, join them to the encounters without losing or doubling one, count by group with
+  the unknowns kept, and give each encounter its patient's history for a model.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages: [splitting-the-mapping, joins, group-by, the-assistants-report, history-for-a-model]

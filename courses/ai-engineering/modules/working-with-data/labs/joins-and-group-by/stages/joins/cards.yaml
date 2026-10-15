@@ -1,0 +1,17 @@
+cards:
+  - id: crd_mgmrxm
+    front: >-
+      Which join keeps every encounter when the lookup table lacks a code?
+    back: >-
+      A left join, `how="left"`. An inner join, `merge`'s default, drops the encounter.
+  - id: crd_crrtqu
+    front: >-
+      What does `validate="many_to_one"` do in a merge?
+    back: >-
+      It raises `MergeError` if a key appears more than once on the right, which would repeat
+      rows on the left.
+  - id: crd_jk273q
+    front: >-
+      How do you find the rows a merge couldn't match?
+    back: >-
+      `indicator=True` adds a column `_merge`, which is `"left_only"` for them.
