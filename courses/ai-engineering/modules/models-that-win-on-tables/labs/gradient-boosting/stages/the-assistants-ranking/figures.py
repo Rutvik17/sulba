@@ -70,7 +70,9 @@ def figures():
     # Each set of calls coded by its own pd.factorize.
     first_train, first_test = train["job"].iloc[0], test["job"].iloc[0]
     assert first_train != first_test
-    Xf, Vf, Tf = (encode(calls, categories, True) for calls in (train, validation, test))
+    Xf, Vf, Tf = (
+        encode(calls, categories, True) for calls in (train, validation, test)
+    )
     # The cost says a client scored alone has every category coded 0.
     assert (encode(test.iloc[[1]], categories, True)[0, len(NUMBERS) :] == 0).all()
     factorized = fit(Xf, y, Vf, v)
