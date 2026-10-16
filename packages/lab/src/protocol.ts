@@ -130,6 +130,8 @@ export const pythonPackages = [
   'tiktoken',
   'mypy',
   'packaging',
+  'fastapi',
+  'httpx',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -145,6 +147,8 @@ export const importNames: Readonly<Record<PythonPackage, string>> = {
   tiktoken: 'tiktoken',
   mypy: 'mypy',
   packaging: 'packaging',
+  fastapi: 'fastapi',
+  httpx: 'httpx',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */

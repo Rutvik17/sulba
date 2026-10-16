@@ -115,13 +115,18 @@ export async function assemblePyodide(): Promise<void> {
   };
   const fromPyPI = new Map(pypiWheels.map(({ url }) => [basename(url), url]));
 
+  // A dependency can name a package as written or as PEP 503 normalizes it, pydantic_core for
+  // pydantic-core, and Pyodide matches either.
+  const canonical = (name: string) => name.toLowerCase().replace(/[-_.]+/g, '-');
+  const named = new Map(Object.keys(lock.packages).map((key) => [canonical(key), key]));
   const needed = new Set<string>();
-  const visit = (name: string) => {
+  const visit = (dependency: string) => {
+    const name = named.get(canonical(dependency));
+    if (name === undefined)
+      throw new Error(`Pyodide ${version} has no package named ${dependency}.`);
     if (needed.has(name)) return;
-    const entry = lock.packages[name];
-    if (!entry) throw new Error(`Pyodide ${version} has no package named ${name}.`);
     needed.add(name);
-    for (const dependency of entry.depends) visit(dependency);
+    for (const each of (lock.packages[name] as LockPackage).depends) visit(each);
   };
   for (const name of [...always, ...pythonPackages]) visit(name);
 
