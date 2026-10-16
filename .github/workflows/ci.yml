@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        part: [1, 2, 3, 4]
+        part: [1, 2, 3, 4, 5, 6]
     env:
       UV_LOCKED: 1
     steps:
