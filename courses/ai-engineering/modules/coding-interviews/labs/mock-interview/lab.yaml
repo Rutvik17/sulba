@@ -1,0 +1,6 @@
+id: lab_ijxysq
+title: Mock interview
+summary: >-
+  Two interview problems in 45 minutes, as in a coding screen: merging sorted lists, then the
+  anagrams of a word inside a text.
+stages: [merging-sorted-lists, anagrams-in-a-text]

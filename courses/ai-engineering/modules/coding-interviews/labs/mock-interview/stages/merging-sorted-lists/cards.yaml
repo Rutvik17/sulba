@@ -1,0 +1,7 @@
+cards:
+  - id: crd_kw84dr
+    front: >-
+      Merging k sorted lists with a heap, what does the heap hold?
+    back: >-
+      The next number of each list with numbers left, with its list and position, so the
+      smallest is always on top.
