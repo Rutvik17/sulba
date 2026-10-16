@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ymdzi5
+    front: >-
+      Finding the longest run with no character twice, where does the window start when the new
+      character is already in it?
+    back: >-
+      Just after that character's last position, so only the earlier copy drops out.

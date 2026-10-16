@@ -1,0 +1,6 @@
+id: stg_09ssj1
+kind: problem
+title: No repeats
+builds: A new `no_repeats.py`.
+file: no_repeats.py
+minutes: 20

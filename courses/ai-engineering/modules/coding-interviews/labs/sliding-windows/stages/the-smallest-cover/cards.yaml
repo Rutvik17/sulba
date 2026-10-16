@@ -1,0 +1,7 @@
+cards:
+  - id: crd_26ukg5
+    front: >-
+      Finding the smallest window that covers some letters, when can the window's start move on?
+    back: >-
+      While the character there is one the window has to spare: one it holds more of than it
+      needs, or doesn't need at all.

@@ -1,0 +1,6 @@
+id: stg_vh4dtb
+kind: problem
+title: The best window
+builds: A new `windows.py`.
+file: windows.py
+minutes: 15

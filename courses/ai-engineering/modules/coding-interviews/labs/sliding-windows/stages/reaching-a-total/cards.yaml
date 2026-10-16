@@ -1,0 +1,8 @@
+cards:
+  - id: crd_pjdz4n
+    front: >-
+      Why can a window that grows and shrinks find the shortest run reaching a total only when
+      every number is positive?
+    back: >-
+      Then growing always raises the sum and shrinking lowers it, so a dropped start never needs
+      to come back.

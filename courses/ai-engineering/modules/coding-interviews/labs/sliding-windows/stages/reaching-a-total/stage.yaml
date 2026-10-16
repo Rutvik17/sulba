@@ -1,0 +1,6 @@
+id: stg_i5g3nc
+kind: problem
+title: Reaching a total
+builds: A new `reach.py`.
+file: reach.py
+minutes: 20

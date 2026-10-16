@@ -1,0 +1,6 @@
+id: stg_e4avio
+kind: problem
+title: The smallest cover
+builds: A new `cover.py`.
+file: cover.py
+minutes: 30
