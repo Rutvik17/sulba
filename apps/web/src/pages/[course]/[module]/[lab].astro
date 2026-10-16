@@ -23,7 +23,7 @@ const facts = labFacts(lab);
 const [course, module] = lab.path.split('/');
 ---
 
-<Page title={`${lab.title} · Sulba`}>
+<Page title={`${lab.title} · Sulba`} editor>
   <header class="intro">
     <p class="label">
       <a href={`/${course}/#${module}`}>{lab.level} · {lab.module}</a>

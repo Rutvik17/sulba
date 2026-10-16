@@ -60,3 +60,63 @@ test('the theme control works from the keyboard', async ({ page }) => {
   await expect(panel).toBeHidden();
   await expect(toggle).toBeFocused();
 });
+
+// The fixture course's lab (playwright.config.ts), whose workspace has an editor.
+const lab = '/demo/counting/tallies/';
+const dracula = 'rgb(40, 42, 54)';
+
+/** Opens the lab and its theme panel, once the workspace's editor is on the page. */
+async function openPanel(page: Page) {
+  await page.goto(lab);
+  await expect(page.getByRole('textbox', { name: 'tally.py', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Theme', exact: true }).click();
+}
+
+const editor = (page: Page) => page.locator('.cm-editor');
+
+test('an editor theme a learner picks colours the editor at once and is kept after a reload', async ({
+  page,
+}) => {
+  await openPanel(page);
+
+  await page.getByRole('radio', { name: 'Dracula' }).check();
+  await expect(editor(page)).toHaveCSS('background-color', dracula);
+
+  await page.reload();
+  await expect(editor(page)).toHaveCSS('background-color', dracula);
+  await page.getByRole('button', { name: 'Theme', exact: true }).click();
+  await expect(page.getByRole('radio', { name: 'Dracula' })).toBeChecked();
+});
+
+test("picking Sulba's editor theme follows the page's theme again and forgets the choice", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await openPanel(page);
+  const sulba = await editor(page).evaluate((element) => getComputedStyle(element).backgroundColor);
+
+  await page.getByRole('radio', { name: 'Dracula' }).check();
+  await page.getByRole('radio', { name: 'Sulba' }).check();
+
+  await expect(editor(page)).toHaveCSS('background-color', sulba);
+  expect(await page.evaluate(() => localStorage.getItem('sulba:editor-theme'))).toBeNull();
+});
+
+test('the editor themes are chosen from the keyboard, by the arrow keys', async ({ page }) => {
+  await openPanel(page);
+  const themes = page.getByRole('group', { name: 'Editor theme', exact: true });
+
+  await themes.getByRole('radio', { name: 'Sulba' }).focus();
+  await page.keyboard.press('ArrowDown');
+
+  await expect(themes.getByRole('radio', { name: 'GitHub Light' })).toBeChecked();
+  await expect(editor(page)).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+});
+
+test('a page without an editor offers no editor themes', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Theme', exact: true }).click();
+
+  await expect(page.getByRole('radio', { name: 'System' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Editor theme', exact: true })).toHaveCount(0);
+});

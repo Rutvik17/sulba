@@ -20,10 +20,19 @@ import {
   tooltips,
 } from '@codemirror/view';
 import { classes } from '@sulba/ui/classes';
-import { type Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+  type Ref,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
+import { chosenPalette, onChoice } from './choice.ts';
 import styles from './editor.module.css';
+import { sulba } from './palettes.ts';
 import { formatCode, ruffLint } from './ruff.ts';
-import { type Palette, paletteTheme, sulba } from './themes.ts';
+import { paletteTheme } from './themes.ts';
 
 const css = classes(styles, 'editor', 'code', 'status');
 
@@ -61,7 +70,6 @@ export interface EditorProps {
   readonly onChange?: (code: string) => void;
   /** Called on Ctrl+Enter, or Cmd+Enter on a Mac. */
   readonly onRun?: () => void;
-  readonly palette?: Palette;
   readonly readOnly?: boolean;
   readonly ref?: Ref<EditorHandle>;
 }
@@ -92,16 +100,17 @@ function count(n: number, one: string, many: string) {
 /**
  * A Python editor: highlighting, completion, closing brackets, Ctrl+/ to comment, and Ruff's
  * checks as you type, with Shift+Alt+F to format. Tab indents; Escape then Tab leaves the editor.
+ * It draws in the editor theme the learner chose (choice.ts).
  */
 export function Editor({
   defaultValue,
   label,
   onChange,
   onRun,
-  palette = sulba,
   readOnly = false,
   ref,
 }: EditorProps) {
+  const palette = useSyncExternalStore(onChoice, chosenPalette, () => sulba);
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
   const theme = useRef(new Compartment());

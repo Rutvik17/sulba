@@ -3,8 +3,10 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./choice": "./src/choice.ts",
     "./editor": "./src/Editor.tsx",
-    "./themes": "./src/themes.ts"
+    "./palettes": "./src/palettes.ts",
+    "./specimen": "./src/specimen.ts"
   },
   "scripts": {
     "typecheck": "tsc",

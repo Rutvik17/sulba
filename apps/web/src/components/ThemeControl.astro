@@ -1,5 +1,13 @@
 ---
 import { segmentedClass } from '@sulba/ui/segmented';
+import EditorThemes from './EditorThemes.astro';
+
+interface Props {
+  /** Whether the page has a code editor, whose themes the panel then offers too. */
+  editor?: boolean | undefined;
+}
+
+const { editor = false } = Astro.props;
 
 const choices = [
   { value: 'system', label: 'System' },
@@ -14,7 +22,7 @@ const choices = [
     <path d="M13 1.5a11.5 11.5 0 0 1 0 23z" fill="currentColor" />
   </svg>
 </button>
-<div class="panel" id="theme-panel" popover>
+<div class:list={['panel', { wide: editor }]} id="theme-panel" popover>
   <fieldset>
     <legend>Theme</legend>
     <div class:list={[segmentedClass.group, 'choices']}>
@@ -26,6 +34,7 @@ const choices = [
       ))}
     </div>
   </fieldset>
+  {editor && <EditorThemes />}
 </div>
 
 <script>
@@ -78,6 +87,13 @@ for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="the
   background: var(--bg);
   color: var(--fg);
   box-shadow: var(--shadow);
+}
+
+/* With the editor themes, the panel is wider and scrolls within the screen. */
+.wide {
+  width: min(460px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 68px - var(--space-6));
+  overflow-y: auto;
 }
 
 fieldset {
