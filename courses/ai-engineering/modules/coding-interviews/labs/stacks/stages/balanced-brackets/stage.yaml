@@ -1,0 +1,6 @@
+id: stg_ujjbvv
+kind: problem
+title: Balanced brackets
+builds: A new `brackets.py`.
+file: brackets.py
+minutes: 15

@@ -1,0 +1,6 @@
+id: lab_shjxod
+title: Stacks
+summary: >-
+  Five interview problems that a stack solves as it reads its input: balanced brackets, reverse
+  Polish notation, days until warmer, a stack that knows its minimum and decoding repeats.
+stages: [balanced-brackets, reverse-polish, days-until-warmer, a-stack-with-its-minimum, decoding-repeats]

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_llhcay
+    front: >-
+      Checking that brackets are balanced with a stack, what must a closing bracket find, and
+      what must be left at the end?
+    back: >-
+      Its own kind of opening bracket on top of the stack, and nothing left once the text ends.

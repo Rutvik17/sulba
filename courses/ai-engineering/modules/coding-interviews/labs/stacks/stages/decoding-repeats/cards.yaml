@@ -1,0 +1,7 @@
+cards:
+  - id: crd_oeo1y3
+    front: >-
+      Decoding `3[ab]` with a stack, what waits on the stack at the `[`?
+    back: >-
+      The text built so far and the count, until the `]` adds the part, repeated, back to that
+      text.

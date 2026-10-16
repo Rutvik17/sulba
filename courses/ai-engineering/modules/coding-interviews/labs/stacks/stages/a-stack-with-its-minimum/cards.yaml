@@ -1,0 +1,7 @@
+cards:
+  - id: crd_padb2m
+    front: >-
+      How can a stack give its minimum in constant time?
+    back: >-
+      Push each value with the minimum of the stack up to it: the top's minimum is the stack's,
+      and popping uncovers the one before.

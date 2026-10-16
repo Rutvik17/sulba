@@ -1,0 +1,6 @@
+id: stg_156zfa
+kind: problem
+title: Days until warmer
+builds: A new `warmer.py`.
+file: warmer.py
+minutes: 20
