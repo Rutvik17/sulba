@@ -1,0 +1,18 @@
+cards:
+  - id: crd_7eap1w
+    front: >-
+      How can a target encoding leak into cross-validation?
+    back: >-
+      Learnt on every row before the folds, each held-out row's encoding takes in its own
+      answer, so the scores come out higher than on new rows.
+  - id: crd_xaz5mg
+    front: >-
+      What does a shuffled k-fold splitter need for every model to get the same folds?
+    back: >-
+      A fixed random_state. Without one, each call to split shuffles anew.
+  - id: crd_s10ajl
+    front: >-
+      Which quantile of the t distribution ends a two-sided 95% interval?
+    back: >-
+      The one at 0.975, which leaves 2.5% beyond each end. The one at 0.95 ends a 90%
+      interval.

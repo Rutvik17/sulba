@@ -1,0 +1,7 @@
+id: stg_q99k36
+kind: build
+title: Error bars
+builds: Your `compare.py` from stage 2.
+file: compare.py
+packages: [numpy, pandas, scipy, scikit-learn, lightgbm]
+minutes: 35

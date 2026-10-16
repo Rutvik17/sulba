@@ -1,0 +1,21 @@
+id: lab_86bmvn
+title: Leakage and model comparison
+summary: >-
+  Compare the module's four models with a logistic regression on the bank's calls: encode a
+  category by its share of yes without leaking the answer, score every model on the same
+  folds, put error bars on the differences that allow for folds sharing their calls, and ship
+  the review that decides which model the bank calls from.
+data:
+  - file: calls.csv
+    title: Bank Marketing
+    creators: [Sérgio Moro, Paulo Rita, Paulo Cortez]
+    url: https://doi.org/10.24432/C5K306
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in eight calls of the file with social and economic context, chosen at random;
+      comma-separated, without quotes, with the outcome column named subscribed; and the calls
+      split at random into training, validation and test sets, with the same share subscribing
+      in each.
+stages: [target-encoding, the-same-folds, error-bars, the-assistants-comparison, the-banks-review]
