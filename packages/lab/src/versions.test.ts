@@ -1,8 +1,10 @@
 // A learner's machine and the browser must run the same Python packages, so every package
-// pinned for CPython (python/uv.lock) must be the version Pyodide ships.
+// pinned for CPython (python/uv.lock) must be the version Pyodide ships, or the version of the
+// wheel the site serves from PyPI.
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { expect, test } from 'vitest';
+import { pypiWheels } from './assemble.ts';
 import { pyodideVersion, pythonPackages } from './protocol.ts';
 
 const lock = JSON.parse(
@@ -27,6 +29,10 @@ test('every package in both has the same version', () => {
   const shared = [...pinned].filter(([name]) => name in lock.packages);
   expect(shared.length).toBeGreaterThan(0);
   for (const [name, version] of shared) expect(version, name).toBe(lock.packages[name]?.version);
+});
+
+test('every wheel the site serves from PyPI is pinned for CPython at its version', () => {
+  for (const { name, version } of pypiWheels) expect(pinned.get(name), name).toBe(version);
 });
 
 test('the site serves the Pyodide release the npm package holds', async () => {

@@ -34,6 +34,8 @@ let engine: Engine;
 
 beforeAll(async () => {
   engine = await pyodideEngine();
+  // As the browser does before a run, so mypy's first check isn't counted in a fixture's run.
+  engine.prepare(await session('uses-mypy'));
 }, 120_000);
 
 // First in the file: a run that imports a package would leave it imported for later runs.
@@ -63,7 +65,7 @@ test("the package modules a run's files import are imported before it, and the f
   const request = {
     files: { ...files, 'tests/test_imported.py': assertion('True') },
     tests: ['tests/test_imported.py'],
-    packages: pythonPackages,
+    packages: ['scipy'] as const,
   };
   engine.prepare(request);
   expect(before.status).toBe('pass');

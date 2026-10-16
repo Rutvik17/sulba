@@ -128,6 +128,7 @@ export const pythonPackages = [
   'lightgbm',
   'regex',
   'tiktoken',
+  'mypy',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -141,6 +142,7 @@ export const importNames: Readonly<Record<PythonPackage, string>> = {
   lightgbm: 'lightgbm',
   regex: 'regex',
   tiktoken: 'tiktoken',
+  mypy: 'mypy',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */

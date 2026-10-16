@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import ast
 import asyncio
+import functools
+import gc
 import importlib
 import io
 import json
@@ -17,8 +19,8 @@ import os
 import sys
 import tempfile
 import time
-from collections.abc import Iterator
-from contextlib import contextmanager, redirect_stderr, redirect_stdout, suppress
+from collections.abc import Callable, Iterator
+from contextlib import chdir, contextmanager, redirect_stderr, redirect_stdout, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -27,6 +29,10 @@ import pytest
 # The longest value or message a result carries. A failed check on a large array would
 # otherwise send all of it.
 LIMIT = 1000
+
+# mypy's options for a session's files: --strict, with no config file, as if on Linux, so the
+# browser, a learner's machine and CI report the same errors (decision record 22).
+MYPY_OPTIONS = ["--strict", "--config-file=", "--platform", "linux", "--no-error-summary"]
 
 
 def run(files_json: str, tests_json: str) -> str:
@@ -49,18 +55,67 @@ def run(files_json: str, tests_json: str) -> str:
 
 
 def prepare(files_json: str, packages_json: str) -> None:
-    """Import the modules that the session's Python files import from these packages.
+    """Import the modules that the session's Python files import from these packages, and with
+    mypy among them, check the session's files with it once.
 
-    The first import of a module such as scipy.stats can take seconds in a browser, and the
-    browser times a run from after this, so a run's time goes on the session's own code. Only
-    the packages' modules are imported, never the session's files.
+    The first import of a module such as scipy.stats can take seconds in a browser, as can
+    mypy's first check, and the browser times a run from after this, so a run's time goes on
+    the session's own code. Only the packages' modules are imported, never the session's files.
     """
+    files: dict[str, str] = json.loads(files_json)
     packages = set(json.loads(packages_json))
-    for name in imported(json.loads(files_json)):
+    for name in imported(files):
         if name.split(".")[0] in packages:
             # A module that isn't there fails again in the run, which reports it.
             with suppress(Exception):
                 importlib.import_module(name)
+    if "mypy" in packages:
+        # A problem here shows again in the run, which reports it.
+        with suppress(Exception):
+            warm(files)
+
+
+def warm(files: dict[str, str]) -> None:
+    """Check the session's own Python files with mypy, in a folder of their own, so that the
+    types of what they import are in mypy's cache before a run's time starts. mypy's first check
+    reads the standard library's types, which takes seconds in a browser.
+
+    mypy keeps a file's errors in its cache with the path it was given, and gives them again
+    while the file is unchanged, so the files are checked from their folder by name, as a test
+    checks them."""
+    sources = [name for name in files if name.endswith(".py") and not name.startswith("tests/")]
+    with tempfile.TemporaryDirectory(prefix="sulba-") as folder, chdir(folder):
+        write(Path(folder), {name: files[name] for name in sources})
+        typecheck(*sources)
+    # mypy keeps the types it has read for as long as Python runs. Frozen, they're left out of
+    # every later garbage collection, which would otherwise take twice as long.
+    gc.collect()
+    gc.freeze()
+
+
+@functools.cache
+def mypy_cache() -> str:
+    """A folder for mypy's cache that lasts as long as the runner, so a check after the first
+    reads what hasn't changed from it."""
+    return tempfile.mkdtemp(prefix="sulba-mypy-")
+
+
+def typecheck(*files: str) -> list[str]:
+    """mypy's errors in these files, each line as mypy prints it, such as
+    `shapes.py:4: error: Function is missing a type annotation  [no-untyped-def]`."""
+    from mypy import api
+
+    # mypy raises the recursion limit and the garbage collector's thresholds for its own work,
+    # and leaves them so. The session's code runs with Python's own.
+    limit, thresholds = sys.getrecursionlimit(), gc.get_threshold()
+    try:
+        report, errors, _ = api.run([*MYPY_OPTIONS, "--cache-dir", mypy_cache(), *files])
+    finally:
+        sys.setrecursionlimit(limit)
+        gc.set_threshold(*thresholds)
+    if errors:
+        raise RuntimeError(errors.strip())
+    return report.splitlines()
 
 
 def imported(files: dict[str, str]) -> list[str]:
@@ -289,6 +344,12 @@ class Report:
                 loop.run_until_complete(asyncio.gather(*waiting, return_exceptions=True))
             loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
+
+    @pytest.fixture
+    def typecheck(self) -> Callable[..., list[str]]:
+        """typecheck("shapes.py") gives mypy's errors in the session's file under --strict, one
+        line each, the same in Pyodide and CPython."""
+        return typecheck
 
     @pytest.hookimpl(wrapper=True)
     def pytest_runtest_call(self, item: pytest.Item) -> Any:

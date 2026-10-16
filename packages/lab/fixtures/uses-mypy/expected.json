@@ -1,0 +1,39 @@
+{
+  "tests": [
+    {
+      "id": "tst_mypy01",
+      "name": "Finds nothing wrong in typed code",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mypy02",
+      "name": "Gives each error mypy finds, with the file it imports checked too",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mypy03",
+      "name": "Fails when the code has errors",
+      "status": "fail",
+      "message": "assert ['labels.py:4...eturn-value]'] == []",
+      "expected": "[]",
+      "actual": "['labels.py:4: error: Function is missing a type annotation  [no-untyped-def]', 'labels.py:9: error: Incompatible return value type (got \"float\", expected \"str\")  [return-value]']",
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
