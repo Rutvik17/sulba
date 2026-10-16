@@ -1,0 +1,20 @@
+cards:
+  - id: crd_mwbhoc
+    front: >-
+      Why not estimate a text's tokens from its characters?
+    back: >-
+      Characters per token depend on the language and the tokenizer: a Japanese title takes
+      {% $fig.jp_under %} times the tokens that four characters a token would give with
+      the shop's tokenizer. Count with the tokenizer itself.
+  - id: crd_0qngor
+    front: >-
+      How should text from users go into a prompt that uses special tokens?
+    back: >-
+      Encoded as ordinary text, so that text spelling a special token stays text. Only the
+      code puts special tokens in.
+  - id: crd_u5tt40
+    front: >-
+      How do you show a reply's text as its tokens stream in?
+    back: >-
+      With an incremental decoder, which holds back the bytes of a character until its last
+      byte arrives.
