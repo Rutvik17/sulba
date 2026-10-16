@@ -1,0 +1,24 @@
+cards:
+  - id: crd_pt4lk5
+    front: >-
+      What does `a | b` call when `a` is an instance of a class?
+    back: >-
+      `type(a).__or__(a, b)`. If that returns `NotImplemented`, Python tries `b`'s
+      `__ror__`.
+  - id: crd_v3qxr9
+    front: >-
+      What should a special method such as `__or__` return for an operand it can't handle?
+    back: >-
+      `NotImplemented`, so Python can try the other operand's reflected method, and raise a
+      `TypeError` when neither handles it.
+  - id: crd_zj40g9
+    front: >-
+      What does `x in y` call when `y`'s class defines `__contains__`?
+    back: >-
+      `y.__contains__(x)`. The answer is `True` when it returns a true value.
+  - id: crd_o6eawn
+    front: >-
+      What should a class's `__repr__` return, where it can?
+    back: >-
+      A string that reads as the Python expression that would make an object with the same
+      value.

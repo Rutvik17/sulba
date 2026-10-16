@@ -1,0 +1,6 @@
+id: stg_gcjr70
+kind: build
+title: Classes
+builds: Your `structs.py` from stage 1.
+file: structs.py
+minutes: 45

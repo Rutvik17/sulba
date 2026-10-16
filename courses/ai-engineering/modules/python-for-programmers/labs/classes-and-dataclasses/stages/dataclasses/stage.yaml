@@ -1,0 +1,6 @@
+id: stg_hgrcsa
+kind: build
+title: Dataclasses
+builds: A new `structs.py`.
+file: structs.py
+minutes: 30

@@ -10,5 +10,6 @@ cache-dir = "../node_modules/.cache/ruff-courses"
 select = ["E4", "E7", "E9", "F"]
 
 [lint.per-file-ignores]
-# A starter imports what the learner will need before any code uses it.
-"**/starter/*.py" = ["F401"]
+# A starter imports what the learner will need before any code uses it, and a later
+# stage's starter, which goes below the learner's code, uses what that code defines.
+"**/starter/*.py" = ["F401", "F821"]

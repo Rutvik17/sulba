@@ -1,0 +1,29 @@
+id: stg_7y9mme
+kind: ship
+title: Samples as objects
+builds: Your `structs.py` from stages 1 to 3.
+file: structs.py
+minutes: 40
+checks:
+  - check: tst_ew9yer
+    title: Holds many samples in little memory
+    requires: >-
+      Holding {% $fig.samples %} samples, `Sample` objects take at most {% $fig.share %} of
+      the memory that the same fields take in objects of a class without `__slots__`.
+    failure: >-
+      The samples took more memory than they may. Give each sample fixed places for its
+      fields.
+  - check: tst_betds9
+    title: Can't be changed, and goes in a set once
+    requires: >-
+      Setting a field of a sample raises `FrozenInstanceError`, and equal samples count once
+      in a set.
+    failure: >-
+      A sample could be changed, or couldn't go in a set. Freeze it.
+  - check: tst_r59fod
+    title: Parses to the class it's called on
+    requires: >-
+      `parse`, called on a subclass of `Sample`, gives an instance of that subclass.
+    failure: >-
+      `parse` gave a `Sample` where it was called on a subclass. Make the sample with the
+      class `parse` was called on.

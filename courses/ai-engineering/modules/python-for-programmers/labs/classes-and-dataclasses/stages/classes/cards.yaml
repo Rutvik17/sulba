@@ -1,0 +1,18 @@
+cards:
+  - id: crd_zd7sec
+    front: >-
+      How does a subclass replace a method of its base class?
+    back: >-
+      By defining a method of the same name, which Python finds first, on the instance's
+      own class.
+  - id: crd_i9eplt
+    front: >-
+      What does `super().entries(value)` call inside a method?
+    back: >-
+      The `entries` of the class the current one inherits from, the one it replaced.
+  - id: crd_2fa2x8
+    front: >-
+      What's the difference between a class attribute and an instance attribute?
+    back: >-
+      A class attribute, set in the class body, is shared by every instance. An instance
+      attribute, set on `self`, belongs to one instance.

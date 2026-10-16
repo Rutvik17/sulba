@@ -1,0 +1,6 @@
+id: stg_kwmqx0
+kind: build
+title: Special methods
+builds: Your `structs.py` from stages 1 and 2.
+file: structs.py
+minutes: 40

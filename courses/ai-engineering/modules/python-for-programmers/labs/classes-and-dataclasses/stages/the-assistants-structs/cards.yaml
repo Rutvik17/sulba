@@ -1,0 +1,18 @@
+cards:
+  - id: crd_rzhf50
+    front: >-
+      In a Python class body, what does `options = []` make?
+    back: >-
+      One list, held by the class and shared by every instance that doesn't set its own. In
+      a JavaScript class body, it's a field, made for each instance.
+  - id: crd_8zyfuo
+    front: >-
+      Does Python run the base class's `__init__` when a subclass defines its own?
+    back: >-
+      Only when the subclass's `__init__` calls it, with `super().__init__(...)`.
+  - id: crd_p3wdzc
+    front: >-
+      Why can't a dataclass that isn't frozen be counted with a `Counter`?
+    back: >-
+      Comparing by its fields without being frozen, it gets no hash, and a `Counter` keeps
+      what it counts as a dict's keys.
