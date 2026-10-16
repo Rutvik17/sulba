@@ -1,0 +1,13 @@
+cards:
+  - id: crd_s7eq7y
+    front: >-
+      Counting runs that add up to a target with prefix sums, what do you look up for each
+      number?
+    back: >-
+      How many earlier prefix sums equal `total - target`, where `total` is the sum so far.
+  - id: crd_0nrzm0
+    front: >-
+      Why does the counter of prefix sums start as `{0: 1}`?
+    back: >-
+      The sum before any number is `0`, so a run that starts at the first number is counted
+      too.

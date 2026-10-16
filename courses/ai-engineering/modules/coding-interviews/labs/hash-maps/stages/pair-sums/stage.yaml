@@ -1,0 +1,6 @@
+id: stg_klr29b
+kind: problem
+title: Pair sums
+builds: A new `pairs.py`.
+file: pairs.py
+minutes: 15

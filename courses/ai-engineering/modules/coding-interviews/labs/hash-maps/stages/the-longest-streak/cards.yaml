@@ -1,0 +1,7 @@
+cards:
+  - id: crd_m2g7p9
+    front: >-
+      Finding the longest streak of consecutive integers with a set, which numbers do you count
+      up from?
+    back: >-
+      Only those whose predecessor isn't in the set, so that each streak is walked once.

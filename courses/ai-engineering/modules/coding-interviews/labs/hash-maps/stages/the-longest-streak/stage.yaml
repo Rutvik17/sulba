@@ -1,0 +1,6 @@
+id: stg_b4y2u5
+kind: problem
+title: The longest streak
+builds: A new `streaks.py`.
+file: streaks.py
+minutes: 20

@@ -1,0 +1,6 @@
+id: stg_4pmme8
+kind: problem
+title: Runs that add up
+builds: A new `subarrays.py`.
+file: subarrays.py
+minutes: 25

@@ -1,0 +1,6 @@
+id: stg_fvp7e7
+kind: problem
+title: The first unique character
+builds: A new `unique.py`.
+file: unique.py
+minutes: 15

@@ -1,0 +1,6 @@
+cards:
+  - id: crd_7yi69l
+    front: >-
+      What key in a dict gathers each word with its anagrams?
+    back: >-
+      The word's letters in sorted order, which anagrams share and other words don't.
