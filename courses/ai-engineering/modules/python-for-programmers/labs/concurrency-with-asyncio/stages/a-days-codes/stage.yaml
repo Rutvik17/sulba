@@ -1,0 +1,33 @@
+id: stg_lcdm2i
+kind: ship
+title: A day's codes
+builds: Your `lookups.py` from stages 1 to 3.
+file: lookups.py
+minutes: 40
+checks:
+  - check: tst_fa578y
+    title: Keeps to the limit, and fills each slot as it frees
+    requires: >-
+      `check_day` makes no more than `limit` lookups at a time, and starts a waiting code's
+      lookup as soon as one ends. A day of {% $fig.codes %} codes at a limit of
+      {% $fig.limit %}, where the first code's lookup takes {% $fig.slow %} seconds and each
+      of the others {% $fig.latency %}, takes {% $fig.day %} seconds.
+    failure: >-
+      More lookups ran at once than the limit, or a slot sat empty while codes waited for
+      one.
+  - check: tst_ei13ke
+    title: Times each lookup from when it starts
+    requires: >-
+      Each lookup gets its `seconds` once it has a slot, so a code waiting for one doesn't
+      time out, and a lookup that takes longer is stopped, alone.
+    failure: >-
+      A code timed out while it waited for a slot, or a lookup went on past its time. Start
+      each code's timeout once its lookup has a slot.
+  - check: tst_xt998d
+    title: Leaves no lookup running
+    requires: >-
+      When a lookup raises an error that isn't a `ConnectionError`, `check_day` raises it,
+      and no other lookup of the day is left running or waiting.
+    failure: >-
+      An error that wasn't a `ConnectionError` was caught, or lookups went on after it was
+      raised. A task group cancels its other tasks when one fails.

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_o6sxif
+    front: >-
+      How do you hold coroutines to a limit of `n` at a time?
+    back: >-
+      One `asyncio.Semaphore(n)` shared by them all, entered with `async with` around each
+      one's work.
+  - id: crd_8d1u1k
+    front: >-
+      What does `async with asyncio.timeout(seconds):` do when the time runs out?
+    back: >-
+      It cancels what the block is awaiting, and raises `TimeoutError` as the block ends.
+  - id: crd_bgss1k
+    front: >-
+      Why `async with gate:` rather than `acquire()` and `release()`?
+    back: >-
+      It gives the slot back however the block ends. A `release()` that an error skips
+      leaves the slot taken, and the other tasks can wait for it forever.

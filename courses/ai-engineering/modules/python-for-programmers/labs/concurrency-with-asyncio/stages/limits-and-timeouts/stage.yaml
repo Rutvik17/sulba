@@ -1,0 +1,6 @@
+id: stg_a78a7z
+kind: build
+title: Limits and timeouts
+builds: Your `lookups.py` from stages 1 and 2.
+file: lookups.py
+minutes: 40

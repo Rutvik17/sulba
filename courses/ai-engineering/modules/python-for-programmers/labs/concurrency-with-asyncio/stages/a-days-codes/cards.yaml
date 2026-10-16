@@ -1,0 +1,21 @@
+cards:
+  - id: crd_q7xu59
+    front: >-
+      Why start a lookup's timeout inside `async with gate:` rather than around it?
+    back: >-
+      Around it, the time a code waits for a slot counts against its lookup, and codes late
+      in a long day time out before they're looked up.
+  - id: crd_rcdk9h
+    front: >-
+      Why can batches of `limit` lookups, gathered in turn, take longer than a semaphore of
+      `limit`?
+    back: >-
+      Each batch waits for its slowest lookup before the next starts. A semaphore gives a
+      freed slot to the next code at once.
+  - id: crd_ke5izi
+    front: >-
+      When a lookup raises an error the code doesn't handle, why use a task group rather
+      than `gather`?
+    back: >-
+      The group cancels the other lookups before it raises. `gather` raises the error and
+      leaves them running.

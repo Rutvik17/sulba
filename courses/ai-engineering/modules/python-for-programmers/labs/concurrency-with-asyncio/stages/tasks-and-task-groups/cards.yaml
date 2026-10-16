@@ -1,0 +1,19 @@
+cards:
+  - id: crd_stpuvy
+    front: >-
+      What does `await asyncio.gather(*coroutines)` give, and what happens when one raises?
+    back: >-
+      Their results in their order. When one raises, `gather` raises its error at once and
+      the others go on running, as with `Promise.all`.
+  - id: crd_lnmip4
+    front: >-
+      What does a task group do when one of its tasks fails?
+    back: >-
+      It cancels the tasks still waiting, waits for them, and raises the errors together
+      in an `ExceptionGroup`.
+  - id: crd_7mxhd7
+    front: >-
+      What does `return_exceptions=True` change about `gather`?
+    back: >-
+      Each error comes back among the results instead of being raised, as
+      `Promise.allSettled` gives each rejection.

@@ -1,0 +1,13 @@
+cards:
+  - id: crd_bapfrq
+    front: >-
+      Why does a task that raises after `await gate.acquire()` stall the others?
+    back: >-
+      Unless a `finally` or `async with` gives the slot back, it stays taken, and the
+      others wait for it forever.
+  - id: crd_8l3uyx
+    front: >-
+      How do you keep one code's error or timeout from failing a whole `gather`?
+    back: >-
+      Catch it inside that code's coroutine, so it returns its own result and `gather`
+      collects every other answer.
