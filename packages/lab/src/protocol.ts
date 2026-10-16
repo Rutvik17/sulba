@@ -126,6 +126,8 @@ export const pythonPackages = [
   'scikit-learn',
   'xgboost',
   'lightgbm',
+  'regex',
+  'tiktoken',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -137,6 +139,8 @@ export const importNames: Readonly<Record<PythonPackage, string>> = {
   'scikit-learn': 'sklearn',
   xgboost: 'xgboost',
   lightgbm: 'lightgbm',
+  regex: 'regex',
+  tiktoken: 'tiktoken',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */
