@@ -1,0 +1,54 @@
+id: stg_fpetfw
+kind: catch
+title: The assistant's form
+builds: Your `refine.py` from stages 1 to 3.
+file: form.py
+minutes: 40
+problems:
+  - check: tst_28aox7
+    title: Every field took the last range
+    cost: >-
+      Each `lambda` in the loop looked up `low` and `high` when it was called, not when it
+      was made, and by then the loop had left them at the last row's values. Every field
+      took the texture's range: a radius past its own limit passed, and a radius below the
+      texture's lower limit failed.
+    fix: >-
+      The fix: bind each row's values when the check is made, with `low=low, high=high` as
+      the lambda's defaults, or a factory such as `size`.
+    edit:
+      replace: "            refine(number, \"range\", lambda value: low <= value <= high)\n"
+      with: "            refine(\n                number, \"range\", lambda value, low=low, high=high: low <= value <= high\n            )\n"
+  - check: tst_sqv8su
+    title: Every check was named counting
+    cost: >-
+      `counted` returned its own inner function as it was, so each check the form built was
+      named `counting`, and its docstring was gone. The service's log names each check that
+      fails, and every one would have read `counting`.
+    fix: >-
+      The fix: `@functools.wraps(check)` above `def counting`, with `functools` imported.
+    edit:
+      replace: "import math\n\n\ndef counted(check):\n    def counting(value):\n"
+      with: "import functools\nimport math\n\n\ndef counted(check):\n    @functools.wraps(check)\n    def counting(value):\n"
+  - check: tst_4nack5
+    title: The options changed after the check was made
+    cost: >-
+      `enums` kept the caller's list, so a list the form's code changed later, adding an
+      option for another field, changed what the check passed, while its message still
+      listed the options it started with.
+    fix: >-
+      The fix: copy the options when the check is made, `options = tuple(options)`.
+    edit:
+      replace: "def enums(options):\n    shown = \",\".join(repr(option) for option in options)\n"
+      with: "def enums(options):\n    options = tuple(options)\n    shown = \",\".join(repr(option) for option in options)\n"
+  - check: tst_ysrifp
+    title: A value of the wrong kind raised an error
+    cost: >-
+      `refine` ran the range test before the check for numbers, so a radius sent as text
+      reached `low <= value`, which raises `TypeError` for a string. The service would have
+      stopped on the record, where it should have reported it.
+    fix: >-
+      The fix: give the check's message first, and run the test only on a value the check
+      passes.
+    edit:
+      replace: "        result = test(value)\n        message = check(value)\n        if message is not None:\n            return message\n"
+      with: "        message = check(value)\n        if message is not None:\n            return message\n        result = test(value)\n"

@@ -1,0 +1,17 @@
+cards:
+  - id: crd_xbjgup
+    front: >-
+      What does `x or y` give in Python?
+    back: >-
+      `x` if `x` is true, otherwise `y`, as JavaScript's `||` does.
+  - id: crd_tb54zc
+    front: >-
+      What's the difference between `re.search` and `re.match`?
+    back: >-
+      `search` finds a match anywhere in the string, `match` only at its start.
+  - id: crd_2mxw21
+    front: >-
+      Why does a refinement test only values its check has passed?
+    back: >-
+      So its test can count on the kind of value it gets, such as a number to compare with
+      a threshold.
