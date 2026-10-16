@@ -1,0 +1,7 @@
+cards:
+  - id: crd_m1a3b2
+    front: >-
+      Binary searching for the first number not smaller than a value, what holds either side of
+      the bounds low and high?
+    back: >-
+      Every number before low is smaller than the value, and every number from high on is not.
