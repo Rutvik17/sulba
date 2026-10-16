@@ -1,0 +1,21 @@
+cards:
+  - id: crd_hpdoey
+    front: >-
+      What does `next(it, None)` give when `it` has no values left?
+    back: >-
+      `None`, where `next(it)` would raise `StopIteration`.
+  - id: crd_dftcfq
+    front: >-
+      How do you take only the first `n` values of an iterator?
+    back: >-
+      With `itertools.islice(it, n)`, which asks for no values after the first `n`.
+  - id: crd_o8mp3x
+    front: >-
+      What happens when you loop over the same generator twice?
+    back: >-
+      The second loop finds nothing: a generator gives each value once.
+  - id: crd_88pff2
+    front: >-
+      What does `enumerate(xs)` give?
+    back: >-
+      Each item of `xs` with its index, counted from `0`, as `(index, item)` pairs.

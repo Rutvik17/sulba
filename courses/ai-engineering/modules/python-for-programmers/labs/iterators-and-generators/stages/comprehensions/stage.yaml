@@ -1,0 +1,6 @@
+id: stg_ccrerq
+kind: build
+title: Comprehensions
+builds: A new `walk.py`.
+file: walk.py
+minutes: 30

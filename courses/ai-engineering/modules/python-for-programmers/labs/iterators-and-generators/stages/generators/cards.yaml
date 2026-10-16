@@ -1,0 +1,23 @@
+cards:
+  - id: crd_ly42qj
+    front: >-
+      What does calling a function that contains `yield` return?
+    back: >-
+      A generator. The function's body runs only as far as the next `yield` each time a
+      value is asked for.
+  - id: crd_m5iycp
+    front: >-
+      What does `yield from other` do?
+    back: >-
+      It yields each value `other` yields, in turn, as a loop over `other` with a `yield`
+      in it would.
+  - id: crd_2auytq
+    front: >-
+      What does `return` do inside a generator?
+    back: >-
+      It ends the generator: there are no more values to ask it for.
+  - id: crd_kod6vy
+    front: >-
+      How do you make a tuple with one more item than `path`?
+    back: >-
+      With `(*path, key)`, a new tuple, which leaves `path` as it was.

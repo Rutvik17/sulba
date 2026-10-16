@@ -1,0 +1,6 @@
+id: stg_ivicln
+kind: build
+title: Generators
+builds: Your `walk.py` from stage 1.
+file: walk.py
+minutes: 45

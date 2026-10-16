@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ix5ysb
+    front: >-
+      How do you go through a file's lines without reading the whole file?
+    back: >-
+      Loop over the open file: it gives one line at a time, read as it's asked for.
+  - id: crd_ryc94q
+    front: >-
+      Why turn lines into records with a generator expression rather than a list
+      comprehension?
+    back: >-
+      The generator makes each record when it's asked for, so only one is held at a time.
+      The list makes them all first.

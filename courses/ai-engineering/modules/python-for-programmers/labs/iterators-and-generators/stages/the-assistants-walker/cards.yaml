@@ -1,0 +1,17 @@
+cards:
+  - id: crd_d65qfw
+    front: >-
+      What runs when you call a generator function and don't read from what it returns?
+    back: >-
+      Nothing: the call only makes a generator, and its body runs as values are read.
+  - id: crd_b2g005
+    front: >-
+      What does `any(generator)` leave in the generator?
+    back: >-
+      Whatever comes after the first true value, which `any` has read and kept no copy of.
+  - id: crd_k0e8xl
+    front: >-
+      How does a list comprehension differ from a generator expression in what it reads?
+    back: >-
+      The comprehension reads everything at once to build its list. The generator
+      expression reads one value each time it's asked for the next.

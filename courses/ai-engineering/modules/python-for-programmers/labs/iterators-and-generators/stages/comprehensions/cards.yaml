@@ -1,0 +1,21 @@
+cards:
+  - id: crd_vet7i3
+    front: >-
+      How do you write JavaScript's `xs.filter(g).map(f)` in Python?
+    back: >-
+      As a list comprehension: `[f(x) for x in xs if g(x)]`.
+  - id: crd_h5ex2d
+    front: >-
+      What does `def f(*args)` do with the arguments it's called with?
+    back: >-
+      It gathers them into a tuple, as `...args` gathers them into an array in JavaScript.
+  - id: crd_orfzej
+    front: >-
+      In what order do two `for` clauses in one comprehension run?
+    back: >-
+      As nested loops do, the first one outermost.
+  - id: crd_bi12fc
+    front: >-
+      Where does a key go when a dict is given it a second time?
+    back: >-
+      It stays where it first went in, with the later value.
