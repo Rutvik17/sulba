@@ -1,0 +1,18 @@
+cards:
+  - id: crd_m4thap
+    front: >-
+      Why can `value is 1000` be false for a value equal to `1000`?
+    back: >-
+      `is` asks whether they are the same object, and `1000` read from JSON is a new object.
+      Compare values with `==`.
+  - id: crd_k4tvbk
+    front: >-
+      What does `result = record` copy?
+    back: >-
+      Nothing: it gives the same dict a second name, so changing `result` changes `record`.
+  - id: crd_zrzobq
+    front: >-
+      Why is `if not record.get(key)` no test of whether a field is missing?
+    back: >-
+      It's true for a field set to `0`, `""`, `False` or an empty list too. `key not in
+      record` is true only for a missing field.

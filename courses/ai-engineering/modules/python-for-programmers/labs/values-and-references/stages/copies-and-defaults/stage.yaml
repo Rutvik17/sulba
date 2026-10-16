@@ -1,0 +1,6 @@
+id: stg_1yirsx
+kind: build
+title: Copies and defaults
+builds: Your `values.py` from stages 1 and 2.
+file: values.py
+minutes: 40

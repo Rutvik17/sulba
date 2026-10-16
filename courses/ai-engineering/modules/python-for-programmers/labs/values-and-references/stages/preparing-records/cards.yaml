@@ -1,0 +1,19 @@
+cards:
+  - id: crd_fxt8b1
+    front: >-
+      What does `copy.deepcopy` copy that `dict(record)` doesn't?
+    back: >-
+      The lists and dicts inside the record, at every level. `dict(record)` copies only the
+      first.
+  - id: crd_buu0eq
+    front: >-
+      When is it harmless for two records to share a value?
+    back: >-
+      When the value can't be changed in place, as a number, a string, `True` or `None`
+      can't. A shared list or dict changes for both.
+  - id: crd_d9u95f
+    front: >-
+      What is a tuple for?
+    back: >-
+      A fixed group of values whose parts belong together, such as a field and its message.
+      It can't be changed once made.

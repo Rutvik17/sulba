@@ -1,0 +1,29 @@
+cards:
+  - id: crd_bz3aza
+    front: >-
+      What kind of copy does `dict(record)` make?
+    back: >-
+      A shallow copy: a new dict whose values are the same objects, so a list in it is
+      shared with the original.
+  - id: crd_bpje5a
+    front: >-
+      Why is `def f(tags=[])` a trap?
+    back: >-
+      The default is made once, when `def` runs, so every call that leaves `tags` out shares
+      one list. JavaScript makes a default afresh on each call.
+  - id: crd_y97bz4
+    front: >-
+      How do you give each record its own empty list by default?
+    back: >-
+      With a factory, a function that makes the value, such as `list`, called once for each
+      record.
+  - id: crd_hafs6a
+    front: >-
+      Which values are falsy in Python but true in JavaScript?
+    back: >-
+      Empty lists, dicts and other empty collections, such as `[]` and `{}`.
+  - id: crd_izygu4
+    front: >-
+      In what order does a dict give its keys?
+    back: >-
+      In the order they were added. A set's order can change from one run to the next.
