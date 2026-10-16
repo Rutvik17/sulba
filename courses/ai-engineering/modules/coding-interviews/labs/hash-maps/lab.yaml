@@ -1,0 +1,6 @@
+id: lab_dl04gz
+title: Hash maps
+summary: >-
+  Five interview problems where a dict or a set turns a search into one lookup: pair sums, the
+  first unique character, groups of anagrams, the longest streak and runs that add up.
+stages: [pair-sums, the-first-unique-character, anagram-groups, the-longest-streak, runs-that-add-up]

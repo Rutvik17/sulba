@@ -1,0 +1,8 @@
+cards:
+  - id: crd_nkblr7
+    front: >-
+      One pass with a dict finds two numbers that add up to a target. What does it look up for
+      each number, and where?
+    back: >-
+      `target - number`, among the numbers before it, kept in a dict from each number to its
+      position.

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ss4t5e
+    front: >-
+      How do you find the first character that appears only once in a text?
+    back: >-
+      Count every character in a first pass, then go through the text again and stop at the
+      first character with a count of one.

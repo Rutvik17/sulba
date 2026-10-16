@@ -1,0 +1,6 @@
+id: stg_03983z
+kind: problem
+title: Anagram groups
+builds: A new `anagrams.py`.
+file: anagrams.py
+minutes: 20
