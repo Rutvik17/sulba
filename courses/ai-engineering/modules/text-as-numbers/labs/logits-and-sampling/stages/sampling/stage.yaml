@@ -1,0 +1,7 @@
+id: stg_frl2tl
+kind: build
+title: Sampling
+builds: Your `judge.py` from stages 1 and 2.
+file: judge.py
+packages: [pandas, scipy]
+minutes: 35

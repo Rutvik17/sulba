@@ -6,7 +6,17 @@
 #   "regex==2026.3.32",
 #   "tiktoken==0.12.0",
 #   "tokenizers==0.23.3",
+#   "torch==2.14.1",
+#   "transformers==5.19.0",
 # ]
+#
+# [[tool.uv.index]]
+# name = "pytorch-cpu"
+# url = "https://download.pytorch.org/whl/cpu"
+# explicit = true
+#
+# [tool.uv.sources]
+# torch = { index = "pytorch-cpu" }
 # ///
 """Builds the shop files of Text as numbers from Amazon's Shopping Queries Dataset: search
 queries from Amazon's shops in the US, Spain and Japan, the products shown for each, and each
@@ -21,10 +31,22 @@ training titles: the 256 bytes, then the 1,000 merges a byte-pair encoding makes
 the titles with GPT-2's pattern, as tiktoken's educational trainer learns them. Each token is
 in hexadecimal, beside its rank.
 
-    uv run tools/datasets/shopping_queries.py titles <folder to write in> [<folder of downloads>]
+verdicts: `logits.csv` holds 1,000 of the dataset's US query and product pairs, chosen at
+random among the training pairs of its reduced version (`small_version`), which leaves out the
+queries deemed easy, and whose query and title have no control characters and no space at
+either end. Each keeps the label people gave it: E, S, C or I, for an exact match, a
+substitute, a complement or an irrelevant product. Each pair was put to Qwen2.5-1.5B-Instruct
+in its chat template: "Does this product match the shopping query? Answer Yes or No.", then the
+query and the title. The file keeps the logits for the first token of its answer, computed in
+float32 on the CPU: the log-sum-exp of all of them, those of Yes and No, and the 20 highest,
+each beside its token's text. The first 500 pairs are for validation and the rest for testing.
 
-The dataset's file of products comes to 1.1 GB. Given a folder of downloads, the script keeps
-it there for the next run; without one, it downloads it to a temporary folder.
+    uv run tools/datasets/shopping_queries.py titles <folder to write in> [<folder of downloads>]
+    uv run tools/datasets/shopping_queries.py verdicts <folder to write in> [<folder of downloads>]
+
+The dataset's files come to 1.2 GB, and the model to 3.1 GB. Given a folder of downloads, the
+script keeps the dataset's files there for the next run; without one, it downloads them to a
+temporary folder.
 """
 
 import csv
@@ -37,8 +59,10 @@ from pathlib import Path
 import numpy as np
 import pyarrow.parquet as pq
 import regex
+import torch
 from tiktoken._educational import bpe_train
 from tokenizers import Tokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # The dataset's repository at the commit of 7 October 2024. Its files are in Git LFS.
 SOURCE = (
@@ -48,6 +72,9 @@ SOURCE = (
 # Each file as downloaded on 16 October 2026, which its LFS pointer names too. A different
 # file stops the build.
 FILES = {
+    "shopping_queries_dataset_examples.parquet": (
+        "4a735b693b4a424a6fc67f5be6e4c811495c488bbf66d02a602d308b2744263a"
+    ),
     "shopping_queries_dataset_products.parquet": (
         "25124442d064d64b26f74082d6fa09438d679efc0c183cf28d19064a2b65a265"
     ),
@@ -58,6 +85,10 @@ PATTERN = r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?
 QWEN, QWEN_REVISION = "Qwen/Qwen2.5-1.5B-Instruct", "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
 SHOPS = {"us": 2500, "es": 500, "jp": 500}
 TRAIN, MERGES = 2000, 1000
+# The question each pair is put to the model with, the pairs, those for validation, and how
+# many of each answer's highest logits are kept.
+QUESTION = "Does this product match the shopping query? Answer Yes or No."
+PAIRS, VALIDATION, TOP = 1000, 500, 20
 
 
 def download(name: str, folder: Path) -> Path:
@@ -76,6 +107,11 @@ def download(name: str, folder: Path) -> Path:
     return path
 
 
+def clean(text: str | None) -> bool:
+    """Whether text is there, without control characters or space at either end."""
+    return text is not None and text == text.strip() and not regex.search(r"[\x00-\x1f\x7f]", text)
+
+
 def shop_titles(products: Path) -> dict[str, list[str]]:
     """Each shop's titles, without control characters or space at either end, each once."""
     table = pq.read_table(products, columns=["product_locale", "product_title"])
@@ -83,9 +119,7 @@ def shop_titles(products: Path) -> dict[str, list[str]]:
     seen: set[tuple[str, str]] = set()
     shops = table.column("product_locale").to_pylist()
     for shop, title in zip(shops, table.column("product_title").to_pylist(), strict=True):
-        if title is None or title != title.strip() or regex.search(r"[\x00-\x1f\x7f]", title):
-            continue
-        if (shop, title) not in seen:
+        if clean(title) and (shop, title) not in seen:
             seen.add((shop, title))
             titles[shop].append(title)
     return titles
@@ -119,9 +153,62 @@ def titles(out: Path, downloads: Path) -> None:
             writer.writerow([rank, token.hex()])
 
 
+def verdicts(out: Path, downloads: Path) -> None:
+    examples = pq.read_table(
+        download("shopping_queries_dataset_examples.parquet", downloads),
+        columns=["query", "product_id", "esci_label"],
+        filters=[("product_locale", "=", "us"), ("small_version", "=", 1), ("split", "=", "train")],
+    ).to_pylist()
+    products = pq.read_table(
+        download("shopping_queries_dataset_products.parquet", downloads),
+        columns=["product_id", "product_title"],
+        filters=[("product_locale", "=", "us")],
+    )
+    names = products.column("product_id").to_pylist()
+    titles = dict(zip(names, products.column("product_title").to_pylist(), strict=True))
+    pairs = [
+        row for row in examples if clean(row["query"]) and clean(titles.get(row["product_id"]))
+    ]
+    rng = np.random.default_rng(0)
+    chosen = [pairs[i] for i in rng.choice(len(pairs), PAIRS, replace=False)]
+    tokenizer = AutoTokenizer.from_pretrained(QWEN, revision=QWEN_REVISION)
+    model = AutoModelForCausalLM.from_pretrained(QWEN, revision=QWEN_REVISION, dtype=torch.float32)
+    model.eval()
+    answers = [tokenizer.convert_tokens_to_ids(word) for word in ("Yes", "No")]
+    with open(out / "logits.csv", "w", encoding="utf-8", newline="\n") as file:
+        writer = csv.writer(file, lineterminator="\n")
+        tokens = [f"token_{i}" for i in range(1, TOP + 1)]
+        logits = [f"logit_{i}" for i in range(1, TOP + 1)]
+        writer.writerow(["set", "query", "title", "label", "lse", "yes", "no", *tokens, *logits])
+        for number, row in enumerate(chosen):
+            title = titles[row["product_id"]]
+            prompt = f"{QUESTION}\nQuery: {row['query']}\nProduct: {title}"
+            ids = tokenizer.apply_chat_template(
+                [{"role": "user", "content": prompt}],
+                add_generation_prompt=True,
+                return_tensors="pt",
+                return_dict=True,
+            )["input_ids"]
+            with torch.no_grad():
+                last = model(ids).logits[0, -1].double()
+            top = torch.topk(last, TOP)
+            writer.writerow(
+                [
+                    "validation" if number < VALIDATION else "test",
+                    row["query"],
+                    title,
+                    row["esci_label"],
+                    f"{float(torch.logsumexp(last, 0)):.4f}",
+                    *(f"{float(last[answer]):.4f}" for answer in answers),
+                    *(tokenizer.decode([int(i)]) for i in top.indices),
+                    *(f"{float(value):.4f}" for value in top.values),
+                ]
+            )
+
+
 if __name__ == "__main__":
     lab, out = sys.argv[1], Path(sys.argv[2])
-    builders = {"titles": titles}
+    builders = {"titles": titles, "verdicts": verdicts}
     if len(sys.argv) > 3:
         builders[lab](out, Path(sys.argv[3]))
     else:

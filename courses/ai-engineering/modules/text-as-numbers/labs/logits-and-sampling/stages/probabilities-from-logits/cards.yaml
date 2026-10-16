@@ -1,0 +1,17 @@
+cards:
+  - id: crd_kj8nrw
+    front: >-
+      Why subtract the largest logit before taking a softmax?
+    back: >-
+      It leaves every probability as it was and keeps every power at most 1, so nothing
+      overflows.
+  - id: crd_0y52p8
+    front: >-
+      What probability does softmax give a logit of minus infinity?
+    back: >-
+      None at all: the token is removed.
+  - id: crd_jbf7z9
+    front: >-
+      How do you get a token's probability from its logit and the log-sum-exp of every logit?
+    back: >-
+      Take e to the power of the logit minus the log-sum-exp.

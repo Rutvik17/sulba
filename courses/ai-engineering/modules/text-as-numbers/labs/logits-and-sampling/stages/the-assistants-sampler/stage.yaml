@@ -1,0 +1,64 @@
+id: stg_xtsmto
+kind: catch
+title: The assistant's sampler
+builds: Your `judge.py` from stages 1 to 3.
+file: sampler.py
+packages: [pandas, scipy]
+minutes: 40
+problems:
+  - check: tst_h7ddrh
+    title: Temperature changed nothing
+    cost: >-
+      `warp` divided the probabilities by the temperature, and sharing them out again undid
+      it, so the labels came from a temperature of 1. At the model's settings,
+      {% $fig.t_two %} pairs would have kept both answers instead of {% $fig.two %}, and two
+      runs would have disagreed on {% $fig.t_changes %} pairs on average instead of
+      {% $fig.changes %}.
+    fix: >-
+      The fix: divide the logits by the temperature before the softmax,
+      `np.exp((logits - logits.max()) / temperature)`.
+    edit:
+      replace: "    weights = np.where(kept, np.exp(logits - logits.max()), 0.0)\n    probabilities = weights / weights.sum()\n    probabilities = probabilities / temperature\n    probabilities /= probabilities.sum()\n"
+      with: "    weights = np.where(kept, np.exp((logits - logits.max()) / temperature), 0.0)\n    probabilities = weights / weights.sum()\n"
+  - check: tst_acw01r
+    title: Top-p dropped the token that reaches p
+    cost: >-
+      `warp` kept a token only while the running total, its own probability included,
+      stayed within `$p$`, so it dropped the token that takes the total to `$p$`. At the
+      model's settings, all {% $fig.two %} pairs that keep both answers would have kept only
+      the likelier one: the other, with {% $fig.second_mean %} of the probability on
+      average, could never come up.
+    fix: >-
+      The fix: keep a token while the tokens ranked above it add up to less than `$p$`,
+      `np.cumsum(probabilities[order]) - probabilities[order]`, and remove it once they
+      reach `$p$`.
+    edit:
+      replace: "        total = np.cumsum(probabilities[order])\n        probabilities[order[1:][total[1:] > top_p]] = 0.0\n"
+      with: "        above = np.cumsum(probabilities[order]) - probabilities[order]\n        probabilities[order[1:][above[1:] >= top_p]] = 0.0\n"
+  - check: tst_yzwiog
+    title: It drew the kept tokens as equally likely
+    cost: >-
+      `rng.choice(np.flatnonzero(probabilities))` picks one of the kept tokens without
+      regard to their probabilities. Over the {% $fig.two %} pairs that keep both answers,
+      the labels would have held the less likely answer {% $fig.uniform_second %} times on
+      average, where the model would give it {% $fig.second_count %} times.
+    fix: >-
+      The fix: `rng.choice(len(probabilities), p=probabilities)`, which draws each token
+      with its probability.
+    edit:
+      replace: "    return int(rng.choice(np.flatnonzero(probabilities)))\n"
+      with: "    return int(rng.choice(len(probabilities), p=probabilities))\n"
+  - check: tst_z0gywp
+    title: Every pair drew the same random number
+    cost: >-
+      `label` made a new generator with the same seed for every pair, so every draw used
+      the same number, {% $fig.u %}, and whether a pair's likelier answer took more of the
+      probability than that fixed its label. Of the {% $fig.two %} pairs that keep both
+      answers, {% $fig.always_second %} would have got their less likely answer on every
+      run, and the others never.
+    fix: >-
+      The fix: make the generator once, before the loop, so that each pair draws the next
+      number from it. Every run still gives the same labels.
+    edit:
+      replace: "    labels = []\n    for row, values in zip(tokens, logits, strict=True):\n        rng = np.random.default_rng(SEED)\n"
+      with: "    labels = []\n    rng = np.random.default_rng(SEED)\n    for row, values in zip(tokens, logits, strict=True):\n"

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_x54a8k
+    front: >-
+      Why does dividing probabilities by the temperature change nothing?
+    back: >-
+      Every probability is divided by the same number, and sharing them out again so they add
+      up to 1 undoes it. Temperature divides the logits.
+  - id: crd_au4w3t
+    front: >-
+      What goes wrong when a sampler makes a new generator with the same seed for each item?
+    back: >-
+      Every item draws the same random number, so the draws aren't independent: each item's
+      result is fixed by that one number.
+  - id: crd_r5lx0j
+    front: >-
+      How do you check that a sampler draws each token with its probability?
+    back: >-
+      Draw many times from known probabilities with one generator, and compare how often each
+      token comes up with its probability.

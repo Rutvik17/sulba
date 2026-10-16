@@ -1,0 +1,7 @@
+id: stg_2dwuij
+kind: build
+title: Probabilities from logits
+builds: A new `judge.py`.
+file: judge.py
+packages: [pandas, scipy]
+minutes: 35
