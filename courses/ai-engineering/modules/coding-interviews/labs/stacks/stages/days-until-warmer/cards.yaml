@@ -1,0 +1,7 @@
+cards:
+  - id: crd_akniv2
+    front: >-
+      In days until warmer, what does the stack hold, and in what order?
+    back: >-
+      The days still waiting for a warmer one, never warmer towards the top, so a warm day
+      settles them from the top down.

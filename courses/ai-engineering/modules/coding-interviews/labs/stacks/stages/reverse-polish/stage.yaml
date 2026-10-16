@@ -1,0 +1,6 @@
+id: stg_nrmgzb
+kind: problem
+title: Reverse Polish
+builds: A new `rpn.py`.
+file: rpn.py
+minutes: 20

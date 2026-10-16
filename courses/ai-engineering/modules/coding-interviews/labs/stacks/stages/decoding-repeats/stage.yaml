@@ -1,0 +1,6 @@
+id: stg_t7ok8b
+kind: problem
+title: Decoding repeats
+builds: A new `repeats.py`.
+file: repeats.py
+minutes: 25

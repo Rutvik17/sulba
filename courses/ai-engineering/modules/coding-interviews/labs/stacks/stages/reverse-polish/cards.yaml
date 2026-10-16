@@ -1,0 +1,7 @@
+cards:
+  - id: crd_sz33rs
+    front: >-
+      Evaluating reverse Polish notation with a stack, which value popped first is the
+      right-hand operand?
+    back: >-
+      The first popped: for `7 2 -`, the stack pops `2`, then `7`, and computes `7 - 2`.

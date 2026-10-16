@@ -1,0 +1,6 @@
+id: stg_kqhqsu
+kind: problem
+title: A stack with its minimum
+builds: A new `min_stack.py`.
+file: min_stack.py
+minutes: 20
