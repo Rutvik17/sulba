@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_pack01",
+      "name": "Reads a pinned requirement",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_pack02",
+      "name": "Orders versions as PEP 440 does",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

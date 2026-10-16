@@ -129,6 +129,7 @@ export const pythonPackages = [
   'regex',
   'tiktoken',
   'mypy',
+  'packaging',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -143,6 +144,7 @@ export const importNames: Readonly<Record<PythonPackage, string>> = {
   regex: 'regex',
   tiktoken: 'tiktoken',
   mypy: 'mypy',
+  packaging: 'packaging',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */
