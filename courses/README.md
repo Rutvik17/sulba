@@ -106,6 +106,8 @@ A check reports what it measured, such as the time the code took, with pytest's 
 
 A test of asyncio code asks for the `loop` fixture, an event loop whose clock jumps to its next timer instead of waiting (decision record 21). It runs a coroutine with `loop.run_until_complete(...)`, and `loop.time()` is the seconds that passed, the same in Pyodide and CPython, so a minute's timeout takes no time. Code that waits forever fails at once, and the code under test can't wait on sockets or threads.
 
+A test of typed code asks for the `typecheck` fixture, with `mypy` among the stage's `packages`. `typecheck("shapes.py")` gives mypy's errors in the file under `--strict`, one line each as mypy prints them, such as `shapes.py:4: error: Function is missing a type annotation  [no-untyped-def]`, the same in Pyodide and CPython (decision record 22). mypy's first check takes seconds in a browser, so the browser makes it before a run's time starts.
+
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Review cards
