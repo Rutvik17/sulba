@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_regx01",
+      "name": "Splits text into words, numbers and marks",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_tikt01",
+      "name": "Encodes with the merges given and decodes back",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

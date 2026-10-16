@@ -9,8 +9,10 @@ dependencies = [
   "numpy==2.4.6",
   "pandas==3.0.2",
   "pytest==9.0.2",
+  "regex==2026.3.32",
   "scikit-learn==1.8.0",
   "scipy==1.18.0",
+  "tiktoken==0.12.0",
   "xgboost==2.1.4",
 ]
 
@@ -25,18 +27,23 @@ required-version = "==0.12.23"
 exclude-dependencies = [
   { package = { name = "xgboost", version = "2.1.4" }, dependencies = ["nvidia-nccl-cu12"] },
 ]
-# pytest's, pandas' and scikit-learn's own dependencies, at the versions Pyodide ships. A test fails if
-# any package in uv.lock and in Pyodide's lock file differ.
+# pytest's, pandas', scikit-learn's and tiktoken's own dependencies, at the versions Pyodide ships. A
+# test fails if any package in uv.lock and in Pyodide's lock file differ.
 constraint-dependencies = [
+  "certifi==2026.4.22",
+  "charset-normalizer==3.4.7",
+  "idna==3.11",
   "iniconfig==2.3.0",
   "joblib==1.5.3",
   "packaging==26.1",
   "pluggy==1.6.0",
   "pygments==2.20.0",
   "python-dateutil==2.9.0.post0",
+  "requests==2.33.1",
   "six==1.17.0",
   "threadpoolctl==3.6.0",
   "tzdata==2025.3",
+  "urllib3==2.6.3",
 ]
 
 [tool.pytest.ini_options]
