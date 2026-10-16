@@ -1,0 +1,8 @@
+cards:
+  - id: crd_egjcyj
+    front: >-
+      Finding the most water two lines can hold with two positions moving inwards, which line
+      moves, and why?
+    back: >-
+      The shorter one: with any line closer in, it holds at most its height times a smaller gap,
+      so it can't do better.

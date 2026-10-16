@@ -1,0 +1,6 @@
+id: lab_0yl3ww
+title: Two pointers
+summary: >-
+  Five interview problems where two positions move through a list: a pair in sorted order,
+  duplicates removed in place, the most water, triples that sum to zero and trapped water.
+stages: [a-pair-in-sorted-order, duplicates-in-place, the-most-water, triples-that-sum-to-zero, trapped-water]

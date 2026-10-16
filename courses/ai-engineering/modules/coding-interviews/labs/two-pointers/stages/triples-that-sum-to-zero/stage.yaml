@@ -1,0 +1,6 @@
+id: stg_yv0yh3
+kind: problem
+title: Triples that sum to zero
+builds: A new `triples.py`.
+file: triples.py
+minutes: 25

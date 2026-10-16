@@ -1,0 +1,6 @@
+id: stg_ckcwt3
+kind: problem
+title: Duplicates in place
+builds: A new `dedupe.py`.
+file: dedupe.py
+minutes: 15
