@@ -1,0 +1,58 @@
+id: stg_cg2ru6
+kind: catch
+title: The assistant's evaluation
+builds: Your `search.py` from stages 1 to 3.
+file: evaluate.py
+packages: [pandas, scikit-learn]
+minutes: 40
+problems:
+  - check: tst_q6cgb7
+    title: It ranked by the dot product
+    cost: >-
+      `rank` multiplied the vectors as the file holds them, cut to their first numbers and no
+      longer of length 1, so longer vectors ranked higher. It changed the first
+      {% $fig.k %} products of {% $fig.dot_changed %} of the {% $fig.queries %} queries, in
+      their order if nothing else, and the shop would have scored a search it doesn't run:
+      nDCG {% $fig.dot_ndcg %} for the dot product, where the cosine gives {% $fig.ndcg %}.
+    fix: >-
+      The fix: normalize the query and product vectors before multiplying them.
+    edit:
+      replace: "    scores = query_vectors @ product_vectors.T\n"
+      with: "    queries = query_vectors / np.linalg.norm(query_vectors, axis=1, keepdims=True)\n    products = product_vectors / np.linalg.norm(product_vectors, axis=1, keepdims=True)\n    scores = queries @ products.T\n"
+  - check: tst_fumj5a
+    title: Recall divided by the products shown
+    cost: >-
+      `recall` divided the relevant products found by `$k$`, not by the query's relevant
+      products. Recall came out at {% $fig.recall_over_k %} where it is
+      {% $fig.recall %}, and a query with fewer exact matches than `$k$` could never score 1.
+    fix: >-
+      The fix: divide by `relevant.sum()`, and give 0 when no product is relevant.
+    edit:
+      replace: "    return relevant[ranked[:k]].sum() / k\n"
+      with: "    total = relevant.sum()\n    return relevant[ranked[:k]].sum() / total if total else 0.0\n"
+  - check: tst_kwa1py
+    title: It counted a miss as a first-place hit
+    cost: >-
+      `np.argmax` gives 0 when no value is true, so a query with no exact match among its
+      first {% $fig.k %} products scored a reciprocal rank of 1, as if its first product
+      were one. {% $fig.no_exact %} queries did, and MRR came out at
+      {% $fig.mrr_counted %} where it is {% $fig.mrr %}.
+    fix: >-
+      The fix: find the relevant positions with `np.flatnonzero`, and give 0 when there are
+      none.
+    edit:
+      replace: "    return 1 / (np.argmax(relevant[ranked[:k]]) + 1)\n"
+      with: "    found = np.flatnonzero(relevant[ranked[:k]])\n    return 1 / (found[0] + 1) if len(found) else 0.0\n"
+  - check: tst_56j4ih
+    title: nDCG against the products shown
+    cost: >-
+      `ndcg` took the best DCG from the products the search showed, sorted, not from all of
+      the query's products. It scored how well the search ordered what it found, never
+      what it missed: nDCG came out at {% $fig.inflated %} where it is {% $fig.ndcg %}, and
+      {% $fig.perfect %} queries scored a perfect 1.
+    fix: >-
+      The fix: take the best DCG from all of the query's gains,
+      `np.sort(gains)[::-1][:k]`.
+    edit:
+      replace: "    best = np.sort(shown)[::-1] @ discounts\n"
+      with: "    best = np.sort(gains)[::-1][:k] @ discounts\n"

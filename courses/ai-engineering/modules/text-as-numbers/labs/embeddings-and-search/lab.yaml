@@ -1,0 +1,39 @@
+id: lab_75fpx5
+title: Embeddings and search
+summary: >-
+  Search the shop's products with a small embedding model: compare queries and titles by
+  cosine similarity, find each query's nearest products, score the results against people's
+  judgements with recall, MRR and nDCG, and ship an index that searches a fraction of the
+  catalogue.
+data:
+  - file: queries.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      100 queries from the US shop, chosen at random among its test queries, half of them
+      for validation and half for testing, each with the first 256 numbers of its embedding
+      by Snowflake's arctic-embed-m-v1.5.
+  - file: products.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      The 2,083 products people judged for those queries, each with the first 256 numbers
+      of its title's embedding by Snowflake's arctic-embed-m-v1.5.
+  - file: judgements.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      The label people gave each of those products for each query.
+stages: [embeddings-and-cosine-similarity, nearest-neighbours, recall-mrr-and-ndcg, the-assistants-evaluation, a-faster-search]

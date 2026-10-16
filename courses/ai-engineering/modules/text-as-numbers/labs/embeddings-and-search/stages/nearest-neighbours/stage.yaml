@@ -1,0 +1,7 @@
+id: stg_y116nf
+kind: build
+title: Nearest neighbours
+builds: Your `search.py` from stage 1.
+file: search.py
+packages: [pandas, scikit-learn]
+minutes: 30

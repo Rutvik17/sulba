@@ -1,0 +1,18 @@
+cards:
+  - id: crd_68kan0
+    front: >-
+      What are a query's nearest neighbours in an embedding search?
+    back: >-
+      The products whose embeddings have the highest cosine similarity with the query's.
+  - id: crd_n1f5e3
+    front: >-
+      How do you rank products by similarity with ties kept in their order?
+    back: >-
+      Sort the negated similarities with a stable sort, which keeps tied values in the order
+      they come.
+  - id: crd_vwrbi2
+    front: >-
+      How does cosine distance relate to cosine similarity?
+    back: >-
+      Cosine distance is 1 minus the cosine similarity, so the nearest products are the most
+      similar.

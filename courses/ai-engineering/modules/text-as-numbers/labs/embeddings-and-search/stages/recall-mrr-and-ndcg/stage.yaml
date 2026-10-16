@@ -1,0 +1,14 @@
+id: stg_n2itsc
+kind: build
+title: Recall, MRR and nDCG
+builds: Your `search.py` from stages 1 and 2.
+file: search.py
+packages: [pandas, scikit-learn]
+minutes: 45
+chart:
+  title: Search quality by the numbers kept
+  sliders:
+    - name: k
+      label: Products shown
+      stops: [5, 10, 20]
+      value: 10

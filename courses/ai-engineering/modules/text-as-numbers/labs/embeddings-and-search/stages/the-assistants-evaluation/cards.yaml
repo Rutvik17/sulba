@@ -1,0 +1,19 @@
+cards:
+  - id: crd_pu5rr7
+    front: >-
+      What does `np.argmax` give for a boolean array with no true value?
+    back: >-
+      0, the same as when the first value is true, so a miss reads as a hit unless you check
+      for one.
+  - id: crd_vawaec
+    front: >-
+      Why must nDCG's best DCG come from all of a query's products, not the ones shown?
+    back: >-
+      The best order of what was shown says nothing about what the search missed, so the
+      score would reward a search for ranking its own results well.
+  - id: crd_a5bwku
+    front: >-
+      What should recall at k divide by?
+    back: >-
+      All of the query's relevant products. Dividing by k keeps a query with fewer relevant
+      products than k from ever scoring 1.
