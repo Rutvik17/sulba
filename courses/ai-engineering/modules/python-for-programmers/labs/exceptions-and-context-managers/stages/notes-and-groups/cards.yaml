@@ -1,0 +1,19 @@
+cards:
+  - id: crd_oktl74
+    front: >-
+      What does `raise NewError(message) from error` do?
+    back: >-
+      It raises the new error with `error` as its cause, in `__cause__`, which a traceback
+      shows before it.
+  - id: crd_i1kdzs
+    front: >-
+      What is `error.add_note(note)` for?
+    back: >-
+      Adding a line to an error after it was raised, such as where it happened, without
+      changing the error. A traceback shows its notes after its message.
+  - id: crd_qdv5mz
+    front: >-
+      What does `except* StructError as group:` do with an exception group?
+    back: >-
+      It handles the group's StructErrors, as a group of their own, and the group's other
+      errors go on to the caller.

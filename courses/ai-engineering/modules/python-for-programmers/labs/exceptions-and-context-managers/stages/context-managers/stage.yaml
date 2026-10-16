@@ -1,0 +1,6 @@
+id: stg_0vkica
+kind: build
+title: Context managers
+builds: Your `errors.py` from stages 1 and 2.
+file: errors.py
+minutes: 40

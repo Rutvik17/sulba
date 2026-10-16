@@ -1,0 +1,19 @@
+cards:
+  - id: crd_s4y0aw
+    front: >-
+      What does `with manager as value:` call, and when?
+    back: >-
+      `manager.__enter__()` before the block, giving `value` what it returns, and
+      `manager.__exit__(kind, error, traceback)` however the block ends.
+  - id: crd_3jwa1q
+    front: >-
+      What happens when a context manager's `__exit__` returns `True`?
+    back: >-
+      The error the block raised is suppressed, and the code after the `with` statement
+      runs as if nothing had been raised.
+  - id: crd_w6dthc
+    front: >-
+      In a `@contextmanager` generator, where does an error raised in the block appear?
+    back: >-
+      At the `yield`, so a `try` around the `yield` can handle it, or a `finally` can clean
+      up after it.

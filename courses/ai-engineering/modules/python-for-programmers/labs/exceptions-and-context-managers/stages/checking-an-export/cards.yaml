@@ -1,0 +1,18 @@
+cards:
+  - id: crd_oanpw2
+    front: >-
+      In what order does `with a, b, c:` leave its context managers?
+    back: >-
+      `c`, then `b`, then `a`: the statement works as if each were inside the one before it.
+  - id: crd_em8puz
+    front: >-
+      Why open a file in a `with` statement rather than closing it after the loop?
+    back: >-
+      `with` closes it however the block ends. A `close()` after the loop doesn't run when
+      the loop raises an error.
+  - id: crd_6htb7i
+    front: >-
+      Why pass `encoding="utf-8"` to `open`?
+    back: >-
+      Without it, a file is read in the machine's default encoding, which can differ from
+      one machine to the next.
