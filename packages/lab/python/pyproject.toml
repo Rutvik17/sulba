@@ -5,6 +5,8 @@ name = "sulba-lab"
 version = "0"
 requires-python = "==3.14.2"
 dependencies = [
+  "fastapi==0.136.1",
+  "httpx==0.28.1",
   "lightgbm==4.6.0",
   "mypy==1.19.1",
   "numpy==2.4.6",
@@ -29,12 +31,17 @@ required-version = "==0.12.23"
 exclude-dependencies = [
   { package = { name = "xgboost", version = "2.1.4" }, dependencies = ["nvidia-nccl-cu12"] },
 ]
-# pytest's, pandas', scikit-learn's, tiktoken's and mypy's own dependencies, at the versions Pyodide
-# ships, or for the two it doesn't, the versions the site serves. A test fails if any package in
-# uv.lock and in Pyodide's lock file differ.
+# pytest's, pandas', scikit-learn's, tiktoken's, mypy's, FastAPI's and HTTPX's own dependencies, at
+# the versions Pyodide ships, or for the two it doesn't, the versions the site serves. A test fails
+# if any package in uv.lock and in Pyodide's lock file differ.
 constraint-dependencies = [
+  "annotated-doc==0.0.4",
+  "annotated-types==0.7.0",
+  "anyio==4.13.0",
   "certifi==2026.4.22",
   "charset-normalizer==3.4.7",
+  "h11==0.16.0",
+  "httpcore==1.0.9",
   "idna==3.11",
   "iniconfig==2.3.0",
   "joblib==1.5.3",
@@ -42,12 +49,16 @@ constraint-dependencies = [
   "mypy-extensions==1.1.0",
   "pathspec==1.1.1",
   "pluggy==1.6.0",
+  "pydantic==2.12.5",
+  "pydantic-core==2.41.5",
   "pygments==2.20.0",
   "python-dateutil==2.9.0.post0",
   "requests==2.33.1",
   "six==1.17.0",
+  "starlette==1.0.0",
   "threadpoolctl==3.6.0",
   "typing-extensions==4.15.0",
+  "typing-inspection==0.4.2",
   "tzdata==2025.3",
   "urllib3==2.6.3",
 ]

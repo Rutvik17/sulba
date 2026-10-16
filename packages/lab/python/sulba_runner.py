@@ -317,6 +317,30 @@ class VirtualClockLoop(asyncio.BaseEventLoop):
             asyncio._set_running_loop(running)
 
 
+@contextmanager
+def threads_on_the_loop() -> Iterator[None]:
+    """While a test runs, the work anyio would hand to a worker thread runs on the loop instead.
+
+    Starlette, and so FastAPI, run a `def` endpoint or dependency in anyio's worker threads.
+    A VirtualClockLoop waits on no thread, and Pyodide has none, so the work runs where the
+    test's coroutine runs, with the same result. anyio is imported by then, by the app the test
+    imports, or not used at all."""
+    to_thread = sys.modules.get("anyio.to_thread")
+    if to_thread is None:
+        yield
+        return
+    in_a_thread = to_thread.run_sync
+
+    async def run_sync(func: Callable[..., Any], *args: Any, **_: Any) -> Any:
+        return func(*args)
+
+    to_thread.run_sync = run_sync
+    try:
+        yield
+    finally:
+        to_thread.run_sync = in_a_thread
+
+
 class Report:
     """A pytest plugin that keeps what a learner needs from each test."""
 
@@ -336,16 +360,17 @@ class Report:
         """A new VirtualClockLoop for the test, whose time starts at 0. Afterwards, as
         asyncio.run does, the tasks left waiting are cancelled before the loop closes."""
         loop = VirtualClockLoop()
-        try:
-            yield loop
-        finally:
-            waiting = asyncio.all_tasks(loop)
-            for task in waiting:
-                task.cancel()
-            if waiting:
-                loop.run_until_complete(asyncio.gather(*waiting, return_exceptions=True))
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
+        with threads_on_the_loop():
+            try:
+                yield loop
+            finally:
+                waiting = asyncio.all_tasks(loop)
+                for task in waiting:
+                    task.cancel()
+                if waiting:
+                    loop.run_until_complete(asyncio.gather(*waiting, return_exceptions=True))
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
 
     @pytest.fixture
     def typecheck(self) -> Callable[..., list[str]]:

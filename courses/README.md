@@ -108,6 +108,8 @@ A test of asyncio code asks for the `loop` fixture, an event loop whose clock ju
 
 A test of typed code asks for the `typecheck` fixture, with `mypy` among the stage's `packages`. `typecheck("shapes.py")` gives mypy's errors in the file under `--strict`, one line each as mypy prints them, such as `shapes.py:4: error: Function is missing a type annotation  [no-untyped-def]`, the same in Pyodide and CPython (decision record 22). mypy's first check takes seconds in a browser, so the browser makes it before a run's time starts.
 
+A test of a FastAPI app, with `fastapi` and `httpx` among the stage's `packages`, sends its requests in process, as FastAPI's own async tests do: an `httpx.AsyncClient` over `ASGITransport(app=app)`, run with the `loop` fixture (decision record 24). There, a `def` endpoint or dependency runs on the loop instead of in anyio's worker threads, so it gives the same result in Pyodide, which has no threads, and in CPython. FastAPI's first import takes seconds in a browser, so the browser makes it before a run's time starts.
+
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Problem stages
