@@ -1,0 +1,7 @@
+id: stg_r8blte
+kind: build
+title: Merges
+builds: A new `bpe.py`.
+file: bpe.py
+packages: [regex, tiktoken]
+minutes: 45

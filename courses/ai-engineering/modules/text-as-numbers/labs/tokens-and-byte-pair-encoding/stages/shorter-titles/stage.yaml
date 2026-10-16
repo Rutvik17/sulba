@@ -1,0 +1,38 @@
+id: stg_0xlag3
+kind: ship
+title: Shorter titles
+builds: Your `bpe.py` from stages 1 to 3.
+file: bpe.py
+packages: [regex, tiktoken]
+minutes: 40
+checks:
+  - check: tst_amcrfw
+    title: Within the limit in all three shops
+    requires: >-
+      Each test title from each shop, at each limit from 2 to {% $fig.limit %} tokens, comes
+      back as a start of itself that the shop's tokenizer encodes within the limit.
+    failure: >-
+      A shortened title was over the limit, or wasn't a start of its title. Count the tokens
+      of the cut text with your `encode`.
+  - check: tst_9qfq6a
+    title: As many whole pieces as fit
+    requires: >-
+      When a title's first piece fits, the shortened title is the longest start of it made
+      of whole pieces within the limit.
+    failure: >-
+      A cut kept fewer whole pieces than fit, or kept part of one. Add each piece's tokens
+      until the next piece would go past the limit.
+  - check: tst_6z8knf
+    title: Inside a first piece over the limit
+    requires: >-
+      When even a title's first piece is over the limit, the shortened title is the longest
+      start of that piece within the limit, and empty when not even its first character fits.
+    failure: >-
+      A cut inside a first piece kept fewer characters than fit. A longer start can take
+      fewer tokens than a shorter one, so try every length.
+  - check: tst_76cth1
+    title: Titles that fit, whole
+    requires: >-
+      Each title stays whole at a limit of its own tokens, and is cut at one token fewer.
+    failure: >-
+      A title that fits was cut, or one that doesn't fit wasn't.

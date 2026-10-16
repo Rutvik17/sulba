@@ -1,0 +1,57 @@
+id: stg_5yhjin
+kind: catch
+title: The assistant's prompts
+builds: Your `bpe.py` from stages 1 to 3.
+file: prompts.py
+packages: [regex, tiktoken]
+minutes: 40
+problems:
+  - check: tst_j09v7u
+    title: It guessed the tokens from the characters
+    cost: >-
+      `count` took a token for every four characters. On average, a US test title came out
+      at {% $fig.us_guess %} tokens where it takes {% $fig.us_tokens %}, and a Japanese one at
+      {% $fig.jp_guess %} where it takes {% $fig.jp_tokens %}, {% $fig.jp_under %} times as
+      many. The app would have shown every Japanese listing at a fraction of its tokens.
+    fix: >-
+      The fix: count with the tokenizer, `len(encoding.encode_ordinary(text))`.
+    edit:
+      replace: "    return round(len(text) / 4)\n"
+      with: "    return len(encoding.encode_ordinary(text))\n"
+  - check: tst_a3jxfa
+    title: It read a seller's text as a separator
+    cost: >-
+      `allowed_special="all"` turns any text in a title that spells a special token into
+      that token. A seller who wrote the separator into a title would have ended their title
+      there, and whatever followed would reach the model as a listing of its own: an
+      instruction, if they chose one.
+    fix: >-
+      The fix: `encoding.encode_ordinary(title)`, which reads every title as text, so only
+      the code puts special tokens in a prompt.
+    edit:
+      replace: "        title_tokens = encoding.encode(title, allowed_special=\"all\")\n"
+      with: "        title_tokens = encoding.encode_ordinary(title)\n"
+  - check: tst_f5liso
+    title: It left the separators out of the limit
+    cost: >-
+      `pack` counted each title's tokens but not the separator after it, so a prompt could
+      run past the limit by as many tokens as it had titles. Packing {% $fig.packed %} US
+      titles into each limit from 1 to {% $fig.limits %} tokens, {% $fig.over %} prompts ran
+      past it, by up to {% $fig.most_over %} tokens: tokens the model can't read.
+    fix: >-
+      The fix: count each separator with its title, in the test and in `used`.
+    edit:
+      replace: "        if used + len(title_tokens) > limit:\n            break\n        tokens += title_tokens + separator\n        used += len(title_tokens)\n"
+      with: "        if used + len(title_tokens) + len(separator) > limit:\n            break\n        tokens += title_tokens + separator\n        used += len(title_tokens) + len(separator)\n"
+  - check: tst_8kwp2d
+    title: It decoded each token alone
+    cost: >-
+      `stream` read each token's bytes by themselves, so a character split across tokens
+      showed as U+FFFD, and stayed that way in the text shown. Streamed, {% $fig.broken %}
+      of the {% $fig.japanese %} Japanese test titles would have shown broken characters.
+    fix: >-
+      The fix: an incremental decoder, `codecs.getincrementaldecoder("utf-8")`, which holds
+      a character's bytes until the last of them arrives.
+    edit:
+      replace: "    shown = \"\"\n    for token in tokens:\n        data = encoding.decode_single_token_bytes(token)\n        shown += codecs.decode(data, errors=\"replace\")\n"
+      with: "    reader = codecs.getincrementaldecoder(\"utf-8\")(errors=\"replace\")\n    shown = \"\"\n    for token in tokens:\n        data = encoding.decode_single_token_bytes(token)\n        shown += reader.decode(data)\n"

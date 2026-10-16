@@ -1,0 +1,7 @@
+id: stg_hzfy02
+kind: build
+title: Encoding and decoding
+builds: Your `bpe.py` from stage 1.
+file: bpe.py
+packages: [regex, tiktoken]
+minutes: 40

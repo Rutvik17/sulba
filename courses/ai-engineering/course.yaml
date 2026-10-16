@@ -4,4 +4,4 @@ levels:
   - id: lvl_pzzgpg
     slug: beginner
     title: Beginner
-    modules: [maths-behind-ml, working-with-data, learning-from-data, models-that-win-on-tables]
+    modules: [maths-behind-ml, working-with-data, learning-from-data, models-that-win-on-tables, text-as-numbers]

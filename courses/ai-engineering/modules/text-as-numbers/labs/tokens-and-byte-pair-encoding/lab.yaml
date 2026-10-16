@@ -1,0 +1,29 @@
+id: lab_vus4tf
+title: Tokens and byte-pair encoding
+summary: >-
+  Build an online shop's tokenizer from its product titles: learn byte-pair merges, encode and
+  decode titles as tiktoken does, measure what titles cost in tokens in three languages, and
+  ship a shortener that fits any title into a token limit.
+data:
+  - file: titles.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      3,500 product titles chosen at random among those with no control characters and no
+      space at either end, 2,500 from the US shop and 500 each from the Spanish and Japanese
+      shops, with each title's tokens counted by Qwen2.5's tokenizer.
+  - file: vocabulary.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      A tokenizer learnt from 2,000 of the US titles: the 256 bytes and 1,000 byte-pair
+      merges, each token in hexadecimal beside its rank.
+stages: [merges, encoding-and-decoding, what-a-title-costs, the-assistants-prompts, shorter-titles]

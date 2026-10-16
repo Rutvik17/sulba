@@ -1,0 +1,21 @@
+cards:
+  - id: crd_j6y05n
+    front: >-
+      Why does a Japanese title take more tokens than an English one with a tokenizer learnt
+      from English text?
+    back: >-
+      Most of its characters take three bytes in UTF-8, and merges learnt from English join
+      few of them: the shop's Japanese titles take {% $fig.jp_per_character %} tokens a
+      character.
+  - id: crd_3aic0i
+    front: >-
+      What do more merges do to the tokens a text takes?
+    back: >-
+      Each merge joins a pair into one token, so text like the training text takes fewer
+      tokens. Text unlike it gains little.
+  - id: crd_2ov6wz
+    front: >-
+      Which tokenizer should count a text's tokens for a model's limit?
+    back: >-
+      The model's own: the same text takes different numbers of tokens with different
+      tokenizers.

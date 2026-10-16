@@ -1,0 +1,9 @@
+id: stg_p3sbdf
+kind: build
+title: What a title costs
+builds: Your `bpe.py` from stages 1 and 2.
+file: bpe.py
+packages: [pandas, regex, tiktoken]
+minutes: 35
+chart:
+  title: Characters per token by shop

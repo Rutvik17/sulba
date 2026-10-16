@@ -1,0 +1,20 @@
+cards:
+  - id: crd_dtt0rp
+    front: >-
+      Why can a text's tokens be counted piece by piece?
+    back: >-
+      No token crosses from one piece into the next, so a text's tokens are its pieces'
+      tokens, one piece after another.
+  - id: crd_ovy6xf
+    front: >-
+      Can a longer start of a word take fewer tokens than a shorter one?
+    back: >-
+      Yes: one more character can let merges join what they couldn't before. With the
+      shop's tokenizer, {% $fig.shorter %} takes {% $fig.shorter_tokens %} tokens and
+      {% $fig.longer %} takes {% $fig.longer_tokens %}.
+  - id: crd_9xwugf
+    front: >-
+      Why shorten text before a model cuts it at its limit?
+    back: >-
+      A cut at the limit falls wherever the tokens run out, inside a word or a character.
+      Shortening first keeps whole pieces.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_edsdkj
+    front: >-
+      How does a byte-pair encoding learn its vocabulary?
+    back: >-
+      From the 256 bytes, it merges the commonest pair of neighbouring tokens into a new
+      token, again and again, each new token ranked after the last.
+  - id: crd_6e7d9f
+    front: >-
+      Why is text split into pieces before a byte-pair encoding learns its merges?
+    back: >-
+      So that merges stay within a word, a number or a run of punctuation, and no token runs
+      from one word into the next.
+  - id: crd_5x5xkb
+    front: >-
+      Why does a byte-pair encoding start from the 256 bytes?
+    back: >-
+      So that it can encode any text in any language: whatever no merge covers stays as
+      single bytes.

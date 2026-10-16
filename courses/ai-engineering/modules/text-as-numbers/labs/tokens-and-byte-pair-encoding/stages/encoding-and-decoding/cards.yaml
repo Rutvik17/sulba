@@ -1,0 +1,18 @@
+cards:
+  - id: crd_4hceeh
+    front: >-
+      In what order does a byte-pair encoding merge when it encodes text?
+    back: >-
+      Within each piece, it merges the neighbouring pair whose token has the lowest rank
+      first, so the merges come in the order training made them.
+  - id: crd_z621m6
+    front: >-
+      Why are a list of tokens decoded all at once, not token by token?
+    back: >-
+      A character's bytes can be split across tokens. Joined first, the bytes read as whole
+      characters; one token's bytes alone can be part of one.
+  - id: crd_k1nbrs
+    front: >-
+      How many bytes does a character take in UTF-8?
+    back: >-
+      One for ASCII and two to four for the rest. Most Japanese characters take three.
