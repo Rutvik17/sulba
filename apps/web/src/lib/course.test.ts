@@ -13,6 +13,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     level,
     module,
     data: [],
+    code: [],
     stages: [],
     files: {},
     cards: [],

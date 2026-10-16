@@ -34,6 +34,9 @@ test('the fixture course loads, in the order its files give', async () => {
   const lab = course?.levels[0]?.modules[0]?.labs[0];
   expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share', 'check', 'ship']);
   expect(lab?.data[0]?.text).toBe('choice\nyes\nno\nyes\n');
+  expect(lab?.code.map(({ title, licence }) => [title, licence.name])).toEqual([
+    ['tally.js 1.0.0', 'MIT'],
+  ]);
   expect(lab?.stages[0]?.hints).toEqual([
     'Compare each choice with the one you are counting.',
     '`sum` adds up a generator of ones.',

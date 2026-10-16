@@ -44,12 +44,25 @@ const dataset = z.strictObject({
   changes: title,
 });
 
+/** Code by others that a lab ports, with the credit and the notice its licence asks for. */
+const portedCode = z.strictObject({
+  title,
+  creators: z.array(title).min(1),
+  url: z.url({ protocol: /^https$/ }),
+  licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
+  /** The copyright and permission notice the licence asks every copy to carry, word for word. */
+  notice: title,
+  /** What the lab made of it, such as a port to another language. */
+  changes: title,
+});
+
 export const labFile = z.strictObject({
   id: id('lab'),
   title,
   /** What the learner builds, in a sentence or two, under the lab's title. */
   summary: title,
   data: z.array(dataset).default([]),
+  code: z.array(portedCode).default([]),
   stages: z.array(slug).min(1),
 });
 
