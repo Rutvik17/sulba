@@ -1,0 +1,6 @@
+cards:
+  - id: crd_4re7yk
+    front: >-
+      With `totals[i]` the sum of the first `i` numbers, what is `sum(numbers[start:stop])`?
+    back: >-
+      `totals[stop] - totals[start]`: one subtraction, however long the range.

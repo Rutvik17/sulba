@@ -1,0 +1,8 @@
+cards:
+  - id: crd_jmeyow
+    front: >-
+      Reading a grid in a spiral, ring by ring, when does a ring skip its bottom row or its left
+      column?
+    back: >-
+      A ring of one row skips its bottom row, and a ring of one column its left column: each
+      would read values its top row or right column already read.

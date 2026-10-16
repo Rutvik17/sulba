@@ -1,0 +1,6 @@
+id: stg_ad8m7b
+kind: problem
+title: The largest run
+builds: A new `runs.py`.
+file: runs.py
+minutes: 20

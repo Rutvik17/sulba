@@ -1,0 +1,6 @@
+id: lab_daa70j
+title: Arrays
+summary: >-
+  Five interview problems on lists of numbers and a grid: sums over ranges, the best trade, the
+  largest run, the products of the others and a spiral.
+stages: [range-sums, the-best-trade, the-largest-run, products-of-the-others, a-grid-in-a-spiral]

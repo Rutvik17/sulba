@@ -1,0 +1,6 @@
+id: stg_0x6ce6
+kind: problem
+title: Products of the others
+builds: A new `products.py`.
+file: products.py
+minutes: 20

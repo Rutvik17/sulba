@@ -1,0 +1,13 @@
+cards:
+  - id: crd_fih5un
+    front: >-
+      What is the largest sum of a run ending at a number, given the largest sum of a run ending
+      just before it?
+    back: >-
+      The larger of the number alone and the number added to that sum.
+  - id: crd_avh94s
+    front: >-
+      Why does the largest run start its best sum at minus infinity rather than `0`?
+    back: >-
+      A run holds at least one number, so a list of negative numbers must give its largest
+      number, not `0`.

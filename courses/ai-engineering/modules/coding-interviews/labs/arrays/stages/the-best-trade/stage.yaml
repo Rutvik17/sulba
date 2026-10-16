@@ -1,0 +1,6 @@
+id: stg_jutjfa
+kind: problem
+title: The best trade
+builds: A new `trade.py`.
+file: trade.py
+minutes: 15

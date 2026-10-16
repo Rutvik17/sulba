@@ -1,0 +1,6 @@
+id: stg_x03wm4
+kind: problem
+title: A grid in a spiral
+builds: A new `spiral.py`.
+file: spiral.py
+minutes: 25
