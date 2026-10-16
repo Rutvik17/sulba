@@ -1,0 +1,18 @@
+cards:
+  - id: crd_5ayiri
+    front: >-
+      What runs when you call a coroutine function, as in `check_code("S1", registry)`?
+    back: >-
+      Nothing in its body. The call makes a coroutine, which runs when it's awaited. A
+      JavaScript async function starts running when it's called.
+  - id: crd_r22w5t
+    front: >-
+      What does `await` do in a coroutine?
+    back: >-
+      It waits for another coroutine's result, giving the event loop the chance to run
+      other coroutines in the meantime.
+  - id: crd_8u8zw8
+    front: >-
+      Why does `if registry.lookup(code):` without `await` pass every code?
+    back: >-
+      It tests the coroutine object, which is true, and never runs the lookup.

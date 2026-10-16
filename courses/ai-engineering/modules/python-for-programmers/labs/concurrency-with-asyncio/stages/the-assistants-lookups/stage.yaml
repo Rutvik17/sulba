@@ -1,0 +1,52 @@
+id: stg_1otji3
+kind: catch
+title: The assistant's lookups
+builds: Your `lookups.py` from stages 1 to 3.
+file: day_lookups.py
+minutes: 40
+problems:
+  - check: tst_xy2uiw
+    title: Every code passed
+    cost: >-
+      `check_code` tested `registry.lookup(code)` without `await`, which makes a coroutine and
+      runs none of it. A coroutine object is true, so every code passed, and the registry was
+      never asked about one.
+    fix: >-
+      The fix: `if await registry.lookup(code):`.
+    edit:
+      replace: "    if registry.lookup(code):\n"
+      with: "    if await registry.lookup(code):\n"
+  - check: tst_9oq1ly
+    title: The day stalled after failed lookups
+    cost: >-
+      `check_limited` took a slot with `acquire()` and gave it back with a `release()` that an
+      error skipped. Each lookup that couldn't reach the registry kept its slot for good, and
+      once the limit's worth had failed, every other lookup waited for a slot that never came.
+    fix: >-
+      The fix: `async with gate:` around the lookup, which gives the slot back however the
+      lookup ends.
+    edit:
+      replace: "        await gate.acquire()\n        known = await registry.lookup(code)\n        gate.release()\n        return answer(code, known)\n"
+      with: "        async with gate:\n            known = await registry.lookup(code)\n        return answer(code, known)\n"
+  - check: tst_u2b9x6
+    title: One dropped lookup failed the whole day
+    cost: >-
+      `check_each` caught `ConnectionError` around `gather`, which raises the first lookup's
+      error and throws away the other answers. One lookup that couldn't reach the registry
+      marked every code of the day unreachable.
+    fix: >-
+      The fix: catch the error inside each code's coroutine, so it gives its own message and
+      the others keep their answers.
+    edit:
+      replace: "    async def one(code):\n        return answer(code, await registry.lookup(code))\n\n    try:\n        return await asyncio.gather(*(one(code) for code in codes))\n    except ConnectionError:\n        return [f\"The registry couldn't be reached for {code!r}\" for code in codes]\n"
+      with: "    async def one(code):\n        try:\n            return answer(code, await registry.lookup(code))\n        except ConnectionError:\n            return f\"The registry couldn't be reached for {code!r}\"\n\n    return await asyncio.gather(*(one(code) for code in codes))\n"
+  - check: tst_pmlwzg
+    title: One slow lookup timed out the whole day
+    cost: >-
+      `check_in_time` put one timeout around all the lookups, so one slow lookup used up the
+      time of all of them, and every code of the day timed out with it.
+    fix: >-
+      The fix: a timeout around each code's lookup, inside its own coroutine.
+    edit:
+      replace: "    async def one(code):\n        return answer(code, await registry.lookup(code))\n\n    try:\n        async with asyncio.timeout(seconds):\n            return await asyncio.gather(*(one(code) for code in codes))\n    except TimeoutError:\n        return [f\"The registry took too long for {code!r}\" for code in codes]\n"
+      with: "    async def one(code):\n        try:\n            async with asyncio.timeout(seconds):\n                return answer(code, await registry.lookup(code))\n        except TimeoutError:\n            return f\"The registry took too long for {code!r}\"\n\n    return await asyncio.gather(*(one(code) for code in codes))\n"

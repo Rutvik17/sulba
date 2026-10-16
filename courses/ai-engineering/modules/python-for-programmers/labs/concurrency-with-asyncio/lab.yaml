@@ -1,0 +1,7 @@
+id: lab_9s78o1
+title: Concurrency with asyncio
+summary: >-
+  Check each sample's code against the clinic's registry with asyncio: coroutines that wait
+  without holding the service up, lookups made at once in tasks and task groups, a limit and
+  a timeout on a slow registry, and a day's codes checked within them.
+stages: [coroutines, tasks-and-task-groups, limits-and-timeouts, the-assistants-lookups, a-days-codes]
