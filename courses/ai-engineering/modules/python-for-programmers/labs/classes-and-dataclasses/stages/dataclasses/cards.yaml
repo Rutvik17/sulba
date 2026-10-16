@@ -1,0 +1,24 @@
+cards:
+  - id: crd_m3rtgj
+    front: >-
+      What does `@dataclass` write for a class?
+    back: >-
+      `__init__`, `__repr__` and `__eq__`, from the fields its body lists with their types.
+  - id: crd_ijin6h
+    front: >-
+      What does `frozen=True` give a dataclass?
+    back: >-
+      Instances that can't be changed, and a `__hash__`, so they can go in a set or be a
+      dict's key.
+  - id: crd_30ncw8
+    front: >-
+      What is `@property` for?
+    back: >-
+      A method read as an attribute, as a JavaScript getter is, such as a value worked out
+      from the fields.
+  - id: crd_vy40a6
+    front: >-
+      What is `self` in a method?
+    back: >-
+      The instance the method was called on, passed as its first argument, where JavaScript
+      has `this`.

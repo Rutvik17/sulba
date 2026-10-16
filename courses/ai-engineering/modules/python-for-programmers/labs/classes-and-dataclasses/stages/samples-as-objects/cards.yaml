@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ljtx8a
+    front: >-
+      What does a class method get as its first argument?
+    back: >-
+      The class it was called on, `cls` by convention, so `cls(...)` makes an instance of
+      that class, a subclass included.
+  - id: crd_fubxhb
+    front: >-
+      What does `slots=True` do for a dataclass?
+    back: >-
+      It lists the fields in `__slots__`, so each instance keeps them in fixed places,
+      without a `__dict__`, which takes less memory.
+  - id: crd_ytwy8b
+    front: >-
+      Which names in a dataclass's body become its fields?
+    back: >-
+      Those with a type annotation. A name without one, such as `struct = Object(...)`,
+      stays a class attribute.

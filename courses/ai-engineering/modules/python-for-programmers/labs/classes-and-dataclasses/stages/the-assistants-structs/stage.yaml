@@ -1,0 +1,52 @@
+id: stg_o4fvp0
+kind: catch
+title: The assistant's structs
+builds: Your `structs.py` from stages 1 to 3.
+file: service.py
+minutes: 40
+problems:
+  - check: tst_7bkztm
+    title: Every enums shared one list of options
+    cost: >-
+      `options = []` in the class body made one list, held by the class, and each `Enums`
+      added its options to it. Every enums passed every other one's options: a side of `mm`
+      passed, and a side's message listed the units with the sides.
+    fix: >-
+      The fix: give each enums a list of its own in `__init__`, `self.options =
+      list(options)`.
+    edit:
+      replace: "        self.options.extend(options)\n"
+      with: "        self.options = list(options)\n"
+  - check: tst_j9ensj
+    title: The clinic's message was lost
+    cost: >-
+      `Enums.__init__` replaced `Struct`'s and never called it, so `self.message` was never
+      set, and the class's `None` stood in for it. A side that wasn't left or right failed
+      with superstruct's message where the clinic had written its own.
+    fix: >-
+      The fix: `super().__init__(message)` at the start of `Enums.__init__`.
+    edit:
+      replace: "    def __init__(self, options, message=None):\n"
+      with: "    def __init__(self, options, message=None):\n        super().__init__(message)\n"
+  - check: tst_4bz81m
+    title: The daily report couldn't count failures
+    cost: >-
+      `Failure` compared by its fields and wasn't frozen, so `@dataclass` gave it no hash,
+      and `Counter` raised `TypeError` on the first failure it was given. The report stopped
+      where it should have counted.
+    fix: >-
+      The fix: `@dataclass(frozen=True)`, which writes a hash from the fields.
+    edit:
+      replace: "@dataclass\nclass Failure:\n"
+      with: "@dataclass(frozen=True)\nclass Failure:\n"
+  - check: tst_pxte9s
+    title: Joining a union changed it
+    cost: >-
+      `a | b` added `b` to `a` itself when `a` was a union, and returned it. A wider union
+      made from another changed the first, so the first one's field passed values meant only
+      for the wider one's.
+    fix: >-
+      The fix: return a new union, `Union([*self.members, other])`.
+    edit:
+      replace: "            self.members.append(other)\n            return self\n"
+      with: "            return Union([*self.members, other])\n"
