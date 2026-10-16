@@ -1,0 +1,6 @@
+id: stg_hgzyxx
+kind: problem
+title: The same pattern
+builds: A new `patterns.py`.
+file: patterns.py
+minutes: 20

@@ -1,0 +1,6 @@
+id: stg_umtqns
+kind: problem
+title: The common prefix
+builds: A new `prefixes.py`.
+file: prefixes.py
+minutes: 15

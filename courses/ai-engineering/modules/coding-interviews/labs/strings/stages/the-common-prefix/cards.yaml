@@ -1,0 +1,7 @@
+cards:
+  - id: crd_diiwt9
+    front: >-
+      Which two words of a list share exactly the prefix that every word shares?
+    back: >-
+      The alphabetically first and last, `min(words)` and `max(words)`: every other word sorts
+      between them.

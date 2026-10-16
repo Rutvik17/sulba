@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ehs8n8
+    front: >-
+      Why does checking that two texts follow the same pattern need a dict in each direction?
+    back: >-
+      One catches a character renamed two ways, and the other two characters renamed to the
+      same one.

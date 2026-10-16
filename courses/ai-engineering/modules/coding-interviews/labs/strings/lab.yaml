@@ -1,0 +1,6 @@
+id: lab_zkgvuj
+title: Strings
+summary: >-
+  Five interview problems on text: a palindrome check, the common prefix, run lengths, the same
+  pattern and the longest palindrome inside a text.
+stages: [palindromes, the-common-prefix, run-lengths, the-same-pattern, the-longest-palindrome]

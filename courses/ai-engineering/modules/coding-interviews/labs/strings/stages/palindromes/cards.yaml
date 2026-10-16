@@ -1,0 +1,8 @@
+cards:
+  - id: crd_xyplaj
+    front: >-
+      How do you check that a text's letters and digits read the same both ways, without copying
+      the text?
+    back: >-
+      Move one position in from each end, step past other characters, and compare what they stop
+      at, ignoring case, until they meet.

@@ -1,0 +1,6 @@
+id: stg_u2ibwq
+kind: problem
+title: The longest palindrome
+builds: A new `longest.py`.
+file: longest.py
+minutes: 25
