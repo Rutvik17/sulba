@@ -17,8 +17,9 @@ import {
   type Stage,
 } from '@sulba/content';
 import { mathFontCharacters } from '@sulba/content/math-font';
-import { type Engine, pyodideEngine } from '@sulba/lab/node';
+import { type Engine, pyodideEngine, pyodideRuntime } from '@sulba/lab/node';
 import type { Loader } from 'astro/loaders';
+import { cachedFigures } from './figures-cache';
 
 export interface StageView {
   readonly id: string;
@@ -233,7 +234,12 @@ async function loadAll(root: string): Promise<Course[]> {
   return courses;
 }
 
-/** Each stage's figures, computed in Pyodide, and its prose checked with them. */
+/** Where the build keeps the figures it has computed (figures-cache.ts). */
+function figuresFolder(): string {
+  return resolve('../../node_modules/.cache/sulba-figures');
+}
+
+/** Each stage's figures, computed in Pyodide or kept from before, and its prose checked with them. */
 async function figuresOf(courses: Course[], python: () => Promise<Engine>): Promise<Figures> {
   const stages = courses.flatMap((course) =>
     course.levels.flatMap((level) =>
@@ -241,9 +247,12 @@ async function figuresOf(courses: Course[], python: () => Promise<Engine>): Prom
     ),
   );
   if (!stages.some((stage) => stage.figures !== null)) return new Map();
-  const engine = await python();
+  const runtime = await pyodideRuntime();
   const { figures, problems } = await computeFigures(courses, {
-    Pyodide: async (fileSets) => fileSets.map(engine.figures),
+    Pyodide: cachedFigures(figuresFolder(), runtime, async (fileSets) => {
+      const engine = await python();
+      return fileSets.map(engine.figures);
+    }),
   });
   problems.push(...proseProblems(courses, figures, mathFontCharacters()));
   if (problems.length) {

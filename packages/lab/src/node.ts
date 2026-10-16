@@ -1,7 +1,9 @@
 // The lab in Node, for checks that run outside a browser: Pyodide from the files
 // `pnpm --filter @sulba/lab pyodide` puts together, and CPython through uv.
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadPyodide } from 'pyodide';
 import { pyodideFolder } from './assemble.ts';
@@ -27,6 +29,16 @@ export async function pyodideEngine(): Promise<Engine> {
   const engine = await createEngine(pyodide, runner);
   await engine.load(pythonPackages);
   return engine;
+}
+
+/**
+ * A hash of what an answer from `pyodideEngine` depends on besides the files it is given: the
+ * runner, and Pyodide's lock file, which holds the version of every package.
+ */
+export async function pyodideRuntime(): Promise<string> {
+  const runner = await readFile(new URL('../python/sulba_runner.py', import.meta.url), 'utf8');
+  const lock = await readFile(join(pyodideFolder, 'pyodide-lock.json'), 'utf8');
+  return createHash('sha256').update(runner).update('\0').update(lock).digest('hex');
 }
 
 /** A CPython process ended for running past its time limit. */
