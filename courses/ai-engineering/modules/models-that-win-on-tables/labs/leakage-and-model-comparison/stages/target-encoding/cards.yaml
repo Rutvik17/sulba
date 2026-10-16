@@ -1,0 +1,19 @@
+cards:
+  - id: crd_90sdno
+    front: >-
+      What number does target encoding give a category?
+    back: >-
+      The share of its rows with the outcome, pulled toward the share of all rows by a
+      smoothing weight m: (y + m·p) / (n + m).
+  - id: crd_wr7utx
+    front: >-
+      Why are a model's fit rows cross-fitted when they are target encoded?
+    back: >-
+      So that no row's encoding is learnt from its own answer: each is learnt from the rows
+      outside its fold.
+  - id: crd_36nxo4
+    front: >-
+      Does more smoothing stop a target encoding from leaking a row's answer?
+    back: >-
+      No. It shrinks the answer's pull, 1 / (n + m), but only learning the encoding from
+      other rows removes it.

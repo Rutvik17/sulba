@@ -1,0 +1,70 @@
+id: stg_pw1os8
+kind: catch
+title: The assistant's comparison
+builds: Your `compare.py` from stages 2 and 3.
+file: report.py
+packages: [numpy, pandas, scipy, scikit-learn, lightgbm]
+minutes: 45
+problems:
+  - check: tst_btjwbe
+    title: It learnt the shares from the calls it scored
+    cost: >-
+      `shares` fitted its encoder on every call before taking the fit calls, so each
+      held-out call's shares took in its own answer, and every model ranked the held-out
+      calls better than it can rank new ones. The baseline gained most: its mean AUC rose
+      from {% $fig.base_fixed %} to {% $fig.base_leaked %}. The random forest's difference
+      from the baseline came out at {% $fig.forest_leaked %}, where with the shares learnt
+      from the fit calls alone it is {% $fig.forest_fixed %}.
+    fix: >-
+      The fix: `encoder.fit_transform` on the fit calls alone, which cross-fits their shares
+      and learns the held calls' shares from them.
+    edit:
+      replace: "    encoder.fit(calls[ENCODED], said_yes)\n    fit_shares = encoder.transform(calls.iloc[fit][ENCODED])\n"
+      with: "    fit_shares = encoder.fit_transform(calls.iloc[fit][ENCODED], said_yes[fit])\n"
+  - check: tst_drga9n
+    title: It scored each model on folds of its own
+    cost: >-
+      `folds` shuffled the calls afresh each time it was called, once for each model, so
+      no two models were scored on the same folds, and each difference mixed the models
+      with the luck of their folds. On folds of its own from another shuffle, gradient
+      boosting's differences from the baseline have a standard deviation of
+      {% $fig.own_sd %}, against {% $fig.same_sd %} on the same folds, and its interval is
+      ± {% $fig.own_half %} instead of ± {% $fig.same_half %}. And each run of the report
+      gave other numbers.
+    fix: >-
+      The fix: `random_state=SEED`, which gives the same shuffles every time `folds` is
+      called.
+    edit:
+      replace: "    shuffles = RepeatedStratifiedKFold(n_splits=K, n_repeats=repeats)\n"
+      with: "    shuffles = RepeatedStratifiedKFold(n_splits=K, n_repeats=repeats, random_state=SEED)\n"
+  - check: tst_2n7kn8
+    title: It took the folds' differences as independent
+    cost: >-
+      `standard_error` divided the differences' standard deviation by the square root of
+      their number, as if the folds were independent, though any two of them fit their
+      models on mostly the same calls. Its intervals came out {% $fig.ratio %} times too
+      narrow: nearest neighbours' {% $fig.knn_diff %} ± {% $fig.knn_usual %} and the
+      tree's {% $fig.tree_diff %} ± {% $fig.tree_usual %} put both below the baseline,
+      where the corrected intervals, ± {% $fig.knn_corrected %} and
+      ± {% $fig.tree_corrected %}, reach across 0.
+    fix: >-
+      The fix: the corrected standard error, with `n_held / n_fit` for the calls the folds
+      share.
+    edit:
+      replace: "    return float(np.std(differences, ddof=1) / np.sqrt(len(differences)))\n"
+      with: "    n = len(differences)\n    return float(np.sqrt(np.var(differences, ddof=1) * (1 / n + n_held / n_fit)))\n"
+  - check: tst_e9dtbl
+    title: Its {% $fig.confidence %} intervals were {% $fig.narrow %} intervals
+    cost: >-
+      `t.ppf(confidence, ...)` is the quantile with {% $fig.above %} of the t
+      distribution above it, {% $fig.q_narrow %}, which ends a {% $fig.narrow %} interval.
+      A {% $fig.confidence %} interval ends at the quantile at {% $fig.right_at %},
+      {% $fig.q_right %}. The tree's interval would have been ± {% $fig.tree_narrow %},
+      which puts it below the baseline, where its {% $fig.confidence %} interval,
+      ± {% $fig.tree_corrected %}, reaches across 0.
+    fix: >-
+      The fix: the quantile at `(1 + confidence) / 2`, which leaves half of what the
+      interval leaves out beyond each end.
+    edit:
+      replace: "    quantile = t.ppf(confidence, len(differences) - 1)\n"
+      with: "    quantile = t.ppf((1 + confidence) / 2, len(differences) - 1)\n"

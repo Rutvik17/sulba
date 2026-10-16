@@ -1,0 +1,9 @@
+id: stg_59q57c
+kind: build
+title: Target encoding
+builds: A new `encoding.py`.
+file: encoding.py
+packages: [numpy, pandas, scikit-learn]
+minutes: 40
+chart:
+  title: Encodings by smoothing

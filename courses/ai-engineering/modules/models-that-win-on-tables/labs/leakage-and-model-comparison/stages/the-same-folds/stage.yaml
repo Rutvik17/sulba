@@ -1,0 +1,7 @@
+id: stg_d16tqb
+kind: build
+title: The same folds
+builds: A new `compare.py`.
+file: compare.py
+packages: [numpy, pandas, scikit-learn, lightgbm]
+minutes: 35

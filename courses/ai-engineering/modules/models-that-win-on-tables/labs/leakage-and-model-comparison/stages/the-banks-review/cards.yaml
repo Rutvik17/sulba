@@ -1,0 +1,18 @@
+cards:
+  - id: crd_0kj70s
+    front: >-
+      With m candidates compared with a baseline, at what confidence is each interval set
+      for all of them to hold together at confidence c?
+    back: >-
+      1 − (1 − c) / m, Bonferroni's correction.
+  - id: crd_rstqor
+    front: >-
+      When does a candidate beat the baseline in the bank's review?
+    back: >-
+      When its whole interval for the difference, at the shared confidence, lies above 0.
+  - id: crd_ec43l5
+    front: >-
+      Why score a model on the latest calls as well as on shuffled folds?
+    back: >-
+      Shuffled folds mix every month's calls. The latest calls show how it ranks calls made
+      after the ones it learnt from, as it will be used.

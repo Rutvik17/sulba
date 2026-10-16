@@ -1,0 +1,42 @@
+id: stg_ikbtkq
+kind: ship
+title: The bank's review
+builds: Your `compare.py` from stages 2 and 3.
+file: compare.py
+packages: [numpy, pandas, scipy, scikit-learn, lightgbm]
+minutes: 45
+checks:
+  - check: tst_dif2gm
+    title: "{% $fig.candidates %} candidates no better than the baseline"
+    requires: >-
+      Of {% $fig.candidates %} candidates whose leads are each {% $fig.lead %} corrected
+      standard errors, past the {% $fig.single_t %} a single {% $fig.confidence %} interval
+      needs and short of the {% $fig.shared_t %} the shared intervals need, none ships.
+    failure: >-
+      A candidate shipped. With `$m$` candidates, each interval is at `$1 - (1 - c) / m$`,
+      and a candidate beats the baseline only when its whole interval lies above 0.
+  - check: tst_ajzqcf
+    title: A clear winner among them
+    requires: >-
+      Among the same {% $fig.candidates %}, a candidate whose lead is {% $fig.winner %}
+      corrected standard errors ships.
+    failure: >-
+      The winner didn't ship. `choose` ships the candidate with the largest lead among
+      those that beat the baseline.
+  - check: tst_n0zxw6
+    title: A copy of the baseline
+    requires: >-
+      A candidate that scores what the baseline scores on every fold has a difference of
+      0, an interval from 0 to 0, and doesn't ship.
+    failure: >-
+      The copy's row differs or it shipped. A candidate beats the baseline only when the
+      low end of its interval is above 0.
+  - check: tst_n80n2n
+    title: The bank's latest calls
+    requires: >-
+      `latest` with a share of {% $fig.share %} fits the baseline on the first
+      {% $fig.fit_calls %} of the {% $fig.all_calls %} calls and gives its AUC on the last
+      {% $fig.last_calls %}, as fitting and scoring them by hand does.
+    failure: >-
+      The AUC differs. Fit a fresh copy of the model on all but the last
+      `round(len(calls) * share)` calls, and score it on those.

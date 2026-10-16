@@ -1,0 +1,18 @@
+cards:
+  - id: crd_xcnpha
+    front: >-
+      Why score every model on the same folds?
+    back: >-
+      A fold that is hard for one model is hard for the others, so on the same folds its
+      difficulty cancels out of the difference between them.
+  - id: crd_ka8gdj
+    front: >-
+      What does scikit-learn's clone return?
+    back: >-
+      A new, unfitted model with the same settings.
+  - id: crd_vkrmso
+    front: >-
+      What does repeated k-fold cross-validation repeat?
+    back: >-
+      The k-fold split, each time with a new shuffle of the rows, so that every model is
+      scored on more folds.

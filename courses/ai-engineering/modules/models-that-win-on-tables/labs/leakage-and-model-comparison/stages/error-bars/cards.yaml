@@ -1,0 +1,18 @@
+cards:
+  - id: crd_neqd08
+    front: >-
+      Why is the usual standard error too small for differences over repeated
+      cross-validation folds?
+    back: >-
+      The folds' fit sets share most of their rows, so the models are alike and the
+      differences move together rather than independently.
+  - id: crd_trcpyh
+    front: >-
+      What is Nadeau and Bengio's corrected standard error of a mean difference over n folds?
+    back: >-
+      s · √(1/n + n_held / n_fit), where s is the differences' standard deviation.
+  - id: crd_tegcbb
+    front: >-
+      Do more repeats of cross-validation shrink the corrected standard error toward 0?
+    back: >-
+      No. Its n_held / n_fit term stays as folds are added, so it levels off.
