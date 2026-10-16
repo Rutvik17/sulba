@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qqeiqi
+    front: >-
+      What does the cosine similarity of two embeddings measure?
+    back: >-
+      How far they point the same way: the cosine of the angle between them, whatever their
+      lengths.
+  - id: crd_wnpz31
+    front: >-
+      Why normalize embeddings cut to their first numbers before comparing them?
+    back: >-
+      Cutting shortens each vector by a different amount. Normalized, they have length 1
+      again, and their dot product is their cosine.
+  - id: crd_88oyq4
+    front: >-
+      How do you get every query's cosine similarity with every product at once?
+    back: >-
+      Normalize both, then take the matrix product of the queries with the products
+      transposed.

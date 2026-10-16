@@ -1,0 +1,39 @@
+id: stg_a34mxv
+kind: ship
+title: A faster search
+builds: Your `search.py` from stages 1 to 3.
+file: search.py
+packages: [pandas, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_drwui7
+    title: Each product in its nearest list
+    requires: >-
+      `build_index` puts each product in the list whose centroid is nearest to its
+      normalized embedding.
+    failure: >-
+      A product was in another list than its nearest centroid's. scikit-learn's `KMeans`
+      gives each one's list in `labels_`.
+  - check: tst_h9hiup
+    title: As good as the full search
+    requires: >-
+      For the test queries, the index's first {% $fig.k %} products hold at least
+      {% $fig.recall_target %} of the full search's first {% $fig.k %}, on average.
+    failure: >-
+      The index missed too much of what the full search finds. Search more lists, or group
+      the products into more of them, on the validation queries first.
+  - check: tst_zssutx
+    title: A fraction of the catalogue
+    requires: >-
+      For the test queries, the index compares at most {% $fig.compared_target %} of the
+      products with each query, on average.
+    failure: >-
+      The index compared too many products. Search fewer lists, or group the products into
+      more of them.
+  - check: tst_2nlipv
+    title: Every list searched, the full search
+    requires: >-
+      Searching every list, the index finds the products the full search finds, for every
+      test query.
+    failure: >-
+      With every list searched, a query's products differed from the full search's.

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_sz1e6h
+    front: >-
+      What does recall at k measure?
+    back: >-
+      The share of a query's relevant products that are among the first k it ranks.
+  - id: crd_tngz8a
+    front: >-
+      What is the reciprocal rank of a ranking?
+    back: >-
+      1 over the rank of its first relevant product, or 0 if none is ranked: MRR is its mean
+      over the queries.
+  - id: crd_6yazk6
+    front: >-
+      What does nDCG divide the discounted cumulative gain by?
+    back: >-
+      The DCG of the best ranking there is, every product sorted by its gain, so that nDCG
+      runs from 0 to 1.

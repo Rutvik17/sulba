@@ -1,3 +1,3 @@
 id: mod_xaj3m0
 title: Text as numbers
-labs: [tokens-and-byte-pair-encoding, logits-and-sampling]
+labs: [tokens-and-byte-pair-encoding, logits-and-sampling, embeddings-and-search]

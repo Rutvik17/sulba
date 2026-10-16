@@ -1,0 +1,18 @@
+cards:
+  - id: crd_e16pm5
+    front: >-
+      How does an inverted file index speed up an embedding search?
+    back: >-
+      It groups the products into lists around k-means centroids, and a query compares
+      itself only with the products in the lists whose centroids are nearest to it.
+  - id: crd_wdn6lw
+    front: >-
+      What does searching more lists of an inverted file index trade?
+    back: >-
+      More of the full search's results found, for more products compared with each query.
+  - id: crd_53uuzw
+    front: >-
+      How do you measure an approximate search against the full one?
+    back: >-
+      By the share of the full search's first k results it finds, and by how much of the
+      catalogue it compares each query with.

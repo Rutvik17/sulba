@@ -41,12 +41,21 @@ query and the title. The file keeps the logits for the first token of its answer
 float32 on the CPU: the log-sum-exp of all of them, those of Yes and No, and the 20 highest,
 each beside its token's text. The first 500 pairs are for validation and the rest for testing.
 
+search: 100 of the dataset's US queries, chosen at random among the test queries of its
+reduced version whose query and judged titles have no control characters and no space at
+either end, the first 50 for validation and the rest for testing. `judgements.csv` holds the
+label people gave each product shown for each of them, and `products.csv` those products,
+each once. Snowflake's arctic-embed-m-v1.5 embeds each query, after the prefix its model card
+gives queries, into `queries.csv`, and each title into `products.csv`: the vector of its
+first token, normalized, then cut to its first 256 numbers, each to three decimals.
+
     uv run tools/datasets/shopping_queries.py titles <folder to write in> [<folder of downloads>]
     uv run tools/datasets/shopping_queries.py verdicts <folder to write in> [<folder of downloads>]
+    uv run tools/datasets/shopping_queries.py search <folder to write in> [<folder of downloads>]
 
-The dataset's files come to 1.2 GB, and the model to 3.1 GB. Given a folder of downloads, the
-script keeps the dataset's files there for the next run; without one, it downloads them to a
-temporary folder.
+The dataset's files come to 1.2 GB, Qwen2.5-1.5B-Instruct to 3.1 GB and arctic-embed-m-v1.5
+to 0.4 GB. Given a folder of downloads, the script keeps the dataset's files there for the next
+run; without one, it downloads them to a temporary folder.
 """
 
 import csv
@@ -62,7 +71,7 @@ import regex
 import torch
 from tiktoken._educational import bpe_train
 from tokenizers import Tokenizer
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
 
 # The dataset's repository at the commit of 7 October 2024. Its files are in Git LFS.
 SOURCE = (
@@ -89,6 +98,13 @@ TRAIN, MERGES = 2000, 1000
 # many of each answer's highest logits are kept.
 QUESTION = "Does this product match the shopping query? Answer Yes or No."
 PAIRS, VALIDATION, TOP = 1000, 500, 20
+# Snowflake's arctic-embed-m-v1.5 at its revision of 24 April 2025, the prefix its model card
+# puts before each query and no title, the queries drawn, the numbers kept of each embedding
+# and the texts embedded at a time.
+EMBEDDER = "Snowflake/snowflake-arctic-embed-m-v1.5"
+EMBEDDER_REVISION = "e58a8f756156a1293d763f17e3aae643474e9b8a"
+QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
+QUERIES, DIMENSIONS, BATCH = 100, 256, 32
 
 
 def download(name: str, folder: Path) -> Path:
@@ -153,19 +169,24 @@ def titles(out: Path, downloads: Path) -> None:
             writer.writerow([rank, token.hex()])
 
 
+def us_titles(products: Path) -> dict[str, str]:
+    """The US shop's product titles, by product id."""
+    table = pq.read_table(
+        products,
+        columns=["product_id", "product_title"],
+        filters=[("product_locale", "=", "us")],
+    )
+    names = table.column("product_id").to_pylist()
+    return dict(zip(names, table.column("product_title").to_pylist(), strict=True))
+
+
 def verdicts(out: Path, downloads: Path) -> None:
     examples = pq.read_table(
         download("shopping_queries_dataset_examples.parquet", downloads),
         columns=["query", "product_id", "esci_label"],
         filters=[("product_locale", "=", "us"), ("small_version", "=", 1), ("split", "=", "train")],
     ).to_pylist()
-    products = pq.read_table(
-        download("shopping_queries_dataset_products.parquet", downloads),
-        columns=["product_id", "product_title"],
-        filters=[("product_locale", "=", "us")],
-    )
-    names = products.column("product_id").to_pylist()
-    titles = dict(zip(names, products.column("product_title").to_pylist(), strict=True))
+    titles = us_titles(download("shopping_queries_dataset_products.parquet", downloads))
     pairs = [
         row for row in examples if clean(row["query"]) and clean(titles.get(row["product_id"]))
     ]
@@ -206,9 +227,75 @@ def verdicts(out: Path, downloads: Path) -> None:
             )
 
 
+def write_vectors(path: Path, header: list[str], rows: list[list], vectors: np.ndarray) -> None:
+    """Each row beside its vector, the vector's numbers to three decimals."""
+    with open(path, "w", encoding="utf-8", newline="\n") as file:
+        writer = csv.writer(file, lineterminator="\n")
+        writer.writerow([*header, *(f"e_{i}" for i in range(1, vectors.shape[1] + 1))])
+        for row, vector in zip(rows, vectors, strict=True):
+            writer.writerow([*row, *(f"{value:.3f}" for value in vector)])
+
+
+def search(out: Path, downloads: Path) -> None:
+    examples = pq.read_table(
+        download("shopping_queries_dataset_examples.parquet", downloads),
+        columns=["query_id", "query", "product_id", "esci_label"],
+        filters=[("product_locale", "=", "us"), ("small_version", "=", 1), ("split", "=", "test")],
+    ).to_pylist()
+    titles = us_titles(download("shopping_queries_dataset_products.parquet", downloads))
+    judged: dict[int, list[dict]] = {}
+    for row in examples:
+        judged.setdefault(row["query_id"], []).append(row)
+    usable = [
+        rows
+        for rows in judged.values()
+        if clean(rows[0]["query"]) and all(clean(titles.get(row["product_id"])) for row in rows)
+    ]
+    rng = np.random.default_rng(0)
+    chosen = [usable[i] for i in rng.choice(len(usable), QUERIES, replace=False)]
+    queries = [
+        ["validation" if number < QUERIES // 2 else "test", rows[0]["query_id"], rows[0]["query"]]
+        for number, rows in enumerate(chosen)
+    ]
+    products = list(dict.fromkeys(row["product_id"] for rows in chosen for row in rows))
+    tokenizer = AutoTokenizer.from_pretrained(EMBEDDER, revision=EMBEDDER_REVISION)
+    model = AutoModel.from_pretrained(
+        EMBEDDER, revision=EMBEDDER_REVISION, dtype=torch.float32, add_pooling_layer=False
+    )
+    model.eval()
+
+    def embed(texts: list[str]) -> np.ndarray:
+        """Each text's CLS vector, normalized, then cut to its first DIMENSIONS numbers."""
+        found = []
+        for start in range(0, len(texts), BATCH):
+            tokens = tokenizer(
+                texts[start : start + BATCH],
+                padding=True,
+                truncation=True,
+                max_length=512,
+                return_tensors="pt",
+            )
+            with torch.no_grad():
+                vectors = model(**tokens).last_hidden_state[:, 0]
+            found.append(torch.nn.functional.normalize(vectors, dim=-1)[:, :DIMENSIONS].numpy())
+        return np.concatenate(found)
+
+    texts = [QUERY_PREFIX + query for *_, query in queries]
+    write_vectors(out / "queries.csv", ["set", "query_id", "query"], queries, embed(texts))
+    rows = [[product, titles[product]] for product in products]
+    vectors = embed([titles[product] for product in products])
+    write_vectors(out / "products.csv", ["product_id", "title"], rows, vectors)
+    with open(out / "judgements.csv", "w", encoding="utf-8", newline="\n") as file:
+        writer = csv.writer(file, lineterminator="\n")
+        writer.writerow(["query_id", "product_id", "label"])
+        for rows in chosen:
+            for row in rows:
+                writer.writerow([row["query_id"], row["product_id"], row["esci_label"]])
+
+
 if __name__ == "__main__":
     lab, out = sys.argv[1], Path(sys.argv[2])
-    builders = {"titles": titles, "verdicts": verdicts}
+    builders = {"titles": titles, "verdicts": verdicts, "search": search}
     if len(sys.argv) > 3:
         builders[lab](out, Path(sys.argv[3]))
     else:

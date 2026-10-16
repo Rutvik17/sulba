@@ -1,0 +1,7 @@
+id: stg_2kux6n
+kind: build
+title: Embeddings and cosine similarity
+builds: A new `search.py`.
+file: search.py
+packages: [pandas, scikit-learn]
+minutes: 35
