@@ -27,10 +27,12 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'phone', use: { ...devices['Pixel 7'] } },
   ],
+  // The gallery reads no course, so the site is built from the content package's fixture course,
+  // as for the end-to-end tests, and its build doesn't grow with the courses' figures.
   webServer: {
     command: `pnpm build && pnpm preview --port ${port}`,
     url: `http://localhost:${port}`,
-    env: { SULBA_GALLERY: 'on' },
+    env: { SULBA_GALLERY: 'on', SULBA_COURSES: '../../packages/content/fixtures/courses' },
     timeout: 120_000,
   },
 });
