@@ -35,6 +35,13 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The figures the build keeps for each stage (apps/web/src/lib/figures-cache.ts), from the
+      # latest run on this branch or on main, so a run computes only the stages that changed.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-figures
+          key: figures-${{ github.sha }}
+          restore-keys: figures-
       # The lab's Python side runs in CPython at the versions Pyodide ships (packages/lab/python).
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
