@@ -1,0 +1,6 @@
+id: stg_nhf99z
+kind: problem
+title: A pair in sorted order
+builds: A new `sorted_pair.py`.
+file: sorted_pair.py
+minutes: 15

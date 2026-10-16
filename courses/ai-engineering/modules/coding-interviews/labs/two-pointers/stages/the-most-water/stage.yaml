@@ -1,0 +1,6 @@
+id: stg_mn2pu4
+kind: problem
+title: The most water
+builds: A new `water.py`.
+file: water.py
+minutes: 20

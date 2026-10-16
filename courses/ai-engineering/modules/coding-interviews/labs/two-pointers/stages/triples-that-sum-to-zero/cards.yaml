@@ -1,0 +1,8 @@
+cards:
+  - id: crd_hw875x
+    front: >-
+      How does sorting first find the triples that add up to zero in time in proportion to n²
+      rather than n³?
+    back: >-
+      Fix each first number, then find the pairs after it that add up to minus it with two
+      positions moving inwards, in one pass.

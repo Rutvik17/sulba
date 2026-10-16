@@ -1,0 +1,6 @@
+id: stg_qbgj3p
+kind: problem
+title: Trapped water
+builds: A new `rain.py`.
+file: rain.py
+minutes: 30

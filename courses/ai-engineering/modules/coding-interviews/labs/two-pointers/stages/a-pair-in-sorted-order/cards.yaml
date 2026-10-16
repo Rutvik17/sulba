@@ -1,0 +1,7 @@
+cards:
+  - id: crd_8q8el4
+    front: >-
+      In a sorted list, two positions move inwards to find a pair that adds up to a target. Why
+      can the left one move on when the sum is too small?
+    back: >-
+      The right number is the largest still in play, so the left number has no partner left.

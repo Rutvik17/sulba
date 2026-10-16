@@ -1,0 +1,6 @@
+cards:
+  - id: crd_f8ptzn
+    front: >-
+      Removing repeats from a sorted list in place, how do you tell that a value is new?
+    back: >-
+      It differs from the last value written, since equal values sit together in a sorted list.

@@ -1,0 +1,14 @@
+cards:
+  - id: crd_n9hoxl
+    front: >-
+      What sets the water above a bar after rain?
+    back: >-
+      The lower of the highest bar on its left and the highest on its right, minus its own
+      height.
+  - id: crd_cmx9h2
+    front: >-
+      With two positions moving in from the ends, why can you settle the side whose bar is
+      lower?
+    back: >-
+      The other side has a bar at least as high, so the water there depends only on the highest
+      bar on its own side.
