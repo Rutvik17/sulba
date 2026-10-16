@@ -1,0 +1,7 @@
+id: stg_wnzm4j
+kind: problem
+title: A readmission service
+builds: A new `service.py`.
+file: service.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 180

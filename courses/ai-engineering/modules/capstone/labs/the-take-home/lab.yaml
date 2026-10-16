@@ -1,0 +1,26 @@
+id: lab_dv7tyh
+title: The take-home
+summary: >-
+  A first version of the hospital network's readmission service in three hours: read its extract,
+  train a model on each patient's first stay, and serve the chance of a readmission within 30
+  days from a FastAPI endpoint.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages: [a-readmission-service]
