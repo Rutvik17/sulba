@@ -77,7 +77,12 @@ export async function standIn(
     calls.authorize.push(new URL(route.request().url()));
     const back = new URL(calls.authorize.at(-1)?.searchParams.get('redirect_to') ?? '/');
     back.searchParams.set('code', 'code-from-github');
-    return route.fulfill({ status: 302, headers: { location: back.href } });
+    // A page that sends the browser back, as GitHub's redirect does: Playwright can't answer a
+    // request with a redirect in WebKit.
+    return route.fulfill({
+      contentType: 'text/html',
+      body: `<script>location.replace(${JSON.stringify(back.href)})</script>`,
+    });
   });
   await page.route(`${supabase}/auth/v1/token**`, (route) =>
     route.request().method() === 'OPTIONS'

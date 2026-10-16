@@ -1,4 +1,5 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
+import { write } from './editor';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): a lab
 // whose first two stages build tally.py, whose tests read a small CSV of votes.
@@ -15,18 +16,6 @@ async function openLab(page: Page, query = '') {
 
 function code(page: Page) {
   return page.getByRole('textbox', { name: 'tally.py', exact: true });
-}
-
-/**
- * Replaces the code in an editor, as Select All and a paste would. Playwright's fill selects the
- * code through the browser, and on the Android phone the new code sometimes went in before the
- * editor had taken that selection in. The editor's own Select All takes effect at once.
- */
-async function write(editor: Locator, text: string) {
-  // The editor's shortcuts take Command on an iPhone, as on a Mac, and Control elsewhere.
-  const { defaultBrowserType, isMobile } = test.info().project.use;
-  await editor.press(defaultBrowserType === 'webkit' && isMobile ? 'Meta+a' : 'ControlOrMeta+a');
-  await editor.page().keyboard.insertText(text);
 }
 
 async function runTests(page: Page) {

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { write } from './editor';
 import { islandsHydrated } from './islands';
 import { learner, signedIn, standIn, supabase } from './supabase';
 
@@ -156,8 +157,7 @@ test('signed in, each run and pass goes to the account, and the code never does'
   await islandsHydrated(page);
 
   const code = page.getByRole('textbox', { name: 'tally.py', exact: true });
-  await code.press('ControlOrMeta+a');
-  await page.keyboard.insertText(solved);
+  await write(code, solved);
   await page.getByRole('button', { name: 'Run tests' }).click();
   await expect(page.getByText('Both tests passed.')).toBeVisible(loaded);
 
