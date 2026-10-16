@@ -39,7 +39,7 @@ Every course, level, module, lab, stage, test and review card has a permanent id
 
 A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code. `builds` in `stage.yaml` says what the stage builds on, in a line of Markdoc above its brief.
 
-A stage's `kind` is `build`, `catch` or `ship`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
+A stage's `kind` is `build`, `catch`, `ship` or `problem`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 
 - The solution passes every one of the stage's tests, and every earlier stage's.
 - The starter fails at least one test.
@@ -109,6 +109,12 @@ A test of asyncio code asks for the `loop` fixture, an event loop whose clock ju
 A test of typed code asks for the `typecheck` fixture, with `mypy` among the stage's `packages`. `typecheck("shapes.py")` gives mypy's errors in the file under `--strict`, one line each as mypy prints them, such as `shapes.py:4: error: Function is missing a type annotation  [no-untyped-def]`, the same in Pyodide and CPython (decision record 22). mypy's first check takes seconds in a browser, so the browser makes it before a run's time starts.
 
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
+
+## Problem stages
+
+A Problem stage is an interview problem, solved against the clock (decision record 23). Its brief stays hidden until the learner starts, and its `minutes` are the time it has. The learner writes a plan first: how the code works, what it costs in time and space, and the inputs that could break it. The editor opens once the plan is written, and the plan stays in its own tab. The clock runs from the start whether the page is open or not. The explanation and the solution open when the code passes or the minutes are up, and the stage keeps the time from the start to the run that passed.
+
+The starter is in a file no earlier stage made, since the learner solves the problem from nothing. `pnpm check:content` holds a Problem stage to what it holds a Build stage to. A test with a large input holds the code to the cost the explanation gives: a run stops at its time limit, so a slower way fails it.
 
 ## Review cards
 

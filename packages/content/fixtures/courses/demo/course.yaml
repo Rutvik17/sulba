@@ -4,4 +4,4 @@ levels:
   - id: lvl_demo01
     slug: first
     title: First
-    modules: [counting]
+    modules: [counting, interviews]

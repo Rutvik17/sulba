@@ -1,7 +1,9 @@
-// What the workspace keeps in this browser: each stage's code, the stages passed, and each
-// finished Catch review. Storage can be blocked or cleared, so every read falls back and every
-// write may fail without harm. A signed-in learner's passes and reviews also go to their account,
-// and come back from it on another device (sync.ts); their code stays here.
+// What the workspace keeps in this browser: each stage's code, the stages passed, each finished
+// Catch review, and each Problem stage's start, plan and time. Storage can be blocked or cleared,
+// so every read falls back and every write may fail without harm. A signed-in learner's passes
+// and reviews also go to their account, and come back from it on another device (sync.ts); their
+// code and plans stay here.
+import { type ProblemState, problemOf } from './problem';
 import type { Kept, Review } from './stages';
 
 function read(key: string): string | null {
@@ -41,6 +43,9 @@ export const kept: Kept & {
   pass(stageId: string): void;
   /** Keep a Catch review's score, which also passes its stage. */
   finish(stageId: string, review: Review): void;
+  /** A Problem stage's start, plan and time, or null until the learner starts it. */
+  problem(stageId: string): ProblemState | null;
+  saveProblem(stageId: string, state: ProblemState): void;
 } = {
   code: (stageId) => read(`sulba:code:${stageId}`),
   passed: (stageId) => read(`sulba:passed:${stageId}`) !== null,
@@ -51,4 +56,6 @@ export const kept: Kept & {
     write(`sulba:review:${stageId}`, JSON.stringify(review));
     write(`sulba:passed:${stageId}`, '1');
   },
+  problem: (stageId) => problemOf(read(`sulba:problem:${stageId}`)),
+  saveProblem: (stageId, state) => write(`sulba:problem:${stageId}`, JSON.stringify(state)),
 };

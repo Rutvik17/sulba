@@ -293,6 +293,54 @@
   padding-left: var(--space-5);
 }
 
+/* A Problem stage's clock, red once its minutes are up. */
+.clock {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.over {
+  color: var(--bad);
+}
+
+/* Before a problem starts, its brief gives the time it has and the order to work in. */
+.start {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+.start p {
+  margin: 0;
+  line-height: var(--leading);
+}
+
+/*
+  A problem's plan fills the code area until it's written, then keeps a tab beside the brief. Its
+  text box takes the height the label and note leave, and the form scrolls when that is too little.
+*/
+.plan {
+  display: grid;
+  grid-template-rows: auto auto minmax(10rem, 1fr);
+  gap: var(--space-2);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.plan label {
+  font-weight: 500;
+}
+
+.plan textarea {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  line-height: var(--leading);
+  resize: vertical;
+}
+
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: minmax(0, 1fr);

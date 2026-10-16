@@ -404,6 +404,16 @@ test.each([
     },
   },
   {
+    name: 'a Problem stage on a file an earlier stage made',
+    change: (root: string) =>
+      edit(join(root, stages, 'share/stage.yaml'), 'kind: build', 'kind: problem'),
+    problem: {
+      path: `${stages}/share/stage.yaml`,
+      message:
+        'file: A Problem stage starts from a file of its own, so no earlier stage may make tally.py.',
+    },
+  },
+  {
     name: 'a chart without chart.py',
     change: (root: string) => rm(join(root, stages, 'share/chart.py')),
     problem: {

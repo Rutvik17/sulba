@@ -15,6 +15,7 @@ const share = 'demo/modules/counting/labs/tallies/stages/share';
 const count = 'demo/modules/counting/labs/tallies/stages/count';
 const check = 'demo/modules/counting/labs/tallies/stages/check';
 const ship = 'demo/modules/counting/labs/tallies/stages/ship';
+const pairs = 'demo/modules/interviews/labs/pairs/stages/pair-sums';
 const folders: string[] = [];
 let runner: Runner;
 
@@ -204,6 +205,12 @@ test('two courses that share an id is a problem', async () => {
     `The id tst_demo10 is already used by ${ship}/tests/test_leader.py.`,
     `The id tst_demo11 is already used by ${ship}/checks/test_leader.py.`,
     `The id tst_demo12 is already used by ${ship}/checks/test_leader.py.`,
+    'The id mod_demo02 is already used by demo/modules/interviews/module.yaml.',
+    'The id lab_demo02 is already used by demo/modules/interviews/labs/pairs/lab.yaml.',
+    `The id stg_demo05 is already used by ${pairs}/stage.yaml.`,
+    `The id tst_demo13 is already used by ${pairs}/tests/test_pairs.py.`,
+    `The id tst_demo14 is already used by ${pairs}/tests/test_pairs.py.`,
+    `The id tst_demo15 is already used by ${pairs}/tests/test_pairs.py.`,
   ]);
 });
 
