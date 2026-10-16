@@ -1,0 +1,7 @@
+cards:
+  - id: crd_81iv33
+    front: >-
+      Decoding `"x12y3"` one character at a time, how do you know where `x`'s length ends?
+    back: >-
+      Read digits until the next character that isn't one: the texts hold no digits, so it
+      starts the next run.

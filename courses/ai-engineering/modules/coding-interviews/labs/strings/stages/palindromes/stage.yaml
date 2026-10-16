@@ -1,0 +1,6 @@
+id: stg_yflcgb
+kind: problem
+title: Palindromes
+builds: A new `palindromes.py`.
+file: palindromes.py
+minutes: 15

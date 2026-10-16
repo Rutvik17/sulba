@@ -1,0 +1,6 @@
+cards:
+  - id: crd_urinj6
+    front: >-
+      Finding the longest palindrome by widening from each middle, what are a text's middles?
+    back: >-
+      Each character, for odd lengths, and each gap between two characters, for even ones.

@@ -1,0 +1,6 @@
+id: stg_ri2f33
+kind: problem
+title: Run lengths
+builds: A new `lengths.py`.
+file: lengths.py
+minutes: 20
