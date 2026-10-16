@@ -1,0 +1,24 @@
+cards:
+  - id: crd_qxezob
+    front: >-
+      What does `@decorator` above `def f` do?
+    back: >-
+      It replaces `f` with `decorator(f)`, once, when the `def` runs.
+  - id: crd_ig4cf0
+    front: >-
+      What does `functools.wraps(f)` do for the function that wraps `f`?
+    back: >-
+      It copies `f`'s name and docstring onto it, and adds a `__wrapped__` attribute that
+      leads back to `f`.
+  - id: crd_5afnxp
+    front: >-
+      How does a decorator take arguments, as in `@define("code")`?
+    back: >-
+      `define("code")` runs first and returns the decorator, which is then applied to the
+      function.
+  - id: crd_kz1n59
+    front: >-
+      What does `nonlocal count` do in a nested function?
+    back: >-
+      It lets the function assign to `count` in the function around it. Without it,
+      assigning makes `count` a local variable of its own.

@@ -1,0 +1,30 @@
+id: stg_chcimx
+kind: ship
+title: A cached lookup
+builds: Your `refine.py` from stages 1 to 3.
+file: refine.py
+minutes: 40
+checks:
+  - check: tst_vhb2jf
+    title: Looks each code up once
+    requires: >-
+      Through a day of records that repeat their codes, the cached check asks the registry
+      about each code once.
+    failure: >-
+      The registry was asked about a code more than once, or not about one it should have
+      been.
+  - check: tst_tg6qrm
+    title: Keeps `True` apart from `1` and `1.0`
+    requires: >-
+      A cached check gives `True` and `False` their own messages, after `1`, `1.0` or `0`
+      has been checked.
+    failure: >-
+      A boolean got a number's cached message. Keep the type of a value in its key.
+  - check: tst_ph9hgt
+    title: Forgets the code used longest ago
+    requires: >-
+      A full cache makes room by forgetting the code used longest ago, and holds no more
+      codes than its size.
+    failure: >-
+      The cache forgot another code than the one used longest ago, or held more than its
+      size.

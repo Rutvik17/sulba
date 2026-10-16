@@ -1,0 +1,14 @@
+cards:
+  - id: crd_hb1jwm
+    front: >-
+      Why do the lambdas made in `for low, high in rows: checks.append(lambda v: low <= v <=
+      high)` all use the last row?
+    back: >-
+      Each lambda looks up `low` and `high` when it's called, and by then the loop has left
+      them at the last row's values.
+  - id: crd_tyc6cw
+    front: >-
+      How do you make a lambda in a loop keep the loop's values as they are?
+    back: >-
+      Bind them as defaults, `lambda v, low=low, high=high: ...`, or make each check with a
+      factory function.

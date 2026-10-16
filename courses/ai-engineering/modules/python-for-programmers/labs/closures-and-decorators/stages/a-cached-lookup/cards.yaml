@@ -1,0 +1,18 @@
+cards:
+  - id: crd_4qk1tr
+    front: >-
+      Why can't a cache key on a value alone when booleans and numbers must be told apart?
+    back: >-
+      `True == 1 == 1.0` and their hashes are equal, so a dict holds them under one key.
+      Add the value's type to the key.
+  - id: crd_6omxom
+    front: >-
+      What does `functools.lru_cache(maxsize=n, typed=True)` do?
+    back: >-
+      It keeps the results of a function's last `n` calls, with arguments of different
+      types kept apart.
+  - id: crd_8s7cqn
+    front: >-
+      What kind of argument can't go through `lru_cache`?
+    back: >-
+      An unhashable one, such as a list or a dict: its results are kept in a dict.

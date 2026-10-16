@@ -1,0 +1,17 @@
+cards:
+  - id: crd_189sug
+    front: >-
+      What is a closure?
+    back: >-
+      A function that keeps the variables of the function it was made in, after that
+      function has returned.
+  - id: crd_dx0tmh
+    front: >-
+      Does a closure keep a variable's value, or the variable?
+    back: >-
+      The variable: if it names a list that's changed later, the closure sees the change.
+  - id: crd_436ov4
+    front: >-
+      What does `f.__name__` give?
+    back: >-
+      The name the function was defined with, such as `'number'` for `def number(value):`.
