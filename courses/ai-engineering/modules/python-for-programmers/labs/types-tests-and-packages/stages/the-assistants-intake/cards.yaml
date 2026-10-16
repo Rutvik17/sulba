@@ -1,0 +1,13 @@
+cards:
+  - id: crd_vori9v
+    front: >-
+      What does `cast(Sample, record)` do as the code runs?
+    back: >-
+      Nothing: it returns `record` as it is. It only tells the type checker to treat it as a
+      `Sample`, so the code must have checked it first.
+  - id: crd_ifqjq4
+    front: >-
+      Does `isinstance(18, float)` hold, and does an annotation of `float` take `18`?
+    back: >-
+      No, and yes. The type system takes an `int` where `float` is annotated, but an int isn't
+      a float.

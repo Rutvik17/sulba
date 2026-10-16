@@ -1,0 +1,14 @@
+cards:
+  - id: crd_nk5f5u
+    front: What does `uv.lock` hold that `pyproject.toml` doesn't?
+    back: >-
+      The exact version of every package the project installs, the packages its dependencies
+      need included, for every platform and Python version it supports.
+  - id: crd_lvfi43
+    front: Why compare package names with `canonicalize_name`?
+    back: >-
+      The standards count names that differ only in case, or in runs of `-`, `_` and `.`, as
+      one name: `PyYAML` is `pyyaml`, and `python_dateutil` is `python-dateutil`.
+  - id: crd_8v08eg
+    front: Which versions does `~=2.4.0` allow?
+    back: 2.4.0 and every later 2.4 release, as `>=2.4.0` with `==2.4.*` does.

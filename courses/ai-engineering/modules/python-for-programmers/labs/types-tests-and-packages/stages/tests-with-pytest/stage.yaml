@@ -1,0 +1,6 @@
+id: stg_aimmje
+kind: build
+title: Tests with pytest
+builds: Your `typed.py` from stages 1 and 2.
+file: test_typed.py
+minutes: 40

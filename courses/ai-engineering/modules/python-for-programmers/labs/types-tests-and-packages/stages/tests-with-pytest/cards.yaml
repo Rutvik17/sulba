@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ljf9z4
+    front: >-
+      How do you run one pytest test for several inputs?
+    back: >-
+      `@pytest.mark.parametrize("value", [...])` above it, with `value` as its argument: it runs
+      once for each.
+  - id: crd_x1wcde
+    front: >-
+      What does `with pytest.raises(StructError) as raised:` check?
+    back: >-
+      That the block raises a `StructError` or an error of a subclass. It fails when the block
+      raises nothing, and `raised.value` is the error.
+  - id: crd_g95f10
+    front: >-
+      How can you tell whether your tests would catch a bug?
+    back: >-
+      Put the bug in on purpose and run them: a test that still passes doesn't test that
+      behaviour.

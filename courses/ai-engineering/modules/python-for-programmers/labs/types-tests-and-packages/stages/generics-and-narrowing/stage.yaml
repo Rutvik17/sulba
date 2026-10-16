@@ -1,0 +1,7 @@
+id: stg_oc0gpa
+kind: build
+title: Generics and narrowing
+builds: Your `typed.py` from stage 1.
+file: typed.py
+packages: [mypy]
+minutes: 45

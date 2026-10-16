@@ -1,0 +1,19 @@
+cards:
+  - id: crd_tpcq0p
+    front: >-
+      How do you write a generic class in Python 3.12 and later?
+    back: >-
+      `class Struct[T]:`, with `T` in its annotations. mypy works out `T` from how each one is
+      made, as TypeScript does for `class Struct<T>`.
+  - id: crd_sul3o8
+    front: >-
+      What does a function that returns `TypeGuard[T]` tell mypy?
+    back: >-
+      That where it returns `True`, its argument is a `T`. Where it returns `False`, mypy learns
+      nothing.
+  - id: crd_la5c33
+    front: >-
+      When is it safe to type a predicate with `TypeIs` rather than `TypeGuard`?
+    back: >-
+      When it's `True` for every value of its type: `TypeIs` also narrows where it returns
+      `False`, to rule that type out.

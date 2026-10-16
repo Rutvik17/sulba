@@ -1,0 +1,32 @@
+id: stg_2nzae2
+kind: ship
+title: Approved packages
+builds: A new `approvals.py`.
+file: approvals.py
+packages: [mypy, packaging]
+minutes: 40
+checks:
+  - check: tst_1npumz
+    title: Matches a name however it's written
+    requires: >-
+      A package the list names as `PyYAML` or `python_dateutil` is the lock file's `pyyaml`
+      or `python-dateutil`.
+    failure: >-
+      A package on the list was reported as missing from it. Compare names as
+      `canonicalize_name` gives them.
+  - check: tst_x54xnj
+    title: Compares versions, not their text
+    requires: >-
+      `==1.17` approves `1.17.0`, `>=1.9` approves `1.17.0`, and `~=2.4.0` approves no `2.5`
+      release.
+    failure: >-
+      A version was compared as text. A `SpecifierSet` compares versions part by part, as
+      numbers, with a missing part counted as zero.
+  - check: tst_2j7lrg
+    title: Checks each version a package is locked at
+    requires: >-
+      A package the lock file holds at more than one version, one for each range of Python
+      versions, is checked at each.
+    failure: >-
+      A package locked at more than one version was checked at only one. Check each
+      `[[package]]` table in turn.

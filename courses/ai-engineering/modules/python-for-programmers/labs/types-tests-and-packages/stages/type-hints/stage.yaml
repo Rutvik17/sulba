@@ -1,0 +1,7 @@
+id: stg_3goli8
+kind: build
+title: Type hints
+builds: A new `typed.py`.
+file: typed.py
+packages: [mypy]
+minutes: 40

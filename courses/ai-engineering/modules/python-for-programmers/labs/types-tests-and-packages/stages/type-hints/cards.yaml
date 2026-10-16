@@ -1,0 +1,23 @@
+cards:
+  - id: crd_bbi2wd
+    front: >-
+      What's the difference between a parameter typed `object` and one typed `Any`?
+    back: >-
+      mypy allows only what works on every value with `object`, until code checks what it is.
+      `Any` switches checking off, as TypeScript's `any` does.
+  - id: crd_ga5frv
+    front: >-
+      How do you write a tuple type of any length whose items are strings or ints?
+    back: >-
+      `tuple[str | int, ...]`
+  - id: crd_pjckz2
+    front: >-
+      How do you mark a TypedDict key that a record may leave out?
+    back: >-
+      `NotRequired[str]`, as TypeScript's `note?: string` does. `d.get("note")` gives its value
+      or `None`.
+  - id: crd_ikfahk
+    front: >-
+      Does Python check a function's annotations when it calls it?
+    back: >-
+      No. Python never reads them as it runs; a type checker such as mypy reads them beforehand.
