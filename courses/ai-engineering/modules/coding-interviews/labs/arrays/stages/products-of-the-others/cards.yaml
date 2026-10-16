@@ -1,0 +1,7 @@
+cards:
+  - id: crd_hxf0ik
+    front: >-
+      How do you find the product of every number but one, for each number, without dividing?
+    back: >-
+      Multiply the product of the numbers before it by the product of the numbers after it, each
+      built in one pass.

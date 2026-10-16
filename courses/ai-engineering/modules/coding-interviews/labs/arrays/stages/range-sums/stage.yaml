@@ -1,0 +1,6 @@
+id: stg_0arzhz
+kind: problem
+title: Range sums
+builds: A new `ranges.py`.
+file: ranges.py
+minutes: 15
