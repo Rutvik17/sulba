@@ -1,3 +1,3 @@
 id: mod_yccvjx
 title: Python for programmers
-labs: [values-and-references]
+labs: [values-and-references, iterators-and-generators]

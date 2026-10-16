@@ -1,0 +1,51 @@
+id: stg_muw4tu
+kind: catch
+title: The assistant's walker
+builds: Your `walk.py` from stages 1 to 3.
+file: walker.py
+minutes: 40
+problems:
+  - check: tst_vsijp1
+    title: Failures inside arrays went missing
+    cost: >-
+      The walk of an array called `failures` for each item, without `yield from`. Calling a
+      generator function only makes a generator, and nothing read this one, so no failure
+      inside an array was ever found: a tag the form sent as a number would have passed.
+    fix: >-
+      The fix: `yield from failures(item, schema[0], (*path, index))`.
+    edit:
+      replace: "            failures(item, schema[0], (*path, index))\n"
+      with: "            yield from failures(item, schema[0], (*path, index))\n"
+  - check: tst_rh8wlr
+    title: A value that wasn't an object passed
+    cost: >-
+      `return` ends a generator, and the value it returns never reaches the loop reading
+      from it. A record sent as text, or an address sent as one string, gave no failure at
+      all, and nothing inside it was checked.
+    fix: >-
+      The fix: `yield` the failure, then `return`.
+    edit:
+      replace: "            return path, f\"Expected an object, but received: {value!r}\"\n"
+      with: "            yield path, f\"Expected an object, but received: {value!r}\"\n            return\n"
+  - check: tst_sx24ba
+    title: The first failure went missing
+    cost: >-
+      `any(found)` read the generator as far as its first failure to see whether it had one,
+      and the comprehension read on from there. The first failure was never explained, and a
+      record with one failure got no message at all.
+    fix: >-
+      The fix: make `found` a list, `list(failures(value, schema))`, which can be read twice.
+    edit:
+      replace: "    found = failures(value, schema)\n"
+      with: "    found = list(failures(value, schema))\n"
+  - check: tst_igb742
+    title: It read every record
+    cost: >-
+      The list comprehension checked every record of the day before taking the first
+      failures, so asking for the first few meant reading all of them, however many came in.
+    fix: >-
+      The fix: make `found` a generator, with parentheses for its brackets, and take its
+      first `limit` failures with `itertools.islice`.
+    edit:
+      replace: "    found = [\n        (index, path, message)\n        for index, record in enumerate(records)\n        for path, message in failures(record, schema)\n    ]\n    return found[:limit]\n"
+      with: "    found = (\n        (index, path, message)\n        for index, record in enumerate(records)\n        for path, message in failures(record, schema)\n    )\n    return list(itertools.islice(found, limit))\n"

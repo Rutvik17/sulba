@@ -1,0 +1,6 @@
+id: stg_qk996h
+kind: build
+title: Lazy checks
+builds: Your `walk.py` from stages 1 and 2.
+file: walk.py
+minutes: 35
