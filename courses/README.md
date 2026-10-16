@@ -104,6 +104,8 @@ checks:
 
 A check reports what it measured, such as the time the code took, with pytest's `record_property("note", ...)`, and a run shows it beside the check whether it passed or failed. A run in the browser stops at its time limit (`timeLimitMs` in `packages/lab/src/protocol.ts`), so a check that times the code keeps its own work well inside it.
 
+A test of asyncio code asks for the `loop` fixture, an event loop whose clock jumps to its next timer instead of waiting (decision record 21). It runs a coroutine with `loop.run_until_complete(...)`, and `loop.time()` is the seconds that passed, the same in Pyodide and CPython, so a minute's timeout takes no time. Code that waits forever fails at once, and the code under test can't wait on sockets or threads.
+
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 
 ## Review cards

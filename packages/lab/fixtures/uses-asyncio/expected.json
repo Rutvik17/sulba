@@ -1,0 +1,50 @@
+{
+  "tests": [
+    {
+      "id": "tst_loop01",
+      "name": "Asks about eight codes at a time",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_loop02",
+      "name": "Times out a slow answer, on a clock of its own",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_loop03",
+      "name": "Gathers a task group's results",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_loop04",
+      "name": "Stops code that waits forever",
+      "status": "error",
+      "message": "RuntimeError: Every task is waiting on something that never happens.",
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

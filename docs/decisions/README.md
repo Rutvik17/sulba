@@ -24,5 +24,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [18. Keep progress as a log of attempts](0018-keep-progress-as-a-log-of-attempts.md) | Accepted |
 | [19. Sign in with GitHub or Google, in the browser](0019-sign-in-with-github-or-google-in-the-browser.md) | Accepted |
 | [20. Schedule review with FSRS, from a log of reviews](0020-schedule-review-with-fsrs-from-a-log-of-reviews.md) | Accepted |
+| [21. Test asyncio code on an event loop with a virtual clock](0021-test-asyncio-code-on-a-virtual-clock.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
