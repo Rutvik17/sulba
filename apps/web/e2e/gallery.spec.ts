@@ -323,17 +323,17 @@ test('Tab indents the code, and Escape then Tab leaves the editor', async ({ pag
   await expect(code).not.toBeFocused();
 });
 
-test('choosing a colour theme repaints the editor', async ({ page }) => {
+test("choosing an editor theme in the top bar's panel repaints every editor", async ({ page }) => {
   await openGallery(page);
-  const { section } = editor(page);
+  const editors = editor(page).section.locator('.cm-editor');
+  await expect(editors).toHaveCount(2);
 
-  await section.getByRole('button', { name: 'Theme: Sulba' }).click();
-  await page.getByRole('menuitem', { name: 'Dracula' }).click();
+  await page.getByRole('button', { name: 'Theme', exact: true }).click();
+  await page.getByRole('radio', { name: 'Dracula' }).check();
 
-  await expect(section.locator('.cm-editor').first()).toHaveCSS(
-    'background-color',
-    'rgb(40, 42, 54)',
-  );
+  for (const each of await editors.all()) {
+    await expect(each).toHaveCSS('background-color', 'rgb(40, 42, 54)');
+  }
 });
 
 test('a read-only editor can be read but not changed', async ({ page }) => {

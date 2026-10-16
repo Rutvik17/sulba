@@ -70,11 +70,7 @@ const sections: {
     id: 'editor',
     name: 'Code editor',
     ready: (page) => expect(page.locator('.cm-lintRange-error')).toHaveText('bias'),
-    states: async (page) => {
-      await page.getByRole('button', { name: 'Theme: Sulba' }).focus();
-      await page.keyboard.press('Shift+Tab');
-      await page.keyboard.press('Tab');
-    },
+    states: async () => {},
   },
   {
     id: 'chart',
@@ -117,4 +113,23 @@ for (const { id, trigger, role, keys } of overlays) {
       await expect(overlay).toHaveScreenshot(`${id}-${scheme}.png`);
     });
   }
+}
+
+// The top bar's theme panel, open, with the editor themes the gallery's editor takes: one has
+// keyboard focus and the pointer is over another.
+for (const scheme of ['dark', 'light'] as const) {
+  test(`the open theme panel in the ${scheme} theme`, async ({ page, isMobile }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/gallery/');
+    await islandsHydrated(page);
+    await page.getByRole('button', { name: 'Theme', exact: true }).click();
+    if (!isMobile) {
+      await page.getByRole('radio', { name: 'Sulba' }).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await page.getByRole('radio', { name: 'Light Modern' }).hover();
+    }
+
+    await expect(page.locator('#theme-panel')).toHaveScreenshot(`theme-panel-${scheme}.png`);
+  });
 }

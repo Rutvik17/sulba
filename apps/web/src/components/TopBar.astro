@@ -2,6 +2,13 @@
 import Mark from './Mark.astro';
 import ThemeControl from './ThemeControl.astro';
 
+interface Props {
+  /** Whether the page has a code editor, whose themes the theme panel then offers too. */
+  editor?: boolean | undefined;
+}
+
+const { editor } = Astro.props;
+
 // Sign-in brings the learner back to the page they started from.
 const here = Astro.url.pathname;
 const signIn = ['/sign-in/', '/account/'].includes(here)
@@ -21,7 +28,7 @@ const signIn = ['/sign-in/', '/account/'].includes(here)
       </a>
       <a class="link signed-out" href={signIn}>Sign in</a>
       <a class="link signed-in" href="/account/">Account</a>
-      <ThemeControl />
+      <ThemeControl editor={editor} />
     </div>
   </div>
 </header>

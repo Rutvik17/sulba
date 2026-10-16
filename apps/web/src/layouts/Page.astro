@@ -8,9 +8,11 @@ import TopBar from '../components/TopBar.astro';
 
 interface Props {
   title: string;
+  /** Whether the page has a code editor, whose themes the top bar's theme panel then offers. */
+  editor?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, editor } = Astro.props;
 ---
 
 <!doctype html>
@@ -37,7 +39,7 @@ const { title } = Astro.props;
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <TopBar />
+    <TopBar editor={editor} />
     <main id="main">
       <slot />
     </main>

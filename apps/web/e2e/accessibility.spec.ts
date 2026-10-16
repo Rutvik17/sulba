@@ -145,6 +145,24 @@ for (const scheme of ['dark', 'light'] as const) {
     expect(results.violations).toEqual([]);
   });
 
+  test(`the theme panel with the editor themes has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/demo/counting/tallies/');
+    await expect(page.getByRole('textbox', { name: 'tally.py', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Theme', exact: true }).click();
+
+    // Each sample shows a theme in its own colours, which some themes make faint for comments, as
+    // the editor then does. Screen readers skip the sample; the theme's name labels the choice.
+    const results = await new AxeBuilder({ page })
+      .withTags(wcag)
+      .exclude('[data-sample]')
+      .analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   for (const [what, trigger, role] of [
     ['side panel', 'Open the review', 'dialog'],
     ['menu', 'Session', 'menu'],

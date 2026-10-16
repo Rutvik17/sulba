@@ -27,7 +27,7 @@ const buttons = [
 ] as const;
 ---
 
-<Page title="Components · Sulba">
+<Page title="Components · Sulba" editor>
   <header class="intro">
     <h1>Components</h1>
     <p>Every component in each of its states. The theme control in the top bar switches themes.</p>
@@ -297,13 +297,6 @@ h3 {
 
 .prose :global([data-scroll] > math) {
   margin-inline: auto;
-}
-
-.code :global(.editor-demo) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-3);
-  justify-items: start;
 }
 
 .code :global(.editor-frame) {

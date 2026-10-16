@@ -1,0 +1,82 @@
+---
+// The editor themes, in the top bar's theme panel on a page with an editor: Sulba's, which follows
+// the page's theme, then the light ones and the dark ones. Every editor on the page draws in the
+// one chosen (packages/editor/src/choice.ts).
+import { palettes, sulba } from '@sulba/editor/palettes';
+import { specimen } from '@sulba/editor/specimen';
+import EditorThemeCard from './EditorThemeCard.astro';
+
+const sample = specimen(
+  'def sigmoid(z):  # a probability\n    """From 0 to 1."""\n    return 1 / (1 + np.exp(-z))',
+);
+
+const groups = [
+  { legend: 'Light', themes: palettes.filter(({ kind }) => kind === 'light') },
+  { legend: 'Dark', themes: palettes.filter(({ kind }) => kind === 'dark') },
+];
+---
+
+<fieldset class="themes">
+  <legend>Editor theme</legend>
+  <EditorThemeCard palette={sulba} sample={sample} note="Light or dark with the page" />
+  {groups.map(({ legend, themes }) => (
+    <fieldset class="group">
+      <legend>{legend}</legend>
+      <div class="cards">
+        {themes.map((palette) => (
+          <EditorThemeCard palette={palette} sample={sample} />
+        ))}
+      </div>
+    </fieldset>
+  ))}
+</fieldset>
+
+<script>
+import { choosePalette, chosenPalette } from '@sulba/editor/choice';
+
+// The panel shows the theme chosen, and a new choice reaches every editor on the page at once.
+const chosen = chosenPalette().id;
+for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="editor-theme"]')) {
+  radio.checked = radio.value === chosen;
+  radio.addEventListener('change', () => choosePalette(radio.value));
+}
+</script>
+
+<style>
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.themes {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+legend {
+  padding: 0;
+}
+
+.themes > legend {
+  margin-bottom: var(--space-3);
+  font: 500 var(--text-xs) / 1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.group > legend {
+  margin-block: var(--space-2);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+</style>
