@@ -1,0 +1,54 @@
+id: stg_k9dcuz
+kind: catch
+title: The assistant's intake
+builds: Your `typed.py` from stages 1 and 2.
+file: intake.py
+packages: [mypy]
+minutes: 35
+problems:
+  - check: tst_5luil1
+    title: A record without a radius went unreported
+    cost: >-
+      `label` took a `dict[str, object]`, which any dict of strings to values is, so mypy
+      passed a report line for a record without a radius, and the report raised `KeyError` as
+      it ran.
+    fix: >-
+      The fix: `def label(sample: Sample) -> str:`, so mypy holds every caller to a sample's
+      keys.
+    edit:
+      replace: "def label(sample: dict[str, object]) -> str:\n"
+      with: "def label(sample: Sample) -> str:\n"
+  - check: tst_m58wy6
+    title: A note that wasn't text got through
+    cost: >-
+      `take` checked the id and the radius, then told mypy with `cast` that the record was a
+      `Sample`. A `cast` changes nothing as the code runs, so a note of `7` went on to
+      screening as if it were text.
+    fix: >-
+      The fix: check the note before the `cast`, so what the `cast` tells mypy is true.
+    edit:
+      replace: "        raise IntakeError(\"radius\")\n    return cast(Sample, record)\n"
+      with: "        raise IntakeError(\"radius\")\n    if \"note\" in record and not isinstance(record[\"note\"], str):\n        raise IntakeError(\"note\")\n    return cast(Sample, record)\n"
+  - check: tst_rsoly1
+    title: A sample without a note broke the report
+    cost: >-
+      `note_of` returned `sample.get("note")`, which is `None` for a sample without a note, and
+      `# type: ignore` kept mypy from saying so. The report got `None` where it expected a
+      string.
+    fix: >-
+      The fix: `return sample.get("note", "")`, which mypy checks without being told to
+      ignore anything.
+    edit:
+      replace: "    return sample.get(\"note\")  # type: ignore[return-value]\n"
+      with: "    return sample.get(\"note\", \"\")\n"
+  - check: tst_z3e7ad
+    title: Radii that were whole numbers were turned away
+    cost: >-
+      `is_radius` tested `isinstance(value, float)`. An annotation of `float` takes an `int`,
+      but `isinstance(18, float)` is `False`, so a radius entered as `18` failed intake.
+    fix: >-
+      The fix: `isinstance(value, int | float) and not isinstance(value, bool)`, which takes
+      ints as the annotation does, and leaves out `True` and `False`.
+    edit:
+      replace: "    return isinstance(value, float) and value > 0\n"
+      with: "    return isinstance(value, int | float) and not isinstance(value, bool) and value > 0\n"
