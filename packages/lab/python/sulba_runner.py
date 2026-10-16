@@ -8,6 +8,7 @@ JavaScript into Python without conversion.
 from __future__ import annotations
 
 import ast
+import asyncio
 import importlib
 import io
 import json
@@ -16,7 +17,8 @@ import os
 import sys
 import tempfile
 import time
-from contextlib import redirect_stderr, redirect_stdout, suppress
+from collections.abc import Iterator
+from contextlib import contextmanager, redirect_stderr, redirect_stdout, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -207,6 +209,57 @@ def shown(value: object) -> str:
     return text if len(text) <= LIMIT else f"{text[: LIMIT - 1]}…"
 
 
+class VirtualClockLoop(asyncio.BaseEventLoop):
+    """An event loop whose clock jumps to its next timer instead of waiting for it.
+
+    A test of asyncio code takes only as long as the code's own work, however long it sleeps,
+    and the loop's time is the same in Pyodide and CPython. Pyodide's own loop can't run a
+    coroutine to completion from a test, and asyncio's selector loop needs sockets that Pyodide
+    doesn't have, so this loop waits on no I/O at all.
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._now = 0.0
+        # BaseEventLoop waits for its next timer by calling self._selector.select(timeout).
+        self._selector = self
+
+    def time(self) -> float:
+        return self._now
+
+    def select(self, timeout: float | None) -> list[Any]:
+        # No timer to wait for, and no I/O to wake a task: the code waits forever.
+        if timeout is None:
+            raise RuntimeError("Every task is waiting on something that never happens.")
+        self._now += timeout
+        return []
+
+    def _process_events(self, event_list: list[Any]) -> None:
+        pass
+
+    def _write_to_self(self) -> None:
+        pass
+
+    def run_forever(self) -> None:
+        with self._alone():
+            super().run_forever()
+
+    def run_until_complete(self, future: Any) -> Any:
+        with self._alone():
+            return super().run_until_complete(future)
+
+    @contextmanager
+    def _alone(self) -> Iterator[None]:
+        """Pyodide's loop counts as running from the moment it's made, and asyncio refuses to
+        run a loop while another one is running, so it's set aside until this one stops."""
+        running = asyncio._get_running_loop()
+        asyncio._set_running_loop(None)
+        try:
+            yield
+        finally:
+            asyncio._set_running_loop(running)
+
+
 class Report:
     """A pytest plugin that keeps what a learner needs from each test."""
 
@@ -220,6 +273,22 @@ class Report:
 
     def pytest_configure(self, config: pytest.Config) -> None:
         config.addinivalue_line("markers", "id(value): the test's permanent id")
+
+    @pytest.fixture
+    def loop(self) -> Iterator[VirtualClockLoop]:
+        """A new VirtualClockLoop for the test, whose time starts at 0. Afterwards, as
+        asyncio.run does, the tasks left waiting are cancelled before the loop closes."""
+        loop = VirtualClockLoop()
+        try:
+            yield loop
+        finally:
+            waiting = asyncio.all_tasks(loop)
+            for task in waiting:
+                task.cancel()
+            if waiting:
+                loop.run_until_complete(asyncio.gather(*waiting, return_exceptions=True))
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
 
     @pytest.hookimpl(wrapper=True)
     def pytest_runtest_call(self, item: pytest.Item) -> Any:
