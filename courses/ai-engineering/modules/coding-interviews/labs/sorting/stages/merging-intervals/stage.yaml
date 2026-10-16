@@ -1,0 +1,6 @@
+id: stg_xrdce4
+kind: problem
+title: Merging intervals
+builds: A new `intervals.py`.
+file: intervals.py
+minutes: 20

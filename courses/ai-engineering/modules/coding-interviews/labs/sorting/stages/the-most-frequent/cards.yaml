@@ -1,0 +1,8 @@
+cards:
+  - id: crd_aj6qui
+    front: >-
+      Finding the most frequent items, how do you keep items that tie in the order they first
+      appear?
+    back: >-
+      Count them in a dict, which keeps that order, then sort by count: Python's sort is stable,
+      so ties stay in order.

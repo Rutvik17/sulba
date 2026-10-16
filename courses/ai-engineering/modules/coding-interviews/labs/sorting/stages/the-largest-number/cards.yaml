@@ -1,0 +1,7 @@
+cards:
+  - id: crd_qtneew
+    front: >-
+      To write the largest number from a list side by side, in what order do two numbers `a` and
+      `b` go?
+    back: >-
+      `a` first when `str(a) + str(b)` is larger than `str(b) + str(a)`.

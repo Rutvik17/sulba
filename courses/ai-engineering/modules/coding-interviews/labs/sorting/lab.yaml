@@ -1,0 +1,6 @@
+id: lab_1gjr3i
+title: Sorting
+summary: >-
+  Five interview problems that come apart once their input is in order: merging intervals,
+  meeting rooms, the kth largest, the largest number and the most frequent items.
+stages: [merging-intervals, meeting-rooms, the-kth-largest, the-largest-number, the-most-frequent]

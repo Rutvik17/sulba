@@ -1,0 +1,7 @@
+cards:
+  - id: crd_i09s8u
+    front: >-
+      How does a heap find the kth largest of n numbers in time in proportion to n log k?
+    back: >-
+      Keep a min-heap of the k largest so far: a number larger than its smallest replaces it, and
+      at the end its smallest is the kth largest.

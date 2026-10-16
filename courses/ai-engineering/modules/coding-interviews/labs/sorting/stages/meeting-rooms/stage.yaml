@@ -1,0 +1,6 @@
+id: stg_46ojv5
+kind: problem
+title: Meeting rooms
+builds: A new `rooms.py`.
+file: rooms.py
+minutes: 20
