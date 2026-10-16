@@ -1,0 +1,7 @@
+cards:
+  - id: crd_y3d02i
+    front: >-
+      Why find a whole-number square root by binary search rather than with `int(math.sqrt(n))`?
+    back: >-
+      A float holds only about 16 significant digits, so a large `n` gets a wrong root; squaring
+      whole numbers stays exact.

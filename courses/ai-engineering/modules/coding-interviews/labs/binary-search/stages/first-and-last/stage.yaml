@@ -1,0 +1,6 @@
+id: stg_qvwpuq
+kind: problem
+title: First and last
+builds: A new `first_last.py`.
+file: first_last.py
+minutes: 20

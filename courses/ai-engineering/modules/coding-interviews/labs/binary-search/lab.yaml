@@ -1,0 +1,7 @@
+id: lab_0am05l
+title: Binary search
+summary: >-
+  Five interview problems that halve what's left to search at each step: the insertion point, the
+  first and last places of a value, a rotated list, a whole-number square root and the least
+  capacity to ship in time.
+stages: [the-insertion-point, first-and-last, a-rotated-list, a-whole-square-root, the-least-capacity]

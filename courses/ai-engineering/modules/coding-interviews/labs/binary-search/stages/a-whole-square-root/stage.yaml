@@ -1,0 +1,6 @@
+id: stg_hqvzzl
+kind: problem
+title: A whole square root
+builds: A new `square_root.py`.
+file: square_root.py
+minutes: 15

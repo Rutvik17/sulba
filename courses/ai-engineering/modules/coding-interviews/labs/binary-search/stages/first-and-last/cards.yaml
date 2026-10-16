@@ -1,0 +1,7 @@
+cards:
+  - id: crd_5w4qbt
+    front: >-
+      How do two binary searches find the first and last positions of a value in a sorted list?
+    back: >-
+      One finds the first number not smaller than the value, the other the first number larger:
+      the last position is one before it.

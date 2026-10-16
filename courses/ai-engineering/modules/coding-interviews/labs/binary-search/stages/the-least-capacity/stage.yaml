@@ -1,0 +1,6 @@
+id: stg_vafwsv
+kind: problem
+title: The least capacity
+builds: A new `shipping.py`.
+file: shipping.py
+minutes: 25

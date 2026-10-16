@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ogeixb
+    front: >-
+      Why can a binary search find the least capacity that ships packages within some days?
+    back: >-
+      A larger capacity never needs more days, so the capacities that work are all those from
+      the least one up.

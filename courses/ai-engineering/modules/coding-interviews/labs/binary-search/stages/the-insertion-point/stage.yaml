@@ -1,0 +1,6 @@
+id: stg_35s7jn
+kind: problem
+title: The insertion point
+builds: A new `insertion.py`.
+file: insertion.py
+minutes: 15

@@ -1,0 +1,6 @@
+id: stg_f7bjig
+kind: problem
+title: A rotated list
+builds: A new `rotated.py`.
+file: rotated.py
+minutes: 25

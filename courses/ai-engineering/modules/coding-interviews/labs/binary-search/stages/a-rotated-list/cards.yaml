@@ -1,0 +1,7 @@
+cards:
+  - id: crd_3d2a8z
+    front: >-
+      Binary searching a sorted list that was rotated, what do you check at each middle?
+    back: >-
+      Which half is in order, from its two ends, and whether the value lies between them: if so
+      search that half, else the other.
