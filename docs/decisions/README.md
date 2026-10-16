@@ -26,5 +26,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [20. Schedule review with FSRS, from a log of reviews](0020-schedule-review-with-fsrs-from-a-log-of-reviews.md) | Accepted |
 | [21. Test asyncio code on an event loop with a virtual clock](0021-test-asyncio-code-on-a-virtual-clock.md) | Accepted |
 | [22. Type-check a stage's code with mypy, in Pyodide and CPython alike](0022-type-check-a-stages-code-with-mypy-in-pyodide.md) | Accepted |
+| [23. Time an interview problem from its start, with the plan before the code](0023-time-an-interview-problem-from-its-start.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

@@ -1,0 +1,6 @@
+id: stg_demo05
+kind: problem
+title: Pair sums
+builds: A new `pairs.py`.
+file: pairs.py
+minutes: 20

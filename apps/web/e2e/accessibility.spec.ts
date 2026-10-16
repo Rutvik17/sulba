@@ -288,6 +288,40 @@ for (const scheme of ['dark', 'light'] as const) {
     expect(results.violations).toEqual([]);
   });
 
+  test(`a Problem stage, with its plan being written, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/demo/interviews/pairs/');
+    await page.getByRole('button', { name: 'Start' }).click();
+    await expect(page.getByRole('textbox', { name: 'Your plan' })).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
+  test(`a Problem stage past its minutes, with its plan open, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript(() => {
+      const state = { started: Date.now() - 21 * 60_000, plan: 'A dict of the numbers seen.' };
+      localStorage.setItem(
+        'sulba:problem:stg_demo05',
+        JSON.stringify({ ...state, coding: true, solved: null }),
+      );
+    });
+    await page.goto('/demo/interviews/pairs/');
+    await page.getByRole('tab', { name: 'Plan', exact: true }).click();
+    await expect(page.getByRole('textbox', { name: 'Your plan' })).toBeVisible();
+    await expect(page.getByRole('timer')).toHaveText(/^21:0\d of 20:00$/);
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   test(`a lab's explanation, with its formulas, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
   }) => {

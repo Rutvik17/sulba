@@ -2,7 +2,8 @@ import { expect, type Page, test } from '@playwright/test';
 import { signedIn, standIn, supabase } from './supabase';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): the
-// course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages.
+// course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages,
+// and the module Interviews, with the lab Pairs and its one Problem stage.
 const path = '/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
 
@@ -27,7 +28,7 @@ test("a course's page lists its levels, modules and labs, with what each lab bui
   await expect(page).toHaveTitle('Demo · Sulba');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Demo');
   const level = page.getByRole('region', { name: 'First' });
-  await expect(level.getByRole('heading', { level: 3 })).toHaveText(['Counting']);
+  await expect(level.getByRole('heading', { level: 3 })).toHaveText(['Counting', 'Interviews']);
   await expect(level.getByRole('link', { name: 'Tallies' })).toHaveAttribute(
     'href',
     '/demo/counting/tallies/',
@@ -38,6 +39,12 @@ test("a course's page lists its levels, modules and labs, with what each lab bui
   // With no stage passed, there is no progress to show, and nothing is asked of Supabase.
   await expect(tallies(page).getByRole('definition')).toHaveText(facts);
   await expect(tallies(page).getByText('Progress')).toBeHidden();
+  const pairs = page.getByRole('listitem').filter({ hasText: 'Pairs' });
+  await expect(pairs.getByRole('definition')).toHaveText([
+    'pairs.py',
+    '1 Problem',
+    'About 20 minutes',
+  ]);
   expect(origins.has(supabase)).toBe(false);
 });
 

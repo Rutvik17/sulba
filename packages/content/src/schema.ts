@@ -170,13 +170,15 @@ const shipCheck = z.strictObject({
 /**
  * Build: the learner writes the core by hand. Catch: the learner reviews an assistant's code that
  * passes its own tests, and hidden checks find its problems. Ship: the learner's code passes
- * hidden tests, then the checks it must pass before it ships.
+ * hidden tests, then the checks it must pass before it ships. Problem: the learner solves an
+ * interview problem against the clock, its minutes, with a plan written before the code.
  */
 export const stageFile = z.discriminatedUnion('kind', [
   z.strictObject({ ...stageFields, kind: z.literal('build') }),
   // A Catch stage being drafted lists no problems yet, and fails its checks until it does.
   z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem) }),
   z.strictObject({ ...stageFields, kind: z.literal('ship'), checks: z.array(shipCheck).min(1) }),
+  z.strictObject({ ...stageFields, kind: z.literal('problem') }),
 ]);
 
 export type CourseFile = z.infer<typeof courseFile>;

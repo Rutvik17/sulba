@@ -1,0 +1,4 @@
+id: lab_demo02
+title: Pairs
+summary: Find the two numbers in a list that add up to a target.
+stages: [pair-sums]

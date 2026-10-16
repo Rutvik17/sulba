@@ -183,6 +183,13 @@ class Reader {
           `file: A Catch stage's file is the assistant's, so no earlier stage may make ${stage.file}.`,
         );
       }
+      // An interview problem is solved from nothing, so it starts from a file of its own.
+      if (stage.kind === 'problem' && stages.some((earlier) => earlier.file === stage.file)) {
+        this.problem(
+          join(folder, 'stages', name, 'stage.yaml'),
+          `file: A Problem stage starts from a file of its own, so no earlier stage may make ${stage.file}.`,
+        );
+      }
       stages.push(stage);
     }
     // A chart runs as chart.py beside the learner's files, so no learner's file may take the name.

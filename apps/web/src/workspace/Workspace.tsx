@@ -7,10 +7,12 @@ import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { ChartPanel } from './ChartPanel';
 import { labData } from './data';
+import { clock, elapsed, type ProblemState, solvedIn } from './problem';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
 import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
@@ -43,9 +45,18 @@ const css = classes(
   'problems',
   'caught',
   'missed',
+  'clock',
+  'over',
+  'plan',
+  'start',
 );
 
-const kinds: Record<StageView['kind'], string> = { build: 'Build', catch: 'Catch', ship: 'Ship' };
+const kinds: Record<StageView['kind'], string> = {
+  build: 'Build',
+  catch: 'Catch',
+  ship: 'Ship',
+  problem: 'Problem',
+};
 
 /** The stage to open: the one the address names if it's open, else the first not yet passed. */
 function firstStage(lab: LabView): number {
@@ -262,8 +273,30 @@ function StageWorkspace({
   const stage = lab.stages[index] as StageView;
   const isCatch = stage.kind === 'catch';
   const isShip = stage.kind === 'ship';
+  const isProblem = stage.kind === 'problem';
+  const [problem, setProblem] = useState<ProblemState | null>(() =>
+    isProblem ? kept.problem(stage.id) : null,
+  );
+  // A run's result keeps its time with the plan as it is then, which may have changed during it.
+  const latest = useRef(problem);
+  const keepProblem = (state: ProblemState) => {
+    latest.current = state;
+    setProblem(state);
+    kept.saveProblem(stage.id, state);
+  };
+  // The clock runs until the problem is solved. One solved on another device kept no time here, so
+  // it shows no clock.
+  const now = useNow(problem !== null && problem.solved === null && !passed);
+  const seconds = problem ? elapsed(problem, now) : 0;
+  const timed = problem !== null && (problem.solved !== null || !passed);
+  // A Problem stage shows its problem once the learner starts, and its code once their plan is
+  // written. One passed on another device opens in full, with or without a start kept here.
+  const started = !isProblem || passed || problem !== null;
+  const coding = !isProblem || passed || problem?.coding === true;
+  const explained = !isProblem || passed || seconds >= stage.minutes * 60;
   const editor = useRef<EditorHandle>(null);
   const left = useRef<HTMLDivElement>(null);
+  const brief = useRef<HTMLDivElement>(null);
   const finished = useRef<HTMLParagraphElement>(null);
   const finishId = useId();
   const [opening] = useState(() => codeOf(lab, index, kept));
@@ -310,12 +343,16 @@ function StageWorkspace({
     }
   };
 
-  // A Catch review finishes by itself once the code passes every test and check.
+  // A Catch review finishes by itself once the code passes every test and check. A problem is
+  // solved when the code that passes was run, not when its tests finish.
   const runTests = async () => {
+    const ran = Date.now();
     const result = await execute();
     if (result?.status !== 'pass') return;
     if (!isCatch) {
       if (!passed) record(passOf(stage, null), lap());
+      const state = latest.current;
+      if (state && state.solved === null) keepProblem({ ...state, solved: elapsed(state, ran) });
       onPass();
     } else if (!review) {
       const finished = reviewOf(stage.problems, result);
@@ -361,7 +398,16 @@ function StageWorkspace({
   };
 
   const done = run.state === 'done' && run.result.status === 'pass';
-  const solutionOpen = isCatch ? review !== null : tried;
+  const solutionOpen = isCatch ? review !== null : isProblem ? explained : tried;
+  // Starting shows the problem, and finishing the plan opens the code, so focus goes to each.
+  const start = () => {
+    flushSync(() => keepProblem({ started: Date.now(), plan: '', coding: false, solved: null }));
+    brief.current?.focus();
+  };
+  const writeCode = (state: ProblemState) => {
+    flushSync(() => keepProblem({ ...state, coding: true }));
+    editor.current?.goTo(1);
+  };
   const unrevealed = new Set(review ? [] : stage.problems.map((problem) => problem.check));
 
   return (
@@ -379,7 +425,8 @@ function StageWorkspace({
         >
           <TabList aria-label="Stage">
             <Tab id="brief">Brief</Tab>
-            {stage.hints.length > 0 && <Tab id="hints">Hints</Tab>}
+            {isProblem && coding && problem && <Tab id="plan">Plan</Tab>}
+            {stage.hints.length > 0 && started && <Tab id="hints">Hints</Tab>}
             <Tab id="explanation">Explanation</Tab>
             <Tab id="solution" isDisabled={!solutionOpen}>
               Solution
@@ -392,10 +439,34 @@ function StageWorkspace({
               <p className={css.builds}>
                 <strong>Builds on</strong> · <Line html={stage.builds} />
               </p>
-              <Prose html={stage.brief} />
+              {started ? (
+                <div ref={brief} tabIndex={-1}>
+                  <Prose html={stage.brief} />
+                </div>
+              ) : (
+                <div className={css.start}>
+                  <p>
+                    You have {stage.minutes} minutes from when you start. Plan first: how it works,
+                    what it costs in time and space, and the inputs that could break it. Then write
+                    the code.
+                  </p>
+                  <Button onPress={start}>Start</Button>
+                </div>
+              )}
             </div>
           </TabPanel>
-          {stage.hints.length > 0 && (
+          {isProblem && coding && problem && (
+            <TabPanel id="plan">
+              <div className={css.panel}>
+                <Plan
+                  plan={problem.plan}
+                  onChange={(plan) => keepProblem({ ...problem, plan })}
+                  onDone={null}
+                />
+              </div>
+            </TabPanel>
+          )}
+          {stage.hints.length > 0 && started && (
             <TabPanel id="hints">
               <div className={css.panel}>
                 {hints > 0 && (
@@ -430,6 +501,10 @@ function StageWorkspace({
                 <p className={css.note}>Opens when you finish the review.</p>
               ) : isShip && !tried ? (
                 <p className={css.note}>Opens after your first run.</p>
+              ) : !explained ? (
+                <p className={css.note}>
+                  Opens when you solve it, or when its {stage.minutes} minutes are up.
+                </p>
               ) : (
                 <Prose html={stage.explanation} />
               )}
@@ -465,8 +540,16 @@ function StageWorkspace({
       <div className={css.right}>
         <div className={css.head}>
           <span className={css.file}>{stage.file}</span>
+          {timed && (
+            <span
+              role="timer"
+              className={seconds > stage.minutes * 60 ? `${css.clock} ${css.over}` : css.clock}
+            >
+              {clock(seconds, stage.minutes)}
+            </span>
+          )}
           <div className={css.tools}>
-            <Button variant="ghost" size="small" onPress={reset}>
+            <Button variant="ghost" size="small" onPress={reset} isDisabled={!coding}>
               Reset
             </Button>
             {isCatch && !review && (
@@ -480,19 +563,33 @@ function StageWorkspace({
                 Finish review
               </Button>
             )}
-            <Button size="small" onPress={runTests} isDisabled={!python || run.state === 'running'}>
+            <Button
+              size="small"
+              onPress={runTests}
+              isDisabled={!python || run.state === 'running' || !coding}
+            >
               Run tests
             </Button>
           </div>
         </div>
         <div className={css.code}>
-          <Editor
-            ref={editor}
-            defaultValue={opening}
-            label={stage.file}
-            onChange={(code) => kept.saveCode(stage.id, code)}
-            onRun={runTests}
-          />
+          {coding ? (
+            <Editor
+              ref={editor}
+              defaultValue={opening}
+              label={stage.file}
+              onChange={(code) => kept.saveCode(stage.id, code)}
+              onRun={runTests}
+            />
+          ) : problem ? (
+            <Plan
+              plan={problem.plan}
+              onChange={(plan) => keepProblem({ ...problem, plan })}
+              onDone={() => writeCode(problem)}
+            />
+          ) : (
+            <p className={css.note}>Your plan, then your code, go here once you start.</p>
+          )}
         </div>
         <div className={css.dock}>
           {isCatch && review && (
@@ -514,7 +611,11 @@ function StageWorkspace({
           )}
           {!isCatch && done && (
             <div className={css.done}>
-              <p>Stage {index + 1} done.</p>
+              <p>
+                {problem && problem.solved !== null
+                  ? solvedIn(problem.solved, stage.minutes)
+                  : `Stage ${index + 1} done.`}
+              </p>
               <div className={css.tools}>
                 {stage.chart && (
                   <Button variant="outline" size="small" onPress={() => show('chart')}>
@@ -579,6 +680,59 @@ function StageWorkspace({
         </div>
       </div>
     </section>
+  );
+}
+
+/** The time now, in milliseconds since 1970, kept current each second while `running`. */
+function useNow(running: boolean): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!running) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [running]);
+  return now;
+}
+
+/** A Problem stage's plan, which opens the code once it's written, then stays open to change. */
+function Plan({
+  plan,
+  onChange,
+  onDone,
+}: {
+  plan: string;
+  onChange: (plan: string) => void;
+  /** Opens the code, or null once the code is open. */
+  onDone: (() => void) | null;
+}) {
+  const id = useId();
+  return (
+    <form
+      className={css.plan}
+      onSubmit={(event) => {
+        event.preventDefault();
+        onDone?.();
+      }}
+    >
+      <label htmlFor={`${id}-plan`}>Your plan</label>
+      <p id={`${id}-about`} className={css.note}>
+        How it works, what it costs in time and space, and the inputs that could break it.
+      </p>
+      <textarea
+        id={`${id}-plan`}
+        aria-describedby={`${id}-about`}
+        value={plan}
+        onChange={(event) => onChange(event.target.value)}
+      />
+      {onDone && (
+        <div>
+          <Button type="submit" isDisabled={plan.trim() === ''}>
+            Write the code
+          </Button>
+        </div>
+      )}
+    </form>
   );
 }
 
