@@ -1,0 +1,7 @@
+cards:
+  - id: crd_9fnihn
+    front: >-
+      Merging intervals sorted by start, when does the next interval join the last merged one,
+      and what's the merged end?
+    back: >-
+      When it starts at or before that one's end; the merged end is the larger of the two ends.

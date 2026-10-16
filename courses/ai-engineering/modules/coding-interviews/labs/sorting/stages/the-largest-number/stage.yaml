@@ -1,0 +1,6 @@
+id: stg_pjoo5v
+kind: problem
+title: The largest number
+builds: A new `largest_number.py`.
+file: largest_number.py
+minutes: 25

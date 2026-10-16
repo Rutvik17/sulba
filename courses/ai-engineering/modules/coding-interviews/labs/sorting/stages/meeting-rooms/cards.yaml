@@ -1,0 +1,7 @@
+cards:
+  - id: crd_vf6zhj
+    front: >-
+      How do sorted start and end times give the fewest meeting rooms?
+    back: >-
+      Go through the starts in order, freeing a room for every end at or before each one: the
+      most rooms in use at once is the answer.

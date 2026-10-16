@@ -1,0 +1,6 @@
+id: stg_yudj1s
+kind: problem
+title: The kth largest
+builds: A new `kth.py`.
+file: kth.py
+minutes: 15

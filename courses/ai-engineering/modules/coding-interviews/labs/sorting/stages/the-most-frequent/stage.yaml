@@ -1,0 +1,6 @@
+id: stg_g6vgph
+kind: problem
+title: The most frequent
+builds: A new `frequent.py`.
+file: frequent.py
+minutes: 20
