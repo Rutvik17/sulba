@@ -1,0 +1,19 @@
+cards:
+  - id: crd_30qdty
+    front: >-
+      What does `a is b` test, and when should you use it?
+    back: >-
+      Whether `a` and `b` are the same object. Use it for `None`, `True` and `False`, and
+      where identity is the point, never to compare numbers or strings.
+  - id: crd_fwmblf
+    front: >-
+      Why is `True in [0, 1]` true in Python?
+    back: >-
+      `in` compares each item with `==` as well as `is`, and `True == 1`, since `bool` is a
+      subclass of `int`.
+  - id: crd_ycysqx
+    front: >-
+      What does JavaScript's `===` mean for two objects?
+    back: >-
+      That they are the same object, as Python's `is` does. Two arrays with the same items
+      aren't `===`.

@@ -1,0 +1,6 @@
+id: stg_3vstv8
+kind: build
+title: Strings, numbers and booleans
+builds: A new `values.py`.
+file: values.py
+minutes: 35

@@ -1,0 +1,6 @@
+id: stg_r25bpi
+kind: build
+title: Literals and enums
+builds: Your `values.py` from stage 1.
+file: values.py
+minutes: 35

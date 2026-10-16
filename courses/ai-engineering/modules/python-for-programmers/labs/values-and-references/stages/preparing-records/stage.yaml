@@ -1,0 +1,27 @@
+id: stg_nv4un8
+kind: ship
+title: Preparing records
+builds: Your `values.py` from stages 1 to 3.
+file: values.py
+minutes: 40
+checks:
+  - check: tst_gae6i4
+    title: Leaves the form's records as they were
+    requires: >-
+      `prepare` changes neither the record nor the defaults it's given.
+    failure: >-
+      A record or the defaults changed. Change copies, never what you were given.
+  - check: tst_n6cct9
+    title: Shares no list or dict
+    requires: >-
+      No prepared record shares a list or a dict with the record it came from, with the
+      defaults or with another prepared record.
+    failure: >-
+      A prepared record shares a list or a dict. Copy each list and dict it keeps.
+  - check: tst_hdndfa
+    title: Unknown fields in the record's order
+    requires: >-
+      The fields the form doesn't know come after its own, in the order the record has them,
+      on every run.
+    failure: >-
+      The unknown fields came out in another order than the record's.

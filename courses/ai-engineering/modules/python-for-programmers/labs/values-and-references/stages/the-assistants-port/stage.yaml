@@ -1,0 +1,53 @@
+id: stg_qqit3o
+kind: catch
+title: The assistant's port
+builds: Your `values.py` from stages 1 to 3.
+file: intake.py
+minutes: 35
+problems:
+  - check: tst_3wtsbv
+    title: It compared objects, not values
+    cost: >-
+      `literal` asked whether the value was the same object as its constant, as if `is` were
+      JavaScript's `===`. `json.loads` makes a new object for most numbers and strings it
+      reads, so the form's `1000` failed `literal(value, 1000)` and its `"aspiration"` failed
+      `literal(value, "aspiration")`, though each equals its constant. The service would have
+      turned away good records.
+    fix: >-
+      The fix: compare values with `==`, and keep booleans apart from numbers.
+    edit:
+      replace: "    if value is constant:\n"
+      with: "    if value == constant and isinstance(value, bool) == isinstance(constant, bool):\n"
+  - check: tst_hgm82d
+    title: A boolean passed for a number
+    cost: >-
+      `in` compares each option with `==` too, and `True == 1`, so `enums(True, [0, 1])`
+      passed. A checkbox's `true` would have passed for a count, where the form's own check
+      rejects it.
+    fix: >-
+      The fix: compare each option as `literal` does, keeping booleans apart from numbers.
+    edit:
+      replace: "    if value in options:\n"
+      with: "    if any(\n        value == option and isinstance(value, bool) == isinstance(option, bool)\n        for option in options\n    ):\n"
+  - check: tst_mo44jh
+    title: It replaced falsy values
+    cost: >-
+      `not result.get(key)` is true for a field set to `0`, `""` or `False` as much as for a
+      missing one, so `with_defaults` replaced them with the defaults. A sample's count of `0`
+      would have become `1`.
+    fix: >-
+      The fix: fill a field only when `key not in result`.
+    edit:
+      replace: "        if not result.get(key):\n"
+      with: "        if key not in result:\n"
+  - check: tst_o5h3oh
+    title: It changed the caller's record
+    cost: >-
+      `result = record` gives the same dict a second name, so the defaults went into the
+      record the service passed in. Anything else holding that record, such as a log of what
+      the form sent, would have seen fields the form never sent.
+    fix: >-
+      The fix: start from a copy, `result = dict(record)`.
+    edit:
+      replace: "    result = record\n"
+      with: "    result = dict(record)\n"

@@ -1,0 +1,24 @@
+cards:
+  - id: crd_kzp0uk
+    front: >-
+      Is `True` an `int` in Python?
+    back: >-
+      Yes: `bool` is a subclass of `int`, so `isinstance(True, int)` is `True`. A check
+      for numbers rules booleans out first.
+  - id: crd_p5ywvg
+    front: >-
+      What does `json.loads` make of the JSON numbers `3` and `3.0`?
+    back: >-
+      The `int` `3` and the `float` `3.0`. JavaScript reads both as the same number.
+  - id: crd_n8m4i2
+    front: >-
+      How do you test whether a float is NaN?
+    back: >-
+      With `math.isnan(x)`. NaN equals nothing, not even itself, so `x == float("nan")`
+      is always false.
+  - id: crd_prbgkb
+    front: >-
+      What does `!r` do in an f-string?
+    back: >-
+      It writes the value as `repr` does, so a string keeps its quotes: `'42'` and `42`
+      look different.
