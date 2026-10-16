@@ -1,6 +1,9 @@
+import gc
 import json
 import subprocess
 import sys
+import weakref
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -8,6 +11,13 @@ import pytest
 from sulba_runner import chart, figures, imported, prepare, run
 
 FIXTURES = Path(__file__).parents[2] / "fixtures"
+
+
+@pytest.fixture(autouse=True)
+def unfrozen() -> Iterator[None]:
+    """prepare freezes what's alive, which here is pytest's own objects too."""
+    yield
+    gc.unfreeze()
 
 
 def session(case: str) -> tuple[dict[str, str], list[str]]:
@@ -67,6 +77,28 @@ def test_prepare_imports_the_packages_modules_and_never_the_sessions_files() -> 
     prepare(json.dumps(files), json.dumps(["wsgiref"]))
     assert "wsgiref.validate" in sys.modules
     assert "helpers" not in sys.modules
+
+
+def test_prepare_freezes_what_is_alive_out_of_garbage_collection() -> None:
+    assert gc.get_freeze_count() == 0
+    prepare(json.dumps({}), json.dumps([]))
+    assert gc.get_freeze_count() > 0
+
+
+def test_prepare_collects_garbage_before_it_freezes() -> None:
+    class Node:
+        next: object
+
+    gc.disable()
+    try:
+        node = Node()
+        node.next = node
+        gone = weakref.ref(node)
+        del node
+        prepare(json.dumps({}), json.dumps([]))
+    finally:
+        gc.enable()
+    assert gone() is None
 
 
 def test_files_outside_the_session_are_refused() -> None:

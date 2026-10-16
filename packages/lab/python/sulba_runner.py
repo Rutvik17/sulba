@@ -56,11 +56,15 @@ def run(files_json: str, tests_json: str) -> str:
 
 def prepare(files_json: str, packages_json: str) -> None:
     """Import the modules that the session's Python files import from these packages, and with
-    mypy among them, check the session's files with it once.
+    mypy among them, check the session's files with it once. Then freeze what's alive out of
+    garbage collection.
 
     The first import of a module such as scipy.stats can take seconds in a browser, as can
     mypy's first check, and the browser times a run from after this, so a run's time goes on
     the session's own code. Only the packages' modules are imported, never the session's files.
+    What the packages load stays alive for as long as Python runs, as do the types mypy reads,
+    and every full collection in a run would go through it all again: frozen, it's left out,
+    and the session's own objects are collected as before.
     """
     files: dict[str, str] = json.loads(files_json)
     packages = set(json.loads(packages_json))
@@ -73,6 +77,8 @@ def prepare(files_json: str, packages_json: str) -> None:
         # A problem here shows again in the run, which reports it.
         with suppress(Exception):
             warm(files)
+    gc.collect()
+    gc.freeze()
 
 
 def warm(files: dict[str, str]) -> None:
@@ -87,10 +93,6 @@ def warm(files: dict[str, str]) -> None:
     with tempfile.TemporaryDirectory(prefix="sulba-") as folder, chdir(folder):
         write(Path(folder), {name: files[name] for name in sources})
         typecheck(*sources)
-    # mypy keeps the types it has read for as long as Python runs. Frozen, they're left out of
-    # every later garbage collection, which would otherwise take twice as long.
-    gc.collect()
-    gc.freeze()
 
 
 @functools.cache
