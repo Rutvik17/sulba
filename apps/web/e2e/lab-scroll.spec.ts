@@ -66,7 +66,9 @@ test.describe('on a wide screen', () => {
     await open(page);
 
     const boxes = new Set<string>();
-    for (const progress of [0, 0.15, 0.31, 0.47, 0.65, 0.8, 1]) {
+    // Inside the track: at its very ends the frame is pinning or letting go, and a scroll that
+    // rounds to the next pixel moves it by part of one.
+    for (const progress of [0.01, 0.15, 0.31, 0.47, 0.65, 0.8, 0.99]) {
       await scrollTo(page, progress);
       const box = await lab(page).locator('.view').boundingBox();
       boxes.add(`${Math.round(box?.y ?? 0)} ${Math.round(box?.height ?? 0)}`);
