@@ -1,0 +1,6 @@
+id: stg_901adz
+kind: problem
+title: Merging sorted lists
+builds: A new `merge.py`.
+file: merge.py
+minutes: 20

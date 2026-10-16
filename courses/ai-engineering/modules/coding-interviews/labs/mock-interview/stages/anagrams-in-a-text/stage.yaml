@@ -1,0 +1,6 @@
+id: stg_geg2o1
+kind: problem
+title: Anagrams in a text
+builds: A new `anagram_starts.py`.
+file: anagram_starts.py
+minutes: 25

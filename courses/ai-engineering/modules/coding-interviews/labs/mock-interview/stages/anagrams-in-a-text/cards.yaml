@@ -1,0 +1,8 @@
+cards:
+  - id: crd_jezi29
+    front: >-
+      Finding the anagrams of a word in a text with a sliding window, what does the window keep,
+      and when has it found one?
+    back: >-
+      How many of each character it still needs, and how many are missing in all: none missing
+      at the word's length is an anagram.
