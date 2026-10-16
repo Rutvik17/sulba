@@ -1,0 +1,20 @@
+id: lab_baxnyi
+title: Logits and sampling
+summary: >-
+  Ask a small language model whether products match shoppers' searches, and read its answers
+  from the logits: turn them into probabilities, reshape them with temperature, top-k and
+  top-p, draw answers as generation does, and ship probabilities that mean what they say.
+data:
+  - file: logits.csv
+    title: Shopping Queries Dataset
+    creators: ["Amazon.com, Inc. or its affiliates"]
+    url: https://github.com/amazon-science/esci-data
+    licence:
+      name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    changes: >-
+      1,000 query and product pairs from the US shop, chosen at random, each with the label
+      people gave it and, for the first token of Qwen2.5-1.5B-Instruct's answer to whether
+      the product matches the query, the 20 highest logits with their tokens, the logits of
+      Yes and No, and the log-sum-exp of all its logits.
+stages: [probabilities-from-logits, temperature-top-k-and-top-p, sampling, the-assistants-sampler, calibrated-probabilities]

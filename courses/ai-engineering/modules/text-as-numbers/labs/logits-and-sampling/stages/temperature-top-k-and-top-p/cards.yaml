@@ -1,0 +1,18 @@
+cards:
+  - id: crd_e017cu
+    front: >-
+      What does a temperature below 1 do to the probabilities?
+    back: >-
+      It sharpens them: dividing the logits by the temperature moves probability to the
+      likeliest tokens.
+  - id: crd_08i6fe
+    front: >-
+      Which tokens does top-p keep?
+    back: >-
+      The fewest of the likeliest tokens whose probabilities add up to p or more, so the token
+      that reaches p stays.
+  - id: crd_ugp9rn
+    front: >-
+      In what order does transformers apply temperature, top-k and top-p?
+    back: >-
+      Temperature, then top-k, then top-p, which reads the probabilities after temperature.

@@ -1,0 +1,14 @@
+id: stg_hq1xhb
+kind: build
+title: Temperature, top-k and top-p
+builds: Your `judge.py` from stage 1.
+file: judge.py
+packages: [pandas, scipy]
+minutes: 45
+chart:
+  title: Draws other than the likeliest token
+  sliders:
+    - name: top_p
+      label: Top-p
+      stops: [0.5, 0.8, 0.95, 1]
+      value: 0.8

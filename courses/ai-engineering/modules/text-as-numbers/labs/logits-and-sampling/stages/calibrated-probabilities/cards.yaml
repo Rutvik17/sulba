@@ -1,0 +1,18 @@
+cards:
+  - id: crd_wtaaey
+    front: >-
+      What is fitting a temperature and a shift to a judge's Yes and No logits?
+    back: >-
+      A logistic regression on the margin between the two logits: one over the temperature is
+      its slope, and the shift its intercept.
+  - id: crd_otbp28
+    front: >-
+      What does a fitted temperature well above 1 say about a judge?
+    back: >-
+      That it is too sure of itself: its probabilities need pulling towards a half.
+  - id: crd_ibrlp9
+    front: >-
+      How close to the number of positives should calibrated probabilities add up?
+    back: >-
+      Within about twice the standard deviation of the count they predict, the square root of
+      the sum of p(1 − p).

@@ -1,0 +1,41 @@
+id: stg_upam8k
+kind: ship
+title: Calibrated probabilities
+builds: Your `judge.py` from stages 1 to 3.
+file: judge.py
+packages: [pandas, scipy]
+minutes: 45
+checks:
+  - check: tst_eut4u5
+    title: The judge's own probability, scaled and shifted
+    requires: >-
+      `match_probability` gives each pair the formula's probability at any temperature and
+      shift, and with `temperature=1.0` and `shift=0.0` the judge's own probability of Yes
+      among Yes and No.
+    failure: >-
+      A probability didn't match the formula. A softmax over the two logits, each divided by
+      the temperature and with the shift added to Yes's, gives it.
+  - check: tst_wsc48h
+    title: Fitted to the validation pairs
+    requires: >-
+      `calibrate`, given the validation pairs, returns a positive temperature and a shift
+      whose log loss on them is within {% $fig.tolerance %} of the least there is.
+    failure: >-
+      The fit's log loss on the validation pairs was above the least. Find both numbers
+      together, with `minimize` on the mean log loss.
+  - check: tst_pe0ikj
+    title: Better than one share for every pair
+    requires: >-
+      On the test pairs, the calibrated probabilities have a lower Brier score than giving
+      every pair the validation pairs' share of exact matches.
+    failure: >-
+      The calibrated probabilities scored no better than one share for every pair.
+  - check: tst_kc9h17
+    title: Probabilities that add up
+    requires: >-
+      On the test pairs, the calibrated probabilities add up to the number of exact matches,
+      give or take twice the standard deviation of the count they predict, the square root
+      of the sum of `$p(1 - p)$`.
+    failure: >-
+      The probabilities added up too far from the number of exact matches. A temperature
+      alone can't move them all up or down: the shift does.

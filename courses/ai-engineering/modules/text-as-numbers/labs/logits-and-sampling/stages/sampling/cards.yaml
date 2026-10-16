@@ -1,0 +1,18 @@
+cards:
+  - id: crd_i6cjnd
+    front: >-
+      How does inverse transform sampling draw a token?
+    back: >-
+      It draws u uniformly from 0 up to 1, and takes the first token whose running total of
+      probabilities is greater than u.
+  - id: crd_mgs8o1
+    front: >-
+      Why is a token with probability 0 never drawn by inverse transform?
+    back: >-
+      The running total doesn't grow at it, so no u lands on it: the first total greater than
+      u is always another token's.
+  - id: crd_9oi6wu
+    front: >-
+      How likely are two draws from the same probabilities to differ?
+    back: >-
+      One minus the sum of the squared probabilities.
