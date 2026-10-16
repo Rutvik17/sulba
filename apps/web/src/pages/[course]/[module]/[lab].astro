@@ -15,10 +15,10 @@ export async function getStaticPaths() {
   });
 }
 
-// The review cards belong to the Review page, and the data's text is served on its own
-// (src/pages/data), so the workspace is sent neither.
+// The review cards belong to the Review page, the data's text is served on its own
+// (src/pages/data), and the credits are the page's, so the workspace is sent none of them.
 const { entry } = Astro.props as { entry: LabEntry };
-const { cards: _, files: __, order: ___, ...lab } = entry;
+const { cards: _, files: __, order: ___, code, ...lab } = entry;
 const facts = labFacts(lab);
 const [course, module] = lab.path.split('/');
 ---
@@ -45,13 +45,25 @@ const [course, module] = lab.path.split('/');
     <p slot="fallback" class="loading">Loading the workspace…</p>
   </Workspace>
 
-  {lab.data.length > 0 && (
+  {(lab.data.length > 0 || code.length > 0) && (
     <footer class="credit">
       {lab.data.map((set) => (
         <p>
           Data: <a href={set.url}>{set.title}</a>, by {set.creators.join(', ')},{' '}
           <a href={set.licence.url}>{set.licence.name}</a>. {set.changes}
         </p>
+      ))}
+      {code.map((port) => (
+        <div class="port">
+          <p>
+            Code: <a href={port.url}>{port.title}</a>, by {port.creators.join(', ')},{' '}
+            <a href={port.licence.url}>{port.licence.name}</a>. {port.changes}
+          </p>
+          <details>
+            <summary>Licence notice for {port.title}</summary>
+            <p class="notice">{port.notice}</p>
+          </details>
+        </div>
       ))}
     </footer>
   )}
@@ -118,5 +130,21 @@ h1 {
 
 .credit a {
   color: inherit;
+}
+
+.port {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.credit summary {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.notice {
+  max-width: 62ch;
+  margin-block-start: var(--space-2);
+  white-space: pre-line;
 }
 </style>

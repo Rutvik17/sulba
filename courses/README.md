@@ -10,7 +10,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
   modules/<module>/
     module.yaml             id, title, and its labs in order
     labs/<lab>/
-      lab.yaml              id, title, summary, datasets with their credit, and its stages in order
+      lab.yaml              id, title, summary, datasets and ported code with their credit, and
+                            its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       stages/<stage>/
         stage.yaml          id, kind, title, what it builds on, the file the learner works in,
@@ -188,10 +189,27 @@ The checks draw each chart with the stage's solution at its sliders' first value
 
 A lab's data file is built by a script in `tools/datasets` from the provider's own file, checked by its sha256, and `lab.yaml` credits it with what was changed. A dataset is used only under a licence that allows a paid course, such as CC BY 4.0, read on the provider's own page.
 
+## Ported code
+
+A lab can port code by others, such as a JavaScript library rewritten in Python. The code's licence must allow a paid course, as MIT does, and `lab.yaml` credits it under `code`. Its page links the code and its licence and carries the notice the licence asks every copy to keep:
+
+```yaml
+code:
+  - title: superstruct 2.0.2
+    creators: [Ian Storm Taylor]
+    url: https://github.com/ianstormtaylor/superstruct/tree/v2.0.2
+    licence:
+      name: MIT
+      url: https://github.com/ianstormtaylor/superstruct/blob/v2.0.2/License.md
+    notice: >-                 # the copyright and permission notice, word for word
+      ...
+    changes: Ported to Python, with its tests.
+```
+
 ## Code style
 
 Course code follows the rules and style the editor applies to learners' code (`ruff.toml`), and `pnpm lint:python` checks it.
 
 ## Licence
 
-Course content is all rights reserved ([LICENSE](LICENSE)). Each dataset keeps its own licence, credited in its lab's `lab.yaml`.
+Course content is all rights reserved ([LICENSE](LICENSE)). Each dataset, and the code by others a lab ports, keeps its own licence, credited in its lab's `lab.yaml`.

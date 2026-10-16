@@ -116,10 +116,15 @@ export interface CardView {
   readonly back: string;
 }
 
-/** A lab as the site stores it: what its page shows, its datasets' text, and its review cards. */
+/**
+ * A lab as the site stores it: what its page shows, its datasets' text, the code by others it
+ * ports, and its review cards.
+ */
 export interface LabEntry extends LabView {
   /** Its place in its course, counting every level's modules' labs in the course's order. */
   readonly order: number;
+  /** Code by others that the lab ports, which its page credits with its licence's notice. */
+  readonly code: Lab['code'];
   /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
   readonly files: Readonly<Record<string, string>>;
   readonly cards: readonly CardView[];
@@ -209,6 +214,7 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
       path: `data/${set.file}`,
       served: servedAt(set.file, text),
     })),
+    code: lab.code,
     files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
     stages: lab.stages.map((stage) => stageView(stage, figures)),
     cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),

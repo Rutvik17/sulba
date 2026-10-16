@@ -75,7 +75,7 @@ Wrong content is worse than no content. Never claim certainty you don't have. Th
 - Learner-facing copy reads like a real course product: plain topic titles, standard section names (Brief, Hints, Explanation, Solution, Tests, Chart, Review) and short, direct sentences. Never describe how the site is made. No coaxing or teaser lines.
 - Every number a learner sees can be traced to its inputs on the same screen.
 - No referral schemes of any kind.
-- Data and API providers may be credited where their terms ask; teaching sources are not.
+- Data and API providers, and the authors of code a lab ports, may be credited where their terms ask; teaching sources are not.
 - The site never says its code is open source, and it doesn't link to this repository.
 - The Privacy Policy and the Terms describe the site as built. A change to what the site collects, keeps in the browser or sends to a provider updates the Privacy Policy, and its date, in the same pull request.
 

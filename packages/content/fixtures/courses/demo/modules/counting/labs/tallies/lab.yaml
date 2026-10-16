@@ -10,4 +10,15 @@ data:
       name: CC0 1.0
       url: https://creativecommons.org/publicdomain/zero/1.0/
     changes: Made up for these tests.
+code:
+  - title: tally.js 1.0.0
+    creators: [Sulba]
+    url: https://example.com/tally
+    licence:
+      name: MIT
+      url: https://example.com/tally/licence
+    notice: >-
+      Copyright 2026 Sulba. Made up for these tests: permission is granted to use it in
+      them.
+    changes: Ported to Python for these tests.
 stages: [count, share, check, ship]

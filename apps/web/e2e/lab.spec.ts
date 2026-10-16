@@ -98,6 +98,25 @@ test("the data's credit links the dataset's own page and its licence", async ({ 
   );
 });
 
+test("the ported code's credit links the code and its licence, and holds its notice", async ({
+  page,
+}) => {
+  await page.goto(path);
+  const credit = page.locator('p', { hasText: 'Code:' });
+  await expect(credit.getByRole('link', { name: 'tally.js 1.0.0' })).toHaveAttribute(
+    'href',
+    'https://example.com/tally',
+  );
+  await expect(credit.getByRole('link', { name: 'MIT' })).toHaveAttribute(
+    'href',
+    'https://example.com/tally/licence',
+  );
+  const notice = page.getByText('Copyright 2026 Sulba.');
+  await expect(notice).toBeHidden();
+  await page.getByText('Licence notice for tally.js 1.0.0').click();
+  await expect(notice).toBeVisible();
+});
+
 test('the brief says what its stage builds on', async ({ page }) => {
   await openLab(page);
   await expect(page.getByRole('tabpanel', { name: 'Brief' })).toContainText(
