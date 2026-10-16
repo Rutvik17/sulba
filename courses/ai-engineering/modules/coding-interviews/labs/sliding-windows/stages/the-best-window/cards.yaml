@@ -1,0 +1,6 @@
+cards:
+  - id: crd_22rcp7
+    front: >-
+      How does a window of k numbers move one step and keep its sum, in one step?
+    back: >-
+      Add the number that comes in and take away the one that drops out.

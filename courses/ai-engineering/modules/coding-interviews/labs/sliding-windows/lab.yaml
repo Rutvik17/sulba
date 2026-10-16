@@ -1,0 +1,6 @@
+id: lab_sz6o8v
+title: Sliding windows
+summary: >-
+  Five interview problems solved by a window that slides along a list or a text: the best window,
+  no repeats, reaching a total, at most k kinds and the smallest cover.
+stages: [the-best-window, no-repeats, reaching-a-total, at-most-k-kinds, the-smallest-cover]

@@ -1,0 +1,6 @@
+id: stg_r6xg9c
+kind: problem
+title: At most k kinds
+builds: A new `kinds.py`.
+file: kinds.py
+minutes: 20

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_3iw9w3
+    front: >-
+      How does a sliding window keep track of how many different values it holds?
+    back: >-
+      Count each value in a dict, and remove a value when its count reaches zero: the dict's
+      length is the number of values.
