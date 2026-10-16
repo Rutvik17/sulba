@@ -1,0 +1,29 @@
+id: stg_4oxf4d
+kind: ship
+title: Checking an export
+builds: Your `errors.py` from stages 1 to 3.
+file: errors.py
+minutes: 35
+checks:
+  - check: tst_qvmfhh
+    title: Closes the export whatever happens
+    requires: >-
+      Every file `check_export` opens is closed when it returns, when its lines fail, and
+      when a broken struct raises an error of its own.
+    failure: >-
+      An export was left open. Open it in a `with` statement, which closes it however the
+      block ends.
+  - check: tst_8tr49h
+    title: Lets other errors go on, as they were
+    requires: >-
+      An error that isn't a line's failure, such as one a broken struct raises, reaches the
+      caller as it was raised, not inside a group.
+    failure: >-
+      An error that wasn't a line's failure was caught, or put in a group. Let it go on.
+  - check: tst_tjcogp
+    title: Reports every failing line, in order
+    requires: >-
+      The group holds each failing line's error in the export's order, a StructError noted
+      with its line, and a ValueError for a line that isn't JSON.
+    failure: >-
+      The group missed a line, held them out of order, or lost a line's note.

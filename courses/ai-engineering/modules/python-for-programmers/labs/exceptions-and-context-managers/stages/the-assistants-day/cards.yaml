@@ -1,0 +1,19 @@
+cards:
+  - id: crd_y6qs11
+    front: >-
+      Why must `except StructError` come before `except TypeError`?
+    back: >-
+      A `StructError` is a `TypeError`, and the first `except` clause that matches takes the
+      error.
+  - id: crd_95de8x
+    front: >-
+      Does `except StructError:` handle an `ExceptionGroup` of StructErrors?
+    back: >-
+      No. It matches the group's own class, and only `except* StructError` reaches the
+      StructErrors inside it.
+  - id: crd_714kv7
+    front: >-
+      What does `raise NewError(message) from None` do?
+    back: >-
+      It raises the new error without a cause, and hides the error being handled from the
+      traceback, though `__context__` still holds it.

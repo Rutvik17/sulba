@@ -1,0 +1,52 @@
+id: stg_haumey
+kind: catch
+title: The assistant's daily run
+builds: Your `errors.py` from stages 1 to 3.
+file: daily.py
+minutes: 40
+problems:
+  - check: tst_hhdhys
+    title: A failed record stopped the batch
+    cost: >-
+      A `StructError` is a `TypeError`, and the `except TypeError` clause came first, so it
+      took every record that failed and raised it again as a `RuntimeError`. The batch stopped
+      at the first failed record, where it should have kept its error and gone on to the next
+      line.
+    fix: >-
+      The fix: put the `except (StructError, ValueError)` clause first, so the `TypeError`
+      clause gets only what a broken struct raises.
+    edit:
+      replace: "        except TypeError as error:\n            raise RuntimeError(f\"A struct broke on line {number}\") from error\n        except (StructError, ValueError) as error:\n            self.errors.append(error)\n"
+      with: "        except (StructError, ValueError) as error:\n            self.errors.append(error)\n        except TypeError as error:\n            raise RuntimeError(f\"A struct broke on line {number}\") from error\n"
+  - check: tst_t5wi4p
+    title: An error in the block vanished
+    cost: >-
+      `__exit__` returned `True` however the block ended, which tells `with` to suppress the
+      block's error. A bug in the code around the batch, or an export that couldn't be read,
+      ended the block as if it had finished, and the day looked checked.
+    fix: >-
+      The fix: return `False`, so the block's error goes on.
+    edit:
+      replace: "        return True\n"
+      with: "        return False\n"
+  - check: tst_omj1nm
+    title: The JSON error was lost
+    cost: >-
+      `from None` hid the error `json.loads` raised, which says where in the line the JSON
+      broke, so a traceback showed only the line's number.
+    fix: >-
+      The fix: `except json.JSONDecodeError as error:` and `from error`, which keeps json's
+      error as the cause.
+    edit:
+      replace: "    except json.JSONDecodeError:\n        raise ValueError(f\"Line {number} isn't JSON\") from None\n"
+      with: "    except json.JSONDecodeError as error:\n        raise ValueError(f\"Line {number} isn't JSON\") from error\n"
+  - check: tst_e80rvh
+    title: The report let every failure through
+    cost: >-
+      `check_day` raises an `ExceptionGroup`, and `except StructError` never matches a group,
+      so the whole group went on to the caller, and no failed record reached the log.
+    fix: >-
+      The fix: `except* StructError as group:`, logging each error in `group.exceptions`.
+    edit:
+      replace: "    except StructError as error:\n        log.append(f\"{error.__notes__[-1]}: {error}\")\n"
+      with: "    except* StructError as group:\n        log.extend(f\"{error.__notes__[-1]}: {error}\" for error in group.exceptions)\n"

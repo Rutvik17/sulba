@@ -1,0 +1,18 @@
+cards:
+  - id: crd_r6vhqd
+    front: >-
+      Which errors does `except StructError:` handle?
+    back: >-
+      Errors of that class and of every subclass of it, and no others.
+  - id: crd_doojop
+    front: >-
+      When does a `try` statement's `else` clause run?
+    back: >-
+      When the `try` clause raised nothing. The `except` clauses don't cover what runs in
+      it.
+  - id: crd_rm1mnx
+    front: >-
+      What does `super().__init__(message)` do in an exception class's `__init__`?
+    back: >-
+      It gives the error its message, which `str(error)` returns, and sets its `args` to
+      `(message,)`.
