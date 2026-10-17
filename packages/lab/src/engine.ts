@@ -28,12 +28,14 @@ export interface Engine {
   chart(request: Omit<ChartRequest, 'packages'>): ChartResult;
 }
 
-/** `runner` is the text of python/sulba_runner.py. */
-export async function createEngine(pyodide: PyodideAPI, runner: string): Promise<Engine> {
+/** The runner's Python modules, each by its file name in python/. */
+export type RunnerModules = Readonly<Record<'sulba_runner.py' | 'sulba_fixtures.py', string>>;
+
+export async function createEngine(pyodide: PyodideAPI, runner: RunnerModules): Promise<Engine> {
   const quiet = { messageCallback: () => {} };
   await pyodide.loadPackage('pytest', quiet);
   pyodide.FS.mkdirTree('/sulba');
-  pyodide.FS.writeFile('/sulba/sulba_runner.py', runner);
+  for (const [name, text] of Object.entries(runner)) pyodide.FS.writeFile(`/sulba/${name}`, text);
   pyodide.runPython('import sys\nsys.path.insert(0, "/sulba")');
   const module = pyodide.pyimport('sulba_runner');
   const run = module.run as (files: string, tests: string) => string;

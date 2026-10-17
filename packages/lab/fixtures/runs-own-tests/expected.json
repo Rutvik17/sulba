@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_owns01",
+      "name": "The session's own tests get the loop, with the runner's fixtures",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_owns02",
+      "name": "Without them, they can't ask for it",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
