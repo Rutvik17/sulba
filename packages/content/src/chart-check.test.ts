@@ -58,6 +58,15 @@ test("a chart is checked at each slider's first value, then at each end of each 
   ]);
 });
 
+test('a check of some stages draws only their charts', async () => {
+  const broken = changed({ code: 'def chart(votes):\n    return 1 / votes / 0\n' });
+  // The count stage has no chart; the share stage's is broken.
+  expect(await checkCharts([broken], { Pyodide: pyodide }, new Set(['stg_demo01']))).toEqual([]);
+  expect(await checkCharts([broken], { Pyodide: pyodide }, new Set(['stg_demo02']))).not.toEqual(
+    [],
+  );
+});
+
 test('a chart.py that raises an error is a problem', async () => {
   const code = 'def chart(votes):\n    return 1 / votes / 0\n';
   expect(await checkCharts([changed({ code })], { Pyodide: pyodide })).toEqual([

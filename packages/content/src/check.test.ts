@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pyodideEngine } from '@sulba/lab/node';
+import type { RunRequest } from '@sulba/lab/protocol';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 import { duplicateIds, prove, type Runner, shard } from './check.ts';
 import { type Course, loadCourse } from './load.ts';
@@ -214,22 +215,34 @@ test('two courses that share an id is a problem', async () => {
   ]);
 });
 
-test('the labs are dealt in turn to the parts of a check, each to one', async () => {
+test('the stages are dealt in turn to the parts of a check, each to one', async () => {
+  // The tallies lab's four stages, then the pairs lab's one.
   const course = await load(fixtures);
-  const [level] = course.levels;
-  const [module] = level?.modules ?? [];
-  const [lab] = module?.labs ?? [];
-  if (!level || !module || !lab) throw new Error('The fixture course has no lab.');
-  const labs = ['a', 'b', 'c', 'd', 'e'].map((slug) => ({ ...lab, slug }));
-  const courses = [{ ...course, levels: [{ ...level, modules: [{ ...module, labs }] }] }];
-  const slugs = (part: number, parts: number) =>
-    shard(courses, part, parts)
-      .flatMap((each) => each.levels)
-      .flatMap((each) => each.modules)
-      .flatMap((each) => each.labs)
-      .map((each) => each.slug);
-  expect(slugs(1, 1)).toEqual(['a', 'b', 'c', 'd', 'e']);
-  expect(slugs(1, 2)).toEqual(['a', 'c', 'e']);
-  expect(slugs(2, 2)).toEqual(['b', 'd']);
-  expect(slugs(3, 4)).toEqual(['c']);
+  const ids = (part: number, parts: number) => [...shard([course], part, parts)];
+  expect(ids(1, 1)).toEqual(['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04', 'stg_demo05']);
+  expect(ids(1, 2)).toEqual(['stg_demo01', 'stg_demo03', 'stg_demo05']);
+  expect(ids(2, 2)).toEqual(['stg_demo02', 'stg_demo04']);
+  expect(ids(3, 4)).toEqual(['stg_demo03']);
+});
+
+test('a proof of some stages runs only theirs, each against its earlier stages too', async () => {
+  const course = await changed(
+    `${count}/starter/tally.py`,
+    'raise NotImplementedError',
+    'return sum(1 for each in choices if each == choice)',
+  );
+  const sent: RunRequest[] = [];
+  const recording: Runner = (requests) => {
+    sent.push(...requests);
+    return runner(requests);
+  };
+  expect(await prove([course], recording, 'Pyodide', new Set(['stg_demo02']))).toEqual([]);
+  // The share stage's solution, its starter, and its solution against the count stage's tests.
+  expect(sent).toHaveLength(3);
+  expect(await prove([course], runner, 'Pyodide', new Set(['stg_demo01']))).toEqual([
+    {
+      path: count,
+      message: 'Pyodide: The starter passes every test, so the stage asks for nothing.',
+    },
+  ]);
 });

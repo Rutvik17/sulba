@@ -1,8 +1,9 @@
 // Checks every course in a folder: its files against their schemas, every stage in Pyodide and in
 // CPython, every stage's prose with the numbers its figures.py gives in each, every chart as each
 // draws it, and each lab project's lock against Pyodide's versions and its pyproject.toml. Prints
-// each problem and fails if there is one. With `--shard 2/4`, it still checks every file, but runs
-// only the second lab of every four, so that four checks side by side run every stage.
+// each problem and fails if there is one. With `--shard 2/4`, it still checks every file against its
+// schema and every project's lock, but runs only the second stage of every four, with that stage's
+// figures, prose and chart, so that four checks side by side cover every stage.
 import { execFile } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -41,7 +42,7 @@ for (const slug of await courseSlugs(root)) {
   if (loaded.course) courses.push(loaded.course);
 }
 problems.push(...duplicateIds(courses));
-const checked = shard(courses, part, parts);
+const only = shard(courses, part, parts);
 
 /** The Python version and the packages, by canonical name, of the Pyodide the site serves. */
 async function pyodideVersions() {
@@ -75,34 +76,31 @@ async function staleLocks(courses: readonly Course[]): Promise<Problem[]> {
   return problems;
 }
 
-problems.push(...projectProblems(courses, await pyodideVersions()), ...(await staleLocks(checked)));
+problems.push(...projectProblems(courses, await pyodideVersions()), ...(await staleLocks(courses)));
 
 // Stages and figures run only once every file is well formed.
 if (problems.length === 0) {
   const engine = await pyodideEngine();
-  problems.push(...(await prove(checked, async (requests) => requests.map(engine.run), 'Pyodide')));
-  problems.push(...(await prove(checked, runInCPython, 'CPython')));
-  const { figures, problems: found } = await computeFigures(checked, {
-    Pyodide: async (fileSets) => fileSets.map(engine.figures),
-    CPython: figuresInCPython,
-  });
-  problems.push(...found, ...proseProblems(checked, figures, mathFontCharacters()));
   problems.push(
-    ...(await checkCharts(checked, {
-      Pyodide: async (requests) => requests.map(engine.chart),
-      CPython: chartsInCPython,
-    })),
+    ...(await prove(courses, async (requests) => requests.map(engine.run), 'Pyodide', only)),
+  );
+  problems.push(...(await prove(courses, runInCPython, 'CPython', only)));
+  const { figures, problems: found } = await computeFigures(
+    courses,
+    { Pyodide: async (fileSets) => fileSets.map(engine.figures), CPython: figuresInCPython },
+    only,
+  );
+  problems.push(...found, ...proseProblems(courses, figures, mathFontCharacters(), only));
+  problems.push(
+    ...(await checkCharts(
+      courses,
+      { Pyodide: async (requests) => requests.map(engine.chart), CPython: chartsInCPython },
+      only,
+    )),
   );
 }
 
-const stages = checked.flatMap((course) =>
-  course.levels.flatMap((level) =>
-    level.modules.flatMap((module) => module.labs.flatMap((lab) => lab.stages)),
-  ),
-);
 for (const { path, message } of problems) console.error(`${path}: ${message}`);
 const of = parts > 1 ? ` (part ${part} of ${parts})` : '';
-console.log(
-  `${courses.length} courses, ${stages.length} stages${of}, ${problems.length} problems.`,
-);
+console.log(`${courses.length} courses, ${only.size} stages${of}, ${problems.length} problems.`);
 process.exitCode = problems.length ? 1 : 0;

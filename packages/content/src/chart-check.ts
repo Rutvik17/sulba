@@ -79,14 +79,14 @@ interface Case {
   readonly first: boolean;
 }
 
-function casesOf(courses: readonly Course[]): Case[] {
+function casesOf(courses: readonly Course[], only?: ReadonlySet<string>): Case[] {
   return courses.flatMap((course) =>
     course.levels.flatMap((level) =>
       level.modules.flatMap((module) =>
         module.labs.flatMap((lab) =>
           lab.stages.flatMap((stage, index) => {
             const { chart } = stage;
-            if (!chart) return [];
+            if (!chart || !(only?.has(stage.id) ?? true)) return [];
             const path = `${course.slug}/modules/${module.slug}/labs/${lab.slug}/stages/${stage.slug}`;
             const files = chartFiles(lab, index, chart);
             const packages = [
@@ -145,12 +145,13 @@ function partOf(value: unknown, path: string): unknown {
     .reduce<unknown>((part, key) => (part as Record<string, unknown> | undefined)?.[key], value);
 }
 
-/** Every problem with every stage's chart. */
+/** Every problem with every stage's chart, or with `only`, the charts of the stages with those ids. */
 export async function checkCharts(
   courses: readonly Course[],
   runners: Readonly<Record<string, ChartRunner>>,
+  only?: ReadonlySet<string>,
 ): Promise<Problem[]> {
-  const cases = casesOf(courses);
+  const cases = casesOf(courses, only);
   if (cases.length === 0) return [];
   const requests = cases.map(({ request }) => request);
   const results = await Promise.all(
