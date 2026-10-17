@@ -1,0 +1,7 @@
+id: stg_ks295n
+kind: build
+title: SGD and momentum
+builds: A new `optimizers.py`.
+file: optimizers.py
+packages: [numpy]
+minutes: 45

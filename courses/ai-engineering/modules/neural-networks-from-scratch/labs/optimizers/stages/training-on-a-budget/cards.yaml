@@ -1,0 +1,7 @@
+cards:
+  - id: crd_yih5cx
+    front: >-
+      What must Adam's saved state hold for a run to go on as if it never stopped?
+    back: >-
+      Its learning rate, its step count, and each parameter's averages of the gradient and
+      of its square.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_n0mlj2
+    front: >-
+      With momentum `$\mu$`, how large does the velocity grow along a direction where the
+      gradient stays `$g$`?
+    back: >-
+      Toward `$g / (1 - \mu)$`: {% $fig.limit %} times the gradient for `$\mu$` =
+      {% $fig.mu %}.
+  - id: crd_dh23ml
+    front: >-
+      How does PyTorch's SGD start each momentum buffer?
+    back: >-
+      At the first gradient, not at 0, so dampening starts at the second step.
+  - id: crd_xi6i7y
+    front: >-
+      Why does an optimizer change the parameters in place?
+    back: >-
+      The network holds the same arrays, so it sees each step without anything being handed
+      back.

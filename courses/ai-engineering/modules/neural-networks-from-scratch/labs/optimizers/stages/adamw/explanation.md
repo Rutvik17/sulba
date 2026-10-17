@@ -1,0 +1,5 @@
+Adam divides its step by `$\sqrt{\hat{v}}$` so that every weight moves at a speed the learning rate sets. That's right for the loss's gradient, and wrong for the decay: added to the gradient, the decay is divided by the same number, so a weight with large gradients, whose `$\hat{v}$` is large, is barely pulled toward 0, and a weight whose gradients are small is pulled hard. Decoupled, the decay takes the same share of every weight. With the learning rate at {% $fig.lr %} and AdamW's default decay of {% $fig.decay %}, each step keeps {% $fig.kept %} of each weight, and {% $fig.steps %} steps keep {% $fig.after %} of it, before the loss's gradients pull back.
+
+For plain SGD, without momentum, the two are the same thing: the decay added to the gradient becomes `$\gamma \lambda \theta$`, the decoupled step's own shrink. With momentum the decay added to the gradient goes into the velocity, and with Adam it goes through the division, which is where the two part.
+
+PyTorch's AdamW multiplies the decay by the learning rate, so a change in the learning rate, as a schedule makes, changes how hard the decay pulls too.

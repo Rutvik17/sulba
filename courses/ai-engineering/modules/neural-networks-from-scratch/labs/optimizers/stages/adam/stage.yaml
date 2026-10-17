@@ -1,0 +1,14 @@
+id: stg_54tktv
+kind: build
+title: Adam
+builds: Your `optimizers.py` from stage 1.
+file: optimizers.py
+packages: [numpy]
+minutes: 45
+chart:
+  title: Adam's steps for a steady gradient
+  sliders:
+    - name: beta2
+      label: β2
+      stops: [0.99, 0.999, 0.9999]
+      value: 0.999

@@ -1,0 +1,25 @@
+id: lab_dk1xj1
+title: Optimizers
+summary: >-
+  Build PyTorch's optimizers in NumPy: SGD with momentum as PyTorch writes it, Adam with
+  its bias correction, and AdamW with its weight decay kept apart, each step matched to
+  torch.optim's, then train the office's network on a budget of steps.
+data:
+  - file: digits.csv
+    title: Optical Recognition of Handwritten Digits
+    creators: [E. Alpaydin, C. Kaynak]
+    url: https://doi.org/10.24432/C50P49
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      UCI's training and test files joined under a header, with a column that puts each digit
+      in the training, validation or test set. The validation set is a quarter of the training
+      file's digits, chosen at random within each digit.
+references: [steps.json]
+stages:
+  - sgd-and-momentum
+  - adam
+  - adamw
+  - the-assistants-optimizers
+  - training-on-a-budget
