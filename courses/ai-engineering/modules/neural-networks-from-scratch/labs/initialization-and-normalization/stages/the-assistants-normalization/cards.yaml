@@ -1,0 +1,16 @@
+cards:
+  - id: crd_hwcnmz
+    front: >-
+      What does a batch normalization layer that uses the batch's statistics in evaluation
+      give for a digit read alone?
+    back: >-
+      Its bias, whatever the digit: a batch of one is its own mean, with a variance of 0. A
+      network of such layers reads every digit alone as the same one.
+  - id: crd_nj81xt
+    front: >-
+      Why does batch normalization's gradient with respect to a sample need more than the
+      path through its own `$\hat{x}$`?
+    back: >-
+      Every sample moves the batch's mean and variance, which every `$\hat{x}$` uses, so its
+      gradient has paths through both. With them, each feature's gradients sum to 0 over the
+      batch.

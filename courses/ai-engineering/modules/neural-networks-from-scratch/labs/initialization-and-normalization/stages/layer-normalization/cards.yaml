@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ka1r03
+    front: >-
+      Along which axes do batch and layer normalization each normalize a batch?
+    back: >-
+      Batch normalization each feature over the samples; layer normalization each sample over
+      its features.
+  - id: crd_vco3z1
+    front: >-
+      Why does layer normalization need no running estimates?
+    back: >-
+      A sample's output depends on that sample alone, so it's computed the same way in
+      training and in evaluation, for a batch of any size.

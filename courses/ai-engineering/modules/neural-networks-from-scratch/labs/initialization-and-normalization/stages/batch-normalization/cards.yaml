@@ -1,0 +1,20 @@
+cards:
+  - id: crd_0xd73i
+    front: >-
+      Which variance does batch normalization use in training, and which goes into the
+      running estimate?
+    back: >-
+      The batch's own, over `$n$`, normalizes the batch. The unbiased one, over `$n - 1$`,
+      goes into the running estimate.
+  - id: crd_9cvx8h
+    front: >-
+      What does batch normalization use in evaluation, and why?
+    back: >-
+      The running estimates kept in training, so that a digit reads the same whatever else
+      is in its batch, even alone.
+  - id: crd_6tw7ry
+    front: >-
+      What is BatchNorm1d's momentum of {% $fig.momentum %}?
+    back: >-
+      The weight each training batch's mean and variance get in the running estimates, which
+      keep {% $fig.kept %} of themselves at every batch: not an optimizer's momentum.

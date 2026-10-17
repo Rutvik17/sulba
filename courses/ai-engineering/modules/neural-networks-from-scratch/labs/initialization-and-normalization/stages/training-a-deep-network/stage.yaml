@@ -1,0 +1,26 @@
+id: stg_kdcx4e
+kind: ship
+title: Training a deep network
+builds: Your `init.py` and `norms.py` from stages 1 to 3.
+file: deep.py
+packages: [numpy]
+minutes: 45
+checks:
+  - check: tst_pnoj0g
+    title: "{% $fig.target %} of new writers' digits"
+    requires: >-
+      Trained for {% $fig.steps %} steps of SGD at a learning rate of {% $fig.lr %}, on
+      batches of {% $fig.batch %} training digits, the office's network of
+      {% $fig.hidden %} hidden layers must read at least {% $fig.target %} of the
+      {% $fig.test %} test digits right, written by people none of the training digits came
+      from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_57ztrf
+    title: A digit reads the same alone
+    requires: >-
+      Trained, and reading in evaluation, the network must give each of the first
+      {% $fig.alone %} test digits read alone the logits it gives that digit among all
+      {% $fig.test %} of them.
+    failure: >-
+      A digit read alone got other logits than it got among the others.
