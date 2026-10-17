@@ -1,0 +1,15 @@
+cards:
+  - id: crd_szw68i
+    front: >-
+      Why does `self.params[number] = self.params[number] - change` stop a network
+      learning?
+    back: >-
+      It makes a new array for the optimizer and leaves the one the network holds as it
+      was, so the network never sees a step.
+  - id: crd_tdagwv
+    front: >-
+      When do `$v \leftarrow \mu v + g$` with a step of `$\gamma v$`, and
+      `$v \leftarrow \mu v + \gamma g$` with a step of `$v$`, take different steps?
+    back: >-
+      When the learning rate changes: the second keeps the steps taken at the old rate in
+      its velocity for a while after a drop.

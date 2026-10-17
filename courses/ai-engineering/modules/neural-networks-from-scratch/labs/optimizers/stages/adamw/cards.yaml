@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xw3pp7
+    front: >-
+      What goes wrong when Adam's weight decay is added to the gradient?
+    back: >-
+      It's divided by `$\sqrt{\hat{v}}$` with the rest of the step, so weights with large
+      gradients are barely decayed and weights with small ones are pulled hard.
+  - id: crd_9edrjk
+    front: >-
+      How does AdamW apply its weight decay?
+    back: >-
+      It shrinks each weight directly before Adam's step, by the learning rate times the
+      decay, and keeps the decay out of the averages.
+  - id: crd_m6zoj3
+    front: >-
+      Why doesn't decoupling the weight decay change plain SGD, without momentum?
+    back: >-
+      Plain SGD neither averages nor divides its step, so the decay added to the gradient
+      becomes the same shrink of `$\gamma \lambda \theta$`.

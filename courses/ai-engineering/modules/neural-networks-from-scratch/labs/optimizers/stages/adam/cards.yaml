@@ -1,0 +1,21 @@
+cards:
+  - id: crd_jb6lkz
+    front: >-
+      Why does Adam divide its averages by `$1 - \beta^t$`?
+    back: >-
+      They start at 0, so after `$t$` steps of a steady gradient `$g$` the average is
+      `$(1 - \beta^t) g$`. The division gives back `$g$`.
+  - id: crd_ap191x
+    front: >-
+      Without the bias correction, are Adam's first steps too small or too large with
+      PyTorch's default betas?
+    back: >-
+      Too large: `$v$` starts further from its value than `$m$` does, so a steady gradient's
+      step is {% $fig.first %} learning rates at the first step and {% $fig.peak %} at step
+      {% $fig.peak_step %}.
+  - id: crd_s8ssml
+    front: >-
+      How large is Adam's step for a steady gradient?
+    back: >-
+      About the learning rate, whatever the gradient's size, since the step is a ratio of
+      the gradient's average to the square root of its square's.

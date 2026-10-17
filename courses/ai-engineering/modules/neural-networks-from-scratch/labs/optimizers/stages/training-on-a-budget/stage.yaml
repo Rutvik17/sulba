@@ -1,0 +1,24 @@
+id: stg_w2507r
+kind: ship
+title: Training on a budget
+builds: Your `optimizers.py` from stages 1 to 3.
+file: optimizers.py
+packages: [numpy]
+minutes: 60
+checks:
+  - check: tst_8o5bwg
+    title: "{% $fig.target %} of new writers' digits in {% $fig.budget %} steps"
+    requires: >-
+      Trained for {% $fig.budget %} steps on batches of {% $fig.batch %} training digits,
+      the office's network must read at least {% $fig.target %} of the {% $fig.test %} test
+      digits right, written by people none of the training digits came from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_qr4yi1
+    title: Resumed as if it never stopped
+    requires: >-
+      Stopped after {% $fig.half %} steps, with its state loaded into a new optimizer made
+      for a copy of the weights, the run must end with the weights a run straight through
+      ends with.
+    failure: >-
+      The resumed run's weights came out different from the straight run's.

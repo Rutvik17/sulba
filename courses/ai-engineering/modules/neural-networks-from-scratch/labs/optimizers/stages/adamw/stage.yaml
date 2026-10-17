@@ -1,0 +1,7 @@
+id: stg_wa5y9g
+kind: build
+title: AdamW
+builds: Your `optimizers.py` from stage 2.
+file: optimizers.py
+packages: [numpy]
+minutes: 40

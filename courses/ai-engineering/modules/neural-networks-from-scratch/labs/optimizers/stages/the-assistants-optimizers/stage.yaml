@@ -1,0 +1,69 @@
+id: stg_5kt3s9
+kind: catch
+title: The assistant's optimizers
+builds: Your `optimizers.py` from stages 1 to 3.
+file: optim.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_xe8fmx
+    title: Its steps made new arrays the network never saw
+    cost: >-
+      `_move` set `self.params[number]` to a new array, `self.params[number] - change`, so
+      each step left the network's own arrays as they were and gave the optimizer new
+      ones. The assistant's tests read the optimizer's list and saw every step. The network
+      didn't: trained for {% $fig.steps %} steps, it read {% $fig.untrained %} of the
+      validation digits right, as it did before training, where the same steps taken in
+      place read {% $fig.trained %}.
+    fix: >-
+      The fix: `self.params[number] -= change`, which changes the array in place.
+    edit:
+      replace: "        self.params[number] = self.params[number] - change\n"
+      with: "        self.params[number] -= change\n"
+  - check: tst_yspabs
+    title: Its momentum carried the old learning rate through a schedule
+    cost: >-
+      Its velocity was made of steps, `self.momentum * velocity + self.lr * grad`, where
+      PyTorch's is made of gradients and multiplied by the learning rate at each step. The
+      two take the same steps while the learning rate stays the same, as it did in the
+      assistant's test. When a schedule drops it, the assistant's velocity still holds
+      steps taken at the old rate: after {% $fig.drop %} steps at {% $fig.high %} and a drop
+      to {% $fig.low %}, its next step was {% $fig.after_drop %} times the size of
+      PyTorch's, and its step {% $fig.last %} still {% $fig.at_last %} times.
+    fix: >-
+      The fix: `velocity = self.momentum * self.velocities[number] + grad`, and a step of
+      `self.lr * velocity`.
+    edit:
+      replace: "            velocity = self.momentum * self.velocities[number] + self.lr * grad\n            self.velocities[number] = velocity\n            self._move(number, velocity)\n"
+      with: "            velocity = self.momentum * self.velocities[number] + grad\n            self.velocities[number] = velocity\n            self._move(number, self.lr * velocity)\n"
+  - check: tst_quz5oa
+    title: Its Adam left out the bias correction
+    cost: >-
+      `m` and `v` start at 0, and without the division by `$1 - \beta^t$` both averages
+      start short of their values, `v` by far more than `m`. With PyTorch's default betas, a
+      steady gradient's first step came out at {% $fig.first %} learning rates, and its step
+      {% $fig.peak_step %} at {% $fig.peak %}, where PyTorch's are 1. The steps' directions
+      and their indifference to the gradients' scale were right, which is all the
+      assistant's tests checked.
+    fix: >-
+      The fix: `m_hat = self.m[number] / (1 - beta1**self.t)` and
+      `v_hat = self.v[number] / (1 - beta2**self.t)`.
+    edit:
+      replace: "            m_hat, v_hat = self.m[number], self.v[number]\n"
+      with: "            m_hat = self.m[number] / (1 - beta1**self.t)\n            v_hat = self.v[number] / (1 - beta2**self.t)\n"
+  - check: tst_8jxzyx
+    title: Its AdamW added the decay to the gradient, as Adam does
+    cost: >-
+      Its docstring keeps the decay apart from the loss's gradient, and its code added the
+      decay to the gradient, which is Adam's L2 penalty. Through Adam's division, the decay
+      came out at about the learning rate, whatever a weight's size: with gradients of 0, a
+      learning rate of {% $fig.zero_lr %} and a decay of {% $fig.zero_decay %}, PyTorch's
+      AdamW took {% $fig.pytorch_share %} off every weight in {% $fig.zero_steps %} steps,
+      and the assistant's moved the typical weight by {% $fig.assistant_move %}, so
+      {% $fig.crossed %} of the {% $fig.weights %} weights went past 0.
+    fix: >-
+      The fix: shrink each weight by `self.lr * self.decay * param` first, then take Adam's
+      step on the gradients alone.
+    edit:
+      replace: "        decayed = [g + self.decay * p for g, p in zip(grads, self.params)]\n        super().step(decayed)\n"
+      with: "        for number, param in enumerate(self.params):\n            self._move(number, self.lr * self.decay * param)\n        super().step(grads)\n"
