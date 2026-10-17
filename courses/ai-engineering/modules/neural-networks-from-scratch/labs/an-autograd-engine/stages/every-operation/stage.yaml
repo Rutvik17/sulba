@@ -1,0 +1,14 @@
+id: stg_e72zw5
+kind: build
+title: Every operation
+builds: Your `engine.py` from stage 1.
+file: engine.py
+packages: [numpy]
+minutes: 50
+chart:
+  title: A power and its slope
+  sliders:
+    - name: power
+      label: Power p
+      stops: [-1, 0.5, 2, 3]
+      value: 2

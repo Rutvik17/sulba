@@ -1,0 +1,71 @@
+id: stg_g0aotz
+kind: catch
+title: The assistant's engine
+builds: Your `engine.py` from stages 1 to 3.
+file: autograd.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_w0p08o
+    title: Its topological order listed a tensor once for each path to it
+    cost: >-
+      Without a set of the tensors it had visited, `topological_order` listed a tensor again
+      for every path from the output back to it, and `backward` ran its `_backward` once for
+      each entry, passing back whatever gradient it held by then. A residual block,
+      `x + (x @ W.T + b).relu()`, uses its input twice, so each block doubles the paths back
+      to everything before it. The check's network of {% $fig.blocks %} blocks has
+      {% $fig.tensors %} tensors, and the order had {% $fig.entries %} entries. The last
+      block's gradients came out right, and each block before it came out further off, until
+      the first block's weight had a gradient {% $fig.ratio %} times the size of PyTorch's.
+      With {% $fig.deeper %} blocks, the order would have {% $fig.deeper_entries %} entries.
+    fix: >-
+      The fix: keep the ids of the tensors visited, and return at once from a tensor already
+      seen, as your `topological_order` does.
+    edit:
+      replace: "    order = []\n\n    def visit(tensor):\n"
+      with: "    order, seen = [], set()\n\n    def visit(tensor):\n        if id(tensor) in seen:\n            return\n        seen.add(id(tensor))\n"
+  - check: tst_mqovhz
+    title: Its unbroadcast missed axes of length 1
+    cost: >-
+      `unbroadcast` summed away the axes broadcasting adds in front, which is all a bias's
+      gradient needs, and stopped there, so an axis of length 1 that broadcasting stretched
+      kept its stretched length. A stable softmax takes each row's largest logit out first,
+      and in the check that was a column of {% $fig.rows %} by 1 taken from logits of
+      {% $fig.rows %} by {% $fig.classes %}. The column's gradient came back
+      {% $fig.rows %} by {% $fig.classes %}, adding it to the column's raised a `ValueError`,
+      and the backward pass stopped. Any sum or mean kept with `keepdims=True` and broadcast
+      back fails the same way.
+    fix: >-
+      The fix: after summing the axes in front, sum along each axis that has length 1 in
+      `shape`, with `keepdims=True`.
+    edit:
+      replace: "        grad = grad.sum(axis=0)\n    return grad\n"
+      with: "        grad = grad.sum(axis=0)\n    for axis, length in enumerate(shape):\n        if length == 1:\n            grad = grad.sum(axis=axis, keepdims=True)\n    return grad\n"
+  - check: tst_oktdmb
+    title: Its products replaced gradients instead of adding to them
+    cost: >-
+      `__mul__`'s `_backward` set the gradients with `=`, which throws away whatever a
+      tensor's other uses have added already. A weight penalty, `(W * W).sum()`, uses each
+      weight on both sides of one product, so the second `=` replaced the first: the
+      penalty's gradient came out `W` where it's `2W`, and it pulled the weights toward 0
+      half as hard as it should. A product whose `_backward` runs after a tensor's other
+      uses throws their gradients away entirely.
+    fix: >-
+      The fix: `+=` on both lines, as in every other operation.
+    edit:
+      replace: "            self.grad = unbroadcast(other.data * out.grad, self.data.shape)\n            other.grad = unbroadcast(self.data * out.grad, other.data.shape)\n"
+      with: "            self.grad += unbroadcast(other.data * out.grad, self.data.shape)\n            other.grad += unbroadcast(self.data * out.grad, other.data.shape)\n"
+  - check: tst_l7sbkj
+    title: Its tanh took the derivative from the input, not the output
+    cost: >-
+      tanh's derivative is `$1 - \tanh^2 x$`, and the assistant wrote `$1 - x^2$`. The two
+      agree at 0, where its test took tanh, and part further from it: past 1 on either side,
+      `$1 - x^2$` is below 0, where tanh's slope never is, so gradient descent moved those
+      weights the wrong way. In the check's layer, {% $fig.beyond %} of the inputs to tanh
+      were past 1, and at x = {% $fig.x %} the slope came out {% $fig.wrong %}, where it is
+      {% $fig.right %}.
+    fix: >-
+      The fix: `1 - out.data**2`, from the output the forward pass already has.
+    edit:
+      replace: "            self.grad += (1 - self.data**2) * out.grad\n"
+      with: "            self.grad += (1 - out.data**2) * out.grad\n"

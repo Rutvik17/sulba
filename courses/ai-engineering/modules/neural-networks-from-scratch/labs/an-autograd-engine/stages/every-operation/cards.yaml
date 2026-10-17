@@ -1,0 +1,12 @@
+cards:
+  - id: crd_o7kgny
+    front: >-
+      How can an autograd engine get `$a - b$` and `$a / b$` without new derivatives?
+    back: >-
+      By making them from operations it has, `$a + (-1)\,b$` and `$a \, b^{-1}$`, so the
+      chain rule through those steps gives their gradients.
+  - id: crd_igqm6u
+    front: >-
+      What is the derivative of `$\tanh a$`, and why is it cheap in a backward pass?
+    back: >-
+      `$1 - \tanh^2 a$`: it comes from the output the forward pass already worked out.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_s53tej
+    front: >-
+      Why does PyTorch's autograd record tensors rather than numbers?
+    back: >-
+      A tensor operation stands for thousands of operations on numbers, and its forward and
+      backward passes run in compiled code, so the engine's own work happens once a step.
+  - id: crd_r6go4n
+    front: >-
+      What is the gradient of a tensor that broadcasting stretched?
+    back: >-
+      The result's gradient summed back over the axes broadcasting added or stretched, since
+      each of its values was used along them.
+  - id: crd_bj7pba
+    front: >-
+      What are the gradients of a matrix product `$A B$`?
+    back: >-
+      `$G B^\top$` for `$A$` and `$A^\top G$` for `$B$`, where `$G$` is the gradient of the
+      product.

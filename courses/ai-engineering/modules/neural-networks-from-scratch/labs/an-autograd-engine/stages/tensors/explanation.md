@@ -1,0 +1,5 @@
+One tensor step stands for thousands of steps on numbers, and NumPy works out its forward and backward passes in compiled code, so the engine's Python runs once a step, not once a number. That is why PyTorch's autograd records tensors.
+
+The linear layer's backward pass from the last lab falls out of the engine. `X @ W.T + b` records a transpose, a product and a broadcast sum, and the engine's gradients for them are the gradient at the outputs times the batch for the weight, through the transpose; the gradient at the outputs times the weight for the batch; and, from `unbroadcast`, the gradients summed over the batch for the bias. The office's network, written as steps in the tests, gets every gradient without a backward pass written by hand, and they agree with PyTorch's.
+
+Broadcasting's gradient is a sum because broadcasting reuses: a bias added to {% $fig.batch %} rows is used {% $fig.batch %} times, and the chain rule adds a term for each use, as it did for a Value used twice. Shapes catch most mistakes here, since every gradient must have the shape of its tensor.

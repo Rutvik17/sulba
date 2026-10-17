@@ -1,0 +1,19 @@
+cards:
+  - id: crd_5t6zdn
+    front: >-
+      What does an autograd engine record as it computes?
+    back: >-
+      For each value, the values it was made from and how to pass its gradient back to
+      them, so that a result's backward pass can follow the records by the chain rule.
+  - id: crd_f36mx2
+    front: >-
+      Why must an autograd engine add to gradients with `+=`?
+    back: >-
+      A value used more than once gets a gradient from each use, and the chain rule adds
+      them up.
+  - id: crd_dj3qs0
+    front: >-
+      Why does a backward pass go through the values in reverse topological order?
+    back: >-
+      A value may pass its gradient on only after every value made from it has added its
+      share, and the reverse order puts it after all of them.

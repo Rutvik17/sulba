@@ -1,0 +1,7 @@
+id: stg_j6n85t
+kind: build
+title: Tensors
+builds: Your `engine.py` from stage 2.
+file: engine.py
+packages: [numpy]
+minutes: 60
