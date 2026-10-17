@@ -4,4 +4,5 @@ levels:
   - id: lvl_demo01
     slug: first
     title: First
+    needs: "Any laptop: every lab runs in your browser"
     modules: [counting, interviews]

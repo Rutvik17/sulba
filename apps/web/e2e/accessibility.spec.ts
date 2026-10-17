@@ -82,7 +82,9 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto('/demo/');
-    await expect(page.getByText('1 of 4 stages done')).toBeVisible();
+    // Every module open, so its labs are checked too.
+    await page.getByRole('button', { name: 'Show all modules' }).click();
+    await expect(page.getByText('1 of 4 stages done').last()).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 

@@ -17,8 +17,15 @@ export function aboutTime(minutes: number): string {
   return `About ${hours} ${hours === 1 ? 'hour' : 'hours'}`;
 }
 
+type Fact = { term: string; value: string };
+
+/** The minutes a lab takes: its stages' minutes, added up. */
+export function minutesOf(lab: Pick<LabView, 'stages'>): number {
+  return lab.stages.reduce((sum, stage) => sum + stage.minutes, 0);
+}
+
 /** What the facts under a lab's title say: the files built, the stages, the time. */
-export function labFacts(lab: Pick<LabView, 'stages'>): { term: string; value: string }[] {
+export function labFacts(lab: Pick<LabView, 'stages'>): Fact[] {
   const files = [...new Set(lab.stages.map((stage) => stage.file))];
   const kinds = Object.entries(kindNames)
     .map(([kind, names]) => ({
@@ -27,10 +34,30 @@ export function labFacts(lab: Pick<LabView, 'stages'>): { term: string; value: s
     }))
     .filter(({ count }) => count > 0)
     .map(({ names: [one, more], count }) => `${count} ${count === 1 ? one : more}`);
-  const minutes = lab.stages.reduce((sum, stage) => sum + stage.minutes, 0);
   return [
     { term: 'You build', value: files.join(', then ') },
     { term: 'Stages', value: kinds.join(', ') },
+    { term: 'Time', value: aboutTime(minutesOf(lab)) },
+  ];
+}
+
+/** What a module's row says under its title: how many labs it has, and their time. */
+export function moduleFacts(labs: readonly Pick<LabView, 'stages'>[]): string {
+  const minutes = labs.reduce((sum, lab) => sum + minutesOf(lab), 0);
+  return `${labs.length} ${labs.length === 1 ? 'lab' : 'labs'} · ${aboutTime(minutes)}`;
+}
+
+/** The facts above a level's modules: how many modules and labs, their time, and what it needs. */
+export function levelFacts(level: {
+  readonly needs: string;
+  readonly modules: readonly { readonly labs: readonly Pick<LabView, 'stages'>[] }[];
+}): Fact[] {
+  const labs = level.modules.flatMap((module) => module.labs);
+  const minutes = labs.reduce((sum, lab) => sum + minutesOf(lab), 0);
+  return [
+    { term: 'Modules', value: String(level.modules.length) },
+    { term: 'Labs', value: String(labs.length) },
     { term: 'Time', value: aboutTime(minutes) },
+    { term: 'Needs', value: level.needs },
   ];
 }

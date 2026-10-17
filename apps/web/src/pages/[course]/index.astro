@@ -1,12 +1,17 @@
 ---
-// A course's page: its levels, each level's modules and each module's labs, with what each lab
-// builds, its stages and its time. Its script shows how many of each lab's stages the learner has
-// passed, in this browser and, signed in, in their account.
+// A course's page, a map of the course (decision record 26): a card for the learner's next lab,
+// then each level's facts and its modules, one numbered row each with its labs' titles, which opens
+// to the labs with what each builds, its stages and its time. Without JavaScript every module
+// shows open. The script turns each module's heading into a button that shows and hides its labs,
+// and shows how many of each lab's stages the learner has passed, in this browser and, signed in,
+// in their account.
+
 import { getCollection } from 'astro:content';
+import { buttonClass } from '@sulba/ui/button';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Page from '../../layouts/Page.astro';
 import { type CourseOutline, courseOutlines } from '../../lib/course';
-import { labFacts } from '../../lib/lab-facts';
+import { aboutTime, labFacts, levelFacts, minutesOf, moduleFacts } from '../../lib/lab-facts';
 
 export async function getStaticPaths() {
   const labs = (await getCollection('labs')).map(({ data }) => data);
@@ -17,6 +22,9 @@ export async function getStaticPaths() {
 }
 
 const { course } = Astro.props as { course: CourseOutline };
+const [firstModule] = course.levels[0]?.modules ?? [];
+const [firstLab] = firstModule?.labs ?? [];
+const chevron = 'M4 6l4 4 4-4';
 ---
 
 <Page title={`${course.title} · Sulba`}>
@@ -25,36 +33,156 @@ const { course } = Astro.props as { course: CourseOutline };
     <h1>{course.title}</h1>
   </header>
 
+  {firstModule && firstLab && (
+    <div class="next" data-next>
+      <div class="nextText">
+        <p class="label">Next lab</p>
+        <p class="nextTitle">
+          <a href={`/${firstLab.path}/`} data-next-link>
+            {firstLab.title}
+          </a>
+        </p>
+        <p class="nextMeta" data-next-meta>
+          Module 1 · {firstModule.title} · {aboutTime(minutesOf(firstLab))}
+        </p>
+      </div>
+      <span class:list={[buttonClass('primary'), 'go']} aria-hidden="true">
+        <span data-next-go>Start</span>
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <path
+            d="M3 8h10M9 4l4 4-4 4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+    </div>
+  )}
+
   {course.levels.map((level, at) => (
-    <section class="level" aria-labelledby={`level-${at + 1}`}>
+    <section class="level" aria-labelledby={`level-${at + 1}`} data-level>
       <SectionHeading id={`level-${at + 1}`} text={level.title} />
-      {level.modules.map((module) => (
-        <section class="module" id={module.slug} aria-labelledby={`${module.slug}-title`}>
-          <h3 id={`${module.slug}-title`}>{module.title}</h3>
-          <ol class="labs">
-            {module.labs.map((lab) => (
-              <li class="lab">
-                <h4>
-                  <a href={`/${lab.path}/`}>{lab.title}</a>
-                </h4>
-                <p class="summary">{lab.summary}</p>
-                <dl class="facts">
-                  {labFacts(lab).map(({ term, value }) => (
-                    <div>
-                      <dt>{term}</dt>
-                      <dd>{value}</dd>
+      <dl class="facts">
+        {levelFacts(level).map(({ term, value }) => (
+          <div>
+            <dt>{term}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+        <div data-level-progress hidden>
+          <dt>Progress</dt>
+          <dd />
+        </div>
+      </dl>
+      <p class="tools" data-tools hidden>
+        <button
+          class={buttonClass('outline', 'small')}
+          type="button"
+          aria-expanded="false"
+          data-all
+        >
+          <svg class="chevron" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+            <path
+              d={chevron}
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span data-all-text>Show all modules</span>
+        </button>
+      </p>
+      <ol class="modules">
+        {level.modules.map((module, number) => (
+          <li
+            class="module"
+            id={module.slug}
+            data-module
+            data-number={number + 1}
+            data-title={module.title}
+          >
+            <h3 class="heading">
+              <span class="toggle" data-toggle>
+                {/* The spaces keep the button's name in words: "1 Counting Show". */}
+                <span class="number">{number + 1}</span> <span class="name">{module.title}</span>{' '}
+                <span class="state" data-state hidden>
+                  <svg
+                    class="chevron"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    height="16"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d={chevron}
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span data-state-text>Show</span>
+                </span>
+              </span>
+            </h3>
+            <p class="meta">
+              <span>{moduleFacts(module.labs)}</span>
+              <span class="marks" aria-hidden="true">
+                {module.labs.map(() => (
+                  <i data-mark />
+                ))}
+              </span>
+              <span class="progress" data-module-progress />
+            </p>
+            <ul class="titles" aria-label={`Labs in ${module.title}`}>
+              {module.labs.map((lab) => (
+                <li>
+                  <a href={`/${lab.path}/`} data-title-of={lab.path}>
+                    {lab.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div class="panel" id={`${module.slug}-labs`} data-panel>
+              <ol class="labs">
+                {module.labs.map((lab, index) => (
+                  <li
+                    class="lab"
+                    data-lab={lab.path}
+                    data-stages={lab.stages.map((stage) => stage.id).join(' ')}
+                    data-time={aboutTime(minutesOf(lab))}
+                  >
+                    <span class="labNumber">
+                      {number + 1}.{index + 1}
+                    </span>
+                    <div class="labText">
+                      <h4>
+                        <a href={`/${lab.path}/`}>{lab.title}</a>
+                      </h4>
+                      <p class="summary">{lab.summary}</p>
+                      <dl class="labFacts">
+                        {labFacts(lab).map(({ term, value }) => (
+                          <div class={term === 'You build' ? 'files' : undefined}>
+                            <dt class="term">{term}</dt>
+                            <dd>{value}</dd>
+                          </div>
+                        ))}
+                      </dl>
                     </div>
-                  ))}
-                  <div data-stages={lab.stages.map((stage) => stage.id).join(' ')} hidden>
-                    <dt>Progress</dt>
-                    <dd />
-                  </div>
-                </dl>
-              </li>
-            ))}
-          </ol>
-        </section>
-      ))}
+                    <p class="status" data-status />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   ))}
 </Page>
@@ -64,20 +192,144 @@ import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/
 import { hasSession, localStore } from '@sulba/data/session';
 import { kept } from '../../workspace/storage';
 
-// Each lab's Progress fact, which lists the ids of the lab's stages.
-const progress = [...document.querySelectorAll<HTMLElement>('[data-stages]')];
+const levels = [...document.querySelectorAll<HTMLElement>('[data-level]')];
+const modules = [...document.querySelectorAll<HTMLElement>('[data-module]')];
+const labs = [...document.querySelectorAll<HTMLElement>('[data-lab]')];
 // The stages the learner's account has passed, which may include some this browser hasn't.
 const fromAccount = new Set<string>();
 
-/** Each lab's stages passed, in this browser or the account, out of all its stages. */
+const isOpen = (module: HTMLElement) => module.dataset.open !== undefined;
+
+/** A level's Show all button says what it will do: show every module, unless they're all open. */
+function label(level: HTMLElement) {
+  const own = modules.filter((module) => level.contains(module));
+  const every = own.every(isOpen);
+  level.querySelector('[data-all]')?.setAttribute('aria-expanded', String(every));
+  level
+    .querySelector('[data-all-text]')
+    ?.replaceChildren(every ? 'Hide all modules' : 'Show all modules');
+}
+
+/**
+ * Shows or hides a module's labs. Hidden, they stay findable: find in page opens the module it
+ * finds text in (hidden="until-found").
+ */
+function setOpen(module: HTMLElement, open: boolean) {
+  const panel = module.querySelector<HTMLElement>('[data-panel]');
+  if (!panel) return;
+  if (open) panel.removeAttribute('hidden');
+  else panel.setAttribute('hidden', 'until-found');
+  module.toggleAttribute('data-open', open);
+  module.querySelector('[data-toggle]')?.setAttribute('aria-expanded', String(open));
+  module.querySelector('[data-state-text]')?.replaceChildren(open ? 'Hide' : 'Show');
+  const level = levels.find((each) => each.contains(module));
+  if (level) label(level);
+}
+
+// Each module's heading text becomes a button, with every attribute it had, so its styles carry
+// over, and the module closes.
+for (const module of modules) {
+  const text = module.querySelector<HTMLElement>('[data-toggle]');
+  const panel = module.querySelector<HTMLElement>('[data-panel]');
+  if (!text || !panel) continue;
+  const button = document.createElement('button');
+  for (const { name, value } of text.attributes) button.setAttribute(name, value);
+  button.type = 'button';
+  button.setAttribute('aria-controls', panel.id);
+  button.append(...text.childNodes);
+  text.replaceWith(button);
+  module.querySelector('[data-state]')?.removeAttribute('hidden');
+  button.addEventListener('click', () => setOpen(module, !isOpen(module)));
+  panel.addEventListener('beforematch', () => setOpen(module, true));
+  setOpen(module, false);
+  panel.dataset.ready = '';
+}
+
+for (const level of levels) {
+  const own = modules.filter((module) => level.contains(module));
+  level.querySelector('[data-tools]')?.removeAttribute('hidden');
+  level.querySelector('[data-all]')?.addEventListener('click', () => {
+    const open = !own.every(isOpen);
+    for (const module of own) setOpen(module, open);
+  });
+}
+
+/** The module a link points at, such as a lab page's link back to its module, opens. */
+function openTarget() {
+  const target = modules.find((module) => `#${module.id}` === location.hash);
+  if (target) setOpen(target, true);
+}
+
+openTarget();
+window.addEventListener('hashchange', openTarget);
+
+/**
+ * Each lab's stages passed, in this browser or the account; each module's and level's labs done;
+ * and the next lab: the first one started but not done, else the first not done after the last
+ * one done, else the first not done.
+ */
 function show() {
-  for (const fact of progress) {
-    const stages = (fact.dataset.stages ?? '').split(' ').filter(Boolean);
+  const counts = labs.map((lab) => {
+    const stages = (lab.dataset.stages ?? '').split(' ').filter(Boolean);
     const done = stages.filter((id) => kept.passed(id) || fromAccount.has(id)).length;
-    const text = done === stages.length ? 'Done' : `${done} of ${stages.length} stages done`;
-    fact.querySelector('dd')?.replaceChildren(text);
-    fact.hidden = done === 0;
+    return { lab, done, total: stages.length, finished: done === stages.length };
+  });
+  for (const { lab, done, total, finished } of counts) {
+    lab.toggleAttribute('data-done', finished);
+    document
+      .querySelector(`[data-title-of="${lab.dataset.lab}"]`)
+      ?.toggleAttribute('data-done', finished);
+    const status = finished ? 'Done' : done > 0 ? `${done} of ${total} stages done` : '';
+    lab.querySelector('[data-status]')?.replaceChildren(status);
   }
+
+  for (const module of modules) {
+    const own = counts.filter(({ lab }) => module.contains(lab));
+    const done = own.filter(({ finished }) => finished).length;
+    module.querySelectorAll<HTMLElement>('[data-mark]').forEach((mark, at) => {
+      const each = own[at];
+      if (each) mark.style.setProperty('--passed', `${(each.done / each.total) * 100}%`);
+    });
+    const started = own.some((each) => each.done > 0);
+    const progress = !started
+      ? ''
+      : done === own.length
+        ? 'Done'
+        : `${done} of ${own.length} labs done`;
+    module.querySelector('[data-module-progress]')?.replaceChildren(progress);
+  }
+
+  for (const level of levels) {
+    const own = counts.filter(({ lab }) => level.contains(lab));
+    const fact = level.querySelector<HTMLElement>('[data-level-progress]');
+    if (!fact) continue;
+    fact.hidden = !own.some((each) => each.done > 0);
+    const done = own.filter(({ finished }) => finished).length;
+    fact.querySelector('dd')?.replaceChildren(`${done} of ${own.length} labs done`);
+  }
+
+  const card = document.querySelector<HTMLElement>('[data-next]');
+  const lastDone = counts.findLastIndex(({ finished }) => finished);
+  const next =
+    counts.find(({ done, finished }) => done > 0 && !finished) ??
+    counts.slice(lastDone + 1).find(({ finished }) => !finished) ??
+    counts.find(({ finished }) => !finished);
+  if (!card) return;
+  card.hidden = next === undefined;
+  if (!next) return;
+  const module = modules.find((each) => each.contains(next.lab));
+  const link = next.lab.querySelector('h4 a');
+  const cardLink = card.querySelector<HTMLAnchorElement>('[data-next-link]');
+  if (!module || !link || !cardLink) return;
+  cardLink.href = link.getAttribute('href') ?? '';
+  cardLink.replaceChildren(link.textContent ?? '');
+  const meta = [
+    `Module ${module.dataset.number}`,
+    module.dataset.title,
+    next.done > 0 ? `${next.done} of ${next.total} stages done` : next.lab.dataset.time,
+  ];
+  card.querySelector('[data-next-meta]')?.replaceChildren(meta.join(' · '));
+  card.querySelector('[data-next-go]')?.replaceChildren(next.done > 0 ? 'Continue' : 'Start');
 }
 
 show();
@@ -102,10 +354,11 @@ if (hasSession(localStore())) {
 .intro {
   display: grid;
   gap: var(--space-4);
-  padding-block: var(--space-16) var(--space-10);
+  padding-block: var(--space-16) var(--space-8);
 }
 
-.label {
+.label,
+.facts dt {
   color: var(--dim);
   font: 500 var(--text-xs) / 1.4 var(--font-mono);
   letter-spacing: var(--tracking-label);
@@ -117,21 +370,246 @@ h1 {
   letter-spacing: -0.02em;
 }
 
+.next[hidden],
+.tools[hidden],
+.state[hidden] {
+  display: none;
+}
+
+/* The next lab: its title is the link, stretched over the card. */
+.next {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  max-width: 52rem;
+  margin-bottom: var(--space-16);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.next:has(a:hover) {
+  border-color: var(--line-strong);
+}
+
+.nextText {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.nextTitle {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.nextTitle a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.nextMeta {
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.go {
+  pointer-events: none;
+}
+
 .level {
   padding-bottom: var(--space-16);
 }
 
-.module + .module {
-  margin-top: var(--space-12);
+/* The facts wrap onto more lines as the page narrows. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-10);
+  margin-bottom: var(--space-10);
 }
 
-.module h3 {
-  font: 400 2.25rem / 1.1 var(--font-display);
+.facts dd {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.tools {
+  margin-bottom: var(--space-4);
+}
+
+.chevron {
+  transition: rotate var(--duration) var(--ease);
+}
+
+[aria-expanded="true"] .chevron {
+  rotate: 180deg;
+}
+
+.modules {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.module {
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.heading {
+  font: inherit;
+}
+
+/* The heading's text, and the button it becomes, look the same. */
+.toggle {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  width: 100%;
+  padding: var(--space-5) 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.toggle {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  button.toggle:hover .name {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+}
+
+.number {
+  color: var(--dim);
+  font: 400 var(--text-sm) / 1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  font: 400 1.875rem / 1.15 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding-left: var(--space-4);
+  color: var(--dim);
+  font: 500 var(--text-xs) / 1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.meta,
+.titles,
+.panel {
+  margin-left: 2.5rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-4);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+/* One mark per lab, filled by the share of its stages passed. */
+.marks {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.marks i {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--fg) var(--passed, 0%),
+    var(--line-2) var(--passed, 0%)
+  );
+}
+
+.progress {
+  color: var(--fg);
+}
+
+.titles {
+  max-width: 62rem;
+  margin-top: var(--space-3);
+  padding: 0;
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  list-style: none;
+}
+
+/* Each title keeps its separator and stays on one line when it fits, so no line starts with one. */
+.titles li {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.titles li:not(:last-child) {
+  margin-right: 0.45em;
+}
+
+.titles li:not(:last-child)::after {
+  content: "\00a0·";
+  color: var(--faint);
+}
+
+.titles a {
+  color: var(--dim);
+  text-decoration: none;
+}
+
+.titles a[data-done] {
+  color: var(--faint);
+}
+
+.titles a:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+.module[data-open] .titles {
+  display: none;
+}
+
+/* Before the script has run, the labs wait closed; without JavaScript, every module shows open. */
+@media (scripting: enabled) {
+  .panel:not([data-ready]) {
+    display: none;
+  }
+}
+
+@media (scripting: none) {
+  .titles {
+    display: none;
+  }
 }
 
 .labs {
   display: grid;
-  margin: var(--space-6) 0 0;
+  margin: var(--space-3) 0 0;
   padding: 0;
   border-top: 1px solid var(--line);
   list-style: none;
@@ -139,49 +617,146 @@ h1 {
 
 .lab {
   display: grid;
-  gap: var(--space-3);
-  padding-block: var(--space-6);
+  grid-template-columns: 2.75rem minmax(0, 1fr) minmax(0, 11rem);
+  gap: var(--space-1) var(--space-4);
+  padding-block: var(--space-4);
   border-bottom: 1px solid var(--line);
 }
 
+.lab:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.labNumber {
+  padding-top: 3px;
+  color: var(--dim);
+  font: 400 var(--text-sm) / 1.4 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.labText {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
 .lab h4 {
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 
 .summary {
-  max-width: 62ch;
+  max-width: 68ch;
   color: var(--dim);
+  font-size: var(--text-sm);
   line-height: var(--leading);
 }
 
-/* The same columns for every lab, so each fact sits under the one above it. */
-.facts {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 13rem));
-  gap: var(--space-3) var(--space-6);
+.labFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-4);
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.labFacts dd {
   margin: 0;
 }
 
-@media (max-width: 40rem) {
-  .facts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.labFacts .files dd {
+  padding-top: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
 }
 
-.facts dt {
-  font: 500 var(--text-xs) / 1.4 var(--font-mono);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+/* The facts' terms are for screen readers: the values say what they are. */
+.term {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.facts dt {
+.status {
+  padding-top: 3px;
+  font-size: var(--text-sm);
+  text-align: right;
+}
+
+/* A lab that's done goes quieter, so what's left stands out. */
+.lab[data-done] h4 a,
+.lab[data-done] .status {
   color: var(--dim);
 }
 
-.facts dd {
-  margin: var(--space-1) 0 0;
-  font-size: var(--text-sm);
+@media (max-width: 40rem) {
+  .intro {
+    padding-block: var(--space-10) var(--space-6);
+  }
+
+  .next {
+    grid-template-columns: minmax(0, 1fr);
+    margin-bottom: var(--space-12);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .go {
+    display: none;
+  }
+
+  .facts {
+    column-gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .tools {
+    margin-bottom: var(--space-3);
+  }
+
+  .toggle {
+    grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+    padding-top: var(--space-4);
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  [data-state-text] {
+    display: none;
+  }
+
+  .meta,
+  .titles {
+    margin-left: 1.75rem;
+  }
+
+  .panel {
+    margin-left: 0;
+  }
+
+  .lab {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  .labNumber {
+    font-size: var(--text-xs);
+  }
+
+  .status {
+    grid-column: 2;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .status:empty {
+    display: none;
+  }
 }
 </style>

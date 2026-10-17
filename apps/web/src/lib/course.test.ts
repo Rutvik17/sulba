@@ -11,6 +11,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     summary: '',
     course: path.startsWith('other') ? 'Other' : 'AI Engineering',
     level,
+    levelNeeds: level === 'Intermediate' ? 'A laptop with 16 GB of memory' : 'Any laptop',
     module,
     data: [],
     project: [],
@@ -33,8 +34,9 @@ test("a course's labs come back grouped by level and module, in the course's ord
   expect(course?.slug).toBe('ai-engineering');
   expect(course?.title).toBe('AI Engineering');
   expect(
-    course?.levels.map(({ title, modules }) => ({
+    course?.levels.map(({ title, needs, modules }) => ({
       title,
+      needs,
       modules: modules.map(({ slug, title, labs }) => ({
         slug,
         title,
@@ -44,6 +46,7 @@ test("a course's labs come back grouped by level and module, in the course's ord
   ).toEqual([
     {
       title: 'Beginner',
+      needs: 'Any laptop',
       modules: [
         { slug: 'maths-as-code', title: 'The maths behind ML', labs: ['arrays'] },
         {
@@ -53,7 +56,11 @@ test("a course's labs come back grouped by level and module, in the course's ord
         },
       ],
     },
-    { title: 'Intermediate', modules: [{ slug: 'models', title: 'Models', labs: ['autograd'] }] },
+    {
+      title: 'Intermediate',
+      needs: 'A laptop with 16 GB of memory',
+      modules: [{ slug: 'models', title: 'Models', labs: ['autograd'] }],
+    },
   ]);
 });
 

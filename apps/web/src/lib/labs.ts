@@ -128,6 +128,8 @@ export interface CardView {
 export interface LabEntry extends LabView {
   /** Its place in its course, counting every level's modules' labs in the course's order. */
   readonly order: number;
+  /** The machine its level needs, which the course's page states before the level begins. */
+  readonly levelNeeds: string;
   /** Code by others that the lab ports, which its page credits with its licence's notice. */
   readonly code: Lab['code'];
   /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
@@ -218,6 +220,7 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
     summary: lab.summary,
     course: course.title,
     level: level.title,
+    levelNeeds: level.needs,
     module: module.title,
     data: lab.data.map(({ text, ...set }) => ({
       ...set,
