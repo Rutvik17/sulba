@@ -42,6 +42,16 @@ test("the fixture course's figures and prose have no problems", async () => {
   expect(proseProblems([course], figures, mathFontCharacters())).toEqual([]);
 });
 
+test('a check of some stages computes their figures and checks their prose alone', async () => {
+  const only = new Set(['stg_demo01']);
+  const { figures, problems } = await computeFigures([course], { Pyodide: pyodide }, only);
+  expect(problems).toEqual([]);
+  expect([...figures.keys()]).toEqual(['stg_demo01']);
+  // The share and ship stages' prose shows figures of theirs, which this check didn't compute.
+  expect(proseProblems([course], figures, mathFontCharacters())).not.toEqual([]);
+  expect(proseProblems([course], figures, mathFontCharacters(), only)).toEqual([]);
+});
+
 test('figures that differ between runtimes are a problem', async () => {
   // The count stage's figures differ; every other stage's agree.
   const other: FiguresRunner = async (fileSets) =>

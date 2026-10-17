@@ -19,16 +19,18 @@ interface PlacedStage {
   readonly stage: Stage;
 }
 
-function stagesWithPaths(courses: readonly Course[]): PlacedStage[] {
+function stagesWithPaths(courses: readonly Course[], only?: ReadonlySet<string>): PlacedStage[] {
   return courses.flatMap((course) =>
     course.levels.flatMap((level) =>
       level.modules.flatMap((module) =>
         module.labs.flatMap((lab) =>
-          lab.stages.map((stage) => ({
-            path: `${course.slug}/modules/${module.slug}/labs/${lab.slug}/stages/${stage.slug}`,
-            lab,
-            stage,
-          })),
+          lab.stages
+            .filter((stage) => only?.has(stage.id) ?? true)
+            .map((stage) => ({
+              path: `${course.slug}/modules/${module.slug}/labs/${lab.slug}/stages/${stage.slug}`,
+              lab,
+              stage,
+            })),
         ),
       ),
     ),
@@ -42,12 +44,16 @@ export function figuresFiles(lab: Lab, stage: Stage): RunRequest['files'] {
   return { ...files, 'figures.py': stage.figures ?? '' };
 }
 
-/** Each stage's figures, by stage id, from every runtime: they must agree. */
+/**
+ * Each stage's figures, by stage id, from every runtime: they must agree. With `only`, just the
+ * stages with those ids.
+ */
 export async function computeFigures(
   courses: readonly Course[],
   runners: Readonly<Record<string, FiguresRunner>>,
+  only?: ReadonlySet<string>,
 ): Promise<{ figures: Map<string, Record<string, string>>; problems: Problem[] }> {
-  const stages = stagesWithPaths(courses).filter(({ stage }) => stage.figures !== null);
+  const stages = stagesWithPaths(courses, only).filter(({ stage }) => stage.figures !== null);
   const fileSets = stages.map(({ lab, stage }) => figuresFiles(lab, stage));
   const results = await Promise.all(
     Object.entries(runners).map(async ([name, runner]) => [name, await runner(fileSets)] as const),
@@ -79,14 +85,18 @@ function hex(point: number): string {
   return `U+${point.toString(16).toUpperCase().padStart(4, '0')}`;
 }
 
-/** Problems in every stage's prose, given its figures and the characters the math font has. */
+/**
+ * Problems in every stage's prose, or with `only`, the prose of the stages with those ids, given
+ * their figures and the characters the math font has.
+ */
 export function proseProblems(
   courses: readonly Course[],
   figures: ReadonlyMap<string, Readonly<Record<string, string>>>,
   mathFont: ReadonlySet<number>,
+  only?: ReadonlySet<string>,
 ): Problem[] {
   const problems: Problem[] = [];
-  for (const { path, stage } of stagesWithPaths(courses)) {
+  for (const { path, stage } of stagesWithPaths(courses, only)) {
     const values = figures.get(stage.id) ?? {};
     const used = new Set<string>();
     const pieces: [file: string, text: string, oneLine?: boolean][] = [

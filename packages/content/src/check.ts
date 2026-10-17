@@ -145,13 +145,17 @@ function catchProblems(
   }
 }
 
-/** Run every stage in one runtime, named in the problems it finds. */
+/**
+ * Run every stage in one runtime, named in the problems it finds, or with `only`, the stages with
+ * those ids.
+ */
 export async function prove(
   courses: readonly Course[],
   runner: Runner,
   runtime: string,
+  only?: ReadonlySet<string>,
 ): Promise<Problem[]> {
-  const stages = courses.flatMap(stagesOf);
+  const stages = courses.flatMap(stagesOf).filter(({ item }) => only?.has(item.stage.id) ?? true);
   const requests = stages.flatMap(({ item: runs }) => [
     runs.solution,
     runs.starter,
@@ -188,19 +192,15 @@ export async function prove(
 }
 
 /**
- * The courses with every `parts`-th of their labs, from lab `part` on, counting from 1, so that
- * checks of parts 1 to `parts` together cover each lab once.
+ * The ids of every `parts`-th stage of the courses, from stage `part` on, counting from 1, so that
+ * checks of parts 1 to `parts` together run each stage once. A lab's stages are dealt in turn too,
+ * so a long lab's runs spread over every part.
  */
-export function shard(courses: readonly Course[], part: number, parts: number): Course[] {
-  let index = 0;
-  return courses.map((course) => ({
-    ...course,
-    levels: course.levels.map((level) => ({
-      ...level,
-      modules: level.modules.map((module) => ({
-        ...module,
-        labs: module.labs.filter(() => index++ % parts === part - 1),
-      })),
-    })),
-  }));
+export function shard(courses: readonly Course[], part: number, parts: number): Set<string> {
+  const stages = courses.flatMap((course) =>
+    course.levels.flatMap((level) =>
+      level.modules.flatMap((module) => module.labs.flatMap((lab) => lab.stages)),
+    ),
+  );
+  return new Set(stages.filter((_, index) => index % parts === part - 1).map(({ id }) => id));
 }
