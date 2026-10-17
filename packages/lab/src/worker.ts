@@ -1,6 +1,7 @@
 // The lab's Web Worker. It loads Pyodide from Sulba's own domain, then does one task at a time
 // for the page. Python runs on this thread, so the page can always stop a run by ending it.
 import type { loadPyodide } from 'pyodide';
+import fixtures from '../python/sulba_fixtures.py?raw';
 import runner from '../python/sulba_runner.py?raw';
 import { createEngine, type Engine } from './engine.ts';
 import type { FromWorker, ToWorker } from './messages.ts';
@@ -19,7 +20,7 @@ async function start(indexURL: string): Promise<Engine> {
     loadPyodide: typeof loadPyodide;
   };
   const pyodide = await module.loadPyodide({ indexURL, stdout: () => {}, stderr: () => {} });
-  return createEngine(pyodide, runner);
+  return createEngine(pyodide, { 'sulba_runner.py': runner, 'sulba_fixtures.py': fixtures });
 }
 
 function failed(id: number | null, error: unknown) {

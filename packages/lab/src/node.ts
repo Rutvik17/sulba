@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadPyodide } from 'pyodide';
 import { pyodideFolder } from './assemble.ts';
-import { createEngine, type Engine } from './engine.ts';
+import { createEngine, type Engine, type RunnerModules } from './engine.ts';
 import {
   type ChartRequest,
   type ChartResult,
@@ -22,23 +22,36 @@ export type { Engine } from './engine.ts';
 
 const python = fileURLToPath(new URL('../python/', import.meta.url));
 
+/** The runner's Python modules, as the files in python/ hold them. */
+async function runnerModules(): Promise<RunnerModules> {
+  const text = (name: string) => readFile(join(python, name), 'utf8');
+  const [runner, fixtures] = await Promise.all([
+    text('sulba_runner.py'),
+    text('sulba_fixtures.py'),
+  ]);
+  return { 'sulba_runner.py': runner, 'sulba_fixtures.py': fixtures };
+}
+
 /** Pyodide with every package sessions can use already loaded. */
 export async function pyodideEngine(): Promise<Engine> {
-  const runner = await readFile(new URL('../python/sulba_runner.py', import.meta.url), 'utf8');
   const pyodide = await loadPyodide({ indexURL: pyodideFolder, packageCacheDir: pyodideFolder });
-  const engine = await createEngine(pyodide, runner);
+  const engine = await createEngine(pyodide, await runnerModules());
   await engine.load(pythonPackages);
   return engine;
 }
 
 /**
  * A hash of what an answer from `pyodideEngine` depends on besides the files it is given: the
- * runner, and Pyodide's lock file, which holds the version of every package.
+ * runner's modules, and Pyodide's lock file, which holds the version of every package.
  */
 export async function pyodideRuntime(): Promise<string> {
-  const runner = await readFile(new URL('../python/sulba_runner.py', import.meta.url), 'utf8');
+  const runner = await runnerModules();
   const lock = await readFile(join(pyodideFolder, 'pyodide-lock.json'), 'utf8');
-  return createHash('sha256').update(runner).update('\0').update(lock).digest('hex');
+  const hash = createHash('sha256');
+  for (const text of [runner['sulba_runner.py'], runner['sulba_fixtures.py'], lock]) {
+    hash.update(text).update('\0');
+  }
+  return hash.digest('hex');
 }
 
 /** A CPython process ended for running past its time limit. */

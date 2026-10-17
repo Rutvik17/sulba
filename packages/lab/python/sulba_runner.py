@@ -8,8 +8,6 @@ JavaScript into Python without conversion.
 from __future__ import annotations
 
 import ast
-import asyncio
-import functools
 import gc
 import importlib
 import io
@@ -19,20 +17,18 @@ import os
 import sys
 import tempfile
 import time
-from collections.abc import Callable, Iterator
-from contextlib import chdir, contextmanager, redirect_stderr, redirect_stdout, suppress
+from contextlib import chdir, redirect_stderr, redirect_stdout, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 import pytest
 
+import sulba_fixtures
+from sulba_fixtures import check_types
+
 # The longest value or message a result carries. A failed check on a large array would
 # otherwise send all of it.
 LIMIT = 1000
-
-# mypy's options for a session's files: --strict, with no config file, as if on Linux, so the
-# browser, a learner's machine and CI report the same errors (decision record 22).
-MYPY_OPTIONS = ["--strict", "--config-file=", "--platform", "linux", "--no-error-summary"]
 
 
 def run(files_json: str, tests_json: str) -> str:
@@ -48,7 +44,9 @@ def run(files_json: str, tests_json: str) -> str:
         write(root, files)
         report = Report(root)
         started = time.perf_counter()
-        exit_code = within(root, lambda: pytest.main(arguments(tests, config), plugins=[report]))
+        # The fixtures are a plugin of their own, so a run inside a test can load them too.
+        plugins = [report, sulba_fixtures]
+        exit_code = within(root, lambda: pytest.main(arguments(tests, config), plugins=plugins))
         result = report.result(int(exit_code))
         result["durationMs"] = round((time.perf_counter() - started) * 1000)
     return json.dumps(result)
@@ -92,32 +90,7 @@ def warm(files: dict[str, str]) -> None:
     sources = [name for name in files if name.endswith(".py") and not name.startswith("tests/")]
     with tempfile.TemporaryDirectory(prefix="sulba-") as folder, chdir(folder):
         write(Path(folder), {name: files[name] for name in sources})
-        typecheck(*sources)
-
-
-@functools.cache
-def mypy_cache() -> str:
-    """A folder for mypy's cache that lasts as long as the runner, so a check after the first
-    reads what hasn't changed from it."""
-    return tempfile.mkdtemp(prefix="sulba-mypy-")
-
-
-def typecheck(*files: str) -> list[str]:
-    """mypy's errors in these files, each line as mypy prints it, such as
-    `shapes.py:4: error: Function is missing a type annotation  [no-untyped-def]`."""
-    from mypy import api
-
-    # mypy raises the recursion limit and the garbage collector's thresholds for its own work,
-    # and leaves them so. The session's code runs with Python's own.
-    limit, thresholds = sys.getrecursionlimit(), gc.get_threshold()
-    try:
-        report, errors, _ = api.run([*MYPY_OPTIONS, "--cache-dir", mypy_cache(), *files])
-    finally:
-        sys.setrecursionlimit(limit)
-        gc.set_threshold(*thresholds)
-    if errors:
-        raise RuntimeError(errors.strip())
-    return report.splitlines()
+        check_types(*sources)
 
 
 def imported(files: dict[str, str]) -> list[str]:
@@ -266,81 +239,6 @@ def shown(value: object) -> str:
     return text if len(text) <= LIMIT else f"{text[: LIMIT - 1]}…"
 
 
-class VirtualClockLoop(asyncio.BaseEventLoop):
-    """An event loop whose clock jumps to its next timer instead of waiting for it.
-
-    A test of asyncio code takes only as long as the code's own work, however long it sleeps,
-    and the loop's time is the same in Pyodide and CPython. Pyodide's own loop can't run a
-    coroutine to completion from a test, and asyncio's selector loop needs sockets that Pyodide
-    doesn't have, so this loop waits on no I/O at all.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-        self._now = 0.0
-        # BaseEventLoop waits for its next timer by calling self._selector.select(timeout).
-        self._selector = self
-
-    def time(self) -> float:
-        return self._now
-
-    def select(self, timeout: float | None) -> list[Any]:
-        # No timer to wait for, and no I/O to wake a task: the code waits forever.
-        if timeout is None:
-            raise RuntimeError("Every task is waiting on something that never happens.")
-        self._now += timeout
-        return []
-
-    def _process_events(self, event_list: list[Any]) -> None:
-        pass
-
-    def _write_to_self(self) -> None:
-        pass
-
-    def run_forever(self) -> None:
-        with self._alone():
-            super().run_forever()
-
-    def run_until_complete(self, future: Any) -> Any:
-        with self._alone():
-            return super().run_until_complete(future)
-
-    @contextmanager
-    def _alone(self) -> Iterator[None]:
-        """Pyodide's loop counts as running from the moment it's made, and asyncio refuses to
-        run a loop while another one is running, so it's set aside until this one stops."""
-        running = asyncio._get_running_loop()
-        asyncio._set_running_loop(None)
-        try:
-            yield
-        finally:
-            asyncio._set_running_loop(running)
-
-
-@contextmanager
-def threads_on_the_loop() -> Iterator[None]:
-    """While a test runs, the work anyio would hand to a worker thread runs on the loop instead.
-
-    Starlette, and so FastAPI, run a `def` endpoint or dependency in anyio's worker threads.
-    A VirtualClockLoop waits on no thread, and Pyodide has none, so the work runs where the
-    test's coroutine runs, with the same result. anyio is imported by then, by the app the test
-    imports, or not used at all."""
-    to_thread = sys.modules.get("anyio.to_thread")
-    if to_thread is None:
-        yield
-        return
-    in_a_thread = to_thread.run_sync
-
-    async def run_sync(func: Callable[..., Any], *args: Any, **_: Any) -> Any:
-        return func(*args)
-
-    to_thread.run_sync = run_sync
-    try:
-        yield
-    finally:
-        to_thread.run_sync = in_a_thread
-
-
 class Report:
     """A pytest plugin that keeps what a learner needs from each test."""
 
@@ -354,29 +252,6 @@ class Report:
 
     def pytest_configure(self, config: pytest.Config) -> None:
         config.addinivalue_line("markers", "id(value): the test's permanent id")
-
-    @pytest.fixture
-    def loop(self) -> Iterator[VirtualClockLoop]:
-        """A new VirtualClockLoop for the test, whose time starts at 0. Afterwards, as
-        asyncio.run does, the tasks left waiting are cancelled before the loop closes."""
-        loop = VirtualClockLoop()
-        with threads_on_the_loop():
-            try:
-                yield loop
-            finally:
-                waiting = asyncio.all_tasks(loop)
-                for task in waiting:
-                    task.cancel()
-                if waiting:
-                    loop.run_until_complete(asyncio.gather(*waiting, return_exceptions=True))
-                loop.run_until_complete(loop.shutdown_asyncgens())
-                loop.close()
-
-    @pytest.fixture
-    def typecheck(self) -> Callable[..., list[str]]:
-        """typecheck("shapes.py") gives mypy's errors in the session's file under --strict, one
-        line each, the same in Pyodide and CPython."""
-        return typecheck
 
     @pytest.hookimpl(wrapper=True)
     def pytest_runtest_call(self, item: pytest.Item) -> Any:
