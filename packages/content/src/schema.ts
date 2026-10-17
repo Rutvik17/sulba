@@ -64,6 +64,11 @@ export const labFile = z.strictObject({
   /** What the learner builds, in a sentence or two, under the lab's title. */
   summary: title,
   data: z.array(dataset).default([]),
+  /**
+   * A library's results that the lab's tests compare with, each a JSON file in `references/`,
+   * which the folder's `make.py` records (decision record 27).
+   */
+  references: z.array(z.string().regex(/^[a-z0-9-]+\.json$/)).default([]),
   code: z.array(portedCode).default([]),
   stages: z.array(slug).min(1),
 });

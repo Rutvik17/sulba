@@ -15,6 +15,17 @@ export function withEdit(starter: string, problem: CatchProblem): string {
 }
 
 /**
+ * What every run of a lab's code has beside it, by its path in the run: each dataset in `data/`
+ * and each recorded reference in `references/`.
+ */
+export function labFiles(lab: Lab): Record<string, string> {
+  const files: Record<string, string> = {};
+  for (const set of lab.data) files[`data/${set.file}`] = set.text;
+  for (const reference of lab.references) files[`references/${reference.file}`] = reference.text;
+  return files;
+}
+
+/**
  * A stage's test files by their path in a run, inside `folder`: its tests, then a Catch or Ship
  * stage's checks in `checks/` within it, so the runner treats both as tests.
  */
@@ -40,8 +51,7 @@ export interface StageRuns {
 export function stageRuns(lab: Lab): StageRuns[] {
   return lab.stages.map((stage, index) => {
     const before = lab.stages.slice(0, index);
-    const files: Record<string, string> = {};
-    for (const set of lab.data) files[`data/${set.file}`] = set.text;
+    const files = labFiles(lab);
     for (const each of before) files[each.file] = each.solution;
     const own = testFiles(stage);
     const previous = files[stage.file];

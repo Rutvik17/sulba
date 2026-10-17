@@ -22,6 +22,9 @@ function labWith(id: string): LabView {
     level: 'Level',
     module: 'Module',
     data: [set('votes.csv'), set('seats.csv')],
+    references: [
+      { path: 'references/shares.json', served: '/references/fedcba9876543210/shares.json' },
+    ],
     project: [
       { name: 'pyproject.toml', served: '/project/0123456789abcdef/pyproject.toml' },
       { name: 'uv.lock', served: '/project/fedcba9876543210/uv.lock' },
@@ -34,7 +37,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-test("a lab's datasets are fetched once, and each run shares them by path", async () => {
+test("a lab's datasets and references are fetched once, and each run shares them by path", async () => {
   const fetched = vi.fn(async (url: string) => new Response(`text of ${url}`));
   vi.stubGlobal('fetch', fetched);
   const lab = labWith('lab_once01');
@@ -43,9 +46,10 @@ test("a lab's datasets are fetched once, and each run shares them by path", asyn
   expect(first).toEqual({
     'data/votes.csv': 'text of /data/0123456789abcdef/votes.csv',
     'data/seats.csv': 'text of /data/0123456789abcdef/seats.csv',
+    'references/shares.json': 'text of /references/fedcba9876543210/shares.json',
   });
   expect(second).toBe(first);
-  expect(fetched).toHaveBeenCalledTimes(2);
+  expect(fetched).toHaveBeenCalledTimes(3);
 });
 
 test('a fetch that fails is tried again the next time', async () => {
@@ -60,6 +64,7 @@ test('a fetch that fails is tried again the next time', async () => {
   expect(await labData(lab)).toEqual({
     'data/votes.csv': 'choice\nyes\n',
     'data/seats.csv': 'choice\nyes\n',
+    'references/shares.json': 'choice\nyes\n',
   });
 });
 
@@ -74,5 +79,5 @@ test("a lab's project files are fetched once, apart from its datasets, by name",
     'uv.lock': 'text of /project/fedcba9876543210/uv.lock',
   });
   expect(await projectFiles(lab)).toBe(first);
-  expect(fetched).toHaveBeenCalledTimes(4);
+  expect(fetched).toHaveBeenCalledTimes(5);
 });

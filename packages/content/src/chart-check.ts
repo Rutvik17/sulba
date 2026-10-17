@@ -11,7 +11,9 @@ import {
   type RunRequest,
 } from '@sulba/lab/protocol';
 import { z } from 'zod';
+import { difference, partOf } from './difference.ts';
 import type { Chart, Course, Lab, Problem } from './load.ts';
+import { labFiles } from './runs.ts';
 
 /** Draws charts in one runtime and returns what each drew, in the same order. */
 export type ChartRunner = (requests: readonly ChartRequest[]) => Promise<readonly ChartResult[]>;
@@ -47,10 +49,12 @@ const drawing = z.strictObject({
   description: text,
 });
 
-/** What a stage's chart draws with in the checks: the lab's data and each stage's solution to it. */
+/**
+ * What a stage's chart draws with in the checks: the lab's data and references, and each stage's
+ * solution to it.
+ */
 export function chartFiles(lab: Lab, index: number, chart: Chart): RunRequest['files'] {
-  const files: Record<string, string> = {};
-  for (const set of lab.data) files[`data/${set.file}`] = set.text;
+  const files = labFiles(lab);
   for (const stage of lab.stages.slice(0, index + 1)) files[stage.file] = stage.solution;
   return { ...files, 'chart.py': chart.code };
 }
@@ -110,41 +114,6 @@ function said(values: Readonly<Record<string, number>>): string {
   return pairs.length ? `with ${pairs.join(', ')}` : 'with no sliders';
 }
 
-/** Where two drawings first differ, such as `readouts.0.value`, or null if they agree. */
-function difference(a: unknown, b: unknown, at = ''): string | null {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b)) ? null : at;
-  }
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return at;
-    for (const [index, item] of a.entries()) {
-      const found = difference(item, b[index], at ? `${at}.${index}` : String(index));
-      if (found !== null) return found;
-    }
-    return null;
-  }
-  if (a && b && typeof a === 'object' && typeof b === 'object') {
-    for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) {
-      const found = difference(
-        (a as Record<string, unknown>)[key],
-        (b as Record<string, unknown>)[key],
-        at ? `${at}.${key}` : key,
-      );
-      if (found !== null) return found;
-    }
-    return null;
-  }
-  return a === b ? null : at;
-}
-
-/** The part of a drawing at a path such as `readouts.0.value`. */
-function partOf(value: unknown, path: string): unknown {
-  return path
-    .split('.')
-    .filter(Boolean)
-    .reduce<unknown>((part, key) => (part as Record<string, unknown> | undefined)?.[key], value);
-}
-
 /** Every problem with every stage's chart, or with `only`, the charts of the stages with those ids. */
 export async function checkCharts(
   courses: readonly Course[],
@@ -184,7 +153,7 @@ export async function checkCharts(
     if (!first) return;
     const [runtime, picture] = first;
     for (const [other, its] of compared ? rest : []) {
-      const at = difference(its, picture);
+      const at = difference(its, picture, 1e-9);
       if (at !== null) {
         problems.push({
           path: file,

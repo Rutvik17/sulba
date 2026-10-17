@@ -11,6 +11,7 @@ import {
   courseSlugs,
   duplicateIds,
   type Lab,
+  labFiles,
   loadCourse,
   proseProblems,
   renderProse,
@@ -104,6 +105,11 @@ export interface LabView {
     readonly served: string;
   })[];
   /**
+   * Each recorded reference (decision record 27), with its path in a run, such as
+   * `references/shares.json`, and the address the site serves it at, which changes with its text.
+   */
+  readonly references: readonly { readonly path: string; readonly served: string }[];
+  /**
    * The files a download of the lab puts beside the learner's (decision record 25), each with its
    * name and the address the site serves it at, which changes with its text. None without a project.
    */
@@ -122,8 +128,8 @@ export interface CardView {
 }
 
 /**
- * A lab as the site stores it: what its page shows, its datasets' text, the code by others it
- * ports, and its review cards.
+ * A lab as the site stores it: what its page shows, its datasets' and references' text, the code
+ * by others it ports, and its review cards.
  */
 export interface LabEntry extends LabView {
   /** Its place in its course, counting every level's modules' labs in the course's order. */
@@ -132,7 +138,7 @@ export interface LabEntry extends LabView {
   readonly levelNeeds: string;
   /** Code by others that the lab ports, which its page credits with its licence's notice. */
   readonly code: Lab['code'];
-  /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
+  /** Each dataset's and reference's text, by its path in a run, served apart from the lab's page. */
   readonly files: Readonly<Record<string, string>>;
   /** Each project file's text, by its name. The site serves it apart from the lab's page too. */
   readonly projectFiles: Readonly<Record<string, string>>;
@@ -140,10 +146,10 @@ export interface LabEntry extends LabView {
 }
 
 /**
- * Where the site serves a dataset or a project file: a folder named for its text, so it can be
- * cached for good.
+ * Where the site serves a dataset, a reference or a project file: a folder named for its text, so
+ * it can be cached for good.
  */
-function servedAt(folder: 'data' | 'project', file: string, text: string): string {
+function servedAt(folder: 'data' | 'references' | 'project', file: string, text: string): string {
   const hash = createHash('sha256').update(text).digest('hex').slice(0, 16);
   return `/${folder}/${hash}/${file}`;
 }
@@ -227,12 +233,16 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
       path: `data/${set.file}`,
       served: servedAt('data', set.file, text),
     })),
+    references: lab.references.map(({ file, text }) => ({
+      path: `references/${file}`,
+      served: servedAt('references', file, text),
+    })),
     project: Object.entries(lab.project).map(([name, text]) => ({
       name,
       served: servedAt('project', name, text),
     })),
     code: lab.code,
-    files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
+    files: labFiles(lab),
     projectFiles: { ...lab.project },
     stages: lab.stages.map((stage) => stageView(stage, figures)),
     cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),

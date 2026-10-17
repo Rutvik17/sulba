@@ -24,6 +24,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm test` | Runs the unit tests |
 | `pnpm test:python` | Runs the lab's Python tests in CPython |
 | `pnpm check:content` | Checks every course, and runs every stage in Pyodide and CPython |
+| `pnpm check:references` | Records every lab's references again with the library its `make.py` pins, and compares them with the files |
 | `pnpm test:db` | Runs the database's migrations in a local Supabase, and the tests of its row-level security |
 | `pnpm --filter @sulba/data types` | Writes the database's TypeScript types from the local Supabase |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |

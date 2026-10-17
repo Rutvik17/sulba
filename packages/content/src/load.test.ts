@@ -8,6 +8,7 @@ import { courseSlugs, loadCourse } from './load.ts';
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const stages = 'demo/modules/counting/labs/tallies/stages';
 const project = 'demo/modules/counting/labs/tallies/project';
+const references = 'demo/modules/counting/labs/tallies/references';
 const folders: string[] = [];
 
 afterEach(async () => {
@@ -35,6 +36,8 @@ test('the fixture course loads, in the order its files give', async () => {
   const lab = course?.levels[0]?.modules[0]?.labs[0];
   expect(lab?.stages.map((stage) => stage.slug)).toEqual(['count', 'share', 'check', 'ship']);
   expect(lab?.data[0]?.text).toBe('choice\nyes\nno\nyes\n');
+  expect(lab?.references.map(({ file }) => file)).toEqual(['shares.json']);
+  expect(JSON.parse(lab?.references[0]?.text ?? '')).toMatchObject({ numpy: '2.4.6' });
   expect(lab?.code.map(({ title, licence }) => [title, licence.name])).toEqual([
     ['tally.js 1.0.0', 'MIT'],
   ]);
@@ -518,6 +521,27 @@ test.each([
       path: `${stages}/ship/stage.yaml`,
       message:
         "file: chart.py is the name a stage's chart runs as, so the learner's file needs another.",
+    },
+  },
+  {
+    name: 'a reference that is not JSON',
+    change: (root: string) => writeFile(join(root, references, 'shares.json'), '{"polls": [\n'),
+    problem: {
+      path: `${references}/shares.json`,
+      message: expect.stringMatching(/^Not valid JSON: /),
+    },
+  },
+  {
+    name: 'references without the make.py that records them',
+    change: (root: string) => rm(join(root, references, 'make.py')),
+    problem: { path: `${references}/make.py`, message: 'Missing.' },
+  },
+  {
+    name: "a reference lab.yaml doesn't list",
+    change: (root: string) => writeFile(join(root, references, 'votes.json'), '[]\n'),
+    problem: {
+      path: `${references}/votes.json`,
+      message: 'Not part of the course: list it or remove it.',
     },
   },
   {

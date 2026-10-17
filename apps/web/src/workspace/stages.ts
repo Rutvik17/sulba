@@ -6,7 +6,10 @@ import { addStarter } from '@sulba/content/runs';
 import type { ChartRequest, RunRequest } from '@sulba/lab/protocol';
 import type { LabView } from '../lib/labs';
 
-/** The text of each of a lab's datasets, by its path in a run, such as `data/votes.csv`. */
+/**
+ * The text of each of a lab's datasets and references, by its path in a run, such as
+ * `data/votes.csv`.
+ */
 export type LabData = Readonly<Record<string, string>>;
 
 /** A finished Catch review: the ids of the checks the learner's code passed, of how many. */
@@ -100,7 +103,8 @@ export function runOf(
 
 /**
  * The lab's download as it stands at a stage (decision record 25): the learner's files and the
- * lab's data, as the stage's run has them, beside the files of the lab's project.
+ * lab's data, as the stage's run has them, beside the files of the lab's project. The lab's
+ * references stay out, as its tests do, since only the tests read them.
  */
 export function downloadOf(
   lab: LabView,
@@ -110,7 +114,9 @@ export function downloadOf(
   kept: Kept,
   project: Readonly<Record<string, string>>,
 ): Record<string, string> {
-  return { ...project, ...filesOf(lab, data, index, code, kept) };
+  const files = filesOf(lab, data, index, code, kept);
+  for (const { path } of lab.references) delete files[path];
+  return { ...project, ...files };
 }
 
 /** A stage's chart, drawn with the learner's files, as a run has them. */

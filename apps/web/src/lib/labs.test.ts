@@ -25,7 +25,18 @@ test('a dataset keeps its own page for the credit, and is served at an address n
       served: expect.stringMatching(/^\/data\/[0-9a-f]{16}\/votes\.csv$/),
     }),
   ]);
-  expect(Object.keys(lab?.files ?? {})).toEqual(['data/votes.csv']);
+});
+
+test("a lab's references are served apart from its page, at addresses named for their text", async () => {
+  const [lab] = labEntries(await demo());
+
+  expect(lab?.references).toEqual([
+    {
+      path: 'references/shares.json',
+      served: expect.stringMatching(/^\/references\/[0-9a-f]{16}\/shares\.json$/),
+    },
+  ]);
+  expect(Object.keys(lab?.files ?? {})).toEqual(['data/votes.csv', 'references/shares.json']);
 });
 
 test("a lab's project files are served apart from its page, at addresses named for their text", async () => {

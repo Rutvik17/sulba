@@ -81,9 +81,16 @@ export interface Stage extends Omit<StageFile, 'problems' | 'checks' | 'chart'> 
 
 export type Dataset = LabFile['data'][number] & { readonly text: string };
 
-export interface Lab extends Omit<LabFile, 'stages' | 'data'> {
+/** A library's recorded results, which a lab's tests read at `references/<file>`. */
+export interface Reference {
+  readonly file: string;
+  readonly text: string;
+}
+
+export interface Lab extends Omit<LabFile, 'stages' | 'data' | 'references'> {
   readonly slug: string;
   readonly data: readonly Dataset[];
+  readonly references: readonly Reference[];
   /**
    * The files a download of the lab puts beside the learner's (decision record 25), each by its
    * name in `project/`, or none when the lab has no project.
@@ -164,11 +171,17 @@ class Reader {
   async lab(folder: string, slug: string): Promise<Lab | null> {
     const file = await this.yaml(join(folder, 'lab.yaml'), labFile);
     const hasData = (file?.data.length ?? 0) > 0;
+    const hasReferences = (file?.references.length ?? 0) > 0;
     const hasProject = (await this.folders(folder)).includes('project');
     await this.entries(
       folder,
       ['lab.yaml'],
-      [...(hasData ? ['data'] : []), 'stages', ...(hasProject ? ['project'] : [])],
+      [
+        ...(hasData ? ['data'] : []),
+        ...(hasReferences ? ['references'] : []),
+        'stages',
+        ...(hasProject ? ['project'] : []),
+      ],
     );
     const present = await this.folders(join(folder, 'stages'));
     this.matches(join(folder, 'stages'), file?.stages ?? [], present, 'lab.yaml');
@@ -184,6 +197,9 @@ class Reader {
       const text = await this.text(join(folder, 'data', set.file));
       if (text !== null) data.push({ ...set, text });
     }
+    const references = hasReferences
+      ? await this.references(join(folder, 'references'), file.references)
+      : [];
     const stages: Stage[] = [];
     for (const name of file.stages) {
       if (!present.includes(name)) continue;
@@ -222,7 +238,26 @@ class Reader {
         `file: ${stage.file} is a file of the lab's project, so the learner's file needs another name.`,
       );
     }
-    return { ...file, slug, data, project, stages };
+    return { ...file, slug, data, references, project, stages };
+  }
+
+  /** A lab's recorded references, each JSON, and the make.py that records them. */
+  async references(folder: string, files: readonly string[]): Promise<Reference[]> {
+    await this.entries(folder, [...files, 'make.py'], []);
+    const references: Reference[] = [];
+    for (const name of files) {
+      const path = join(folder, name);
+      const text = await this.text(path);
+      if (text === null) continue;
+      try {
+        JSON.parse(text);
+      } catch (error) {
+        this.problem(path, `Not valid JSON: ${(error as Error).message}`);
+        continue;
+      }
+      references.push({ file: name, text });
+    }
+    return references;
   }
 
   /** A lab's project: its pyproject.toml, uv.lock and README.md, and a conftest.py if it has one. */

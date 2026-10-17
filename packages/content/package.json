@@ -11,6 +11,7 @@
   "scripts": {
     "check": "pnpm --filter @sulba/lab pyodide && node scripts/check.ts ../../courses",
     "draft": "node scripts/draft.ts",
+    "references": "node scripts/references.ts ../../courses",
     "typecheck": "tsc",
     "test": "pnpm --filter @sulba/lab pyodide && vitest run"
   },
