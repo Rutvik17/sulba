@@ -28,5 +28,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [22. Type-check a stage's code with mypy, in Pyodide and CPython alike](0022-type-check-a-stages-code-with-mypy-in-pyodide.md) | Accepted |
 | [23. Time an interview problem from its start, with the plan before the code](0023-time-an-interview-problem-from-its-start.md) | Accepted |
 | [24. Test a FastAPI app in process, through httpx on the test's loop](0024-test-a-fastapi-app-in-process-through-httpx.md) | Accepted |
+| [25. Download a lab as a project the learner runs with uv](0025-download-a-lab-as-a-project-run-with-uv.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

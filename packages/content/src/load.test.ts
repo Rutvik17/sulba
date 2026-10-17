@@ -7,6 +7,7 @@ import { courseSlugs, loadCourse } from './load.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const stages = 'demo/modules/counting/labs/tallies/stages';
+const project = 'demo/modules/counting/labs/tallies/project';
 const folders: string[] = [];
 
 afterEach(async () => {
@@ -37,6 +38,8 @@ test('the fixture course loads, in the order its files give', async () => {
   expect(lab?.code.map(({ title, licence }) => [title, licence.name])).toEqual([
     ['tally.js 1.0.0', 'MIT'],
   ]);
+  expect(Object.keys(lab?.project ?? {})).toEqual(['README.md', 'pyproject.toml', 'uv.lock']);
+  expect(lab?.project['pyproject.toml']).toMatch(/^\[project\]\nname = "tallies"\n/);
   expect(lab?.stages[0]?.hints).toEqual([
     'Compare each choice with the one you are counting.',
     '`sum` adds up a generator of ones.',
@@ -515,6 +518,38 @@ test.each([
       path: `${stages}/ship/stage.yaml`,
       message:
         "file: chart.py is the name a stage's chart runs as, so the learner's file needs another.",
+    },
+  },
+  {
+    name: 'a project without its lock',
+    change: (root: string) => rm(join(root, project, 'uv.lock')),
+    problem: { path: `${project}/uv.lock`, message: 'Missing.' },
+  },
+  {
+    name: 'a file a project does not use',
+    change: (root: string) => writeFile(join(root, project, 'notes.md'), 'Draft\n'),
+    problem: {
+      path: `${project}/notes.md`,
+      message: 'Not part of the course: list it or remove it.',
+    },
+  },
+  {
+    name: "a learner's file named as a project's file",
+    change: async (root: string) => {
+      await edit(join(root, stages, 'ship/stage.yaml'), 'file: report.py', 'file: conftest.py');
+      for (const folder of ['starter', 'solution']) {
+        await cp(
+          join(root, stages, `ship/${folder}/report.py`),
+          join(root, stages, `ship/${folder}/conftest.py`),
+        );
+        await rm(join(root, stages, `ship/${folder}/report.py`));
+      }
+      await writeFile(join(root, project, 'conftest.py'), 'import pytest\n');
+    },
+    problem: {
+      path: `${stages}/ship/stage.yaml`,
+      message:
+        "file: conftest.py is a file of the lab's project, so the learner's file needs another name.",
     },
   },
 ])('$name is a problem', async ({ change, problem }) => {

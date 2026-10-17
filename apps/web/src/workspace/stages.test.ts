@@ -3,6 +3,7 @@ import type { LabView, StageView } from '../lib/labs';
 import {
   chartOf,
   codeOf,
+  downloadOf,
   isOpen,
   type Kept,
   packagesOf,
@@ -64,6 +65,7 @@ const lab: LabView = {
   level: 'Level',
   module: 'Module',
   data: [],
+  project: [],
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
     stage('two', 'model.py', 'def b():\n    pass\n'),
@@ -159,6 +161,27 @@ test("a later stage's runs use the code the Catch stage carried on", () => {
   });
   expect(runOf(later, data, 3, 'x = 1\n', missed).files['screener.py']).toBe(review.solution);
   expect(runOf(later, data, 3, 'x = 1\n', caught).files['screener.py']).toBe('mine\n');
+});
+
+test("a download has the project's files, the lab's data and the learner's files, but no tests", () => {
+  const project = { 'pyproject.toml': '[project]\n', 'README.md': '# Lab\n' };
+  const files = downloadOf(
+    lab,
+    data,
+    3,
+    'def threshold():\n    return 0.5\n',
+    keeping({ one: 'A\n', two: 'B\n', three: 'C\n' }, ['one', 'two', 'three'], {
+      three: { caught: ['tst_three1', 'tst_three2'], total: 2 },
+    }),
+    project,
+  );
+  expect(files).toEqual({
+    'pyproject.toml': '[project]\n',
+    'README.md': '# Lab\n',
+    'data/votes.csv': 'choice\nyes\n',
+    'model.py': 'B\n',
+    'screener.py': 'def threshold():\n    return 0.5\n',
+  });
 });
 
 test("a chart draws with the learner's files, as a run has them, and chart.py", () => {

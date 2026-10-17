@@ -1,4 +1,6 @@
+import { readFile } from 'node:fs/promises';
 import { expect, type Page, test } from '@playwright/test';
+import { strFromU8, unzipSync } from 'fflate';
 import { write } from './editor';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): a lab
@@ -219,6 +221,38 @@ test('the code is kept when the page reloads, and Reset brings back the starter'
   await expect(code(page)).toContainText('raise NotImplementedError');
   await page.reload();
   await expect(code(page)).toContainText('raise NotImplementedError');
+});
+
+test("Download saves the lab's project, its data and the code as it stands, in one zip", async ({
+  page,
+}) => {
+  await openLab(page);
+  await write(code(page), solved.count);
+
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Download' }).click(),
+  ]);
+
+  expect(download.suggestedFilename()).toBe('tallies.zip');
+  const files = unzipSync(new Uint8Array(await readFile(await download.path())));
+  expect(Object.keys(files).sort()).toEqual([
+    'tallies/README.md',
+    'tallies/data/votes.csv',
+    'tallies/pyproject.toml',
+    'tallies/tally.py',
+    'tallies/uv.lock',
+  ]);
+  const text = (name: string) => strFromU8(files[`tallies/${name}`] ?? new Uint8Array());
+  expect(text('tally.py')).toBe(solved.count);
+  expect(text('data/votes.csv')).toBe('choice\nyes\nno\nyes\n');
+  expect(text('pyproject.toml')).toContain('name = "tallies"');
+});
+
+test('a lab without a project has nothing to download', async ({ page }) => {
+  await page.goto('/demo/interviews/pairs/');
+  await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Download' })).toHaveCount(0);
 });
 
 test('a syntax error stops the run and points to its line', async ({ page }) => {

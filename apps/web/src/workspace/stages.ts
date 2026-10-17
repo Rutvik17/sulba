@@ -98,6 +98,21 @@ export function runOf(
   };
 }
 
+/**
+ * The lab's download as it stands at a stage (decision record 25): the learner's files and the
+ * lab's data, as the stage's run has them, beside the files of the lab's project.
+ */
+export function downloadOf(
+  lab: LabView,
+  data: LabData,
+  index: number,
+  code: string,
+  kept: Kept,
+  project: Readonly<Record<string, string>>,
+): Record<string, string> {
+  return { ...project, ...filesOf(lab, data, index, code, kept) };
+}
+
 /** A stage's chart, drawn with the learner's files, as a run has them. */
 export function chartOf(
   lab: LabView,

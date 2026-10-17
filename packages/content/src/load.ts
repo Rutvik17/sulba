@@ -29,6 +29,9 @@ export interface Problem {
   readonly message: string;
 }
 
+/** The files every lab project holds (decision record 25). */
+const projectFiles = ['README.md', 'pyproject.toml', 'uv.lock'];
+
 export type { Card, CatchProblem, ChartFile, ShipCheck } from './schema.ts';
 
 /** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
@@ -81,6 +84,11 @@ export type Dataset = LabFile['data'][number] & { readonly text: string };
 export interface Lab extends Omit<LabFile, 'stages' | 'data'> {
   readonly slug: string;
   readonly data: readonly Dataset[];
+  /**
+   * The files a download of the lab puts beside the learner's (decision record 25), each by its
+   * name in `project/`, or none when the lab has no project.
+   */
+  readonly project: Readonly<Record<string, string>>;
   readonly stages: readonly Stage[];
 }
 
@@ -156,7 +164,12 @@ class Reader {
   async lab(folder: string, slug: string): Promise<Lab | null> {
     const file = await this.yaml(join(folder, 'lab.yaml'), labFile);
     const hasData = (file?.data.length ?? 0) > 0;
-    await this.entries(folder, ['lab.yaml'], hasData ? ['data', 'stages'] : ['stages']);
+    const hasProject = (await this.folders(folder)).includes('project');
+    await this.entries(
+      folder,
+      ['lab.yaml'],
+      [...(hasData ? ['data'] : []), 'stages', ...(hasProject ? ['project'] : [])],
+    );
     const present = await this.folders(join(folder, 'stages'));
     this.matches(join(folder, 'stages'), file?.stages ?? [], present, 'lab.yaml');
     if (!file) return null;
@@ -201,7 +214,27 @@ class Reader {
         );
       }
     }
-    return { ...file, slug, data, stages };
+    const project = hasProject ? await this.project(join(folder, 'project')) : {};
+    // A download puts the learner's files beside the project's, so they can't share a name.
+    for (const stage of stages.filter((each) => Object.hasOwn(project, each.file))) {
+      this.problem(
+        join(folder, 'stages', stage.slug, 'stage.yaml'),
+        `file: ${stage.file} is a file of the lab's project, so the learner's file needs another name.`,
+      );
+    }
+    return { ...file, slug, data, project, stages };
+  }
+
+  /** A lab's project: its pyproject.toml, uv.lock and README.md, and a conftest.py if it has one. */
+  async project(folder: string): Promise<Record<string, string>> {
+    await this.entries(folder, projectFiles, [], ['conftest.py']);
+    const present = await this.files(folder);
+    const project: Record<string, string> = {};
+    for (const name of [...projectFiles, 'conftest.py'].filter((each) => present.includes(each))) {
+      const text = await this.text(join(folder, name));
+      if (text !== null) project[name] = text;
+    }
+    return project;
   }
 
   async stage(folder: string, slug: string): Promise<Stage | null> {
