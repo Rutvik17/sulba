@@ -1,0 +1,24 @@
+id: lab_rmitbt
+title: Debugging a training run
+summary: >-
+  Find what's wrong with a training run before it costs a day: the loss a network should
+  start at, a batch it should learn by heart, gradient norms and clipping as torch.nn.utils
+  has them and a learning-rate range test, then review an assistant's training script and
+  ship a run whose report holds up.
+data:
+  - file: digits.csv
+    title: Optical Recognition of Handwritten Digits
+    creators: [E. Alpaydin, C. Kaynak]
+    url: https://doi.org/10.24432/C50P49
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      UCI's training and test files joined under a header, with a column that puts each digit
+      in the training, validation or test set. The validation set is a quarter of the training
+      file's digits, chosen at random within each digit.
+references: [clipping.json]
+stages:
+  - before-the-first-step
+  - gradient-norms-and-clipping
+  - a-learning-rate-range-test

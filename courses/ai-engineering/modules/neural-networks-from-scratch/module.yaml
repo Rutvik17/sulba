@@ -1,3 +1,8 @@
 id: mod_uk0gy5
 title: Neural networks from scratch
-labs: [layers-and-backpropagation, an-autograd-engine, optimizers, initialization-and-normalization]
+labs:
+  - layers-and-backpropagation
+  - an-autograd-engine
+  - optimizers
+  - initialization-and-normalization
+  - debugging-a-training-run

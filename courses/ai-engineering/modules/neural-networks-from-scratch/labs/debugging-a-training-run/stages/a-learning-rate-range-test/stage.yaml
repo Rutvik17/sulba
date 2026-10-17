@@ -1,0 +1,14 @@
+id: stg_qpayn7
+kind: build
+title: A learning-rate range test
+builds: A new `range_test.py`.
+file: range_test.py
+packages: [numpy]
+minutes: 45
+chart:
+  title: The loss as the learning rate rises
+  sliders:
+    - name: beta
+      label: β
+      stops: [0.9, 0.95, 0.98, 0.99]
+      value: 0.98
