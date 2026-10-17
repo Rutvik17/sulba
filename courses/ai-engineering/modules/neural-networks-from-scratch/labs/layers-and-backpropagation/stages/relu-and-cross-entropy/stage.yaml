@@ -1,0 +1,7 @@
+id: stg_h1bia4
+kind: build
+title: ReLU and cross-entropy
+builds: Your `layers.py` from stage 1.
+file: layers.py
+packages: [numpy]
+minutes: 45

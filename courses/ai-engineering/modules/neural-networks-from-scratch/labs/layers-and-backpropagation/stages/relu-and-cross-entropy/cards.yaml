@@ -1,0 +1,24 @@
+cards:
+  - id: crd_qdaxus
+    front: >-
+      What is the gradient of a digit's cross-entropy with respect to its logits?
+    back: >-
+      Its softmax probabilities less 1 at its label, `$p - y$`. For the mean over a batch,
+      each row is divided by the number of samples.
+  - id: crd_ewef6x
+    front: >-
+      How do you keep the softmax's log-sum-exp from overflowing?
+    back: >-
+      Take the row's largest logit `$m$` out first: `$m + \log \sum_j e^{z_j - m}$`, where no
+      term is above 1.
+  - id: crd_8mnbmc
+    front: >-
+      What loss does a network give when every logit is the same?
+    back: >-
+      `$\log C$` for `$C$` classes, since each has probability `$1/C$`. A first loss far
+      above it is a sign the weights started too large.
+  - id: crd_7hodx3
+    front: >-
+      What gradient does PyTorch's ReLU pass back where its input is exactly 0?
+    back: >-
+      0, as for any input below 0.

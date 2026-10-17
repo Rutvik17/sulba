@@ -1,0 +1,18 @@
+cards:
+  - id: crd_grnowx
+    front: >-
+      Why does a network's backward pass run through its layers in reverse?
+    back: >-
+      Each layer's backward pass needs the gradient at its outputs, which the layer after it
+      works out.
+  - id: crd_5joh3m
+    front: >-
+      How does PyTorch's `nn.Linear` start its weights and biases?
+    back: >-
+      Drawn uniformly from `$-1/\sqrt{\text{inputs}}$` to `$1/\sqrt{\text{inputs}}$`.
+  - id: crd_cz5dsc
+    front: >-
+      What happens to a ReLU unit whose input is 0 or below for every sample?
+    back: >-
+      It passes nothing on and no gradient back, so it never learns again. Too high a
+      learning rate can leave a whole layer like that.

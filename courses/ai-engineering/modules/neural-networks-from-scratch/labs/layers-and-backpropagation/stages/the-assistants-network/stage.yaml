@@ -1,0 +1,61 @@
+id: stg_5t4750
+kind: catch
+title: The assistant's network
+builds: Your `layers.py` from stages 1 to 3.
+file: network.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_71yzcs
+    title: It didn't divide the loss's gradient by the size of the batch
+    cost: >-
+      The loss is a mean over the batch, but its gradient was a sum, {% $fig.batch %} times
+      too large for the office's batches of {% $fig.batch %} digits, so every step went
+      {% $fig.batch %} times as far as the learning rate said. Trained as stage 3's chart
+      trains, at {% $fig.lr %}, the network read {% $fig.unaveraged %} of the validation
+      digits right, where the right gradient reads {% $fig.accuracy %}.
+    fix: >-
+      The fix: divide by the number of digits, `dlogits / len(labels)`.
+    edit:
+      replace: "    return float(loss), dlogits\n"
+      with: "    return float(loss), dlogits / len(labels)\n"
+  - check: tst_sfw6xb
+    title: Its softmax overflowed for confident logits
+    cost: >-
+      `np.exp` overflows once a logit passes {% $fig.overflow %}. For logits as large as
+      {% $fig.largest %}, the loss came out infinite and the gradient as `nan`, where
+      PyTorch's loss is {% $fig.confident_loss %}.
+    fix: >-
+      The fix: take each row's largest logit out first, `logits - logits.max(axis=1,
+      keepdims=True)`, which changes neither the probabilities nor the loss.
+    edit:
+      replace: "    exps = np.exp(logits)\n"
+      with: "    logits = logits - logits.max(axis=1, keepdims=True)\n    exps = np.exp(logits)\n"
+  - check: tst_vave1o
+    title: It ran the backward pass through the layers in the forward order
+    cost: >-
+      With one layer, as in the assistant's test, there is only one order. The office's
+      network has {% $fig.layers %} layers, and its first layer's backward pass was handed the
+      gradient at the logits, {% $fig.classes %} values for each digit, where the layer has
+      {% $fig.units %} outputs. The shapes didn't fit, and the backward pass raised an error
+      before training took a step.
+    fix: >-
+      The fix: `reversed(self.layers)`, so that each layer gets the gradient at its own
+      outputs.
+    edit:
+      replace: "        for layer in self.layers:\n            d = layer.backward(d)\n"
+      with: "        for layer in reversed(self.layers):\n            d = layer.backward(d)\n"
+  - check: tst_e8uepi
+    title: Its gradients added up from one step to the next
+    cost: >-
+      Each backward pass added its gradients to the ones before, so every step moved the
+      weights by the sum of all the gradients since training began. Trained as stage 3's
+      chart trains, the network read {% $fig.accumulated %} of the validation digits right.
+      PyTorch adds up gradients the same way, which is why a PyTorch training loop clears
+      them with `optimizer.zero_grad()` before each backward pass.
+    fix: >-
+      The fix: `self.dweight = dY.T @ self.X` and `self.dbias = dY.sum(axis=0)`, which hold
+      one backward pass's gradients at a time.
+    edit:
+      replace: "        self.dweight += dY.T @ self.X\n        self.dbias += dY.sum(axis=0)\n"
+      with: "        self.dweight = dY.T @ self.X\n        self.dbias = dY.sum(axis=0)\n"

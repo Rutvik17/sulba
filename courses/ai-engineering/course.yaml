@@ -6,3 +6,8 @@ levels:
     title: Beginner
     needs: "Any laptop: every lab runs in your browser"
     modules: [python-for-programmers, maths-behind-ml, working-with-data, learning-from-data, models-that-win-on-tables, text-as-numbers, coding-interviews, capstone]
+  - id: lvl_lnektu
+    slug: intermediate
+    title: Intermediate
+    needs: "Any laptop: every lab runs in your browser"
+    modules: [neural-networks-from-scratch]

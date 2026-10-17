@@ -1,0 +1,14 @@
+id: stg_k3d88d
+kind: build
+title: Backpropagation
+builds: Your `layers.py` from stage 2.
+file: layers.py
+packages: [numpy]
+minutes: 50
+chart:
+  title: The loss as the network trains
+  sliders:
+    - name: lr
+      label: Learning rate
+      stops: [0.01, 0.1, 0.5, 2]
+      value: 0.1

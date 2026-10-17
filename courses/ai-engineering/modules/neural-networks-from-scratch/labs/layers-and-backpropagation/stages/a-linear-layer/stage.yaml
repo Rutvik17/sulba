@@ -1,0 +1,7 @@
+id: stg_9ggmx6
+kind: build
+title: A linear layer
+builds: A new `layers.py`.
+file: layers.py
+packages: [numpy]
+minutes: 45
