@@ -1,0 +1,21 @@
+cards:
+  - id: crd_1go8ik
+    front: >-
+      Why is Kaiming's gain for a ReLU `$\sqrt{2}$`?
+    back: >-
+      A ReLU keeps half of a symmetric signal's mean square, and doubling the weights' mean
+      square, a gain of `$\sqrt{2}$`, makes up for it, so on average each layer keeps the
+      signal's size.
+  - id: crd_no435h
+    front: >-
+      What does `nn.Linear`'s own start keep of the signal through a ReLU?
+    back: >-
+      A sixth of its mean square, about {% $fig.default %} of its size, layer after layer:
+      deep networks started that way fade.
+  - id: crd_ugs9uy
+    front: >-
+      Why does a start a little too small or large matter more in a deeper network?
+    back: >-
+      Each layer multiplies the signal's size by the same factor, so the error compounds: a
+      start {% $fig.off %} too small leaves {% $fig.small %} of the size after
+      {% $fig.layers %} layers.

@@ -1,0 +1,7 @@
+id: stg_3i43qi
+kind: build
+title: Layer normalization
+builds: Your `norms.py` from stage 2.
+file: norms.py
+packages: [numpy]
+minutes: 40

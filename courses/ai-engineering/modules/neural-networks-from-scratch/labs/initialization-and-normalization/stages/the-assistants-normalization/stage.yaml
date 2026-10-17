@@ -1,0 +1,71 @@
+id: stg_463uoy
+kind: catch
+title: The assistant's normalization
+builds: Your `norms.py` from stages 2 and 3.
+file: normalization.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_zaios5
+    title: It normalized with the batch's statistics in evaluation
+    cost: >-
+      `forward` normalized with the batch's mean and variance in evaluation too, so each
+      digit's outputs depended on the other digits in its batch, and a digit read alone
+      came out as the bias, whatever the digit: a batch of one is its own mean, with a
+      variance of 0. A network of these layers reads every digit alone as the same one,
+      right for {% $fig.lone_low %} to {% $fig.lone_high %} of the test digits,
+      depending on which. The assistant's tests ran in training alone.
+    fix: >-
+      The fix: in evaluation, `mean, var = self.running_mean, self.running_var`.
+    edit:
+      replace: "            self._track(X)\n        mean, var = X.mean(axis=0), X.var(axis=0)\n"
+      with: "            self._track(X)\n            mean, var = X.mean(axis=0), X.var(axis=0)\n        else:\n            mean, var = self.running_mean, self.running_var\n"
+  - check: tst_xwzlfs
+    title: Its running variance mixed in the variance over n
+    cost: >-
+      `_track` mixed each batch's own variance, over `$n$`, into the running estimate,
+      where PyTorch mixes in the unbiased one, over `$n - 1$`. Each batch then added
+      `$(n - 1) / n$` as much as it adds to PyTorch's, so the estimate fell further
+      behind with every batch, toward `$(n - 1) / n$` of PyTorch's: after the recorded
+      {% $fig.small_batches %} batches of {% $fig.small %}, it was
+      {% $fig.reached_low %} to {% $fig.reached_high %} of PyTorch's, on its way to
+      {% $fig.settled %}. Evaluation divides by its square root, and once it settles,
+      every output in evaluation comes out about {% $fig.stretch %} times as far from
+      the bias as PyTorch's. The assistant's tests checked the running mean alone.
+    fix: >-
+      The fix: `X.var(axis=0, ddof=1)` in `_track`, the unbiased variance.
+    edit:
+      replace: "        mean, var = X.mean(axis=0), X.var(axis=0)\n        keep = 1 - self.momentum\n"
+      with: "        mean, var = X.mean(axis=0), X.var(axis=0, ddof=1)\n        keep = 1 - self.momentum\n"
+  - check: tst_hx94kd
+    title: Its backward pass left out the batch's mean and variance
+    cost: >-
+      `backward` returned `dY * self.weight * self.scale`, the gradient through each
+      sample's own `$\hat{x}$` alone, and left out its paths through the batch's mean
+      and variance, which every sample in the batch moves. In the recorded batches, its
+      gradients with respect to the batch were off PyTorch's by {% $fig.backward_low %}
+      to {% $fig.backward_high %} of their size, and a feature's summed over the batch
+      to as much as {% $fig.backward_sum %} in size, where PyTorch's sum to 0. The
+      weight's and the bias's gradients were right, which is all the assistant's tests
+      checked.
+    fix: >-
+      The fix: stage 2's backward pass, whose two sums over the batch carry the gradient
+      through the mean and the variance.
+    edit:
+      replace: "        return dY * self.weight * self.scale\n"
+      with: "        n = len(dY)\n        dnormalized = dY * self.weight\n        summed = dnormalized.sum(axis=0)\n        along = (dnormalized * self.normalized).sum(axis=0)\n        return self.scale / n * (n * dnormalized - summed - self.normalized * along)\n"
+  - check: tst_hw9ipy
+    title: Its layer normalization normalized each feature over the batch
+    cost: >-
+      `LayerNorm` took its mean and variance over `axis=0`, each feature over the batch,
+      which is batch normalization's axis without its running estimates. Each sample's
+      outputs depended on the other samples in its batch, a sample read alone came out
+      as the bias, and on the recorded batches its outputs were up to
+      {% $fig.axis_off %} away from PyTorch's. Its one test gave it a batch whose values
+      were all the same, which comes out as the bias along either axis.
+    fix: >-
+      The fix: `axis=-1` for the mean and the variance, each sample over its own
+      features.
+    edit:
+      replace: "        mean = X.mean(axis=0, keepdims=True)\n        var = X.var(axis=0, keepdims=True)\n"
+      with: "        mean = X.mean(axis=-1, keepdims=True)\n        var = X.var(axis=-1, keepdims=True)\n"

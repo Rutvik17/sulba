@@ -1,0 +1,14 @@
+cards:
+  - id: crd_5hgn9m
+    front: >-
+      Why does a linear layer before batch normalization need no bias?
+    back: >-
+      Batch normalization subtracts each feature's mean over the batch, and the bias with
+      it, so the bias's gradient is 0. `$\beta$` shifts each feature instead.
+  - id: crd_ouy0tl
+    front: >-
+      With batch normalization after a layer, what does the scale of its weights still
+      change?
+    back: >-
+      The size of its steps. Weights `$a$` times as large give the same outputs, `$\epsilon$`
+      aside, and get `$1/a$` of the gradient, so for their size they move `$1/a^2$` as far.

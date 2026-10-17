@@ -1,0 +1,7 @@
+id: stg_m1cylg
+kind: build
+title: Batch normalization
+builds: A new `norms.py`.
+file: norms.py
+packages: [numpy]
+minutes: 60

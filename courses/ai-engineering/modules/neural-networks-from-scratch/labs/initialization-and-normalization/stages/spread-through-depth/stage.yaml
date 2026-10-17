@@ -1,0 +1,14 @@
+id: stg_j4qtaf
+kind: build
+title: Spread through depth
+builds: A new `init.py`.
+file: init.py
+packages: [numpy]
+minutes: 45
+chart:
+  title: The signal's size through depth
+  sliders:
+    - name: scale
+      label: c
+      stops: [0.8, 0.9, 1, 1.1, 1.2]
+      value: 1
