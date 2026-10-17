@@ -1,0 +1,13 @@
+cards:
+  - id: crd_r7dyub
+    front: >-
+      Why can standardizing inputs give `nan`, and what's the fix?
+    back: >-
+      A feature that never varies in the training data has a standard deviation of 0, and
+      dividing by it gives `nan`. Divide such features by 1.
+  - id: crd_bq36r2
+    front: >-
+      Why can a validation set overstate how well a model reads new people's handwriting?
+    back: >-
+      When its digits come from the same people as the training digits, it measures how well
+      the model reads those people. Only digits from other people measure new ones.

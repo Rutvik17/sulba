@@ -1,0 +1,36 @@
+id: stg_bwfptm
+kind: ship
+title: Reading new writers' digits
+builds: Your `layers.py` from stage 3.
+file: train.py
+packages: [numpy]
+minutes: 60
+checks:
+  - check: tst_z82lcq
+    title: "{% $fig.target %} of new writers' digits"
+    requires: >-
+      Trained on the {% $fig.training %} training digits with `default_rng(0)`, `read` must
+      read at least {% $fig.target %} of the {% $fig.test %} test digits right, written by
+      people none of the training digits came from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_y7fxoa
+    title: "Trains in under {% $fig.limit %} seconds"
+    requires: >-
+      `train` must train on the {% $fig.training %} training digits in under
+      {% $fig.limit %} seconds.
+    failure: >-
+      The limit is {% $fig.limit %} seconds.
+  - check: tst_afcif5
+    title: The same reader from the same seed
+    requires: >-
+      Two readers trained on the same digits with the same seed must read the test digits
+      the same.
+    failure: >-
+      The same seed gave two readers that read the digits differently.
+  - check: tst_mnp2ar
+    title: Its inputs left as they were
+    requires: >-
+      `train` and `read` must leave the pixels and the digits they're given as they were.
+    failure: >-
+      It changed the pixels or the digits it was given.

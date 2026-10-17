@@ -1,0 +1,25 @@
+id: lab_76n0vn
+title: Layers and backpropagation
+summary: >-
+  Build a network from layers in NumPy: linear layers, ReLU and a cross-entropy loss, each
+  with a backward pass whose gradients match PyTorch's, and train it to read handwritten
+  digits from people whose writing it has never seen.
+data:
+  - file: digits.csv
+    title: Optical Recognition of Handwritten Digits
+    creators: [E. Alpaydin, C. Kaynak]
+    url: https://doi.org/10.24432/C50P49
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      UCI's training and test files joined under a header, with a column that puts each digit
+      in the training, validation or test set. The validation set is a quarter of the training
+      file's digits, chosen at random within each digit.
+references: [linear.json, activations.json, networks.json]
+stages:
+  - a-linear-layer
+  - relu-and-cross-entropy
+  - backpropagation
+  - the-assistants-network
+  - reading-new-writers

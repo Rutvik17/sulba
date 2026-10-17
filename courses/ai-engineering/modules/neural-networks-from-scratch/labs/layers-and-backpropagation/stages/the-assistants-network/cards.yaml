@@ -1,0 +1,14 @@
+cards:
+  - id: crd_f3lzmy
+    front: >-
+      Why is a test on a single sample a weak test of a loss's gradient?
+    back: >-
+      With one sample a sum and a mean are the same, so a gradient that forgets to divide by
+      the batch's size passes it.
+  - id: crd_8272yh
+    front: >-
+      Why does a PyTorch training loop call `optimizer.zero_grad()` before each backward
+      pass?
+    back: >-
+      PyTorch adds each backward pass's gradients to the ones already held, so without it
+      every step would use the sum of every gradient so far.

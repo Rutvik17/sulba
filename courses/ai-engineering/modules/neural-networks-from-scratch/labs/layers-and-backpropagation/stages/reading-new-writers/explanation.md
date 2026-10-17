@@ -1,0 +1,5 @@
+The solution puts each pixel on the same scale, its count less the training digits' mean for that pixel, over their standard deviation, and keeps both for `read`. {% $fig.constant %} of the {% $fig.pixels %} pixels are 0 in every training digit, so their standard deviation is 0, and dividing by it gives `nan`, which spreads through the network at its first step. The solution divides those by 1.
+
+It trains a hidden layer of {% $fig.hidden %} units for {% $fig.epochs %} passes over the training digits, in batches of {% $fig.batch %}, at a learning rate of {% $fig.lr %}. It then reads {% $fig.validation_share %} of the validation digits right, and {% $fig.test_share %} of the test digits.
+
+The gap comes from the people. The validation digits were written by the people the network trained on, and the test digits by others, whose handwriting it has never seen. A validation set drawn from the same people as the training set measures how well a model reads those people, and choosing settings on it favours the ones that fit them. The number the office can plan with is the test digits'.

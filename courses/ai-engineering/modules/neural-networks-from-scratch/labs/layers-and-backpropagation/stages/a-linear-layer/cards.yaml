@@ -1,0 +1,25 @@
+cards:
+  - id: crd_926w38
+    front: >-
+      How does PyTorch's `nn.Linear` hold its weight?
+    back: >-
+      With a row for each output and a column for each input, so its forward pass is
+      `$Y = X W^\top + b$`.
+  - id: crd_pss1xs
+    front: >-
+      What is a linear layer's gradient with respect to its weight, for a batch?
+    back: >-
+      `$(\partial L / \partial Y)^\top X$`: the gradient at each output times the input it
+      multiplied, added up over the samples. It has the weight's shape.
+  - id: crd_2lnd9c
+    front: >-
+      Why is a linear layer's bias gradient a sum over the batch?
+    back: >-
+      The same bias is added to every sample's outputs, so each sample's gradient at the
+      outputs adds to it.
+  - id: crd_na1x6o
+    front: >-
+      What does a linear layer's backward pass return?
+    back: >-
+      The gradient with respect to its inputs, `$(\partial L / \partial Y) \, W$`, which the
+      layer before it takes as the gradient at its outputs.
