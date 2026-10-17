@@ -1,0 +1,5 @@
+The solution's `cross_entropy` takes each row's largest logit out first, as a constant Tensor, which changes neither the loss nor its gradient and keeps every exponent at 0 or below. It picks each label's logit with a product with one-hot rows, and returns the log-sum-exp less that logit, averaged over the rows. Its gradient, `$(p - y)/n$` for softmax's probabilities `$p$`, one-hot labels `$y$` and `$n$` rows, is written nowhere: the engine works it out from the steps.
+
+Its `topological_order` visits the graph in the order the recursive one does, with a stack in place of the calls. Each value on the stack keeps an iterator over the parents it has still to visit, a parent not yet seen goes on top, and a value with no parents left goes into the order. How deep it can go is set by memory, not by Python's limit of {% $fig.limit %} calls.
+
+Each step of the check's chain adds {% $fig.step %} times x to x, so it multiplies the gradient by 1 + {% $fig.step %}, and after {% $fig.depth %} steps the input's gradient is {% $fig.gradient %}, within {% $fig.from_e %} of e.

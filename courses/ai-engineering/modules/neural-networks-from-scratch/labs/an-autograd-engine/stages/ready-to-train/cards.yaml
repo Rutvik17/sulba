@@ -1,0 +1,15 @@
+cards:
+  - id: crd_oj4zrk
+    front: >-
+      Why can't a recursive topological order handle a graph thousands of steps deep in
+      Python?
+    back: >-
+      Python stops a function that calls itself more than {% $fig.limit %} deep with a
+      `RecursionError`. A stack of the values still to visit does the same work with no call
+      waiting on another.
+  - id: crd_cvb15g
+    front: >-
+      How does a cross-entropy made of an engine's operations stay finite for large logits?
+    back: >-
+      It takes each row's largest logit out first, as a constant, which changes neither the
+      loss nor its gradient, so `exp` only sees numbers at 0 or below.

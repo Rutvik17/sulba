@@ -1,0 +1,5 @@
+The assistant worked out each test by hand, so each was small enough to work out by hand: a few tensors, each used once, a bias the only broadcasting, and each function at a point where its slope is easy, tanh at 0. A test worked by hand checks a formula at the point it was worked at. It can't see the bookkeeping between operations, where three of the four problems were, or a formula that is right at that point and wrong away from it.
+
+---
+
+The checks used the engine as networks do: residual blocks use their inputs twice, a weight penalty multiplies the weights by themselves, a stable softmax stretches a column, and a layer's inputs to tanh spread out on both sides of 0. Each compared the engine with PyTorch, as stages 1 to 3's tests did on random expressions. Where there is no reference to compare with, finite differences give one: PyTorch's `torch.autograd.gradcheck` compares the gradients its autograd works out with ones from small finite differences, and its defaults are set for double precision.

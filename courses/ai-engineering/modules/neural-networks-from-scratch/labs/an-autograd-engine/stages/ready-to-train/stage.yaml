@@ -1,0 +1,24 @@
+id: stg_tqodz2
+kind: ship
+title: Ready to train
+builds: Your `engine.py` from stages 1 to 3.
+file: engine.py
+packages: [numpy]
+minutes: 60
+checks:
+  - check: tst_38eu62
+    title: "Graphs {% $fig.depth %} steps deep"
+    requires: >-
+      `backward` must work through a chain of {% $fig.depth %} steps, of Values and of
+      Tensors, each step using the one before twice, and give the right gradients. Python
+      stops a function that calls itself more than {% $fig.limit %} deep.
+    failure: >-
+      `backward` raised an error on the chain, or gave the wrong gradients.
+  - check: tst_d95r9h
+    title: Confident logits
+    requires: >-
+      `cross_entropy` must give PyTorch's loss and gradient, every number finite, for logits
+      as large as {% $fig.largest %}.
+    failure: >-
+      `np.exp` overflows past {% $fig.overflow %}, which makes the loss infinite or the
+      gradient `nan`.

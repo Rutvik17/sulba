@@ -1,0 +1,20 @@
+cards:
+  - id: crd_555tnj
+    front: >-
+      Why must a topological order skip a tensor it has already visited?
+    back: >-
+      Without that, it lists a tensor once for each path to it, the backward pass runs its
+      `_backward` for each entry, and the gradients come out wrong. Each residual block
+      doubles the paths.
+  - id: crd_nltyqp
+    front: >-
+      Why can't a test at 0 catch tanh's derivative written as `$1 - x^2$`?
+    back: >-
+      At 0, `$1 - x^2$` and `$1 - \tanh^2 x$` are both 1. They part further from 0, and past
+      1 on either side `$1 - x^2$` is below 0, where tanh's slope never is.
+  - id: crd_ip4c2d
+    front: >-
+      What must `unbroadcast` sum besides the axes broadcasting added in front?
+    back: >-
+      Each axis of length 1 in the tensor's shape that broadcasting stretched, keeping it with
+      `keepdims=True`.

@@ -1,0 +1,13 @@
+id: lab_llm7nt
+title: An autograd engine
+summary: >-
+  Build an engine that works out gradients by itself, as PyTorch's autograd does: values
+  and arrays that remember how they were made, a backward pass in topological order,
+  broadcasting summed back, and gradients that match PyTorch's on random expressions.
+references: [scalars.json, tensors.json, models.json]
+stages:
+  - values-that-remember
+  - every-operation
+  - tensors
+  - the-assistants-engine
+  - ready-to-train
