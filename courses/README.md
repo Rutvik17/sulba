@@ -6,7 +6,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
 
 ```text
 <course>/
-  course.yaml               id, title, and its levels, each with its modules in order
+  course.yaml               id, title, and its levels, each with the machine it needs and its
+                            modules in order
   modules/<module>/
     module.yaml             id, title, and its labs in order
     labs/<lab>/

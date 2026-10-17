@@ -10,6 +10,8 @@ export interface ModuleOutline {
 
 export interface LevelOutline {
   readonly title: string;
+  /** The machine the level needs. */
+  readonly needs: string;
   readonly modules: readonly ModuleOutline[];
 }
 
@@ -22,7 +24,11 @@ export interface CourseOutline {
 interface Building {
   slug: string;
   title: string;
-  levels: { title: string; modules: { slug: string; title: string; labs: LabEntry[] }[] }[];
+  levels: {
+    title: string;
+    needs: string;
+    modules: { slug: string; title: string; labs: LabEntry[] }[];
+  }[];
 }
 
 /** Each course, with its labs grouped by level and module, in the course's order. */
@@ -37,7 +43,7 @@ export function courseOutlines(labs: readonly LabEntry[]): CourseOutline[] {
     }
     let level = course.levels.at(-1);
     if (level?.title !== lab.level) {
-      level = { title: lab.level, modules: [] };
+      level = { title: lab.level, needs: lab.levelNeeds, modules: [] };
       course.levels.push(level);
     }
     let module = level.modules.at(-1);

@@ -16,10 +16,18 @@ export async function getStaticPaths() {
 }
 
 // The review cards belong to the Review page, the data's and the project's text are served on
-// their own (src/pages/data and src/pages/project), and the credits are the page's, so the
-// workspace is sent none of them.
+// their own (src/pages/data and src/pages/project), the credits are the page's and the level's
+// needs are the course page's, so the workspace is sent none of them.
 const { entry } = Astro.props as { entry: LabEntry };
-const { cards: _, files: __, projectFiles: ____, order: ___, code, ...lab } = entry;
+const {
+  cards: _,
+  files: __,
+  projectFiles: ____,
+  order: ___,
+  levelNeeds: _____,
+  code,
+  ...lab
+} = entry;
 const facts = labFacts(lab);
 const [course, module] = lab.path.split('/');
 ---

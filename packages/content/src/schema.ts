@@ -21,6 +21,8 @@ export const courseFile = z.strictObject({
         id: id('level'),
         slug,
         title,
+        /** The machine the level needs, which its course's page states before it begins. */
+        needs: title,
         modules: z.array(slug),
       }),
     )
