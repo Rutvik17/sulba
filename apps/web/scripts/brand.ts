@@ -1,8 +1,9 @@
 /*
   Draws Sulba's pictures for its accounts on other sites into brand/, at the repository's root: the
-  profile picture in both themes and the banners, each at the size its site asks for. Everything
-  comes from the mark's geometry, the avatar shapes and the design tokens, and Chromium renders
-  each picture one pixel to one pixel.
+  profile picture in both themes and the banners, each at the size its site asks for. It also
+  draws the site's own icons into apps/web/public: the icon a browser shows for a page, and the
+  one a phone puts on its home screen. Everything comes from the mark's geometry, the avatar
+  shapes and the design tokens, and Chromium renders each picture one pixel to one pixel.
 
     pnpm brand
 */
@@ -12,7 +13,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium } from '@playwright/test';
-import { knots, pegs } from '@sulba/ui/mark';
+import { cordPath, knots, pegs } from '@sulba/ui/mark';
 import { type ShapeName, shapes } from '@sulba/ui/shapes';
 
 type Point = (typeof pegs)[number];
@@ -25,6 +26,7 @@ interface Theme {
 
 const require = createRequire(import.meta.url);
 const out = path.resolve(import.meta.dirname, '../../../brand');
+const site = path.resolve(import.meta.dirname, '../public');
 
 // The colours are the site's: the page, a raised surface and the text, in each theme.
 const tokens = readFileSync(require.resolve('@sulba/ui/tokens.css'), 'utf8');
@@ -80,6 +82,51 @@ function profile(size: number, { tile, ink }: Theme) {
     ...pegs.map((peg) => dot(peg, WEIGHT.peg)),
     '</svg>',
   ].join('\n');
+}
+
+/*
+  The site's icon as SVG: the cord and its pegs on a tile, in the mark's own 100 × 100 box, as the
+  top bar draws it. A browser shows it at 16 or 32 px, so the cord and pegs are drawn heavier than
+  in the profile picture, and the knots are left out. `colours` gives one theme, or both, the dark
+  one for a device set to dark. `round` is the tile's corner radius, and the home screen icon has
+  none: it fills its square, opaque to the corners.
+*/
+const ICON = { scale: 0.72, line: 9, peg: 9, round: 20 };
+
+function icon(colours: Theme | { light: Theme; dark: Theme }, round: number) {
+  const [light, dark] = 'light' in colours ? [colours.light, colours.dark] : [colours, null];
+  const look = ({ tile, ink }: Theme) =>
+    `.tile { fill: ${tile}; } .cord { stroke: ${ink}; } .peg { fill: ${ink}; }`;
+  return [
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">',
+    '<title>Sulba</title>',
+    `<style>${look(light)}</style>`,
+    ...(dark ? [`<style>@media (prefers-color-scheme: dark) { ${look(dark)} }</style>`] : []),
+    `<rect class="tile" width="100" height="100" rx="${round}"/>`,
+    `<g transform="translate(50 50) scale(${ICON.scale}) translate(-50 -50)">`,
+    `<path class="cord" d="${cordPath}" fill="none" stroke-width="${ICON.line}" stroke-linejoin="round"/>`,
+    ...pegs.map(([x, y]) => `<circle class="peg" cx="${x}" cy="${y}" r="${ICON.peg}"/>`),
+    '</g>',
+    '</svg>',
+  ].join('\n');
+}
+
+/*
+  An .ico file holding one PNG image, as Windows has read since Vista and browsers read too: a
+  6-byte header, a 16-byte entry for the image, and the PNG's bytes.
+*/
+function ico(png: Buffer, size: number): Buffer {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(1, 2); // An icon, not a cursor.
+  header.writeUInt16LE(1, 4); // One image.
+  const entry = Buffer.alloc(16);
+  entry.writeUInt8(size, 0);
+  entry.writeUInt8(size, 1);
+  entry.writeUInt16LE(1, 4); // Colour planes.
+  entry.writeUInt16LE(32, 6); // Bits per pixel.
+  entry.writeUInt32LE(png.length, 8);
+  entry.writeUInt32LE(header.length + entry.length, 12);
+  return Buffer.concat([header, entry, png]);
 }
 
 /*
@@ -241,6 +288,27 @@ try {
     await tab.close();
     console.log(`brand/${name}.png  ${width} × ${height}`);
   }
+  // The site's icons in the light theme: favicon.ico, for a browser that asks for it rather than
+  // the SVG, with its corners clear, and the home screen icon, square and opaque.
+  for (const [name, size, round] of [
+    ['favicon.ico', 32, ICON.round],
+    ['apple-touch-icon.png', 180, 0],
+  ] as const) {
+    const file = path.join(work, `${name}.html`);
+    writeFileSync(
+      file,
+      `<!doctype html><style>* { margin: 0; } svg { display: block; width: 100vw; height: 100vh; }</style>${icon(themes.light, round)}`,
+    );
+    const tab = await browser.newPage({
+      viewport: { width: size, height: size },
+      deviceScaleFactor: 1,
+    });
+    await tab.goto(pathToFileURL(file).href);
+    const png = await tab.screenshot({ omitBackground: true });
+    await tab.close();
+    writeFileSync(path.join(site, name), name.endsWith('.ico') ? ico(png, size) : png);
+    console.log(`apps/web/public/${name}  ${size} × ${size}`);
+  }
 } finally {
   await browser.close();
   rmSync(work, { recursive: true, force: true });
@@ -249,3 +317,5 @@ for (const [name, colours] of Object.entries(themes)) {
   writeFileSync(path.join(out, `profile-${name}.svg`), `${profile(1080, colours)}\n`);
   console.log(`brand/profile-${name}.svg`);
 }
+writeFileSync(path.join(site, 'icon.svg'), `${icon(themes, ICON.round)}\n`);
+console.log('apps/web/public/icon.svg');

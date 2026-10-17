@@ -57,7 +57,7 @@ End-to-end tests are written with each feature, and run only when the founder as
 - A stage can have a chart: its `chart.py` draws with the learner's code, and the workspace's Chart tab shows the result in SVG, the solution's faded until the stage is passed (decision record 16). The content check draws each chart with the stage's solution, in Pyodide and CPython.
 - A stage can have review cards (`cards.yaml`), which come back at `/review/` once the stage is passed (decision record 20). The browser keeps every review in local storage, signed in or not, and works out each card's schedule by replaying its reviews through FSRS with ts-fsrs, whose intervals the unit tests pin. Signed in, `/review/` takes in the account's passes and reviews once a visit, and sends the reviews the account lacks.
 - The build phases (Phase 0 to Phase 6) are internal. Learners never see them.
-- The pictures in `brand` are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
+- The pictures in `brand`, and the site's icons in `apps/web/public` (`favicon.ico`, `icon.svg` and `apple-touch-icon.png`), are drawn by `pnpm brand` (`apps/web/scripts/brand.ts`) from the mark, the avatar shapes and the design tokens. Change the script and run it again; never edit a picture by hand.
 - One course at a time: AI Engineering is built end to end before any other course starts. A language's editor support and Docker image arrive with the first session that uses it.
 
 ## Correctness
