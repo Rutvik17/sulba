@@ -1,6 +1,6 @@
 import { afterEach, expect, test, vi } from 'vitest';
 import type { LabView } from '../lib/labs';
-import { labData } from './data';
+import { labData, projectFiles } from './data';
 
 function labWith(id: string): LabView {
   const set = (file: string) => ({
@@ -22,6 +22,10 @@ function labWith(id: string): LabView {
     level: 'Level',
     module: 'Module',
     data: [set('votes.csv'), set('seats.csv')],
+    project: [
+      { name: 'pyproject.toml', served: '/project/0123456789abcdef/pyproject.toml' },
+      { name: 'uv.lock', served: '/project/fedcba9876543210/uv.lock' },
+    ],
     stages: [],
   };
 }
@@ -57,4 +61,18 @@ test('a fetch that fails is tried again the next time', async () => {
     'data/votes.csv': 'choice\nyes\n',
     'data/seats.csv': 'choice\nyes\n',
   });
+});
+
+test("a lab's project files are fetched once, apart from its datasets, by name", async () => {
+  const fetched = vi.fn(async (url: string) => new Response(`text of ${url}`));
+  vi.stubGlobal('fetch', fetched);
+  const lab = labWith('lab_proj01');
+  await labData(lab);
+  const first = await projectFiles(lab);
+  expect(first).toEqual({
+    'pyproject.toml': 'text of /project/0123456789abcdef/pyproject.toml',
+    'uv.lock': 'text of /project/fedcba9876543210/uv.lock',
+  });
+  expect(await projectFiles(lab)).toBe(first);
+  expect(fetched).toHaveBeenCalledTimes(4);
 });

@@ -1,0 +1,18 @@
+[project]
+name = "tallies"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest==9.0.2"]
+
+[tool.uv]
+package = false
+# The versions the browser runs.
+constraint-dependencies = [
+  "iniconfig==2.3.0",
+  "packaging==26.1",
+  "pluggy==1.6.0",
+  "pygments==2.20.0",
+]

@@ -13,9 +13,11 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     level,
     module,
     data: [],
+    project: [],
     code: [],
     stages: [],
     files: {},
+    projectFiles: {},
     cards: [],
   };
 }

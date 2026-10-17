@@ -9,3 +9,7 @@
 # A lab's dataset is served from a folder named for its text, so its file never changes either.
 /data/*
   Cache-Control: public, max-age=31536000, immutable
+
+# So is each file of a lab's project.
+/project/*
+  Cache-Control: public, max-age=31536000, immutable

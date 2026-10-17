@@ -16,6 +16,11 @@
       "enabled": false
     },
     {
+      "description": "A lab project's packages move with Pyodide too, so learners run what the browser runs",
+      "matchFileNames": ["courses/**/project/**", "packages/content/fixtures/**/project/**"],
+      "enabled": false
+    },
+    {
       "description": "Major @types/node updates move with the Node version in .node-version",
       "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"],

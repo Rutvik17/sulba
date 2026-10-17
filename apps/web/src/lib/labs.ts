@@ -103,6 +103,11 @@ export interface LabView {
     readonly path: string;
     readonly served: string;
   })[];
+  /**
+   * The files a download of the lab puts beside the learner's (decision record 25), each with its
+   * name and the address the site serves it at, which changes with its text. None without a project.
+   */
+  readonly project: readonly { readonly name: string; readonly served: string }[];
   readonly stages: readonly StageView[];
 }
 
@@ -127,13 +132,18 @@ export interface LabEntry extends LabView {
   readonly code: Lab['code'];
   /** Each dataset's text, by its path in a run. The site serves it apart from the lab's page. */
   readonly files: Readonly<Record<string, string>>;
+  /** Each project file's text, by its name. The site serves it apart from the lab's page too. */
+  readonly projectFiles: Readonly<Record<string, string>>;
   readonly cards: readonly CardView[];
 }
 
-/** Where the site serves a dataset: a folder named for its text, so it can be cached for good. */
-function servedAt(file: string, text: string): string {
+/**
+ * Where the site serves a dataset or a project file: a folder named for its text, so it can be
+ * cached for good.
+ */
+function servedAt(folder: 'data' | 'project', file: string, text: string): string {
   const hash = createHash('sha256').update(text).digest('hex').slice(0, 16);
-  return `/data/${hash}/${file}`;
+  return `/${folder}/${hash}/${file}`;
 }
 
 type Figures = ReadonlyMap<string, Readonly<Record<string, string>>>;
@@ -212,10 +222,15 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
     data: lab.data.map(({ text, ...set }) => ({
       ...set,
       path: `data/${set.file}`,
-      served: servedAt(set.file, text),
+      served: servedAt('data', set.file, text),
+    })),
+    project: Object.entries(lab.project).map(([name, text]) => ({
+      name,
+      served: servedAt('project', name, text),
     })),
     code: lab.code,
     files: Object.fromEntries(lab.data.map((set) => [`data/${set.file}`, set.text])),
+    projectFiles: { ...lab.project },
     stages: lab.stages.map((stage) => stageView(stage, figures)),
     cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),
   }));

@@ -28,6 +28,20 @@ test('a dataset keeps its own page for the credit, and is served at an address n
   expect(Object.keys(lab?.files ?? {})).toEqual(['data/votes.csv']);
 });
 
+test("a lab's project files are served apart from its page, at addresses named for their text", async () => {
+  const [lab] = labEntries(await demo());
+
+  expect(lab?.project).toEqual([
+    { name: 'README.md', served: expect.stringMatching(/^\/project\/[0-9a-f]{16}\/README\.md$/) },
+    {
+      name: 'pyproject.toml',
+      served: expect.stringMatching(/^\/project\/[0-9a-f]{16}\/pyproject\.toml$/),
+    },
+    { name: 'uv.lock', served: expect.stringMatching(/^\/project\/[0-9a-f]{16}\/uv\.lock$/) },
+  ]);
+  expect(lab?.projectFiles['pyproject.toml']).toMatch(/^\[project\]\n/);
+});
+
 test("each lab's order counts the course's labs through its levels and modules", async () => {
   const course = await demo();
   const level = course.levels[0];

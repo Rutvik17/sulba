@@ -1,6 +1,6 @@
 # Writing a course
 
-A course is a folder of plain files (decision record 7). `pnpm check:content` checks every course on every pull request: each file against its schema, every stage in Pyodide and in CPython, every stage's prose with the numbers its `figures.py` gives, and every chart as its `chart.py` draws it.
+A course is a folder of plain files (decision record 7). `pnpm check:content` checks every course on every pull request: each file against its schema, every stage in Pyodide and in CPython, every stage's prose with the numbers its `figures.py` gives, every chart as its `chart.py` draws it, and each lab project's lock.
 
 ## Layout
 
@@ -13,6 +13,9 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       lab.yaml              id, title, summary, datasets and ported code with their credit, and
                             its stages in order
       data/<file>.csv       each dataset lab.yaml lists
+      project/              optional: what a download of the lab puts beside the learner's
+                            files: README.md, pyproject.toml, uv.lock and a conftest.py if
+                            it needs one
       stages/<stage>/
         stage.yaml          id, kind, title, what it builds on, the file the learner works in,
                             packages, minutes, a Catch stage's problems or a Ship stage's
@@ -117,6 +120,10 @@ The stage passes when every test and check passes. Its explanation opens after t
 A Problem stage is an interview problem, solved against the clock (decision record 23). Its brief stays hidden until the learner starts, and its `minutes` are the time it has. The learner writes a plan first: how the code works, what it costs in time and space, and the inputs that could break it. The editor opens once the plan is written, and the plan stays in its own tab. The clock runs from the start whether the page is open or not. The explanation and the solution open when the code passes or the minutes are up, and the stage keeps the time from the start to the run that passed.
 
 The starter is in a file no earlier stage made, since the learner solves the problem from nothing. `pnpm check:content` holds a Problem stage to what it holds a Build stage to. A test with a large input holds the code to the cost the explanation gives: a run stops at its time limit, so a slower way fails it.
+
+## Projects
+
+A lab whose code runs on the learner's machine, such as a web service, has a project (decision record 25). Its workspace then offers a download: one zip of the project's files, the lab's data and the learner's files as the stage open in the editor has them, made in the browser. `README.md` tells the learner how to run it with uv. `pyproject.toml` lists what it needs, at the versions the browser runs, and `uv.lock`, which `uv lock` writes, pins them. `pnpm check:content` holds the lock to `uv lock --check`, to the Python version Pyodide runs, to the version Pyodide ships of each package they both have, and to every package the lab's stages load. No learner's file may share a name with a project file.
 
 ## Review cards
 

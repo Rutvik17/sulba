@@ -25,6 +25,7 @@
     "@sulba/lab": "workspace:*",
     "@sulba/ui": "workspace:*",
     "astro": "7.3.7",
+    "fflate": "0.8.3",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "ts-fsrs": "5.4.2"

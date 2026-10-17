@@ -1,22 +1,42 @@
 // A lab's datasets are served apart from its page (src/pages/data). The workspace fetches them once
-// a visit, as it opens, and every run and chart takes them from there.
+// a visit, as it opens, and every run and chart takes them from there. The files of a lab's project
+// (src/pages/project) are fetched the same way, the first time the learner downloads the lab.
 import type { LabView } from '../lib/labs';
 import type { LabData } from './stages';
 
-const fetched = new Map<string, Promise<LabData>>();
+const fetched = new Map<string, Promise<Readonly<Record<string, string>>>>();
 
-/** The lab's datasets, fetched the first time they're asked for, and again after a failed fetch. */
-export function labData(lab: LabView): Promise<LabData> {
-  const known = fetched.get(lab.id);
+/** The text at each address, by name, fetched the first time and again after a failed fetch. */
+function fetchedOnce(
+  key: string,
+  files: readonly (readonly [name: string, served: string])[],
+): Promise<Readonly<Record<string, string>>> {
+  const known = fetched.get(key);
   if (known) return known;
   const loading = Promise.all(
-    lab.data.map(async ({ path, served }) => {
+    files.map(async ([name, served]) => {
       const response = await fetch(served);
       if (!response.ok) throw new Error(`${served} answered ${response.status}.`);
-      return [path, await response.text()] as const;
+      return [name, await response.text()] as const;
     }),
-  ).then((entries): LabData => Object.fromEntries(entries));
-  fetched.set(lab.id, loading);
-  loading.catch(() => fetched.delete(lab.id));
+  ).then((entries) => Object.fromEntries(entries));
+  fetched.set(key, loading);
+  loading.catch(() => fetched.delete(key));
   return loading;
+}
+
+/** The lab's datasets, by their paths in a run. */
+export function labData(lab: LabView): Promise<LabData> {
+  return fetchedOnce(
+    `${lab.id} data`,
+    lab.data.map(({ path, served }) => [path, served]),
+  );
+}
+
+/** The files of the lab's project, by name. */
+export function projectFiles(lab: LabView): Promise<Readonly<Record<string, string>>> {
+  return fetchedOnce(
+    `${lab.id} project`,
+    lab.project.map(({ name, served }) => [name, served]),
+  );
 }

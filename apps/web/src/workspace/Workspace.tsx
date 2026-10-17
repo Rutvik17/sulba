@@ -11,10 +11,10 @@ import { flushSync } from 'react-dom';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { ChartPanel } from './ChartPanel';
-import { labData } from './data';
+import { labData, projectFiles } from './data';
 import { clock, elapsed, type ProblemState, solvedIn } from './problem';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
-import { codeOf, isOpen, packagesOf, type Review, runOf } from './stages';
+import { codeOf, downloadOf, isOpen, packagesOf, type Review, runOf } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
 import { kept } from './storage';
 import { type Recorder, startSync } from './sync';
@@ -397,6 +397,24 @@ function StageWorkspace({
     kept.saveCode(stage.id, null);
   };
 
+  // A lab with a project downloads as one, with the code as it stands in this stage. The zip is
+  // made here in the browser, by code loaded only for a download.
+  const [downloadFailed, setDownloadFailed] = useState(false);
+  const download = async () => {
+    setDownloadFailed(false);
+    try {
+      const [data, project, { save, zipped }] = await Promise.all([
+        labData(lab),
+        projectFiles(lab),
+        import('./download'),
+      ]);
+      const folder = lab.path.split('/').at(-1) ?? 'lab';
+      save(`${folder}.zip`, zipped(folder, downloadOf(lab, data, index, code(), kept, project)));
+    } catch {
+      setDownloadFailed(true);
+    }
+  };
+
   const done = run.state === 'done' && run.result.status === 'pass';
   const solutionOpen = isCatch ? review !== null : isProblem ? explained : tried;
   // Starting shows the problem, and finishing the plan opens the code, so focus goes to each.
@@ -552,6 +570,11 @@ function StageWorkspace({
             <Button variant="ghost" size="small" onPress={reset} isDisabled={!coding}>
               Reset
             </Button>
+            {lab.project.length > 0 && (
+              <Button variant="ghost" size="small" onPress={download} isDisabled={!coding}>
+                Download
+              </Button>
+            )}
             {isCatch && !review && (
               <Button
                 id={finishId}
@@ -572,6 +595,11 @@ function StageWorkspace({
             </Button>
           </div>
         </div>
+        {downloadFailed && (
+          <p className={css.note} role="alert">
+            The download failed. Try again.
+          </p>
+        )}
         <div className={css.code}>
           {coding ? (
             <Editor

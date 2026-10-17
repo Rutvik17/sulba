@@ -19,6 +19,12 @@ export {
   type ShipCheck,
   type Stage,
 } from './load.ts';
+export {
+  canonicalName,
+  lockedVersions,
+  type PyodideVersions,
+  projectProblems,
+} from './project-check.ts';
 export { type RenderedProse, renderProse } from './prose.ts';
 export { computeFigures, type FiguresRunner, figuresFiles, proseProblems } from './prose-check.ts';
 export { addStarter, type StageRuns, stageRuns, testFiles, withEdit } from './runs.ts';
