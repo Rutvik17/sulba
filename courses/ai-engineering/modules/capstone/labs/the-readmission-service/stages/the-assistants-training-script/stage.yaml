@@ -1,0 +1,47 @@
+id: stg_6kgzok
+kind: catch
+title: The assistant's training script
+builds: Your `features.py` and `model.py` from stages 1 to 6.
+file: train.py
+packages: [pandas, scikit-learn]
+minutes: 60
+problems:
+  - check: tst_m1gcps
+    title: It scored the stays the model learned from
+    cost: >-
+      It took the recall and precision from probabilities the model gave the stays it had
+      learned from, which rate it better than it is. Fitted on every stay and scored on the same
+      stays, it would tell the planners to expect a recall of {% $fig.seen_recall %} and a
+      precision of {% $fig.seen_precision %}, where new stays at the same threshold get
+      {% $fig.new_recall %} and {% $fig.new_precision %}.
+    fix: >-
+      The fix: score each stay with a model that didn't learn from it,
+      `out_of_fold(table, make_chosen)`, as stage 4 did.
+    edit:
+      replace: "    probabilities = model.predict_proba(features(table))[:, 1]"
+      with: "    probabilities = out_of_fold(table, make_chosen)"
+  - check: tst_sy7lg7
+    title: It took the share for a probability
+    cost: >-
+      It set the threshold to the share itself, so the service calls every stay with a
+      probability of {% $fig.share %} or more. On new stays that's {% $fig.at_share %} of the
+      {% $fig.stays %}, {% $fig.at_share_part %} of them, where the planners can call
+      {% $fig.planned %}.
+    fix: >-
+      The fix: take the threshold from the probabilities, `threshold_for(probabilities, share)`,
+      as stage 6 does.
+    edit:
+      replace: "    threshold = share"
+      with: "    threshold = threshold_for(probabilities, share)"
+  - check: tst_ws5x23
+    title: It fitted the model on part of the stays
+    cost: >-
+      It fitted the model on stage 2's learning part, {% $fig.learn %} of the {% $fig.stays %}
+      stays, so the service would never learn from the other {% $fig.held %}. They were held out
+      to score the model, but cross-validation scores it, and the model that ships learns from
+      every stay there is.
+    fix: >-
+      The fix: fit on every stay, `chosen(table)`.
+    edit:
+      replace: "    model = chosen(learn)"
+      with: "    model = chosen(table)"

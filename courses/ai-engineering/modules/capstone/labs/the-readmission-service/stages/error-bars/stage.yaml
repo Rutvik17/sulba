@@ -1,0 +1,7 @@
+id: stg_nhut4d
+kind: build
+title: Error bars
+builds: Your `model.py` from stage 2.
+file: model.py
+packages: [pandas, scikit-learn]
+minutes: 90

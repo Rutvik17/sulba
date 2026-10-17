@@ -1,0 +1,19 @@
+cards:
+  - id: crd_6f1f05
+    front: >-
+      Why check calibration on out-of-fold probabilities?
+    back: >-
+      A model scored on the cases it learned from looks better than it will on new ones; each
+      out-of-fold probability comes from a model that never saw its case.
+  - id: crd_vc5y88
+    front: >-
+      What does a calibration table compare?
+    back: >-
+      For groups of cases ranked by probability, each group's mean probability with the share of
+      it that turned out positive.
+  - id: crd_8ww6t6
+    front: >-
+      Why read a Brier score against the base rate's?
+    back: >-
+      For a rare outcome most of the score comes from the rarity itself, so giving everyone the
+      base rate already scores low: here {% $fig.base %}, against the model's {% $fig.brier %}.

@@ -1,0 +1,7 @@
+id: stg_ysppxc
+kind: build
+title: Requests and responses
+builds: A new `app.py`, on your `train.py` from stage 8.
+file: app.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 90

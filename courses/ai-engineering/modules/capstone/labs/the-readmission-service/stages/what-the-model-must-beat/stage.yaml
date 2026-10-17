@@ -1,0 +1,7 @@
+id: stg_0m6c4t
+kind: build
+title: What the model must beat
+builds: A new `model.py`, on your `features.py` from stage 1.
+file: model.py
+packages: [pandas, scikit-learn]
+minutes: 90

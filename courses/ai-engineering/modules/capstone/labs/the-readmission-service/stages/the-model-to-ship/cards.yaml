@@ -1,0 +1,20 @@
+cards:
+  - id: crd_ywr57s
+    front: >-
+      Two models' cross-validated AUCs differ by less than the noise. Which should ship?
+    back: >-
+      The simpler one: the folds show no gain from the other, and the simpler one costs less to
+      run and explain.
+  - id: crd_v18prb
+    front: >-
+      What does `class_weight="balanced"` do to a logistic regression's probabilities for a rare
+      outcome?
+    back: >-
+      It pushes them far too high, though the ranking barely moves: here they add up to
+      {% $fig.weighted_expected %} readmissions where {% $fig.readmitted %} came back.
+  - id: crd_pw9q49
+    front: >-
+      What does `handle_unknown="ignore"` make a one-hot encoder do with a category it didn't
+      learn?
+    back: >-
+      Give it all zeros instead of raising an error, so the model answers from the other inputs.

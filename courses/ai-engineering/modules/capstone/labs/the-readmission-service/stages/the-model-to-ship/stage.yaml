@@ -1,0 +1,30 @@
+id: stg_t9uicd
+kind: ship
+title: The model to ship
+builds: Your `model.py` from stages 2 to 4.
+file: model.py
+packages: [pandas, scikit-learn]
+minutes: 45
+checks:
+  - check: tst_1prpf4
+    title: Ranks stays as well as the logistic regression
+    requires: >-
+      Over the folds `cross_validated` uses, its mean AUC must be no lower than the logistic
+      regression's mean less the logistic regression's standard error: {% $fig.lr %} less
+      {% $fig.lr_error %}, or {% $fig.bar %}.
+    failure: >-
+      It ranks the stays worse than that.
+  - check: tst_824dam
+    title: Expects as many readmissions as came back
+    requires: >-
+      Over the same folds, the probabilities it gives the stays it didn't learn from must add up
+      to within 10% of the {% $fig.readmitted %} readmissions that came back.
+    failure: >-
+      The readmissions it expects are more than 10% away from those that came back.
+  - check: tst_2uysom
+    title: A probability for every code
+    requires: >-
+      Fitted on every stay, it must give a probability to a stay with any admission type,
+      admission source or discharge in the ID mapping, other than a death or hospice care.
+    failure: >-
+      It gave no probability to a stay with one of those codes.

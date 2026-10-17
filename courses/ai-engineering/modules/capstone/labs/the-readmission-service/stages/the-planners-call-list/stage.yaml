@@ -1,0 +1,44 @@
+id: stg_wnpjd6
+kind: catch
+title: The planners' call list
+builds: Your `app.py` from stage 10.
+file: call_list.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 60
+problems:
+  - check: tst_y8w4om
+    title: It read None as a missing value
+    cost: >-
+      `pd.read_csv` reads `None` as a missing value unless told not to, but here `None` is an
+      HbA1c test not done. A missing value can't be written as JSON, so a batch with such a stay
+      failed before it was sent, and {% $fig.none_share %} of the extract's encounters had no
+      test: on a real day, the planners would get no list at all.
+    fix: >-
+      The fix: read the file as `stays` does, with `keep_default_na=False`.
+    edit:
+      replace: '    day = pd.read_csv(path, na_values=["?"])'
+      with: '    day = pd.read_csv(path, na_values=["?"], keep_default_na=False)'
+  - check: tst_47gw7x
+    title: It dropped the last stay of each batch
+    cost: >-
+      Each batch took one stay fewer than it should, ending before `start + BATCH - 1`, so the
+      last stay of every full batch was never sent. On a day of {% $fig.day %} discharges,
+      {% $fig.missing %} were missing from the list, and no planner would call them, whatever
+      their probability.
+    fix: >-
+      The fix: take `day.iloc[start : start + BATCH]`, which ends where the next batch starts.
+    edit:
+      replace: "        batch = day.iloc[start : start + BATCH - 1]"
+      with: "        batch = day.iloc[start : start + BATCH]"
+  - check: tst_031x45
+    title: It sent the deaths and hospice care
+    cost: >-
+      It left the deaths and hospice care out after scoring, but the service refuses a batch
+      with such a discharge in it, so the list failed on any day that had one.
+      {% $fig.ended_share %} of the extract's encounters ended so, and a full batch would hold
+      one {% $fig.batch_refused %} of the time.
+    fix: >-
+      The fix: leave them out of the day before it's sent.
+    edit:
+      replace: "    scored = []"
+      with: "    day = day[~day[\"discharge_disposition_id\"].isin(DEATH_OR_HOSPICE)]\n    scored = []"

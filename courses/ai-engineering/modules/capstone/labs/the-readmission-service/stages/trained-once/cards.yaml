@@ -1,0 +1,18 @@
+cards:
+  - id: crd_whgqaj
+    front: >-
+      Why does the service load a saved model instead of training when it starts?
+    back: >-
+      It answers with the model whose numbers were measured, it starts without a fit, and it
+      doesn't need the extract.
+  - id: crd_o39mrq
+    front: >-
+      Can a model saved with one version of scikit-learn be loaded with another?
+    back: >-
+      It may load, but scikit-learn doesn't support it: the results can differ or the process
+      can crash. Train it again with the versions running.
+  - id: crd_2qngkw
+    front: >-
+      Why load a joblib file only if you made it?
+    back: >-
+      joblib saves with pickle, and loading a pickle can run any code the file holds.

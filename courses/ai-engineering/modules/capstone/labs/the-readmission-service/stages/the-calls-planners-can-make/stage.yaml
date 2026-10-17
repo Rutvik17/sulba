@@ -1,0 +1,16 @@
+id: stg_5ws8k6
+kind: build
+title: The calls planners can make
+builds: Your `model.py` from stage 5.
+file: model.py
+packages: [pandas, scikit-learn]
+minutes: 60
+chart:
+  title: Calls
+  sliders:
+    - name: share
+      label: Share called
+      min: 0.05
+      max: 0.5
+      step: 0.05
+      value: 0.1

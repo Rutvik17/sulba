@@ -1,0 +1,14 @@
+id: stg_wx4ugi
+kind: build
+title: Probabilities to trust
+builds: Your `model.py` from stages 2 and 3.
+file: model.py
+packages: [pandas, scikit-learn]
+minutes: 90
+chart:
+  title: Reliability
+  sliders:
+    - name: bins
+      label: Groups
+      stops: [5, 10, 20]
+      value: 10

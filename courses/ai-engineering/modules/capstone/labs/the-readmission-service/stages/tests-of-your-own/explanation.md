@@ -1,0 +1,5 @@
+Each test states a requirement the service is held to: the planners' threshold, the stays it refuses, the order of a batch and the size of one. A test suite that passes on a broken service protects nothing, so planting each problem and running the tests again checks the tests themselves. A problem none of them notices is a requirement they don't state.
+
+The problems are planted around the service rather than in its code: each one changes the requests on their way in, or the answers on their way out, so they behave alike whatever the service's code looks like. A test that reads the service's answers over HTTP, as the planners' system does, meets the problem. A test that called the code inside the service directly would pass by it.
+
+Two of the problems sit at a boundary. A threshold applied as 0.5 calls the stays above 0.5 correctly, so only a stay between the threshold and 0.5 shows it. A limit off by one refuses the full batch and nothing else, so only a batch of exactly `BATCH_LIMIT` stays shows that. Tests at a boundary, on both sides of it, catch what tests far from it can't.

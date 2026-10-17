@@ -1,0 +1,18 @@
+cards:
+  - id: crd_fku0p2
+    front: >-
+      Why score a batch of stays with one call to `predict_proba`, rather than one call per stay?
+    back: >-
+      The pipeline scales, encodes and weighs the whole table at once, so a batch costs little
+      more than a single stay.
+  - id: crd_gq45a1
+    front: >-
+      Why does the batch endpoint limit how many stays a request can bring?
+    back: >-
+      To bound each request's work: while one request is scored, no other on the event loop can
+      run. A client with more stays sends more batches.
+  - id: crd_scyb1t
+    front: >-
+      How does FastAPI's 422 for a batch say which stay is wrong?
+    back: >-
+      Its `loc` gives the field's path through the request, with the stay's place in the list.

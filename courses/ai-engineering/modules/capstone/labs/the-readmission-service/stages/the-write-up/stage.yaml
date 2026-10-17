@@ -1,0 +1,7 @@
+id: stg_inpgd8
+kind: build
+title: The write-up
+builds: A new `report.py`, on your `model.py` and `train.py`.
+file: report.py
+packages: [pandas, scikit-learn]
+minutes: 60

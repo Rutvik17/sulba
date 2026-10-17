@@ -1,0 +1,18 @@
+cards:
+  - id: crd_5sy52k
+    front: >-
+      Why work out every number in a model's write-up with code rather than typing it?
+    back: >-
+      A model trained again gets a write-up that matches it, and no number goes stale.
+  - id: crd_z32z3z
+    front: >-
+      Why give a model's AUC with its standard error, and beside a simple baseline?
+    back: >-
+      The error says how far the number would move with other stays, and the baseline says what
+      a ranking with no model already reaches.
+  - id: crd_byksp6
+    front: >-
+      What belongs in a write-up's section on what the model doesn't know?
+    back: >-
+      The limits of what it learned from: whose stays, from when, and the stays it doesn't
+      answer for.

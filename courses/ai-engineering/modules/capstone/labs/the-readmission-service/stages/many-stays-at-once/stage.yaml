@@ -1,0 +1,7 @@
+id: stg_xxbh1r
+kind: build
+title: Many stays at once
+builds: Your `app.py` from stage 9.
+file: app.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 60

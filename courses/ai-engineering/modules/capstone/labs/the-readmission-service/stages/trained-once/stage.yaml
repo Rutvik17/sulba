@@ -1,0 +1,7 @@
+id: stg_6kwyrw
+kind: build
+title: Trained once
+builds: Your `train.py` from stage 7.
+file: train.py
+packages: [pandas, scikit-learn]
+minutes: 45

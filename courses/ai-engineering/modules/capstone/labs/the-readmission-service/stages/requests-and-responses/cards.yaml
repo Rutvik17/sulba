@@ -1,0 +1,17 @@
+cards:
+  - id: crd_m1k40b
+    front: >-
+      What does FastAPI answer to a request that doesn't fit the endpoint's pydantic model?
+    back: >-
+      A 422, before the endpoint runs, whose `detail` names each field that's missing or can't
+      be read.
+  - id: crd_aw5zn1
+    front: >-
+      What does a FastAPI endpoint's return type, such as `-> Prediction`, do?
+    back: >-
+      FastAPI checks each answer against it and describes the answer in the API's schema.
+  - id: crd_l5t4jx
+    front: >-
+      Why does `app.py` load the saved model as it's imported, rather than in the endpoint?
+    back: >-
+      So the model is read once, and each request only encodes a row and scores it.
