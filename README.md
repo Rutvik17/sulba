@@ -27,7 +27,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | `pnpm test:db` | Runs the database's migrations in a local Supabase, and the tests of its row-level security |
 | `pnpm --filter @sulba/data types` | Writes the database's TypeScript types from the local Supabase |
 | `pnpm test:e2e` | Runs the end-to-end and accessibility tests in Chromium, Firefox and WebKit |
-| `pnpm brand` | Draws the profile pictures and banners in `brand` |
+| `pnpm brand` | Draws the profile pictures and banners in `brand`, and the site's icons |
 
 Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulba/web exec playwright install chromium firefox webkit`.
 

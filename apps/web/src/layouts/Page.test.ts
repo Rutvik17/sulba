@@ -12,6 +12,17 @@ test('Page puts its title in the document head and marks the page as English', a
   expect(html).toMatch(/<html lang="en"[\s>]/);
 });
 
+test("Page links the site's icons in the document head", async () => {
+  const container = await AstroContainer.create();
+
+  const html = await container.renderToString(Page, { props: { title: 'Sulba' } });
+  const head = html.slice(html.indexOf('<head'), html.indexOf('</head>'));
+
+  expect(head).toContain('<link rel="icon" href="/favicon.ico" sizes="32x32">');
+  expect(head).toContain('<link rel="icon" href="/icon.svg" type="image/svg+xml">');
+  expect(head).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png">');
+});
+
 test('Page renders its content inside the main landmark', async () => {
   const container = await AstroContainer.create();
 

@@ -159,3 +159,22 @@ test('pages ask search engines not to index them before launch', async ({ reques
 
   expect(response.headers()['x-robots-tag']).toBe('noindex');
 });
+
+test('each page links the icons a browser and a phone show for it, and the site serves them', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/');
+
+  await expect(page.locator('link[rel="icon"]')).toHaveCount(2);
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
+  for (const [path, type] of [
+    ['/favicon.ico', 'image/'],
+    ['/icon.svg', 'image/svg+xml'],
+    ['/apple-touch-icon.png', 'image/png'],
+  ] as const) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
+    expect(response.headers()['content-type'], path).toContain(type);
+  }
+});

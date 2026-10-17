@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!brand"]
+    "includes": ["**", "!brand", "!apps/web/public/icon.svg"]
   },
   "formatter": {
     "useEditorconfig": true,
