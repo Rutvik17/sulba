@@ -1,0 +1,20 @@
+cards:
+  - id: crd_prag0v
+    front: >-
+      Why serve a model inside a scikit-learn pipeline with its encoding steps?
+    back: >-
+      The pipeline encodes each request with what it learned from the training rows, so a
+      request is encoded exactly as the training rows were.
+  - id: crd_42re9d
+    front: >-
+      What does FastAPI answer for a request body that doesn't fit the endpoint's pydantic
+      model?
+    back: >-
+      A 422, with a `detail` that names each field that's missing or can't be read.
+  - id: crd_elv81d
+    front: >-
+      Why does a prediction service train or load its model once, when it starts, rather than
+      in each request?
+    back: >-
+      Training takes far longer than one prediction, and every request needs the same model, so
+      each request would wait for work already done.
