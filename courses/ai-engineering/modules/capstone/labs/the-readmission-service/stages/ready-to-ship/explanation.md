@@ -1,0 +1,7 @@
+The checks timed the service in process, with no network between client and service, so their times are the service's own work: reading the request, scoring it and writing the answer. A network adds its time on top, and the budgets leave room for it. A batch stays inside its budget because the model scores it in one call, as stage 10 does: a loop over its stays would pay for the pipeline's work once for each.
+
+`/model` lets anyone check which model is answering, and with what threshold, against the numbers the planners were given. The versions come from `versions()`, which `load` already held the saved file to, so they're also the versions the file was trained with.
+
+`/stats` is what monitoring watches. Each process counts from its own start, so a deployment that runs several processes, or restarts one, adds their counts elsewhere. The share called is the number to watch: the threshold was set on stays the model never saw to call `SHARE` of them, and new patients like those stays should be called at about that rate. A share that climbs or falls says the patients aren't like the ones the model learned from anymore, and it's time to look again at the extract, the model and the threshold.
+
+The service refuses to start on a model trained with other versions, since scikit-learn doesn't support it and the answers could change without any error. The fix is to train again with the versions running, and the service starts once the file matches.

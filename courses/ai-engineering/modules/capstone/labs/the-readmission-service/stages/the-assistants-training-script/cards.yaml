@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ejpgtc
+    front: >-
+      Why measure the recall and precision to report on out-of-fold probabilities?
+    back: >-
+      Scored on the stays it learned from, a model rates itself better than it is: here a recall
+      of {% $fig.seen_recall %}, where new stays get {% $fig.new_recall %}.
+  - id: crd_1e9z53
+    front: >-
+      Why isn't the threshold for calling a share of the stays the share itself?
+    back: >-
+      The threshold is a probability and the share is a part of the stays: set at
+      {% $fig.share %}, the threshold would call {% $fig.at_share_part %} of them. The threshold
+      is the probabilities' 1 - share quantile.
+  - id: crd_6m8ngn
+    front: >-
+      Once cross-validation has scored a model, which stays should the shipped model learn from?
+    back: >-
+      Every one: held-out stays score a model, and the one that ships learns from all there are.

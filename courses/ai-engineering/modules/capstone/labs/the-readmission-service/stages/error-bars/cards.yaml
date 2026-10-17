@@ -1,0 +1,19 @@
+cards:
+  - id: crd_bepbej
+    front: >-
+      Why can one held-out split mislead you about a model?
+    back: >-
+      Its score depends on which cases happened to be held out: here, ten draws of the same
+      split gave AUCs from {% $fig.held_low %} to {% $fig.held_high %} for one model.
+  - id: crd_61su80
+    front: >-
+      What is the standard error of a cross-validated mean?
+    back: >-
+      The fold scores' standard deviation over the square root of the number of folds: a guide
+      to how far the mean could be from the model's true score.
+  - id: crd_0o3mx8
+    front: >-
+      Why compare models on the same folds?
+    back: >-
+      So both meet the same cases, and a difference between them comes from the models rather
+      than from the draw.

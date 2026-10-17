@@ -1,0 +1,41 @@
+id: lab_g7joys
+title: The readmission service
+summary: >-
+  The full build of the hospital network's readmission service: inputs made one way for training
+  and serving, a model chosen with error bars and checked for calibration, a threshold for the
+  calls planners can make, an API held to a latency budget, your own tests, and a one-page
+  write-up.
+data:
+  - file: encounters.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      One in ten patients, chosen at random, with every encounter of each, and lines ending in
+      LF rather than CRLF.
+  - file: ids-mapping.csv
+    title: Diabetes 130-US Hospitals for Years 1999-2008
+    creators: [John Clore, Krzysztof Cios, Jon DeShazo, Beata Strack]
+    url: https://doi.org/10.24432/C5230J
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: Lines ending in LF rather than CRLF.
+stages:
+  - the-models-inputs
+  - what-the-model-must-beat
+  - error-bars
+  - probabilities-to-trust
+  - the-model-to-ship
+  - the-calls-planners-can-make
+  - the-assistants-training-script
+  - trained-once
+  - requests-and-responses
+  - many-stays-at-once
+  - the-planners-call-list
+  - ready-to-ship
+  - tests-of-your-own
+  - the-write-up

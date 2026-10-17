@@ -1,0 +1,19 @@
+cards:
+  - id: crd_19mv28
+    front: >-
+      What is training–serving skew?
+    back: >-
+      A model given its inputs one way in training and another in service, so the same case
+      gets different inputs, and a different answer, with no error to show it.
+  - id: crd_9upq2j
+    front: >-
+      Why can sending a category's codes as text instead of numbers change a model's answer
+      without an error?
+    back: >-
+      An encoder that ignores values it hasn't seen treats "7" as unknown when it learned 7, and
+      encodes the stay as having no value there at all.
+  - id: crd_hpsy84
+    front: >-
+      How do you keep a model's inputs the same in training and in service?
+    back: >-
+      Make them in one function that both paths call, from the fields a case carries.

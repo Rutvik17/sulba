@@ -114,7 +114,7 @@ A test of typed code asks for the `typecheck` fixture, with `mypy` among the sta
 
 A test of a FastAPI app, with `fastapi` and `httpx` among the stage's `packages`, sends its requests in process, as FastAPI's own async tests do: an `httpx.AsyncClient` over `ASGITransport(app=app)`, run with the `loop` fixture (decision record 24). There, a `def` endpoint or dependency runs on the loop instead of in anyio's worker threads, so it gives the same result in Pyodide, which has no threads, and in CPython. FastAPI's first import takes seconds in a browser, so the browser makes it before a run's time starts.
 
-A test of the learner's own tests runs them inside itself with pytest's `pytester`, against the learner's code and against copies with a problem planted in each. That run loads the runner's fixtures with `-p sulba_fixtures`, so the learner's tests can ask for `loop` and `typecheck` too.
+A test of the learner's own tests runs them inside itself with pytest's `pytester`, on the learner's code as it is and again with each problem planted in it. That run loads the runner's fixtures with `-p sulba_fixtures`, so the learner's tests can ask for `loop` and `typecheck` too. Each run is a pytest session of its own, which takes time in a browser, so a run with a problem planted stops at its first failure, with `-x`.
 
 The stage passes when every test and check passes. Its explanation opens after the first run, with the solution. `pnpm check:content` holds a Ship stage to what it holds a Build stage to, with its checks counted among its tests. The stage's Output tab shows only what the code prints as it loads, since what it prints in a test could show the test's data.
 

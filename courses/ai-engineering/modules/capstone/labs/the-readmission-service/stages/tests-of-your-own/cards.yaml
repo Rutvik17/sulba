@@ -1,0 +1,17 @@
+cards:
+  - id: crd_h7bcjn
+    front: >-
+      How can you tell whether your tests would catch a bug?
+    back: >-
+      Plant the bug in the code and run them again: at least one should fail.
+  - id: crd_fmm6tc
+    front: >-
+      Why compare each answer in a batch with that stay's own probability?
+    back: >-
+      A batch answered out of order still gives valid answers. Only matching each stay to its
+      own answer shows the mix-up.
+  - id: crd_fpx38n
+    front: >-
+      Why test a batch of exactly the limit, and not only one over it?
+    back: >-
+      A limit off by one refuses the full batch, and only a test at the limit itself catches it.

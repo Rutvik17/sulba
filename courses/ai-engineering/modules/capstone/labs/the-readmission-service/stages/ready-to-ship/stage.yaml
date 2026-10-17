@@ -1,0 +1,29 @@
+id: stg_oqjkmf
+kind: ship
+title: Ready to ship
+builds: Your `app.py` from stage 10.
+file: app.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 60
+checks:
+  - check: tst_1vm3qe
+    title: Answers a stay within 100 ms
+    requires: >-
+      Over 20 requests to `/predict`, sent in process one after another, the median time to an
+      answer must be under 100 ms.
+    failure: >-
+      Its median is 100 ms or more.
+  - check: tst_38831z
+    title: Answers 100 stays within 250 ms
+    requires: >-
+      Over 5 batches of 100 stays sent to `/predict/batch`, the median time to an answer must be
+      under 250 ms.
+    failure: >-
+      Its median is 250 ms or more.
+  - check: tst_z4r1l1
+    title: Won't start on another version's model
+    requires: >-
+      If the saved model was trained with other versions, importing `app.py` must raise a
+      `ValueError`, so the service never starts with it.
+    failure: >-
+      It started with a model trained with other versions.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xxkpr3
+    front: >-
+      What does the live share called, called over answered, tell the team?
+    back: >-
+      Whether the service still calls about the share it was set to. A drift says the patients,
+      their coding or the model have changed.
+  - id: crd_03o6ib
+    front: >-
+      Why time a service as the median over many requests?
+    back: >-
+      Any one request's time varies with what else the machine is doing; the median says what a
+      typical request takes.
+  - id: crd_cm8vfv
+    front: >-
+      Why should the service refuse to start on a model trained with other versions?
+    back: >-
+      scikit-learn doesn't support loading it, and a service that started anyway could give
+      different answers without any error.

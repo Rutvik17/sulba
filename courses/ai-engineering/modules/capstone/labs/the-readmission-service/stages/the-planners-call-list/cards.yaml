@@ -1,0 +1,17 @@
+cards:
+  - id: crd_y3dmnt
+    front: >-
+      Why read the day's discharges with `keep_default_na=False`?
+    back: >-
+      pandas reads `None` as a missing value by default, and here `None` is an HbA1c test not
+      done.
+  - id: crd_9ixvfi
+    front: >-
+      Which rows does `day.iloc[start : start + n]` take?
+    back: >-
+      The n rows from `start`, up to but not including `start + n`, where the next batch starts.
+  - id: crd_d59sdw
+    front: >-
+      Why leave the deaths and hospice care out of a batch before sending it?
+    back: >-
+      The service refuses a whole batch with one of them in it, so the other stays get no answer.

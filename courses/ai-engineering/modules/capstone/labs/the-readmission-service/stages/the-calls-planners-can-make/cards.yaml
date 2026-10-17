@@ -1,0 +1,19 @@
+cards:
+  - id: crd_n6tiny
+    front: >-
+      How does a share of stays to call set the threshold?
+    back: >-
+      The threshold is the probabilities' 1 - share quantile, so the share with the highest
+      probabilities lie at or above it.
+  - id: crd_mhdhja
+    front: >-
+      What happens to recall and precision as the planners call a larger share?
+    back: >-
+      Recall rises and precision falls: here {% $fig.recall %} at {% $fig.precision %} for
+      {% $fig.share %}, and {% $fig.recall_2 %} at {% $fig.precision_2 %} for
+      {% $fig.share_2 %}.
+  - id: crd_qprpdn
+    front: >-
+      What does calling at random reach, on a cumulative gains chart?
+    back: >-
+      The diagonal: calling a share of the stays reaches the same share of the readmissions.

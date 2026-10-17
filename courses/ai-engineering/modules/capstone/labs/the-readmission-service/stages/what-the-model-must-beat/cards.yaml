@@ -1,0 +1,20 @@
+cards:
+  - id: crd_wg57w7
+    front: >-
+      Why score a model against a baseline?
+    back: >-
+      A score means little alone: the baseline, here ranking patients by their inpatient visits
+      in the year before, is what the users have without the model, and the model has to beat
+      it to be worth serving.
+  - id: crd_bcrnck
+    front: >-
+      Why fit the scaler and the encoder only on the training part of a split?
+    back: >-
+      So nothing the model is given, not even a mean or a spread, comes from the stays it's
+      tested on.
+  - id: crd_0rvp55
+    front: >-
+      What does stratifying a split by the label do?
+    back: >-
+      It keeps the label's share the same in both parts, so the test isn't made easier or
+      harder by how the rare cases fell.

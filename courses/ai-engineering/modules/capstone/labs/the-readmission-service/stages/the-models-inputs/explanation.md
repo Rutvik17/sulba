@@ -1,0 +1,7 @@
+Nothing checks that a model is given its inputs the way it learned them. The take-home's model one-hot encodes the codes as the numbers the extract holds. Suppose a request sends them as text instead. The encoder has seen `7` for `admission_source_id`, never `"7"`, and with `handle_unknown="ignore"` it gives the column all zeros, as if the stay had no admission source. It raises no error and warns of nothing: the take-home's example stay gets {% $fig.right %} with its codes as numbers and {% $fig.wrong %} with them as text.
+
+That is training–serving skew: one stay, two sets of inputs. One function on both paths removes it. `features` makes every input from the fields a stay carries, so a row of the extract and a request for the same stay get the same inputs, whatever type a request's codes arrive in, and the encoder sees text in training and in service alike.
+
+The same goes for anything worked out from a stay's fields. Age comes as one of {% $fig.bands %} bands, ten years wide. As a category the model would learn each band on its own; as the middle of its band, it is one number whose order the model can use. Worked out in `features`, it is worked out the same way for a planner's request as for the extract.
+
+`features` takes rows and gives new ones, leaving its input alone, so the extract can be used again and a request's own fields stay as they came. It keeps their index, so each input still lines up with its stay, and with `readmitted`, which it leaves out: the model learns from the inputs alone.

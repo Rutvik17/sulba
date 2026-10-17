@@ -1,0 +1,7 @@
+id: stg_22111i
+kind: build
+title: Tests of your own
+builds: A new `test_app.py`, for your `app.py` from stage 12.
+file: test_app.py
+packages: [pandas, scikit-learn, fastapi, httpx]
+minutes: 90

@@ -1,0 +1,7 @@
+id: stg_tmz6cn
+kind: build
+title: The model's inputs
+builds: A new `features.py`, with the take-home's `stays`.
+file: features.py
+packages: [pandas, scikit-learn]
+minutes: 90

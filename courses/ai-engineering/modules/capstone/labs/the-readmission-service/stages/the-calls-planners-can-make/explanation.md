@@ -1,0 +1,7 @@
+Calling the {% $fig.share %} of stays with the highest probabilities calls {% $fig.called %} of the {% $fig.stays %}, those at or above {% $fig.threshold %}. Among them are {% $fig.caught %} of the {% $fig.readmitted %} readmissions, a recall of {% $fig.recall %}, and {% $fig.precision %} of the called stays come back: a precision {% $fig.lift %} times the {% $fig.rate %} that calling at random would reach.
+
+Calling {% $fig.share_2 %} calls {% $fig.called_2 %} stays and reaches {% $fig.caught_2 %} readmissions, a recall of {% $fig.recall_2 %}, at a precision of {% $fig.precision_2 %}. The second {% $fig.extra_called %} calls reach {% $fig.extra %} more readmissions, {% $fig.extra_precision %} of them: each extra call is worth less than the one before, since the stays most likely to come back are called first.
+
+The chart's curve is the cumulative gains: for each share called, the share of readmissions among them. Calling at random follows the diagonal, and the further the curve rises above it, the better the model ranks. The share is the planners' choice. The model's part is the order, which the AUC measures, and the threshold turns that order into a list.
+
+The threshold comes from out-of-fold probabilities, since each comes from a model that never saw its stay, as the shipped model never sees a new patient. Taken from probabilities on the stays a model learned from, a threshold would be set for scores new patients won't get.
