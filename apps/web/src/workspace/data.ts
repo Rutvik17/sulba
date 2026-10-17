@@ -1,6 +1,7 @@
-// A lab's datasets are served apart from its page (src/pages/data). The workspace fetches them once
-// a visit, as it opens, and every run and chart takes them from there. The files of a lab's project
-// (src/pages/project) are fetched the same way, the first time the learner downloads the lab.
+// A lab's datasets and references are served apart from its page (src/pages/data and
+// src/pages/references). The workspace fetches them once a visit, as it opens, and every run and
+// chart takes them from there. The files of a lab's project (src/pages/project) are fetched the
+// same way, the first time the learner downloads the lab.
 import type { LabView } from '../lib/labs';
 import type { LabData } from './stages';
 
@@ -25,11 +26,11 @@ function fetchedOnce(
   return loading;
 }
 
-/** The lab's datasets, by their paths in a run. */
+/** The lab's datasets and references, by their paths in a run. */
 export function labData(lab: LabView): Promise<LabData> {
   return fetchedOnce(
     `${lab.id} data`,
-    lab.data.map(({ path, served }) => [path, served]),
+    [...lab.data, ...lab.references].map(({ path, served }) => [path, served]),
   );
 }
 

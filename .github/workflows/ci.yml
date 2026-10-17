@@ -111,6 +111,32 @@ jobs:
         env:
           PARTS: ${{ needs.content-part.result }}
 
+  # Every lab's references, recorded again by its make.py with the library and the versions it pins
+  # (decision record 27), so each recorded file holds what the library gives.
+  references:
+    name: References
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # What each make.py installs, such as PyTorch's CPU build, comes from the cache while the
+      # make.py files stay the same.
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+          enable-cache: true
+          cache-python: true
+          cache-dependency-glob: courses/**/references/make.py
+      - run: pnpm check:references
+
   database:
     name: Database
     runs-on: ubuntu-24.04
@@ -169,7 +195,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [checks, content, database]
+    needs: [checks, content, references, database]
     # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
     # updates and pull requests from forks, which have no access to secrets, are tested only.
     if: >-

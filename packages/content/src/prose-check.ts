@@ -7,6 +7,7 @@ import type { Figures, RunRequest } from '@sulba/lab/protocol';
 import { drawnCharacters } from './glyphs.ts';
 import type { Course, Lab, Problem, Stage } from './load.ts';
 import { renderProse } from './prose.ts';
+import { labFiles } from './runs.ts';
 
 /** Computes figures for sets of files in one runtime, in the same order. */
 export type FiguresRunner = (
@@ -37,11 +38,9 @@ function stagesWithPaths(courses: readonly Course[], only?: ReadonlySet<string>)
   );
 }
 
-/** What figures.py runs with: the lab's data beside it. */
+/** What figures.py runs with: the lab's data and references beside it. */
 export function figuresFiles(lab: Lab, stage: Stage): RunRequest['files'] {
-  const files: Record<string, string> = {};
-  for (const set of lab.data) files[`data/${set.file}`] = set.text;
-  return { ...files, 'figures.py': stage.figures ?? '' };
+  return { ...labFiles(lab), 'figures.py': stage.figures ?? '' };
 }
 
 /**

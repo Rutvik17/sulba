@@ -16,6 +16,7 @@ export {
   loadCourse,
   type Module,
   type Problem,
+  type Reference,
   type ShipCheck,
   type Stage,
 } from './load.ts';
@@ -27,4 +28,4 @@ export {
 } from './project-check.ts';
 export { type RenderedProse, renderProse } from './prose.ts';
 export { computeFigures, type FiguresRunner, figuresFiles, proseProblems } from './prose-check.ts';
-export { addStarter, type StageRuns, stageRuns, testFiles, withEdit } from './runs.ts';
+export { addStarter, labFiles, type StageRuns, stageRuns, testFiles, withEdit } from './runs.ts';

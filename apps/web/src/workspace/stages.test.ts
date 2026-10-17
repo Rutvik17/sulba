@@ -65,6 +65,7 @@ const lab: LabView = {
   level: 'Level',
   module: 'Module',
   data: [],
+  references: [],
   project: [],
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
@@ -181,6 +182,24 @@ test("a download has the project's files, the lab's data and the learner's files
     'data/votes.csv': 'choice\nyes\n',
     'model.py': 'B\n',
     'screener.py': 'def threshold():\n    return 0.5\n',
+  });
+});
+
+test("a download leaves out the lab's references, as it leaves out its tests", () => {
+  const recorded: LabView = {
+    ...lab,
+    references: [
+      { path: 'references/shares.json', served: '/references/0123456789abcdef/shares.json' },
+    ],
+  };
+  const fetched = { ...data, 'references/shares.json': '{"polls": []}\n' };
+  const kept = keeping({}, [], {});
+  expect(runOf(recorded, fetched, 0, 'A\n', kept).files['references/shares.json']).toBe(
+    '{"polls": []}\n',
+  );
+  expect(downloadOf(recorded, fetched, 0, 'A\n', kept, {})).toEqual({
+    'data/votes.csv': 'choice\nyes\n',
+    'model.py': 'A\n',
   });
 });
 

@@ -14,6 +14,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       lab.yaml              id, title, summary, datasets and ported code with their credit, and
                             its stages in order
       data/<file>.csv       each dataset lab.yaml lists
+      references/           optional: the results of a library the lab's tests compare with:
+                            each JSON file lab.yaml lists, and the make.py that records them
       project/              optional: what a download of the lab puts beside the learner's
                             files: README.md, pyproject.toml, uv.lock and a conftest.py if
                             it needs one
@@ -210,6 +212,12 @@ The checks draw each chart with the stage's solution at its sliders' first value
 ## Data
 
 A lab's data file is built by a script in `tools/datasets` from the provider's own file, checked by its sha256, and `lab.yaml` credits it with what was changed. A dataset is used only under a licence that allows a paid course, such as CC BY 4.0, read on the provider's own page.
+
+## References
+
+A lab that builds what a library does, such as an autograd engine PyTorch already has, checks the learner's code against the library's own results (decision record 27). The library doesn't run in the browser, so its results are recorded: `references/make.py`, a script uv runs, pins the library and the versions it records with, works out each case in float64, as NumPy does by default and PyTorch only when asked, and writes the case's inputs and the library's results as JSON. `lab.yaml` lists each file under `references`, and every run has it at `references/<file>`, beside the lab's data, where a test reads it and compares the learner's results with it within a tolerance the test states.
+
+`uv run make.py <folder>` writes the files into the folder, and into its own folder without one. A recording holds its inputs too, rather than a seed to make them again, since NumPy's `Generator` doesn't promise the same random numbers from one version to the next. `pnpm check:references`, which CI's References job runs, records every lab's references again, and fails when a file is missing or not listed, or isn't the same JSON as before: the same keys, lengths and strings, and each number within 1e-12 of the recorded one, or for numbers above 1, within 1e-12 times the larger, since a library's results can differ in their last digits from one machine to another.
 
 ## Ported code
 

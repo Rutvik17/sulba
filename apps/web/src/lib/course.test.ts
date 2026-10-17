@@ -14,6 +14,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     levelNeeds: level === 'Intermediate' ? 'A laptop with 16 GB of memory' : 'Any laptop',
     module,
     data: [],
+    references: [],
     project: [],
     code: [],
     stages: [],

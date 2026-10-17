@@ -87,6 +87,20 @@ test("the lab's data isn't in its page: it comes once a visit, from a file cache
   expect(fetched).toEqual([expect.stringMatching(/^\/data\/[0-9a-f]{16}\/votes\.csv$/)]);
 });
 
+test("the lab's references come as it opens, as JSON from a file cached for good", async ({
+  page,
+}) => {
+  const reference = page.waitForResponse((response) =>
+    new URL(response.url()).pathname.startsWith('/references/'),
+  );
+  await page.goto(path);
+  const response = await reference;
+  expect(new URL(response.url()).pathname).toMatch(/^\/references\/[0-9a-f]{16}\/shares\.json$/);
+  expect(response.headers()['content-type']).toContain('application/json');
+  expect(response.headers()['cache-control']).toBe('public, max-age=31536000, immutable');
+  expect(await response.json()).toMatchObject({ polls: [{ choice: 'yes' }] });
+});
+
 test("the data's credit links the dataset's own page and its licence", async ({ page }) => {
   await page.goto(path);
   const credit = page.locator('p', { hasText: 'Data:' });
