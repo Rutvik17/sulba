@@ -1,0 +1,7 @@
+id: stg_t0gdhh
+kind: build
+title: Custom autograd functions
+builds: Your `network.py` from stage 2.
+file: network.py
+packages: [numpy, torch]
+minutes: 45

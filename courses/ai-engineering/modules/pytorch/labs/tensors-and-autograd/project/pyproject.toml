@@ -1,0 +1,16 @@
+[project]
+name = "tensors-and-autograd"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = ["numpy==2.4.6", "pytest==9.0.2", "torch==2.14.1"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

@@ -1,0 +1,25 @@
+id: lab_4qb2az
+title: Tensors and autograd
+summary: >-
+  Port the records office's digit reader from NumPy to PyTorch: its digits as tensors, its
+  gradients from autograd, a loss with a backward pass of your own, and a reader that trains
+  step for step as the NumPy one did.
+data:
+  - file: digits.csv
+    title: Optical Recognition of Handwritten Digits
+    creators: [E. Alpaydin, C. Kaynak]
+    url: https://doi.org/10.24432/C50P49
+    licence:
+      name: CC BY 4.0
+      url: https://creativecommons.org/licenses/by/4.0/
+    changes: >-
+      UCI's training and test files joined under a header, with a column that puts each digit
+      in the training, validation or test set. The validation set is a quarter of the training
+      file's digits, chosen at random within each digit.
+runs: machine
+stages:
+  - tensors
+  - autograd
+  - custom-autograd-functions
+  - the-assistants-training-step
+  - the-reader-in-pytorch

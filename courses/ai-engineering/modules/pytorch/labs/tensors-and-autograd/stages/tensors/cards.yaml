@@ -1,0 +1,18 @@
+cards:
+  - id: crd_u0y99d
+    front: >-
+      When can `view` give a tensor a new shape?
+    back: >-
+      When its strides fit the new shape. A transposed tensor isn't contiguous, so `view` can't
+      flatten it, and `reshape` copies it instead.
+  - id: crd_o28zm7
+    front: >-
+      How does PyTorch's `std` differ from NumPy's by default?
+    back: >-
+      PyTorch divides by `$n - 1$` and NumPy by `$n$`. `correction=0` gives NumPy's.
+  - id: crd_7yewgo
+    front: >-
+      How does `torch.from_numpy` differ from `torch.tensor`?
+    back: >-
+      `torch.from_numpy` shares the array's memory, so a change to one changes the other.
+      `torch.tensor` copies it.

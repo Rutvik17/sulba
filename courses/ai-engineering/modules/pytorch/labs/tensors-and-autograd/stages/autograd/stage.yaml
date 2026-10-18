@@ -1,0 +1,7 @@
+id: stg_schb9v
+kind: build
+title: Autograd
+builds: A new `network.py`.
+file: network.py
+packages: [numpy, torch]
+minutes: 50

@@ -9,5 +9,8 @@ levels:
   - id: lvl_lnektu
     slug: intermediate
     title: Intermediate
-    needs: "Any laptop: every lab runs in your browser"
-    modules: [neural-networks-from-scratch]
+    needs: >-
+      A laptop with uv and about 1 GB free: Windows or Linux on x86-64, Linux on Arm, or
+      macOS 14 or later on Apple silicon. Module 1 runs in your browser, and from Module 2
+      labs run on your machine
+    modules: [neural-networks-from-scratch, pytorch]

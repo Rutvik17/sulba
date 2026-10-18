@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ekb8y5
+    front: >-
+      What does `.detach()` on a layer's outputs do to the layers before it?
+    back: >-
+      It cuts them out of the graph, so the loss has no gradient for their parameters and they
+      never train.
+  - id: crd_p5m3c7
+    front: >-
+      How can training a tensor made with `torch.from_numpy` change the array it came from?
+    back: >-
+      The tensor shares the array's memory, so a step made in place on the tensor writes to the
+      array.

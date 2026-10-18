@@ -1,0 +1,18 @@
+cards:
+  - id: crd_gtf7sd
+    front: >-
+      What does `loss.backward()` do with a gradient a parameter already holds?
+    back: >-
+      Adds the new gradient to it, in `.grad`. A training loop clears `.grad` each step, or
+      the steps' gradients pile up.
+  - id: crd_mz3o9e
+    front: >-
+      Why does a training step change the parameters inside `torch.no_grad()`?
+    back: >-
+      So autograd doesn't record the step in the graph. Made in place, the step keeps each
+      parameter the same leaf tensor.
+  - id: crd_45u64v
+    front: >-
+      What does `torch.autograd.grad` give that `backward()` doesn't?
+    back: >-
+      The gradients themselves, returned, without adding them to any `.grad`.

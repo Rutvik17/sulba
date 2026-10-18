@@ -1,0 +1,59 @@
+id: stg_0t13mv
+kind: catch
+title: The assistant's training step
+builds: Your `digits.py` and `network.py` from stages 1 to 3.
+file: trainer.py
+packages: [numpy, torch]
+minutes: 40
+problems:
+  - check: tst_a80age
+    title: Its gradients added up from one step to the next
+    cost: >-
+      Each `backward()` added the batch's gradients to the ones every earlier step had left,
+      so each step moved the weights by the sum of all the gradients so far. Trained as the
+      NumPy reader trains, the reader's loss on a batch had climbed to {% $fig.peak %} by epoch
+      {% $fig.epoch %}, where the NumPy reader's loss never rises above its first,
+      {% $fig.first_loss %}.
+    fix: >-
+      The fix: clear each gradient once the step has used it, `param.grad = None`.
+    edit:
+      replace: "                param -= lr * param.grad\n"
+      with: "                param -= lr * param.grad\n                param.grad = None\n"
+  - check: tst_o5p82o
+    title: Its hidden layer never trained
+    cost: >-
+      `.detach()` cut the hidden layer out of the graph, so the loss had no gradient for `w1`
+      and `b1`. Their `.grad` stayed `None`, the step skipped them, and the hidden layer kept
+      its random start. Trained as the NumPy reader trains, the reader read
+      {% $fig.frozen %} of the test digits.
+    fix: >-
+      The fix: the hidden layer's ReLU without `.detach()`.
+    edit:
+      replace: '    hidden = torch.relu(X @ params["w1"].T + params["b1"]).detach()'
+      with: '    hidden = torch.relu(X @ params["w1"].T + params["b1"])'
+  - check: tst_kjkzoo
+    title: It scaled the pixels by PyTorch's spread, not the NumPy reader's
+    cost: >-
+      PyTorch's `std` divides by `$n - 1$`, {% $fig.n_less %} for the training digits, where
+      the NumPy reader's spread divides by `$n$`, {% $fig.n %}. Every scaled pixel moved, by up
+      to {% $fig.shift %}, and every probability the reader gives the clerks moved with it, by
+      up to {% $fig.surer %} points. It read the same {% $fig.test %} test digits, so the
+      drift didn't show, and the office couldn't confirm the port against the NumPy reader
+      number for number.
+    fix: >-
+      The fix: `train.std(dim=0, correction=0)`, which divides by `$n$` as NumPy's does.
+    edit:
+      replace: "train.std(dim=0)"
+      with: "train.std(dim=0, correction=0)"
+  - check: tst_apihzi
+    title: Its steps changed the office's start
+    cost: >-
+      `torch.from_numpy` shares each array's memory, so every step made in place wrote to the
+      office's start too. After one run, the arrays the office keeps to start again held the
+      trained weights, some moved by as much as {% $fig.moved %}, and a second run from them
+      began where the first had ended.
+    fix: >-
+      The fix: `torch.tensor(array, requires_grad=True)`, which copies each array.
+    edit:
+      replace: "torch.from_numpy(array).requires_grad_()"
+      with: "torch.tensor(array, requires_grad=True)"
