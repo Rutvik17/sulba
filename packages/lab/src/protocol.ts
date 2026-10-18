@@ -16,6 +16,16 @@ export interface RunRequest {
   readonly packages: readonly Package[];
 }
 
+/**
+ * A file a machine lab fetches from its publisher, being too large for the site to serve (decision
+ * record 29): its address, and the size and sha256 every copy is checked against.
+ */
+export interface FetchedFile {
+  readonly url: string;
+  readonly bytes: number;
+  readonly sha256: string;
+}
+
 /** Where in the learner's files something happened. */
 export interface Location {
   readonly file: string;

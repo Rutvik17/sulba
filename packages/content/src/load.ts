@@ -240,8 +240,28 @@ class Reader {
       );
     }
     if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
-    else this.browserLab(folder, stages);
+    else this.browserLab(folder, file, stages);
+    this.fetchedNamed(join(folder, 'lab.yaml'), file);
     return { ...file, slug, data, references, project, stages };
+  }
+
+  /**
+   * Each file a lab fetches has a name of its own in `data/`, where its datasets are too. Windows
+   * and macOS take two names that differ only in case as one.
+   */
+  fetchedNamed(path: string, file: LabFile) {
+    const taken = new Set(file.data.map((set) => set.file.toLowerCase()));
+    file.fetch.forEach((source, index) => {
+      source.files.forEach(({ file: name }, at) => {
+        if (taken.has(name.toLowerCase())) {
+          this.problem(
+            path,
+            `fetch.${index}.files.${at}.file: data/ already has a file named ${name}.`,
+          );
+        }
+        taken.add(name.toLowerCase());
+      });
+    });
   }
 
   /**
@@ -280,8 +300,17 @@ class Reader {
     }
   }
 
-  /** A lab that runs in the browser loads only packages Pyodide ships. */
-  browserLab(folder: string, stages: readonly Stage[]) {
+  /**
+   * A lab that runs in the browser loads only packages Pyodide ships, and fetches no files: the site
+   * serves its data.
+   */
+  browserLab(folder: string, file: LabFile, stages: readonly Stage[]) {
+    if (file.fetch.length > 0) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "fetch: Only a lab that runs on the learner's machine fetches files: set runs: machine, or serve the data as a dataset.",
+      );
+    }
     for (const stage of stages) {
       for (const name of stage.packages.filter(isMachinePackage)) {
         this.problem(

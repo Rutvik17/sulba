@@ -39,6 +39,7 @@ const lab: LabView = {
   module: 'Counting',
   data: [],
   references: [],
+  fetch: [],
   project: [],
   stages: [
     stage('stg_count1', 'build'),

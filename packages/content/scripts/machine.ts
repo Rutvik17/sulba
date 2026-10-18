@@ -1,19 +1,23 @@
 // Runs each lab that runs on the learner's machine from its download, as a learner would there
 // (decision record 28), so that CI can run it on Windows, macOS and Linux: each stage's starter
 // fails and its solution passes through `uv run sulba.py`, and `uv run sulba.py next` opens the
-// next stage. With `--figures <file>`, each stage's figures, computed in the download's own
-// environment, go to that file, whose text must then be the same on every system.
+// next stage. The runner fetches the lab's files from their publishers (decision record 29), all
+// but those kept from an earlier run, and keeps the ones it fetched for the next. With
+// `--figures <file>`, each stage's figures, computed in the download's own environment, go to that
+// file, whose text must then be the same on every system.
 //
 //   node scripts/machine.ts <folder of courses>... [--figures <file>]
 import { spawnSync } from 'node:child_process';
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
+import { fetchedFolder, holds } from '@sulba/lab/fetched';
 import { machineDownload } from '@sulba/lab/machine';
 import { figuresInCPython, runnerFiles } from '@sulba/lab/node';
 import {
   courseSlugs,
+  fetchedFiles,
   figuresFiles,
   labFiles,
   loadCourse,
@@ -58,6 +62,17 @@ for (const root of positionals.map((each) => resolve(each))) {
       await mkdir(dirname(join(folder, name)), { recursive: true });
       await writeFile(join(folder, name), text);
     }
+    const fetched = fetchedFiles(lab);
+    const unkept: string[] = [];
+    for (const [name, file] of Object.entries(fetched)) {
+      const kept = join(fetchedFolder, file.sha256);
+      if (!(await holds(kept, file))) {
+        unkept.push(name);
+        continue;
+      }
+      await mkdir(dirname(join(folder, name)), { recursive: true });
+      await copyFile(kept, join(folder, name));
+    }
     for (const [index, stage] of lab.stages.entries()) {
       const at = `stage ${index + 1}, ${stage.slug}`;
       const starter = sulba(folder);
@@ -70,16 +85,28 @@ for (const root of positionals.map((each) => resolve(each))) {
         if (next.code !== 0) problem(`${at}: next should open the next stage.\n${next.output}`);
       }
     }
+    for (const name of unkept) {
+      const file = fetched[name];
+      if (!file || !(await holds(join(folder, name), file))) continue;
+      await mkdir(fetchedFolder, { recursive: true });
+      await copyFile(join(folder, name), join(fetchedFolder, file.sha256));
+    }
     const withFigures = lab.stages.filter((stage) => stage.figures !== null);
+    // A file that can't be fetched leaves the figures uncomputed, and a problem.
     const computed = await figuresInCPython(
       withFigures.map((stage) => figuresFiles(lab, stage)),
-      folder,
-    );
+      { folder, fetched },
+    ).catch((error: Error) => {
+      problem(`its figures: ${error.message}`);
+      return [];
+    });
     withFigures.forEach((stage, index) => {
       const answer = computed[index];
       if (answer?.problem) problem(`${stage.slug}'s figures: ${answer.problem}`);
       figures[`${path}/stages/${stage.slug}`] = answer?.figures ?? null;
     });
+    // The download holds copies of the files the lab fetches, which can be large.
+    await rm(dirname(folder), { recursive: true, force: true, maxRetries: 3 });
     console.log(`${path}: ${lab.stages.length} stages run from the download.`);
   }
 }

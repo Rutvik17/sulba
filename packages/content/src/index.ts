@@ -29,4 +29,12 @@ export {
 } from './project-check.ts';
 export { type RenderedProse, renderProse } from './prose.ts';
 export { computeFigures, type FiguresRunner, figuresFiles, proseProblems } from './prose-check.ts';
-export { addStarter, labFiles, type StageRuns, stageRuns, testFiles, withEdit } from './runs.ts';
+export {
+  addStarter,
+  fetchedFiles,
+  labFiles,
+  type StageRuns,
+  stageRuns,
+  testFiles,
+  withEdit,
+} from './runs.ts';

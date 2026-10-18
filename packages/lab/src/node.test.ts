@@ -10,6 +10,7 @@ import { counted } from './figures.fixture.ts';
 import {
   chartsInCPython,
   figuresInCPython,
+  projectRuntime,
   pyodideEngine,
   runEachInCPython,
   runInCPython,
@@ -65,6 +66,17 @@ test.skipIf(!hasUv)(
   },
   180_000,
 );
+
+test("a machine lab's runtime changes with the files it fetches", async () => {
+  const lock = 'version = 1\n';
+  const tiles = { url: 'https://example.com/tiles.bin', bytes: 1024, sha256: 'a'.repeat(64) };
+  const plain = await projectRuntime(lock);
+  expect(await projectRuntime(lock, {})).toBe(plain);
+  const fetching = await projectRuntime(lock, { 'data/tiles.bin': tiles });
+  expect(fetching).not.toBe(plain);
+  const changed = { 'data/tiles.bin': { ...tiles, sha256: 'b'.repeat(64) } };
+  expect(await projectRuntime(lock, changed)).not.toBe(fetching);
+});
 
 test.skipIf(!hasUv)(
   'a run that never ends is stopped, and the next one still runs',

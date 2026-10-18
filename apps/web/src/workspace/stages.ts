@@ -170,7 +170,15 @@ export function machineDownloadOf(
     project,
     data,
     files,
-    lab: { id: lab.id, title: lab.title, page, start, stages },
+    lab: {
+      id: lab.id,
+      title: lab.title,
+      page,
+      start,
+      data: lab.data.map(({ path }) => path),
+      fetch: lab.fetch.flatMap((source) => source.files),
+      stages,
+    },
   });
 }
 

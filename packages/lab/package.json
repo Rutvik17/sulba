@@ -7,7 +7,8 @@
     "./client": "./src/client.ts",
     "./node": "./src/node.ts",
     "./assemble": "./src/assemble.ts",
-    "./machine": "./src/machine.ts"
+    "./machine": "./src/machine.ts",
+    "./fetched": "./src/fetched.ts"
   },
   "scripts": {
     "pyodide": "node scripts/pyodide.ts",

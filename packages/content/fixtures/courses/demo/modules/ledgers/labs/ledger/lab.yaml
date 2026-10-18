@@ -10,5 +10,18 @@ data:
       name: CC0 1.0
       url: https://creativecommons.org/publicdomain/zero/1.0/
     changes: Made up for these tests.
+fetch:
+  - kind: data
+    title: Fashion-MNIST
+    creators: [Zalando Research]
+    url: https://github.com/zalandoresearch/fashion-mnist
+    licence:
+      name: MIT
+      url: https://github.com/zalandoresearch/fashion-mnist/blob/master/LICENSE
+    files:
+      - file: t10k-labels-idx1-ubyte.gz
+        url: https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
+        bytes: 5148
+        sha256: 67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5
 runs: machine
 stages: [balance, audit, close]

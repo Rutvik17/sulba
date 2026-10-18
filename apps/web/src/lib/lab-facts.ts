@@ -45,6 +45,37 @@ export function labFacts(lab: Pick<LabView, 'stages'> & Partial<Pick<LabView, 'r
   ];
 }
 
+/** A size in bytes in decimal units, as a download shows it: "5.1 kB", "26.4 MB". */
+export function sizeOf(bytes: number): string {
+  for (const [unit, scale] of [
+    ['GB', 1e9],
+    ['MB', 1e6],
+    ['kB', 1e3],
+  ] as const) {
+    if (bytes >= scale) return `${(bytes / scale).toFixed(1)} ${unit}`;
+  }
+  return `${bytes} bytes`;
+}
+
+/** Items in words: "a", "a and b", "a, b and c". */
+function inWords(items: readonly string[]): string {
+  return items.length > 1
+    ? `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`
+    : (items[0] ?? '');
+}
+
+/**
+ * What a machine lab's first run downloads (decision record 29): the size of the files it fetches,
+ * and the hosts they come from in the order the lab lists them. Null when it fetches none.
+ */
+export function fetchedOf(lab: Pick<LabView, 'fetch'>): { size: string; hosts: string } | null {
+  const files = lab.fetch.flatMap((source) => source.files);
+  if (files.length === 0) return null;
+  const bytes = files.reduce((sum, file) => sum + file.bytes, 0);
+  const hosts = [...new Set(files.map((file) => new URL(file.url).hostname))];
+  return { size: sizeOf(bytes), hosts: inWords(hosts) };
+}
+
 /** What a module's row says under its title: how many labs it has, and their time. */
 export function moduleFacts(labs: readonly Pick<LabView, 'stages'>[]): string {
   const minutes = labs.reduce((sum, lab) => sum + minutesOf(lab), 0);

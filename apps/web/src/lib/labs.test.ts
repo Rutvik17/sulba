@@ -94,3 +94,15 @@ test("a machine lab's download carries the runner, each file served under its ow
     'uv.lock',
   ]);
 });
+
+test("a machine lab's entry carries what it fetches, with each source's credit", async () => {
+  const ledger = labEntries(await demo()).find((entry) => entry.path === 'demo/ledgers/ledger');
+  expect(ledger?.fetch.map(({ kind, title }) => [kind, title])).toEqual([
+    ['data', 'Fashion-MNIST'],
+  ]);
+  expect(ledger?.fetch[0]?.files.map(({ file, bytes }) => [file, bytes])).toEqual([
+    ['t10k-labels-idx1-ubyte.gz', 5148],
+  ]);
+  // The site serves none of them.
+  expect(Object.keys(ledger?.files ?? {})).toEqual(['data/entries.csv']);
+});

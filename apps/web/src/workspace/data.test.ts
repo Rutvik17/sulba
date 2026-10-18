@@ -26,6 +26,7 @@ function labWith(id: string): LabView {
     references: [
       { path: 'references/shares.json', served: '/references/fedcba9876543210/shares.json' },
     ],
+    fetch: [],
     project: [
       { name: 'pyproject.toml', served: '/project/0123456789abcdef/pyproject.toml' },
       { name: 'uv.lock', served: '/project/fedcba9876543210/uv.lock' },

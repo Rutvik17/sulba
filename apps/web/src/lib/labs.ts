@@ -10,6 +10,7 @@ import {
   computeFigures,
   courseSlugs,
   duplicateIds,
+  fetchedFiles,
   type Lab,
   labFiles,
   loadCourse,
@@ -122,6 +123,11 @@ export interface LabView {
    * `references/shares.json`, and the address the site serves it at, which changes with its text.
    */
   readonly references: readonly { readonly path: string; readonly served: string }[];
+  /**
+   * What a machine lab's runner fetches from each publisher before its first run (decision record
+   * 29): the credit, and each file with its address, size and sha256.
+   */
+  readonly fetch: Lab['fetch'];
   /**
    * The files a download of the lab puts beside the learner's (decision record 25), each with its
    * path in the download and the address the site serves it at, which changes with its text. A
@@ -275,6 +281,7 @@ function entryOf(
       path: `references/${file}`,
       served: servedAt('references', file, text),
     })),
+    fetch: lab.fetch,
     // A file in the runner's folder is served under its own name, one folder below the hash.
     project: Object.entries(project).map(([name, text]) => ({
       name,
@@ -314,7 +321,8 @@ function figuresFolder(): string {
 
 /**
  * Each stage's figures, computed or kept from before, and its prose checked with them: in Pyodide,
- * or for a lab that runs on the learner's machine, in CPython in its own project.
+ * or for a lab that runs on the learner's machine, in CPython in its own project, with the files it
+ * fetches.
  */
 async function figuresOf(
   root: string,
@@ -342,12 +350,13 @@ async function figuresOf(
     inBrowser,
   );
   for (const { lab, project } of machine) {
-    const inProject = await projectRuntime(lab.project['uv.lock'] ?? '');
+    const where = { folder: project, fetched: fetchedFiles(lab) };
+    const inProject = await projectRuntime(lab.project['uv.lock'] ?? '', where.fetched);
     const computed = await computeFigures(
       courses,
       {
         CPython: cachedFigures(figuresFolder(), inProject, (fileSets) =>
-          figuresInCPython(fileSets, project),
+          figuresInCPython(fileSets, where),
         ),
       },
       new Set(lab.stages.map(({ id }) => id)),
