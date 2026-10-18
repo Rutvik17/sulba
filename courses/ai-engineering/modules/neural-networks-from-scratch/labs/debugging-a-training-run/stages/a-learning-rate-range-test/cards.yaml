@@ -1,0 +1,15 @@
+cards:
+  - id: crd_srwylx
+    front: >-
+      How does a learning-rate range test find the useful learning rates?
+    back: >-
+      One short run, its learning rate raised by the same factor at every step, recording
+      the smoothed loss: flat while the steps are too small, falling once they can learn,
+      rising when they're too large.
+  - id: crd_zmsj9w
+    front: >-
+      Why train a few times below a range test's lowest point, not at it?
+    back: >-
+      The lowest point is where the steps start to be too large: the office's network,
+      trained at it, read fewer than {% $fig.target %} of the validation digits, and at
+      half of it, {% $fig.half %}.
