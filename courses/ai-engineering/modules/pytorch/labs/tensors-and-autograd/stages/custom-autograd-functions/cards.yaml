@@ -1,0 +1,19 @@
+cards:
+  - id: crd_3xt140
+    front: >-
+      What does a custom autograd function's `backward` receive, and what does it do with it?
+    back: >-
+      `grad`, the loss's gradient with respect to the function's output, which it multiplies by
+      the function's own gradient, by the chain rule.
+  - id: crd_387hqd
+    front: >-
+      What does a custom autograd function's `backward` return for an input with no gradient,
+      such as integer labels?
+    back: >-
+      `None`, in that input's place.
+  - id: crd_pmfthf
+    front: >-
+      Why does `gradcheck` work in `float64`?
+    back: >-
+      It compares the backward pass with finite differences, and in `float32` those lose too
+      many digits to tell a wrong gradient from rounding.

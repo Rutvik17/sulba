@@ -1,0 +1,35 @@
+id: stg_rjkcit
+kind: ship
+title: The reader in PyTorch
+builds: Your `digits.py` and `network.py` from stages 1 to 3.
+file: reader.py
+packages: [numpy, torch]
+minutes: 60
+checks:
+  - check: tst_umb8bl
+    title: Every test digit read as the NumPy reader reads it
+    requires: >-
+      Trained on the {% $fig.training %} training digits with `default_rng(0)`, `read` must read
+      each of the {% $fig.test %} test digits as the NumPy reader, trained the same way, reads
+      it.
+    failure: >-
+      It read some of the test digits differently from the NumPy reader.
+  - check: tst_ev8m8c
+    title: "{% $fig.target %} of new writers' digits"
+    requires: >-
+      `read` must read at least {% $fig.target %} of the test digits right, written by people
+      none of the training digits came from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_ga7nmm
+    title: Reads without building a graph
+    requires: >-
+      `read` must give its digits without autograd recording anything for a backward pass.
+    failure: >-
+      Reading recorded a graph, and kept the tensors a backward pass would need.
+  - check: tst_t3aoih
+    title: Its inputs left as they were
+    requires: >-
+      `train` and `read` must leave the pixels and the digits they're given as they were.
+    failure: >-
+      It changed the pixels or the digits it was given.

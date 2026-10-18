@@ -1,0 +1,13 @@
+cards:
+  - id: crd_gcgx95
+    front: >-
+      Why does the port draw its start from the NumPy reader's `rng`, not from
+      `torch.manual_seed` and `nn.Linear`?
+    back: >-
+      To start from the same weights. A reader started any other way trains to a different
+      network, which reads some digits differently.
+  - id: crd_ob0bf7
+    front: >-
+      What does reading under `torch.no_grad()` save?
+    back: >-
+      Autograd records nothing, so no tensors are kept for a backward pass that never comes.

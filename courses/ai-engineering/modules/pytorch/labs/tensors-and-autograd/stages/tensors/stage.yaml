@@ -1,0 +1,7 @@
+id: stg_myrldj
+kind: build
+title: Tensors
+builds: A new `digits.py`.
+file: digits.py
+packages: [numpy, torch]
+minutes: 45
