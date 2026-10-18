@@ -1,0 +1,13 @@
+cards:
+  - id: crd_3xx87u
+    front: >-
+      Why give a `DataLoader` a `torch.Generator` of its own?
+    back: >-
+      Its orders then depend on the seed and the epochs dealt so far, and nothing else. Without
+      one, it draws from the global generator, which every other random draw moves.
+  - id: crd_ikftv9
+    front: >-
+      What do `model.eval()` and `torch.no_grad()` each switch off?
+    back: >-
+      `eval()` puts layers such as batch normalization and dropout in evaluation mode.
+      `no_grad()` stops autograd recording a graph. Reading for validation needs both.

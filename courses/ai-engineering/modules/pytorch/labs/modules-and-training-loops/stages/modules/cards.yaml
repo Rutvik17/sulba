@@ -1,0 +1,19 @@
+cards:
+  - id: crd_7032zr
+    front: >-
+      What does `register_buffer` give a tensor that a plain attribute doesn't?
+    back: >-
+      A place in the module's state: `state_dict()` holds it and `.to()` converts it. Unlike a
+      parameter, it isn't in `parameters()`, so no optimizer trains it.
+  - id: crd_l5lznt
+    front: >-
+      Why keep a network's layers in `nn.Sequential` or `nn.ModuleList`, not a Python list?
+    back: >-
+      Modules in a Python list aren't registered: their parameters aren't in `parameters()` or
+      `state_dict()`, and `train()` and `eval()` don't reach them.
+  - id: crd_aby72l
+    front: >-
+      What does `nn.BatchNorm1d` normalize by in training, and in evaluation?
+    back: >-
+      In training, the batch's own mean and variance, which it also mixes into its running
+      estimates. In evaluation, the running estimates, which it leaves alone.

@@ -1,0 +1,7 @@
+id: stg_clsi2e
+kind: build
+title: Modules
+builds: A new `reader.py`.
+file: reader.py
+packages: [numpy, torch]
+minutes: 45

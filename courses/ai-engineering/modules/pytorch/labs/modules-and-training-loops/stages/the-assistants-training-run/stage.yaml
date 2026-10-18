@@ -1,0 +1,66 @@
+id: stg_ew4pxv
+kind: catch
+title: The assistant's training run
+builds: Your `reader.py` and `data.py` from stages 1 and 2.
+file: trainer.py
+packages: [numpy, torch]
+minutes: 40
+problems:
+  - check: tst_on8trn
+    title: It validated in training mode
+    cost: >-
+      `torch.no_grad()` stopped autograd, but in training mode each norm still normalized the
+      validation digits by their own statistics and mixed them into its running estimates. The
+      {% $fig.batches %} validation batches after the last epoch, each pulling the estimates
+      {% $fig.pull %} of the way toward its own statistics, made up {% $fig.share %} of each
+      running estimate the reader came back with. Read in evaluation, its loss on the
+      validation digits was {% $fig.leaky %}, where the same weights with training's estimates
+      alone score {% $fig.clean %}: the digits kept back to judge the reader had shaped it, and
+      judged it the better for it. The losses the run reported, read in training mode, were
+      further off still: {% $fig.reported %} after the last epoch.
+    fix: >-
+      The fix: `reader.eval()` before reading the validation digits, which `run` undoes with
+      `reader.train()` at the start of each epoch.
+    edit:
+      replace: "    loss = 0.0\n"
+      with: "    reader.eval()\n    loss = 0.0\n"
+  - check: tst_zoe2n3
+    title: A run it picked up lost its momentum
+    cost: >-
+      `resume` loaded the reader but not the optimizer, so the run started again with no
+      momentum buffers, as a new SGD does, and every step after the stop moved the weights
+      differently.
+      Stopped after epoch {% $fig.stop %} and picked up, the run ended reading
+      {% $fig.momentum %} of the {% $fig.test %} test digits differently from one that never
+      stopped, with a validation loss of {% $fig.momentum_loss %} where that one's is
+      {% $fig.clean %}.
+    fix: >-
+      The fix: `optimizer.load_state_dict(checkpoint["optimizer"])` in `resume`.
+    edit:
+      replace: "    reader.load_state_dict(checkpoint[\"reader\"])\n"
+      with: "    reader.load_state_dict(checkpoint[\"reader\"])\n    optimizer.load_state_dict(checkpoint[\"optimizer\"])\n"
+  - check: tst_tiyhl3
+    title: A run it picked up dealt its batches from the start again
+    cost: >-
+      `resume` left the loader's generator as its seed set it, so the epoch after a stop dealt
+      the digits in the first epoch's order, the next in the second's, and so on, each order
+      {% $fig.stop %} epochs late. Stopped after epoch {% $fig.stop %} and picked up, the run
+      ended reading {% $fig.order %} test digits differently from one that never stopped.
+    fix: >-
+      The fix: `loader.generator.set_state(checkpoint["generator"])` in `resume`.
+    edit:
+      replace: "    return checkpoint[\"epochs\"]\n"
+      with: "    loader.generator.set_state(checkpoint[\"generator\"])\n    return checkpoint[\"epochs\"]\n"
+  - check: tst_5lgmx3
+    title: A run it picked up trained an epoch too many
+    cost: >-
+      Each checkpoint recorded the epoch it was saved in, counted from zero, where `resume`
+      reads the epochs done, so a run picked up from it counted one epoch too few and trained
+      one more. Stopped after epoch {% $fig.stop %}, the run trained {% $fig.epochs %} epochs in
+      all, an epoch's {% $fig.steps %} steps more than one that never stopped, and read
+      {% $fig.again %} test digits differently. Every further stop adds an epoch more.
+    fix: >-
+      The fix: `save(path, reader, optimizer, loader, epoch + 1)`, the epochs done.
+    edit:
+      replace: "save(path, reader, optimizer, loader, epoch)"
+      with: "save(path, reader, optimizer, loader, epoch + 1)"

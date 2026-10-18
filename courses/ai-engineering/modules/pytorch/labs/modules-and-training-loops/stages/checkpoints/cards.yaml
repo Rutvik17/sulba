@@ -1,0 +1,19 @@
+cards:
+  - id: crd_y0qlfd
+    front: >-
+      What must a checkpoint hold for a run to go on exactly as it would have?
+    back: >-
+      Everything its next step depends on: the model's state dict, the optimizer's, the state
+      of every generator the run draws from, and how many epochs it had done.
+  - id: crd_76urq0
+    front: >-
+      What does SGD with momentum keep in its state?
+    back: >-
+      A momentum buffer for each parameter, the running sum of gradients its steps follow. An
+      optimizer started again without it steps differently.
+  - id: crd_4tykzk
+    front: >-
+      Why load checkpoints with `torch.load`'s default, `weights_only=True`?
+    back: >-
+      It builds only tensors and plain types and imports nothing, where a full unpickle can be
+      made to run any code. Even so, load only files you trust.
