@@ -1,0 +1,14 @@
+cards:
+  - id: crd_tl03nq
+    front: >-
+      What should a training run's report hold, so that the run can be checked?
+    back: >-
+      Its seed and settings, which train the same network again, and the measures it
+      reports, which that network gives again when it's read.
+  - id: crd_j90mqw
+    front: >-
+      Why count a run's batches through the function that gives it its gradients, not from
+      its report?
+    back: >-
+      A report says what its run claims. The function the run computes its gradients with
+      sees every batch the run trained on.

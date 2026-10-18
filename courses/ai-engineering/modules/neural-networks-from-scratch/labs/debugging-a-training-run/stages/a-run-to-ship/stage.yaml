@@ -1,0 +1,30 @@
+id: stg_bnn7hz
+kind: ship
+title: A run to ship
+builds: Your files from stages 1 to 4.
+file: run.py
+packages: [numpy]
+minutes: 45
+checks:
+  - check: tst_vi0cu1
+    title: "{% $fig.target %} of new writers' digits"
+    requires: >-
+      Trained from seed {% $fig.seed %} on the office's budget, the network must read at
+      least {% $fig.target %} of the {% $fig.test %} test digits right, written by people
+      none of the training digits came from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_isvdhq
+    title: Its report holds up
+    requires: >-
+      The report's validation share must be the one the network it returns gives, and its
+      batch and batches the ones it trained on.
+    failure: >-
+      The report says something the run didn't do.
+  - check: tst_mvn2q5
+    title: Within the office's budget
+    requires: >-
+      The run must train on at most {% $fig.budget %} batches of at most {% $fig.batch %}
+      digits.
+    failure: >-
+      It trained on more than the budget allows.

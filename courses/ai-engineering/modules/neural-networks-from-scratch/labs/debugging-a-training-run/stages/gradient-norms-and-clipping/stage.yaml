@@ -1,0 +1,14 @@
+id: stg_zz0k6p
+kind: build
+title: Gradient norms and clipping
+builds: A new `clipping.py`.
+file: clipping.py
+packages: [numpy]
+minutes: 40
+chart:
+  title: Clipping a run that steps too far
+  sliders:
+    - name: max_norm
+      label: max_norm
+      stops: [0.25, 0.5, 1, 2, 4]
+      value: 0.25

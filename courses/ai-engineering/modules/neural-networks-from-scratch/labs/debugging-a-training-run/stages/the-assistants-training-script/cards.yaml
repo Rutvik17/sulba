@@ -1,0 +1,14 @@
+cards:
+  - id: crd_9h3krn
+    front: >-
+      Labels paired with the wrong pixels: which check finds them, the batch learned by
+      heart or the validation digits?
+    back: >-
+      The validation digits. A network learns wrong pairs by heart too, and then reads only
+      a guess's share of digits it hasn't seen.
+  - id: crd_3ehcvl
+    front: >-
+      Why must gradients added up over several batches go back to 0 at every step?
+    back: >-
+      Otherwise each step carries every earlier step's gradients, and goes partly where old
+      batches pointed instead of where its own do.

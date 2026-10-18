@@ -1,0 +1,7 @@
+id: stg_ctdil2
+kind: build
+title: Before the first step
+builds: A new `network.py`.
+file: network.py
+packages: [numpy]
+minutes: 40

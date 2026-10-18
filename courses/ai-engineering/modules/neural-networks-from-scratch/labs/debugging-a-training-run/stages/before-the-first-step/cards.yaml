@@ -1,0 +1,13 @@
+cards:
+  - id: crd_335f9v
+    front: >-
+      What loss should a classifier of `$K$` classes start near, and why?
+    back: >-
+      `$\ln K$`: before it learns, it gives each class about the same probability, `$1/K$`,
+      and the cross-entropy of that is `$-\ln(1/K)$`.
+  - id: crd_p8uvz5
+    front: >-
+      Which bugs does learning one small batch by heart find, and which does it miss?
+    back: >-
+      Broken gradients and steps, which keep the loss from falling towards 0. Not labels
+      paired with the wrong pixels: a network learns wrong labels by heart too.

@@ -1,0 +1,66 @@
+id: stg_acs301
+kind: catch
+title: The assistant's training script
+builds: Your `network.py` and `clipping.py` from stages 1 and 2.
+file: train.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_i5qb8f
+    title: Its batches paired digits with other digits' pixels
+    cost: >-
+      `shuffled` put the pixels in a new order and left the digits in the old one, so
+      each batch's labels belonged to other rows' pixels. Every loss and gradient was
+      right for the pairs it was given, and the network learned what wrong pairs teach:
+      after its {% $fig.steps %} steps it read {% $fig.labels %} of the validation
+      digits, a guess's share, where the script as asked reads {% $fig.correct %}. None
+      of the assistant's tests looked at what a batch held.
+    fix: >-
+      The fix: `return X[order], digits[order]`, the same order for both.
+    edit:
+      replace: "    return X[order], digits[rows]\n"
+      with: "    return X[order], digits[order]\n"
+  - check: tst_jcj3x5
+    title: It trained on the test digits
+    cost: >-
+      `training` took every digit but the validation ones, `sets != 1`, so the
+      {% $fig.test_count %} test digits, from the writers the office keeps apart to
+      measure new ones, were trained on too. The network then read {% $fig.leaked %} of
+      them, where the script as asked reads {% $fig.correct_test %}: the office's
+      measure of new writers would have overstated it by {% $fig.points %} points. The
+      assistant's test kept the validation digits out, and no others.
+    fix: >-
+      The fix: `np.flatnonzero(sets == 0)`, the training digits alone.
+    edit:
+      replace: "    training = np.flatnonzero(sets != 1)\n"
+      with: "    training = np.flatnonzero(sets == 0)\n"
+  - check: tst_44dv2k
+    title: Its gradients were never set back to 0
+    cost: >-
+      `total` was made once, before the first step, so each step added its batches'
+      gradients to every earlier step's, clipped and carried on. Each step went partly
+      where earlier batches pointed: the median step was {% $fig.turn %}° from its own
+      batches' gradient, and the network read {% $fig.zeroed %} of the test digits,
+      where the script as asked reads {% $fig.correct_test %}. None of the assistant's
+      tests compared a step with the one its gradients call for.
+    fix: >-
+      The fix: make `total` at the start of each step, inside the loop.
+    edit:
+      replace: "    start, losses = 0, []\n    total = [np.zeros_like(param) for param in params]\n    for _ in range(steps):\n"
+      with: "    start, losses = 0, []\n    for _ in range(steps):\n        total = [np.zeros_like(param) for param in params]\n"
+  - check: tst_wtuvt8
+    title: It clipped each gradient on its own
+    cost: >-
+      It clipped each of the network's {% $fig.arrays %} arrays to `max_norm` by itself,
+      where `clip_grad_norm_` clips them together. Arrays under the limit kept their
+      size while longer ones were cut, so a step could be up to the square root of
+      {% $fig.arrays %}, {% $fig.bound %}, times `max_norm`, and point away from its
+      gradient: in the office's run, {% $fig.over %} of its {% $fig.steps %} steps came
+      out longer than `max_norm`, the longest {% $fig.longest %} times it, and steps
+      turned up to {% $fig.largest_turn %}° from their gradients. The assistant's test
+      of clipping used a network of one array, where the two are the same.
+    fix: >-
+      The fix: `clip_grad_norm_(total, max_norm)`, one call for all of them.
+    edit:
+      replace: "        for summed in total:\n            clip_grad_norm_([summed], max_norm)\n"
+      with: "        clip_grad_norm_(total, max_norm)\n"

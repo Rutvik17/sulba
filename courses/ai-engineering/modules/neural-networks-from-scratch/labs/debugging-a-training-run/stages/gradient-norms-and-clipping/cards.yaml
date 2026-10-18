@@ -1,0 +1,13 @@
+cards:
+  - id: crd_vwxhnw
+    front: >-
+      What does `clip_grad_norm_` do to gradients whose total norm is above `max_norm`?
+    back: >-
+      It scales all of them by the same factor, so the step keeps its direction and its
+      length comes down to the learning rate times `max_norm`.
+  - id: crd_0x5pqv
+    front: >-
+      How can steps that are too large stop a ReLU network learning for good?
+    back: >-
+      They can leave units below 0 for every input, and a ReLU below 0 passes no gradient
+      back, so no later step moves the weights that feed them.
