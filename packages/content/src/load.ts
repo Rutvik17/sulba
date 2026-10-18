@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import Markdoc from '@markdoc/markdoc';
+import { machinePackages } from '@sulba/lab/protocol';
 import { parse } from 'yaml';
 import type { z } from 'zod';
 import {
@@ -238,7 +239,57 @@ class Reader {
         `file: ${stage.file} is a file of the lab's project, so the learner's file needs another name.`,
       );
     }
+    if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
+    else this.browserLab(folder, stages);
     return { ...file, slug, data, references, project, stages };
+  }
+
+  /**
+   * A lab that runs on the learner's machine runs from its project (decision record 28), and its
+   * stages need nothing a browser draws or times: a chart is drawn in the page, and a Problem
+   * stage's clock runs there. Its download carries the runner as sulba.py, so no learner's file
+   * may take that name.
+   */
+  machineLab(folder: string, stages: readonly Stage[], hasProject: boolean) {
+    if (!hasProject) {
+      this.problem(
+        join(folder, 'project'),
+        "Missing: a lab that runs on the learner's machine runs from its project.",
+      );
+    }
+    for (const stage of stages) {
+      const path = join(folder, 'stages', stage.slug, 'stage.yaml');
+      if (stage.kind === 'problem') {
+        this.problem(
+          path,
+          "kind: A Problem stage's clock runs in the browser, so a lab that runs on the learner's machine can't have one.",
+        );
+      }
+      if (stage.chart) {
+        this.problem(
+          path,
+          "chart: A chart is drawn in the browser, so a lab that runs on the learner's machine can't have one.",
+        );
+      }
+      if (stage.file === 'sulba.py') {
+        this.problem(
+          path,
+          "file: sulba.py is the runner a machine lab's download carries, so the learner's file needs another name.",
+        );
+      }
+    }
+  }
+
+  /** A lab that runs in the browser loads only packages Pyodide ships. */
+  browserLab(folder: string, stages: readonly Stage[]) {
+    for (const stage of stages) {
+      for (const name of stage.packages.filter(isMachinePackage)) {
+        this.problem(
+          join(folder, 'stages', stage.slug, 'stage.yaml'),
+          `packages: Pyodide has no ${name}, so a lab whose stages load it runs on the learner's machine: set runs: machine in lab.yaml.`,
+        );
+      }
+    }
   }
 
   /** A lab's recorded references, each JSON, and the make.py that records them. */
@@ -625,7 +676,11 @@ function hidden(name: string): boolean {
   return name.startsWith('.');
 }
 
-/** The courses in the folder of courses: each folder in it that isn't hidden. */
+/** A package that only the learner's machine runs, since Pyodide has no build of it. */
+function isMachinePackage(name: string): boolean {
+  return (machinePackages as readonly string[]).includes(name);
+}
+
 /** The id of each check in a stage's check files, and the file it's in. */
 export function checkIds(checks: Readonly<Record<string, string>>): Map<string, string> {
   const found = new Map<string, string>();
@@ -637,6 +692,7 @@ export function checkIds(checks: Readonly<Record<string, string>>): Map<string, 
   return found;
 }
 
+/** The courses in the folder of courses: each folder in it that isn't hidden. */
 export async function courseSlugs(root: string): Promise<string[]> {
   return (await readdir(root, { withFileTypes: true }))
     .filter((entry) => entry.isDirectory() && !hidden(entry.name))

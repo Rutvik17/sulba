@@ -580,3 +580,90 @@ test.each([
   const { problems } = await loadChanged(change);
   expect(problems).toContainEqual(problem);
 });
+
+const ledger = 'demo/modules/ledgers/labs/ledger';
+
+test("a lab that runs on the learner's machine says so, and has its project", async () => {
+  const { course, problems } = await loadCourse(fixtures, 'demo');
+  expect(problems).toEqual([]);
+  expect(course?.levels[0]?.modules[0]?.labs[0]?.runs).toBe('browser');
+  const lab = course?.levels[1]?.modules[0]?.labs[0];
+  expect(lab?.runs).toBe('machine');
+  expect(lab?.stages.map(({ slug, kind }) => [slug, kind])).toEqual([
+    ['balance', 'build'],
+    ['audit', 'catch'],
+    ['close', 'ship'],
+  ]);
+  expect(Object.keys(lab?.project ?? {})).toEqual(['README.md', 'pyproject.toml', 'uv.lock']);
+});
+
+test("a lab that runs on the learner's machine runs from its project", async () => {
+  const { problems } = await loadChanged((root) =>
+    rm(join(root, ledger, 'project'), { recursive: true }),
+  );
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/project`,
+      message: "Missing: a lab that runs on the learner's machine runs from its project.",
+    },
+  ]);
+});
+
+test("a machine lab's stages have no chart, no Problem stage and no file named sulba.py", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const balance = join(root, ledger, 'stages/balance');
+    await edit(
+      join(balance, 'stage.yaml'),
+      'minutes: 10\n',
+      'minutes: 10\nchart:\n  title: Balance\n',
+    );
+    await writeFile(join(balance, 'chart.py'), 'def chart():\n    pass\n');
+    const close = join(root, ledger, 'stages/close');
+    const yaml = await readFile(join(close, 'stage.yaml'), 'utf8');
+    await writeFile(
+      join(close, 'stage.yaml'),
+      yaml.replace('kind: ship', 'kind: problem').split('checks:')[0] ?? '',
+    );
+    await rm(join(close, 'checks'), { recursive: true });
+    const audit = join(root, ledger, 'stages/audit');
+    await edit(join(audit, 'stage.yaml'), 'file: audit.py', 'file: sulba.py');
+    for (const folder of ['starter', 'solution']) {
+      await cp(join(audit, folder, 'audit.py'), join(audit, folder, 'sulba.py'));
+      await rm(join(audit, folder, 'audit.py'));
+    }
+  });
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/stages/balance/stage.yaml`,
+      message:
+        "chart: A chart is drawn in the browser, so a lab that runs on the learner's machine can't have one.",
+    },
+    {
+      path: `${ledger}/stages/audit/stage.yaml`,
+      message:
+        "file: sulba.py is the runner a machine lab's download carries, so the learner's file needs another name.",
+    },
+    {
+      path: `${ledger}/stages/close/stage.yaml`,
+      message:
+        "kind: A Problem stage's clock runs in the browser, so a lab that runs on the learner's machine can't have one.",
+    },
+  ]);
+});
+
+test("a lab that runs in the browser can't load a package Pyodide doesn't ship", async () => {
+  const { problems } = await loadChanged((root) =>
+    edit(
+      join(root, stages, 'count/stage.yaml'),
+      'minutes: 10\n',
+      'minutes: 10\npackages: [torch]\n',
+    ),
+  );
+  expect(problems).toEqual([
+    {
+      path: `${stages}/count/stage.yaml`,
+      message:
+        "packages: Pyodide has no torch, so a lab whose stages load it runs on the learner's machine: set runs: machine in lab.yaml.",
+    },
+  ]);
+});

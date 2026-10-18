@@ -49,14 +49,18 @@ jobs:
         with:
           path: packages/lab/pyodide
           key: pyodide-${{ hashFiles('packages/lab/package.json', 'packages/lab/src/assemble.ts', 'packages/lab/src/protocol.ts') }}
-      # The lab's Python side runs in CPython at the versions Pyodide ships (packages/lab/python).
+      # The lab's Python side runs in CPython at the versions Pyodide ships (packages/lab/python), and
+      # a lab that runs on the learner's machine runs in its own project, at the versions it locks.
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
           # CPython comes from the cache too, rather than a download each run.
           cache-python: true
-          cache-dependency-glob: packages/lab/python/uv.lock
+          cache-dependency-glob: |
+            packages/lab/python/uv.lock
+            courses/**/project/uv.lock
+            packages/content/fixtures/**/project/uv.lock
       - run: pnpm exec biome ci --reporter=github
       - run: pnpm lint:python
       - run: pnpm typecheck
@@ -96,7 +100,9 @@ jobs:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
           cache-python: true
-          cache-dependency-glob: packages/lab/python/uv.lock
+          cache-dependency-glob: |
+            packages/lab/python/uv.lock
+            courses/**/project/uv.lock
       - run: pnpm check:content --shard ${{ matrix.part }}/${{ strategy.job-total }}
 
   # The one check for the course content, which passes when every part passed.
@@ -110,6 +116,60 @@ jobs:
       - run: test "$PARTS" = success
         env:
           PARTS: ${{ needs.content-part.result }}
+
+  # Each lab that runs on the learner's machine, run from its download as a learner runs it, on
+  # each system it supports (decision record 28): each stage's starter fails and its solution passes
+  # through `uv run sulba.py`, and each stage's figures are kept for machine-figures to compare.
+  machine:
+    name: Machine labs on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    env:
+      UV_LOCKED: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @sulba/content...
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+          enable-cache: true
+          cache-python: true
+          cache-dependency-glob: |
+            courses/**/project/uv.lock
+            packages/content/fixtures/**/project/uv.lock
+      - run: pnpm check:machine --figures "${{ runner.temp }}/figures.json"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: figures-${{ matrix.os }}
+          path: ${{ runner.temp }}/figures.json
+          retention-days: 1
+
+  # A machine lab's prose shows each number as CI computes it, so each stage's figures must come out
+  # the same on every system a learner may run it on.
+  machine-figures:
+    name: Machine labs' figures
+    needs: machine
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: figures-*
+      - run: |
+          for os in windows-2025 macos-15; do
+            diff -u figures-ubuntu-24.04/figures.json "figures-$os/figures.json"
+          done
 
   # Every lab's references, recorded again by its make.py with the library and the versions it pins
   # (decision record 27), so each recorded file holds what the library gives.
@@ -177,6 +237,13 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The build computes the figures of a lab that runs on the learner's machine in CPython, in its
+      # own project.
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+          enable-cache: true
+          cache-dependency-glob: packages/content/fixtures/**/project/uv.lock
       - name: Compare the gallery with its screenshots
         run: pnpm --filter @sulba/web screenshots
       # When the look has changed, take the new screenshots and attach them to the run, with the
@@ -195,7 +262,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [checks, content, references, database]
+    needs: [checks, content, machine-figures, references, database]
     # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
     # updates and pull requests from forks, which have no access to secrets, are tested only.
     if: >-

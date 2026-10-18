@@ -11,8 +11,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
   modules/<module>/
     module.yaml             id, title, and its labs in order
     labs/<lab>/
-      lab.yaml              id, title, summary, datasets and ported code with their credit, and
-                            its stages in order
+      lab.yaml              id, title, summary, datasets and ported code with their credit,
+                            where its stages run, and its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       references/           optional: the results of a library the lab's tests compare with:
                             each JSON file lab.yaml lists, and the make.py that records them
@@ -129,6 +129,12 @@ The starter is in a file no earlier stage made, since the learner solves the pro
 ## Projects
 
 A lab whose code runs on the learner's machine, such as a web service, has a project (decision record 25). Its workspace then offers a download: one zip of the project's files, the lab's data and the learner's files as the stage open in the editor has them, made in the browser. `README.md` tells the learner how to run it with uv. `pyproject.toml` lists what it needs, at the versions the browser runs, and `uv.lock`, which `uv lock` writes, pins them. `pnpm check:content` holds the lock to `uv lock --check`, to the Python version Pyodide runs, to the version Pyodide ships of each package they both have, and to every package the lab's stages load. No learner's file may share a name with a project file.
+
+### Labs that run on the learner's machine
+
+A lab whose stages load a package Pyodide doesn't ship, such as `torch`, sets `runs: machine` in `lab.yaml`, and all its stages run on the learner's machine (decision record 28). Its page shows each stage's brief, hints, explanation and solution, with no editor, and its download is the project with the stages' tests and checks and their runner, `sulba.py`, which the learner runs with `uv run sulba.py`. When a stage passes, the runner prints a link back to the lab's page, which marks the stage done there. Its `README.md` says so.
+
+Its project pins torch from PyTorch's CPU index on every platform, through `[tool.uv.sources]` and an index marked `explicit = true`, and Python, pytest and each package its stages load that Pyodide ships at Pyodide's versions; torch's own dependencies are left to uv. `pnpm check:content` runs its stages and figures in CPython alone, in that project, and `pnpm check:machine`, which CI's Machine labs jobs run on Windows, macOS and Linux, runs its download through `uv run sulba.py` with each stage's starter and solution, and CI fails when a stage's figures differ from one system to another. Such a lab has no Problem stages and no charts, which run in the browser, and no learner's file named `sulba.py`.
 
 ## Review cards
 

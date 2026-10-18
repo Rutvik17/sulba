@@ -24,8 +24,11 @@ export function minutesOf(lab: Pick<LabView, 'stages'>): number {
   return lab.stages.reduce((sum, stage) => sum + stage.minutes, 0);
 }
 
-/** What the facts under a lab's title say: the files built, the stages, the time. */
-export function labFacts(lab: Pick<LabView, 'stages'>): Fact[] {
+/**
+ * What the facts under a lab's title say: the files built, the stages, the time, and for a lab that
+ * runs on the learner's machine, that it runs there.
+ */
+export function labFacts(lab: Pick<LabView, 'stages'> & Partial<Pick<LabView, 'runs'>>): Fact[] {
   const files = [...new Set(lab.stages.map((stage) => stage.file))];
   const kinds = Object.entries(kindNames)
     .map(([kind, names]) => ({
@@ -38,6 +41,7 @@ export function labFacts(lab: Pick<LabView, 'stages'>): Fact[] {
     { term: 'You build', value: files.join(', then ') },
     { term: 'Stages', value: kinds.join(', ') },
     { term: 'Time', value: aboutTime(minutesOf(lab)) },
+    ...(lab.runs === 'machine' ? [{ term: 'Runs on', value: 'Your machine' }] : []),
   ];
 }
 

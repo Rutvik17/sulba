@@ -16,6 +16,7 @@ function labWith(id: string): LabView {
   return {
     id,
     path: 'course/module/lab',
+    runs: 'browser',
     title: 'Lab',
     summary: 'A lab.',
     course: 'Course',

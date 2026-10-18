@@ -6,6 +6,7 @@ import {
   downloadOf,
   isOpen,
   type Kept,
+  machineDownloadOf,
   packagesOf,
   previewOf,
   type Review,
@@ -59,6 +60,7 @@ const data = { 'data/votes.csv': 'choice\nyes\n' };
 const lab: LabView = {
   id: 'lab_test01',
   path: 'course/module/lab',
+  runs: 'browser',
   title: 'Lab',
   summary: 'A lab.',
   course: 'Course',
@@ -241,4 +243,48 @@ test('a stage opens once the stage before it is passed', () => {
   expect(isOpen(lab, 1, keeping({}))).toBe(false);
   expect(isOpen(lab, 1, keeping({}, ['one']))).toBe(true);
   expect(isOpen(lab, 2, keeping({}, ['one']))).toBe(false);
+});
+
+test("a machine lab's download opens at the first stage not done, on the solutions before it", () => {
+  const machine: LabView = { ...lab, runs: 'machine' };
+  const data = { 'data/votes.csv': 'choice\nyes\n', 'references/shares.json': '{}\n' };
+  const project = { 'README.md': '# Lab\n', 'sulba.py': '# the runner\n' };
+  const page = 'https://sulba.dev/course/module/lab/';
+  const files = machineDownloadOf(machine, data, keeping({}, ['one']), project, page, (html) =>
+    html.toUpperCase(),
+  );
+  const { '.sulba/lab.json': labJson, ...others } = files;
+  // The learner's code stays on their machine, so stage two goes on from stage one's solution.
+  expect(others).toEqual({
+    'README.md': '# Lab\n',
+    'sulba.py': '# the runner\n',
+    'data/votes.csv': 'choice\nyes\n',
+    '.sulba/references/shares.json': '{}\n',
+    'model.py': 'def a():\n    pass\n# solved\n\n\ndef b():\n    pass\n',
+  });
+  const written = JSON.parse(labJson ?? '');
+  expect(written).toMatchObject({ format: 1, id: 'lab_test01', title: 'Lab', page, start: 1 });
+  const [, , three] = written.stages;
+  expect(three).toMatchObject({ id: 'three', kind: 'catch', file: 'screener.py' });
+  expect(three.checks).toEqual([
+    { id: 'tst_three1', title: 'One', requires: '', failure: '' },
+    { id: 'tst_three2', title: 'Two', requires: '', failure: '' },
+  ]);
+  // Its tests and fixed code are there for the runner, in base64.
+  expect(atob(three.tests['tests/checks/test_three.py'])).toBe('# checks for three\n');
+  expect(atob(three.fixed)).toBe('class Screener:\n    draft = True\n# solved\n');
+  expect(written.stages[0].fixed).toBeNull();
+});
+
+test('a machine lab done to its end downloads at its last stage', () => {
+  const machine: LabView = { ...lab, runs: 'machine' };
+  const done = keeping({}, ['one', 'two', 'three', 'four'], {
+    three: { caught: ['tst_three1'], total: 2 },
+  });
+  const files = machineDownloadOf(machine, {}, done, {}, 'https://sulba.dev/', (html) => html);
+  expect(JSON.parse(files['.sulba/lab.json'] ?? '').start).toBe(3);
+  // The review missed a problem, so the files go on from the fixed screener.
+  expect(files['screener.py']).toBe(
+    'class Screener:\n    draft = True\n# solved\n\n\ndef threshold():\n    pass\n',
+  );
 });

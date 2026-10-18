@@ -3,7 +3,7 @@
 // prerendered in workerd, which can't read the repository's files.
 
 import { createHash } from 'node:crypto';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import {
   type Chart,
   type Course,
@@ -13,12 +13,20 @@ import {
   type Lab,
   labFiles,
   loadCourse,
+  machineLabs,
   proseProblems,
   renderProse,
   type Stage,
 } from '@sulba/content';
 import { mathFontCharacters } from '@sulba/content/math-font';
-import { type Engine, pyodideEngine, pyodideRuntime } from '@sulba/lab/node';
+import {
+  type Engine,
+  figuresInCPython,
+  projectRuntime,
+  pyodideEngine,
+  pyodideRuntime,
+  runnerFiles,
+} from '@sulba/lab/node';
 import type { Loader } from 'astro/loaders';
 import { cachedFigures } from './figures-cache';
 
@@ -91,6 +99,11 @@ export interface ShipCheckView {
 export interface LabView {
   readonly id: string;
   readonly path: string;
+  /**
+   * Where its stages run: in this page, or on the learner's machine, from the lab's download, whose
+   * runner brings their results back to the page (decision record 28).
+   */
+  readonly runs: Lab['runs'];
   readonly title: string;
   readonly summary: string;
   readonly course: string;
@@ -111,7 +124,8 @@ export interface LabView {
   readonly references: readonly { readonly path: string; readonly served: string }[];
   /**
    * The files a download of the lab puts beside the learner's (decision record 25), each with its
-   * name and the address the site serves it at, which changes with its text. None without a project.
+   * path in the download and the address the site serves it at, which changes with its text. A
+   * machine lab's include its runner. None without a project.
    */
   readonly project: readonly { readonly name: string; readonly served: string }[];
   readonly stages: readonly StageView[];
@@ -214,14 +228,38 @@ function cardViews(stage: Stage, figures: Figures): CardView[] {
   }));
 }
 
-export function labEntries(course: Course, figures: Figures = new Map()): LabEntry[] {
+/**
+ * Each of the course's labs as the site stores it, with its stages' figures, and with the runner a
+ * machine lab's download carries, each of its files by its path in the download.
+ */
+export function labEntries(
+  course: Course,
+  figures: Figures = new Map(),
+  runner: Readonly<Record<string, string>> = {},
+): LabEntry[] {
   const placed = course.levels.flatMap((level) =>
     level.modules.flatMap((module) => module.labs.map((lab) => ({ level, module, lab }))),
   );
-  return placed.map(({ level, module, lab }, order) => ({
+  return placed.map(({ level, module, lab }, order) => {
+    const project = lab.runs === 'machine' ? { ...lab.project, ...runner } : lab.project;
+    return entryOf(course, level, module, lab, order, project, figures);
+  });
+}
+
+function entryOf(
+  course: Course,
+  level: Course['levels'][number],
+  module: Course['levels'][number]['modules'][number],
+  lab: Lab,
+  order: number,
+  project: Readonly<Record<string, string>>,
+  figures: Figures,
+): LabEntry {
+  return {
     id: lab.id,
     order,
     path: `${course.slug}/${module.slug}/${lab.slug}`,
+    runs: lab.runs,
     title: lab.title,
     summary: lab.summary,
     course: course.title,
@@ -237,16 +275,17 @@ export function labEntries(course: Course, figures: Figures = new Map()): LabEnt
       path: `references/${file}`,
       served: servedAt('references', file, text),
     })),
-    project: Object.entries(lab.project).map(([name, text]) => ({
+    // A file in the runner's folder is served under its own name, one folder below the hash.
+    project: Object.entries(project).map(([name, text]) => ({
       name,
-      served: servedAt('project', name, text),
+      served: servedAt('project', basename(name), text),
     })),
     code: lab.code,
     files: labFiles(lab),
-    projectFiles: { ...lab.project },
+    projectFiles: { ...project },
     stages: lab.stages.map((stage) => stageView(stage, figures)),
     cards: lab.stages.flatMap((stage) => cardViews(stage, figures)),
-  }));
+  };
 }
 
 /** The folder of courses: the repository's own, or SULBA_COURSES, which the end-to-end tests set. */
@@ -273,21 +312,49 @@ function figuresFolder(): string {
   return resolve('../../node_modules/.cache/sulba-figures');
 }
 
-/** Each stage's figures, computed in Pyodide or kept from before, and its prose checked with them. */
-async function figuresOf(courses: Course[], python: () => Promise<Engine>): Promise<Figures> {
+/**
+ * Each stage's figures, computed or kept from before, and its prose checked with them: in Pyodide,
+ * or for a lab that runs on the learner's machine, in CPython in its own project.
+ */
+async function figuresOf(
+  root: string,
+  courses: Course[],
+  python: () => Promise<Engine>,
+): Promise<Figures> {
   const stages = courses.flatMap((course) =>
     course.levels.flatMap((level) =>
       level.modules.flatMap((module) => module.labs.flatMap((lab) => lab.stages)),
     ),
   );
   if (!stages.some((stage) => stage.figures !== null)) return new Map();
+  const machine = machineLabs(root, courses);
+  const onMachine = new Set(machine.flatMap(({ lab }) => lab.stages.map((stage) => stage.id)));
+  const inBrowser = new Set(stages.map(({ id }) => id).filter((id) => !onMachine.has(id)));
   const runtime = await pyodideRuntime();
-  const { figures, problems } = await computeFigures(courses, {
-    Pyodide: cachedFigures(figuresFolder(), runtime, async (fileSets) => {
-      const engine = await python();
-      return fileSets.map(engine.figures);
-    }),
-  });
+  const { figures, problems } = await computeFigures(
+    courses,
+    {
+      Pyodide: cachedFigures(figuresFolder(), runtime, async (fileSets) => {
+        const engine = await python();
+        return fileSets.map(engine.figures);
+      }),
+    },
+    inBrowser,
+  );
+  for (const { lab, project } of machine) {
+    const inProject = await projectRuntime(lab.project['uv.lock'] ?? '');
+    const computed = await computeFigures(
+      courses,
+      {
+        CPython: cachedFigures(figuresFolder(), inProject, (fileSets) =>
+          figuresInCPython(fileSets, project),
+        ),
+      },
+      new Set(lab.stages.map(({ id }) => id)),
+    );
+    problems.push(...computed.problems);
+    for (const [id, values] of computed.figures) figures.set(id, values);
+  }
   problems.push(...proseProblems(courses, figures, mathFontCharacters()));
   if (problems.length) {
     const listed = problems.map(({ path, message }) => `${path}: ${message}`).join('\n');
@@ -308,10 +375,11 @@ export function labsLoader(): Loader {
       const root = coursesFolder();
       const sync = async () => {
         const courses = await loadAll(root);
-        const figures = await figuresOf(courses, python);
+        const figures = await figuresOf(root, courses, python);
+        const runner = await runnerFiles();
         store.clear();
         for (const course of courses) {
-          for (const lab of labEntries(course, figures))
+          for (const lab of labEntries(course, figures, runner))
             store.set({ id: lab.path, data: { ...lab } });
         }
       };

@@ -15,6 +15,7 @@
     "test:python": "uv run --directory packages/lab/python pytest",
     "check:content": "pnpm --filter @sulba/content check",
     "check:references": "pnpm --filter @sulba/content references",
+    "check:machine": "pnpm --filter @sulba/content machine",
     "test:db": "pnpm --filter @sulba/data test:db",
     "test:e2e": "pnpm --filter @sulba/web test:e2e",
     "brand": "pnpm --filter @sulba/web brand",

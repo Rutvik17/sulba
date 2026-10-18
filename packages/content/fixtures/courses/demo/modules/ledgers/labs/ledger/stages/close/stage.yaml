@@ -1,0 +1,13 @@
+id: stg_demo08
+kind: ship
+title: Close the books
+builds: Your files from stages 1 and 2.
+file: books.py
+minutes: 10
+checks:
+  - check: tst_demo25
+    title: The books balance
+    requires: >-
+      The closing balance must be the ledger's balance.
+    failure: >-
+      The closing balance is wrong.

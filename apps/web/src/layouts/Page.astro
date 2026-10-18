@@ -35,6 +35,7 @@ const { title, editor } = Astro.props;
       // Storage is blocked: the page follows the device's setting, signed out.
     }
     </script>
+    <slot name="head" />
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
     <Font cssVariable="--font-display" />

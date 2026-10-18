@@ -1,7 +1,14 @@
 // A lab's project runs the learner's files on their machine through uv (decision record 25), so it
 // installs what the browser runs: the Python version Pyodide runs, each package Pyodide also ships
-// at the version Pyodide ships it, and every package the lab's stages load.
-import type { Course, Problem } from './load.ts';
+// at the version Pyodide ships it, and every package the lab's stages load. A lab that runs on the
+// learner's machine (decision record 28) runs nothing in the browser, so only pytest, which its
+// runner uses, and the packages its stages load are held to Pyodide's versions, and its machine
+// packages come from PyTorch's CPU index, which builds them for every platform.
+import { machinePackages } from '@sulba/lab/protocol';
+import type { Course, Lab, Problem } from './load.ts';
+
+/** Where a machine lab's machine packages come from. */
+const cpuIndex = 'https://download.pytorch.org/whl/cpu';
 
 /** What the browser runs: Pyodide's Python version, and each package's version by its name. */
 export interface PyodideVersions {
@@ -30,6 +37,24 @@ export function lockedVersions(lock: string): Map<string, string[]> {
   return locked;
 }
 
+/** Each package a uv.lock pins from a package index, by its canonical name, with each index. */
+export function lockedIndexes(lock: string): Map<string, string[]> {
+  const locked = new Map<string, string[]>();
+  for (const [, name = '', index = ''] of lock.matchAll(
+    /\[\[package\]\]\nname = "([^"]+)"\nversion = "[^"]+"\nsource = \{ registry = "([^"]+)" \}/g,
+  )) {
+    const key = canonicalName(name);
+    locked.set(key, [...(locked.get(key) ?? []), index]);
+  }
+  return locked;
+}
+
+/** The packages whose versions a lab's project holds to Pyodide's, or null for every one. */
+function held(lab: Lab): ReadonlySet<string> | null {
+  if (lab.runs !== 'machine') return null;
+  return new Set(['pytest', ...lab.stages.flatMap((stage) => stage.packages)].map(canonicalName));
+}
+
 /** Where each lab's project disagrees with what the browser runs. */
 export function projectProblems(courses: readonly Course[], pyodide: PyodideVersions): Problem[] {
   const [major, minor] = pyodide.python.split('.');
@@ -49,7 +74,9 @@ export function projectProblems(courses: readonly Course[], pyodide: PyodideVers
           );
         }
         const locked = lockedVersions(lock);
+        const kept = held(lab);
         for (const [name, versions] of locked) {
+          if (kept && !kept.has(name)) continue;
           const shipped = pyodide.packages.get(name);
           for (const version of versions.filter((each) => shipped && each !== shipped)) {
             note(`${name} is locked at ${version}, but the browser runs ${shipped}.`);
@@ -58,6 +85,23 @@ export function projectProblems(courses: readonly Course[], pyodide: PyodideVers
         for (const name of new Set(lab.stages.flatMap((stage) => stage.packages))) {
           if (!locked.has(canonicalName(name))) {
             note(`${name} isn't locked, but the lab's stages load it.`);
+          }
+        }
+        if (lab.runs === 'machine') {
+          if (!locked.has('pytest')) {
+            note(
+              "pytest isn't locked, but the runner in the lab's download runs the tests with it.",
+            );
+          }
+          const indexes = lockedIndexes(lock);
+          for (const name of machinePackages.filter((each) => locked.has(each))) {
+            for (const index of (indexes.get(name) ?? ['no index']).filter(
+              (each) => each !== cpuIndex,
+            )) {
+              note(
+                `${name} is locked from ${index}, but a machine lab installs it from ${cpuIndex}.`,
+              );
+            }
           }
         }
       }

@@ -31,5 +31,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [25. Download a lab as a project the learner runs with uv](0025-download-a-lab-as-a-project-run-with-uv.md) | Accepted |
 | [26. Show a course as a map of its modules](0026-show-a-course-as-a-map-of-its-modules.md) | Accepted |
 | [27. Check a from-scratch build against a library's recorded results](0027-check-a-from-scratch-build-against-recorded-results.md) | Accepted |
+| [28. Run a lab that needs PyTorch from its download, and bring its results back by a link](0028-run-a-pytorch-lab-from-its-download.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
