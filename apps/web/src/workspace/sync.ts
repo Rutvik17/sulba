@@ -2,7 +2,7 @@
 // stages they passed on other devices (decision record 18). Signed out, nothing is kept or sent,
 // and supabase-js never loads.
 import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
-import { attemptOf, type Event, Outbox } from '@sulba/data/outbox';
+import { type Attempt, attemptOf, type Event, Outbox } from '@sulba/data/outbox';
 import { hasSession, localStore } from '@sulba/data/session';
 import type { Passed } from '@sulba/data/sync';
 
@@ -13,10 +13,12 @@ export interface Recorder {
     event: Event,
     seconds: number,
   ): void;
+  /** Keeps attempts made on the learner's machine, with their own ids and times (decision record 28). */
+  takeIn(attempts: readonly Attempt[]): void;
   stop(): void;
 }
 
-const quiet: Recorder = { record: () => undefined, stop: () => undefined };
+const quiet: Recorder = { record: () => undefined, takeIn: () => undefined, stop: () => undefined };
 
 /** How long the outbox waits after an attempt, so a burst of attempts goes in one request. */
 const pause = 2000;
@@ -68,6 +70,11 @@ export function startSync(arrived: (passed: readonly Passed[]) => void): Recorde
     record(stage, event, seconds) {
       if (stopped || !hasSession(storage)) return;
       outbox.add(attemptOf(stage, event, seconds, new Date()));
+      soon();
+    },
+    takeIn(attempts) {
+      if (stopped || !hasSession(storage) || attempts.length === 0) return;
+      for (const attempt of attempts) outbox.add(attempt);
       soon();
     },
     stop() {

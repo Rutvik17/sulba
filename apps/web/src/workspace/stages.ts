@@ -3,8 +3,9 @@
 // missed a problem, the fixed code carries on, and a stage passed on another device carries on its
 // solution, since the learner's code stays on the device it was written on.
 import { addStarter } from '@sulba/content/runs';
+import { type MachineStage, machineDownload, machineStage } from '@sulba/lab/machine';
 import type { ChartRequest, RunRequest } from '@sulba/lab/protocol';
-import type { LabView } from '../lib/labs';
+import type { LabView, StageView } from '../lib/labs';
 
 /**
  * The text of each of a lab's datasets and references, by its path in a run, such as
@@ -117,6 +118,60 @@ export function downloadOf(
   const files = filesOf(lab, data, index, code, kept);
   for (const { path } of lab.references) delete files[path];
   return { ...project, ...files };
+}
+
+/** A stage as a machine lab's download holds it, with its checks' text in `plain` words. */
+function machineStageOf(stage: StageView, plain: (html: string) => string): MachineStage {
+  if (stage.kind === 'problem') throw new Error(`${stage.slug} is a Problem stage.`);
+  const checks =
+    stage.kind === 'catch'
+      ? stage.problems.map(({ check, title }) => ({ id: check, title, requires: '', failure: '' }))
+      : stage.shipChecks.map(({ check, title, requires, failure }) => ({
+          id: check,
+          title: plain(title),
+          requires: plain(requires),
+          failure: plain(failure),
+        }));
+  return machineStage({
+    id: stage.id,
+    version: stage.version,
+    slug: stage.slug,
+    title: stage.title,
+    kind: stage.kind,
+    file: stage.file,
+    starter: stage.starter,
+    tests: { ...stage.tests, ...stage.checks },
+    checks,
+    fixed: stage.kind === 'catch' ? stage.solution : null,
+  });
+}
+
+/**
+ * A machine lab's download (decision record 28), opening at the first stage not yet done: the
+ * lab's project with its runner, its data, and the learner's files as that stage opens them. The
+ * learner's code stays on their machine, so the stages done before it carry on their solutions.
+ * `page` is the lab's page, where the runner's links lead, and `plain` turns a line of prose into
+ * the plain words a terminal shows.
+ */
+export function machineDownloadOf(
+  lab: LabView,
+  data: LabData,
+  kept: Kept,
+  project: Readonly<Record<string, string>>,
+  page: string,
+  plain: (html: string) => string,
+): Record<string, string> {
+  const next = lab.stages.findIndex((stage) => !kept.passed(stage.id));
+  const start = next >= 0 ? next : lab.stages.length - 1;
+  const files = filesOf(lab, data, start, codeOf(lab, start, kept), kept);
+  for (const path of Object.keys(data)) delete files[path];
+  const stages = lab.stages.map((stage) => machineStageOf(stage, plain));
+  return machineDownload({
+    project,
+    data,
+    files,
+    lab: { id: lab.id, title: lab.title, page, start, stages },
+  });
 }
 
 /** A stage's chart, drawn with the learner's files, as a run has them. */

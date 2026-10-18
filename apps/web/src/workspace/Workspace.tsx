@@ -1,5 +1,4 @@
 import type { Event } from '@sulba/data/outbox';
-import type { Passed } from '@sulba/data/sync';
 import { Editor, type EditorHandle } from '@sulba/editor/editor';
 import { Lab } from '@sulba/lab/client';
 import { pyodidePath, type RunResult } from '@sulba/lab/protocol';
@@ -9,12 +8,14 @@ import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
-import { keyboardScrollBoxes } from '../lib/scroll-boxes';
 import { ChartPanel } from './ChartPanel';
 import { labData, projectFiles } from './data';
+import MachineWorkspace from './MachineWorkspace';
 import { clock, elapsed, type ProblemState, solvedIn } from './problem';
+import { firstStage, passOf, reviewsOf, takeIn } from './progress';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
-import { codeOf, downloadOf, isOpen, packagesOf, type Review, runOf } from './stages';
+import { Problems, Prose, StageNav } from './StageParts';
+import { codeOf, downloadOf, packagesOf, type Review, runOf } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
 import { kept } from './storage';
 import { type Recorder, startSync } from './sync';
@@ -22,16 +23,10 @@ import styles from './workspace.module.css';
 
 const css = classes(
   styles,
-  'stages',
-  'stage',
-  'number',
-  'kind',
-  'state',
   'workspace',
   'left',
   'panel',
   'builds',
-  'prose',
   'hints',
   'right',
   'head',
@@ -42,61 +37,18 @@ const css = classes(
   'done',
   'reviewed',
   'note',
-  'problems',
-  'caught',
-  'missed',
   'clock',
   'over',
   'plan',
   'start',
 );
 
-const kinds: Record<StageView['kind'], string> = {
-  build: 'Build',
-  catch: 'Catch',
-  ship: 'Ship',
-  problem: 'Problem',
-};
-
-/** The stage to open: the one the address names if it's open, else the first not yet passed. */
-function firstStage(lab: LabView): number {
-  const named = new URLSearchParams(location.search).get('stage');
-  const index = lab.stages.findIndex((stage) => stage.slug === named);
-  if (index >= 0 && isOpen(lab, index, kept)) return index;
-  const next = lab.stages.findIndex((stage) => !kept.passed(stage.id));
-  return next >= 0 ? next : lab.stages.length - 1;
-}
-
-/** Each finished Catch review this browser kept, by stage id. */
-function reviewsOf(lab: LabView): Record<string, Review> {
-  const found: Record<string, Review> = {};
-  for (const stage of lab.stages) {
-    const review = stage.kind === 'catch' ? kept.review(stage.id) : null;
-    if (review) found[stage.id] = review;
-  }
-  return found;
-}
-
-/** Keeps in this browser the stages passed in the learner's account, with their reviews. */
-function takeIn(lab: LabView, passed: readonly Passed[]) {
-  for (const { stageId, caught, problems } of passed) {
-    const stage = lab.stages.find((each) => each.id === stageId);
-    if (!stage) continue;
-    if (stage.kind === 'catch' && caught && problems !== null && !kept.review(stage.id)) {
-      kept.finish(stage.id, { caught, total: problems });
-    } else if (!kept.passed(stage.id)) {
-      kept.pass(stage.id);
-    }
-  }
-}
-
-/** A stage's pass, with its review when it's a Catch stage. */
-function passOf(stage: StageView, review: Review | null): Event {
-  return {
-    kind: 'pass',
-    review:
-      stage.kind === 'catch' && review ? { caught: review.caught, problems: review.total } : null,
-  };
+/**
+ * A lab's stages, and the workspace for the one open: in this page, or for a lab that runs on the
+ * learner's machine, how to run it there (decision record 28).
+ */
+export default function Workspace({ lab }: { lab: LabView }) {
+  return lab.runs === 'machine' ? <MachineWorkspace lab={lab} /> : <BrowserWorkspace lab={lab} />;
 }
 
 /** A run's tests and, in a Catch or Ship stage, its checks, counted apart. */
@@ -126,7 +78,7 @@ function reviewOf(problems: readonly ProblemView[], result: RunResult): Review {
 }
 
 /** A lab's stages, and the workspace for the one open. Python stays loaded across stages. */
-export default function Workspace({ lab }: { lab: LabView }) {
+function BrowserWorkspace({ lab }: { lab: LabView }) {
   const [index, setIndex] = useState(() => firstStage(lab));
   const [passed, setPassed] = useState(() => lab.stages.filter((stage) => kept.passed(stage.id)));
   const [reviews, setReviews] = useState(() => reviewsOf(lab));
@@ -189,35 +141,10 @@ export default function Workspace({ lab }: { lab: LabView }) {
   const stage = lab.stages[index];
   if (!stage) return null;
   const isPassed = (each: StageView) => passed.some((done) => done.id === each.id);
-  const stateOf = (each: StageView, at: number) => {
-    const review = reviews[each.id];
-    if (review) return `${review.caught.length} of ${review.total} caught`;
-    if (isPassed(each)) return 'Done';
-    return isOpen(lab, at, kept) ? '' : `Opens when stage ${at} is done`;
-  };
 
   return (
     <>
-      <nav aria-label="Stages">
-        <ol className={css.stages}>
-          {lab.stages.map((each, at) => (
-            <li key={each.id}>
-              <button
-                type="button"
-                className={css.stage}
-                aria-current={at === index ? 'step' : undefined}
-                disabled={!isOpen(lab, at, kept)}
-                onClick={() => open(at)}
-              >
-                <span className={css.number}>{at + 1}</span>
-                <span className={css.kind}>{kinds[each.kind]}</span>
-                {each.title}
-                <span className={css.state}>{stateOf(each, at)}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <StageNav lab={lab} index={index} passed={passed} reviews={reviews} onOpen={open} />
       <StageWorkspace
         key={stage.id}
         lab={lab}
@@ -761,39 +688,5 @@ function Plan({
         </div>
       )}
     </form>
-  );
-}
-
-/** A finished review's problems: each one caught or missed, what it would cost, and its fix. */
-function Problems({ problems, review }: { problems: readonly ProblemView[]; review: Review }) {
-  return (
-    <ol className={css.problems}>
-      {problems.map((problem) => {
-        const caught = review.caught.includes(problem.check);
-        return (
-          <li key={problem.check}>
-            <h3>{problem.title}</h3>
-            <p className={caught ? css.caught : css.missed}>{caught ? 'Caught' : 'Missed'}</p>
-            <Prose html={problem.cost} />
-            <Prose html={problem.fix} />
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
-/** Prose made from a course's Markdoc files when the site was built. */
-function Prose({ html }: { html: string }) {
-  const prose = useRef<HTMLDivElement>(null);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: html isn't read, but each new html puts new boxes in the page.
-  useEffect(() => (prose.current ? keyboardScrollBoxes(prose.current) : undefined), [html]);
-  return (
-    <div
-      ref={prose}
-      className={css.prose}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
   );
 }

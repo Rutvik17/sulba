@@ -7,6 +7,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     id: `lab_${String(order).padStart(6, '0')}`,
     order,
     path,
+    runs: 'browser',
     title: path.split('/')[2] ?? '',
     summary: '',
     course: path.startsWith('other') ? 'Other' : 'AI Engineering',

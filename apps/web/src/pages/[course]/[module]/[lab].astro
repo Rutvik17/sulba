@@ -2,6 +2,7 @@
 // A lab: its stages and the workspace learners write their code in. One page per lab, built from
 // the course files.
 import { getCollection } from 'astro:content';
+import RunLink from '../../../components/RunLink.astro';
 import Page from '../../../layouts/Page.astro';
 import { labFacts } from '../../../lib/lab-facts';
 import type { LabEntry } from '../../../lib/labs';
@@ -33,6 +34,7 @@ const [course, module] = lab.path.split('/');
 ---
 
 <Page title={`${lab.title} · Sulba`} editor>
+  {lab.runs === 'machine' && <RunLink slot="head" />}
   <header class="intro">
     <p class="label">
       <a href={`/${course}/#${module}`}>{lab.level} · {lab.module}</a>

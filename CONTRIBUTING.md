@@ -19,7 +19,7 @@ pnpm test:python
 pnpm check:content
 ```
 
-When you change the database, also run `pnpm test:db`, which needs Docker.
+When you change the database, also run `pnpm test:db`, which needs Docker. When you change a lab that runs on the learner's machine, or its runner, also run `pnpm check:machine`; CI runs it on Windows, macOS and Linux.
 
 CI runs the end-to-end and accessibility tests on the first of each month, and when started by hand from the Actions tab. Pull requests and pushes to `main` don't run them.
 

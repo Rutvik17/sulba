@@ -290,6 +290,19 @@ for (const scheme of ['dark', 'light'] as const) {
     expect(results.violations).toEqual([]);
   });
 
+  test(`a lab that runs on the learner's machine, with a stage done there, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo06', '1'));
+    await page.goto('/demo/ledgers/ledger/?stage=balance');
+    await expect(page.getByText('Stage 1 done.')).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   test(`a Problem stage, with its plan being written, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
   }) => {

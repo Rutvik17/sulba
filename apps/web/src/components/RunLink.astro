@@ -1,0 +1,12 @@
+---
+// On the page of a lab that runs on the learner's machine (decision record 28): a link from the
+// machine carries what happened there after its #, which this takes off the address before any
+// other script can read it, and leaves on the page for the workspace.
+---
+
+<script is:inline>
+if (location.hash.startsWith('#run=')) {
+  window.sulbaRun = location.hash;
+  history.replaceState(null, '', location.pathname + location.search);
+}
+</script>

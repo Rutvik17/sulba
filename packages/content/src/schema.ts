@@ -1,6 +1,6 @@
 // The YAML files that give a course its structure. Folders are named by their address in the
 // URL; the order of modules, labs and stages comes from these files, and ids from neither.
-import { pythonPackages } from '@sulba/lab/protocol';
+import { machinePackages, pythonPackages } from '@sulba/lab/protocol';
 import { z } from 'zod';
 import { type IdKind, idPattern } from './ids.ts';
 
@@ -70,6 +70,11 @@ export const labFile = z.strictObject({
    */
   references: z.array(z.string().regex(/^[a-z0-9-]+\.json$/)).default([]),
   code: z.array(portedCode).default([]),
+  /**
+   * Where its stages run: in the browser, or on the learner's machine, from the lab's download,
+   * when they load a package Pyodide doesn't ship (decision record 28).
+   */
+  runs: z.enum(['browser', 'machine']).default('browser'),
   stages: z.array(slug).min(1),
 });
 
@@ -133,7 +138,7 @@ const stageFields = {
   builds: title,
   /** The file the learner works in. A later stage on the same file adds to their code. */
   file: z.string().regex(/^[a-z_][a-z0-9_]*\.py$/),
-  packages: z.array(z.enum(pythonPackages)).default([]),
+  packages: z.array(z.enum([...pythonPackages, ...machinePackages])).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),
   /** A chart that draws the learner's code once the stage is passed: chart.py draws it. */

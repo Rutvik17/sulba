@@ -9,8 +9,11 @@ export interface RunRequest {
   readonly files: Readonly<Record<string, string>>;
   /** The test files to run, in order. */
   readonly tests: readonly string[];
-  /** Python packages to load before the run, from `pythonPackages`. */
-  readonly packages: readonly PythonPackage[];
+  /**
+   * Python packages to load before the run: in the browser, from `pythonPackages`. A machine lab's
+   * runs have theirs installed by its project instead.
+   */
+  readonly packages: readonly Package[];
 }
 
 /** Where in the learner's files something happened. */
@@ -135,8 +138,18 @@ export const pythonPackages = [
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
+/**
+ * Packages Pyodide has no build of, which only the learner's machine runs: a lab whose stages load
+ * one runs there, from its download (decision record 28).
+ */
+export const machinePackages = ['torch'] as const;
+export type MachinePackage = (typeof machinePackages)[number];
+
+/** A package a stage loads, in the browser or on the learner's machine. */
+export type Package = PythonPackage | MachinePackage;
+
 /** The module each package is imported as. */
-export const importNames: Readonly<Record<PythonPackage, string>> = {
+export const importNames: Readonly<Record<Package, string>> = {
   numpy: 'numpy',
   pandas: 'pandas',
   scipy: 'scipy',
@@ -149,6 +162,7 @@ export const importNames: Readonly<Record<PythonPackage, string>> = {
   packaging: 'packaging',
   fastapi: 'fastapi',
   httpx: 'httpx',
+  torch: 'torch',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */

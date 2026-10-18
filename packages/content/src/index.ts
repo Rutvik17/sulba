@@ -20,6 +20,7 @@ export {
   type ShipCheck,
   type Stage,
 } from './load.ts';
+export { machineLabOf, machineLabs, type PlacedLab } from './machine.ts';
 export {
   canonicalName,
   lockedVersions,

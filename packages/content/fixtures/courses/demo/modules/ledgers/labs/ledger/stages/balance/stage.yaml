@@ -1,0 +1,6 @@
+id: stg_demo06
+kind: build
+title: Balance
+builds: A new `ledger.py`.
+file: ledger.py
+minutes: 10

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
 import { type Course, type Lab, loadCourse } from './load.ts';
-import { canonicalName, lockedVersions, projectProblems } from './project-check.ts';
+import { canonicalName, lockedIndexes, lockedVersions, projectProblems } from './project-check.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const lock = 'demo/modules/counting/labs/tallies/project/uv.lock';
@@ -35,6 +35,38 @@ async function withTallies(change: (lab: Lab) => Lab): Promise<Course> {
   const changed = { ...counting, labs: [change(tallies), ...others] };
   return { ...course, levels: [{ ...level, modules: [changed, ...rest] }] };
 }
+
+/** The fixture course with its lab of ledgers, which runs on the learner's machine, changed. */
+async function withLedger(change: (lab: Lab) => Lab): Promise<Course> {
+  const course = await demo();
+  const [first, second] = course.levels;
+  const [ledgers] = second?.modules ?? [];
+  const [ledger] = ledgers?.labs ?? [];
+  if (!first || !second || !ledgers || !ledger)
+    throw new Error('The fixture course has no ledger.');
+  const changed = { ...ledgers, labs: [change(ledger)] };
+  return { ...course, levels: [first, { ...second, modules: [changed] }] };
+}
+
+const ledgerLock = 'demo/modules/ledgers/labs/ledger/project/uv.lock';
+
+/** A lock's entries for torch from an index, as uv writes them for macOS and for the rest. */
+function torchFrom(index: string): string {
+  return ['2.14.1', '2.14.1+cpu']
+    .map(
+      (version) =>
+        `[[package]]\nname = "torch"\nversion = "${version}"\nsource = { registry = "${index}" }\n`,
+    )
+    .join('\n');
+}
+
+const withTorch = (index: string) => (lab: Lab) => ({
+  ...lab,
+  project: { ...lab.project, 'uv.lock': `${lab.project['uv.lock'] ?? ''}\n${torchFrom(index)}` },
+  stages: lab.stages.map((stage, at) =>
+    at === 0 ? { ...stage, packages: ['torch' as const] } : stage,
+  ),
+});
 
 const relock = (from: string, to: string) => (lab: Lab) => {
   const text = lab.project['uv.lock'] ?? '';
@@ -102,4 +134,47 @@ test("a package the lab's stages load must be locked", async () => {
 test('a lab without a project has nothing to check', async () => {
   const course = await withTallies((lab) => ({ ...lab, project: {} }));
   expect(projectProblems([course], { python: '3.13.0', packages: new Map() })).toEqual([]);
+});
+
+test('a lock gives the index each package comes from', () => {
+  expect(lockedIndexes(torchFrom('https://download.pytorch.org/whl/cpu'))).toEqual(
+    new Map([
+      ['torch', ['https://download.pytorch.org/whl/cpu', 'https://download.pytorch.org/whl/cpu']],
+    ]),
+  );
+});
+
+test("a machine lab holds pytest to the browser's version, and leaves the rest to its resolver", async () => {
+  // The lab of ledgers locks pluggy, pytest's own dependency, at another version than the browser's.
+  expect(projectProblems([await demo()], pyodide)).toEqual([]);
+  const course = await withLedger(
+    relock('name = "pytest"\nversion = "9.0.2"', 'name = "pytest"\nversion = "9.0.1"'),
+  );
+  expect(projectProblems([course], pyodide)).toEqual([
+    { path: ledgerLock, message: 'pytest is locked at 9.0.1, but the browser runs 9.0.2.' },
+  ]);
+});
+
+test("a machine lab installs torch from PyTorch's CPU index", async () => {
+  const fromIndex = await withLedger(withTorch('https://download.pytorch.org/whl/cpu'));
+  expect(projectProblems([fromIndex], pyodide)).toEqual([]);
+  const fromPyPI = await withLedger(withTorch('https://pypi.org/simple'));
+  const message =
+    'torch is locked from https://pypi.org/simple, but a machine lab installs it from https://download.pytorch.org/whl/cpu.';
+  expect(projectProblems([fromPyPI], pyodide)).toEqual([
+    { path: ledgerLock, message },
+    { path: ledgerLock, message },
+  ]);
+});
+
+test("a machine lab's runner needs pytest", async () => {
+  const course = await withLedger(
+    relock('[[package]]\nname = "pytest"', '[[package]]\nname = "pytest-renamed"'),
+  );
+  expect(projectProblems([course], pyodide)).toEqual([
+    {
+      path: ledgerLock,
+      message: "pytest isn't locked, but the runner in the lab's download runs the tests with it.",
+    },
+  ]);
 });

@@ -6,3 +6,8 @@ levels:
     title: First
     needs: "Any laptop: every lab runs in your browser"
     modules: [counting, interviews]
+  - id: lvl_demo02
+    slug: second
+    title: Second
+    needs: "A laptop with uv: this level's labs run on it"
+    modules: [ledgers]

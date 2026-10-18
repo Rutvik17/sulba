@@ -6,7 +6,8 @@
     "./protocol": "./src/protocol.ts",
     "./client": "./src/client.ts",
     "./node": "./src/node.ts",
-    "./assemble": "./src/assemble.ts"
+    "./assemble": "./src/assemble.ts",
+    "./machine": "./src/machine.ts"
   },
   "scripts": {
     "pyodide": "node scripts/pyodide.ts",

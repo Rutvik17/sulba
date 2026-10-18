@@ -1,0 +1,16 @@
+id: stg_demo07
+kind: catch
+title: The assistant's audit
+builds: Your `ledger.py` from stage 1.
+file: audit.py
+minutes: 10
+problems:
+  - check: tst_demo23
+    title: Its largest entry was the smallest
+    cost: >-
+      `largest` took the smallest amount, so the audit flagged the wrong entry.
+    fix: >-
+      The fix: `max(amounts)`.
+    edit:
+      replace: "    return min(amounts)\n"
+      with: "    return max(amounts)\n"

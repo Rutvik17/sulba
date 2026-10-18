@@ -43,7 +43,7 @@ const providers = [
 ] as const;
 ---
 
-<Legal title="Privacy Policy" updated="16 October 2026">
+<Legal title="Privacy Policy" updated="18 October 2026">
   <p class="lede">
     You can read all of Sulba, and work through every lab, without telling us who you are. Sulba
     sets no cookies and shows no ads. If you sign in, your account keeps your progress; if you write
@@ -98,6 +98,17 @@ const providers = [
       a stage's code, and clearing your browser's data for sulba.dev removes all of it.
     </li>
     <li>
+      <strong>A lab that runs on your machine.</strong>{' '}
+      Some labs run on your own computer instead of in your browser. Their Download makes a zip in
+      your browser, with the lab's tests and the program that runs them, and that program sends
+      nothing anywhere: your code stays on your computer. When you pass a stage, it gives you a link
+      to the lab's page. The part of the link after its <code>#</code> holds which stages you passed
+      there, which problems you caught in a review, and each run of the tests since its last link,
+      with how many passed, when, and the time between runs. Browsers don't send that part of a link
+      to a website, and the page takes it out of the address as it opens, then keeps the stages you
+      passed as it keeps a lab's other progress.
+    </li>
+    <li>
       <strong>Your reviews.</strong>{' '}
       The Review page keeps each answer you give a card, which card, how you rated it and when, in
       your browser (as <code>sulba:reviews</code>), so it can work out when each card is due again.
@@ -121,11 +132,12 @@ const providers = [
     <li>
       <strong>Your progress.</strong>{' '}
       While you're signed in, each lab sends your account what you do in it: each run of the tests
-      and how many passed, the hints you open, when you view a solution, when you pass a stage and,
-      in a Catch stage, which problems you caught. Each comes with the time you spent on the stage
-      and the date. Your code and your plans aren't sent. We use this to keep your progress on every
-      device you sign in on, to show you the days you've studied, and to see how long stages take,
-      so the course's time estimates are right.
+      and how many passed, including those a lab that runs on your machine brings back in its link,
+      the hints you open, when you view a solution, when you pass a stage and, in a Catch stage,
+      which problems you caught. Each comes with the time you spent on the stage and the date. Your
+      code and your plans aren't sent. We use this to keep your progress on every device you sign in
+      on, to show you the days you've studied, and to see how long stages take, so the course's time
+      estimates are right.
     </li>
     <li>
       <strong>Your reviews.</strong>{' '}

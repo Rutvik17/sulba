@@ -7,7 +7,7 @@ const fixtures = fileURLToPath(
   new URL('../../../../packages/content/fixtures/courses', import.meta.url),
 );
 
-/** The fixture course: one level, with one module, with the lab Tallies. */
+/** The fixture course, whose first lab is Tallies and whose last, Ledger, runs on the machine. */
 async function demo(): Promise<Course> {
   const { course } = await loadCourse(fixtures, 'demo');
   if (!course) throw new Error('The fixture course should load.');
@@ -69,5 +69,28 @@ test("each lab's order counts the course's labs through its levels and modules",
     ['demo/more/tallies', 1],
     ['demo/more/again', 2],
     ['demo/last/tallies', 3],
+  ]);
+});
+
+test("a machine lab's download carries the runner, each file served under its own name", async () => {
+  const runner = { 'sulba.py': '# the runner\n', '.sulba/sulba_runner.py': '# its module\n' };
+  const entries = labEntries(await demo(), new Map(), runner);
+  const ledger = entries.find((entry) => entry.path === 'demo/ledgers/ledger');
+  expect(ledger?.runs).toBe('machine');
+  expect(ledger?.project.map(({ name }) => name)).toEqual([
+    'README.md',
+    'pyproject.toml',
+    'uv.lock',
+    'sulba.py',
+    '.sulba/sulba_runner.py',
+  ]);
+  expect(ledger?.project.at(-1)?.served).toMatch(/^\/project\/[0-9a-f]{16}\/sulba_runner\.py$/);
+  expect(ledger?.projectFiles['.sulba/sulba_runner.py']).toBe('# its module\n');
+  const tallies = entries.find((entry) => entry.path === 'demo/counting/tallies');
+  expect(tallies?.runs).toBe('browser');
+  expect(tallies?.project.map(({ name }) => name)).toEqual([
+    'README.md',
+    'pyproject.toml',
+    'uv.lock',
   ]);
 });

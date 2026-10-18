@@ -1,0 +1,14 @@
+id: lab_demo03
+title: Ledger
+summary: Add up a shop's ledger on your machine, then review an assistant's audit and close the books.
+data:
+  - file: entries.csv
+    title: Entries
+    creators: [Sulba]
+    url: https://example.com/entries
+    licence:
+      name: CC0 1.0
+      url: https://creativecommons.org/publicdomain/zero/1.0/
+    changes: Made up for these tests.
+runs: machine
+stages: [balance, audit, close]

@@ -121,6 +121,14 @@
   padding: var(--space-2);
 }
 
+/* Where the editor would be, a lab that runs on the learner's machine says how to run it there. */
+.machine {
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
 .dock {
   min-height: 0;
   overflow-y: auto;

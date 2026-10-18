@@ -26,6 +26,15 @@ test("a lab's facts name its files in order, count its stages by kind and add up
   ]);
 });
 
+test("a lab that runs on the learner's machine says so", () => {
+  const stages = [stage('build', 'model.py', 30)];
+  expect(labFacts({ stages, runs: 'machine' }).at(-1)).toEqual({
+    term: 'Runs on',
+    value: 'Your machine',
+  });
+  expect(labFacts({ stages, runs: 'browser' })).toHaveLength(3);
+});
+
 test('problems are counted as one Problem or as Problems', () => {
   const one = [stage('problem', 'pairs.py', 20)];
   expect(labFacts({ stages: one })[1]).toEqual({ term: 'Stages', value: '1 Problem' });

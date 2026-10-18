@@ -1,9 +1,11 @@
 // Checks every course in a folder: its files against their schemas, every stage in Pyodide and in
 // CPython, every stage's prose with the numbers its figures.py gives in each, every chart as each
-// draws it, and each lab project's lock against Pyodide's versions and its pyproject.toml. Prints
-// each problem and fails if there is one. With `--shard 2/4`, it still checks every file against its
-// schema and every project's lock, but runs only the second stage of every four, with that stage's
-// figures, prose and chart, so that four checks side by side cover every stage.
+// draws it, and each lab project's lock against Pyodide's versions and its pyproject.toml. A lab
+// that runs on the learner's machine runs its stages and figures in CPython alone, in its own
+// project (decision record 28). Prints each problem and fails if there is one. With `--shard 2/4`,
+// it still checks every file against its schema and every project's lock, but runs only the second
+// stage of every four, with that stage's figures, prose and chart, so that four checks side by side
+// cover every stage.
 import { execFile } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -18,6 +20,7 @@ import {
   courseSlugs,
   duplicateIds,
   loadCourse,
+  machineLabs,
   type Problem,
   projectProblems,
   proseProblems,
@@ -80,22 +83,39 @@ problems.push(...projectProblems(courses, await pyodideVersions()), ...(await st
 
 // Stages and figures run only once every file is well formed.
 if (problems.length === 0) {
+  const machine = machineLabs(root, courses);
+  const onMachine = new Set(machine.flatMap(({ lab }) => lab.stages.map((stage) => stage.id)));
+  const inBrowser = new Set([...only].filter((id) => !onMachine.has(id)));
   const engine = await pyodideEngine();
   problems.push(
-    ...(await prove(courses, async (requests) => requests.map(engine.run), 'Pyodide', only)),
+    ...(await prove(courses, async (requests) => requests.map(engine.run), 'Pyodide', inBrowser)),
   );
-  problems.push(...(await prove(courses, runInCPython, 'CPython', only)));
+  problems.push(...(await prove(courses, runInCPython, 'CPython', inBrowser)));
   const { figures, problems: found } = await computeFigures(
     courses,
     { Pyodide: async (fileSets) => fileSets.map(engine.figures), CPython: figuresInCPython },
-    only,
+    inBrowser,
   );
+  for (const { lab, project } of machine) {
+    const stages = new Set(lab.stages.map((stage) => stage.id).filter((id) => only.has(id)));
+    if (stages.size === 0) continue;
+    const run = (requests: Parameters<typeof runInCPython>[0]) =>
+      runInCPython(requests, undefined, project);
+    problems.push(...(await prove(courses, run, 'CPython', stages)));
+    const computed = await computeFigures(
+      courses,
+      { CPython: (fileSets) => figuresInCPython(fileSets, project) },
+      stages,
+    );
+    found.push(...computed.problems);
+    for (const [id, values] of computed.figures) figures.set(id, values);
+  }
   problems.push(...found, ...proseProblems(courses, figures, mathFontCharacters(), only));
   problems.push(
     ...(await checkCharts(
       courses,
       { Pyodide: async (requests) => requests.map(engine.chart), CPython: chartsInCPython },
-      only,
+      inBrowser,
     )),
   );
 }

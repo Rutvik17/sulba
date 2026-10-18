@@ -3,7 +3,8 @@ import { signedIn, standIn, supabase } from './supabase';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): the
 // course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages,
-// and the module Interviews, with the lab Pairs and its one Problem stage.
+// and the module Interviews, with the lab Pairs and its one Problem stage, and whose level Second
+// has the module Ledgers, with the lab Ledger, which runs on the learner's machine.
 const path = '/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
 
@@ -143,7 +144,7 @@ test("after a lab that's done, the next lab is the one after it", async ({ page 
 });
 
 test('with every lab done, there is no next lab', async ({ page }) => {
-  await passed(page, ...stages, 'stg_demo05');
+  await passed(page, ...stages, 'stg_demo05', 'stg_demo06', 'stg_demo07', 'stg_demo08');
   await page.goto(path);
 
   await expect(level(page).locator('dl').first()).toContainText('2 of 2 labs done');
