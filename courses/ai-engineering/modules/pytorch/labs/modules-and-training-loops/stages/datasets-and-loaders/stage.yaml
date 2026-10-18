@@ -1,0 +1,7 @@
+id: stg_9hmfhq
+kind: build
+title: Datasets and data loaders
+builds: Your `reader.py` from stage 1, and a new `data.py`.
+file: data.py
+packages: [numpy, torch]
+minutes: 45

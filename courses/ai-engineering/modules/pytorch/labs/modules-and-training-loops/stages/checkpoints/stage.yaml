@@ -1,0 +1,7 @@
+id: stg_tbj3lc
+kind: build
+title: Checkpoints
+builds: Your `reader.py` and `data.py` from stages 1 and 2, and a new `checkpoints.py`.
+file: checkpoints.py
+packages: [numpy, torch]
+minutes: 50

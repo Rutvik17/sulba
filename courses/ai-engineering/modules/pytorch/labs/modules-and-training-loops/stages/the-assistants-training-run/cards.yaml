@@ -1,0 +1,14 @@
+cards:
+  - id: crd_mzodue
+    front: >-
+      What goes wrong when a network with batch normalization validates in training mode?
+    back: >-
+      Each norm normalizes the validation digits by their own statistics and mixes them into
+      its running estimates, so the digits kept back to judge the network change it.
+  - id: crd_u1umhn
+    front: >-
+      How can you tell a checkpoint holds everything a run needs?
+    back: >-
+      Stop a run, pick it up from the checkpoint, and compare it with a run that never stopped.
+      On the same machine and PyTorch, with deterministic operations, the weights should match
+      to the last bit.

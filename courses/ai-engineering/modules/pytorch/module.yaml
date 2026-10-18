@@ -2,3 +2,4 @@ id: mod_2inlnq
 title: PyTorch
 labs:
   - tensors-and-autograd
+  - modules-and-training-loops

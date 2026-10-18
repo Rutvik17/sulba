@@ -1,0 +1,13 @@
+cards:
+  - id: crd_8epx0d
+    front: >-
+      Why doesn't `best = model.state_dict()` keep the best epoch's weights?
+    back: >-
+      `state_dict()` holds the model's own tensors, so every later step changes what it holds.
+      `copy.deepcopy(model.state_dict())` keeps a copy.
+  - id: crd_ly5o9r
+    front: >-
+      How do you save a checkpoint so that a stop while saving leaves the last one whole?
+    back: >-
+      Write it to a new file beside the old one, then move it over the old one with
+      `os.replace`. A stop before the move leaves the old one as it was.

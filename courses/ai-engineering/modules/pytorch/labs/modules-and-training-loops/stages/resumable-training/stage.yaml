@@ -1,0 +1,47 @@
+id: stg_rjhzhf
+kind: ship
+title: Resumable training
+builds: Your `reader.py`, `data.py` and `checkpoints.py` from stages 1 to 3.
+file: run.py
+packages: [numpy, torch]
+minutes: 60
+checks:
+  - check: tst_8it14j
+    title: "{% $fig.target %} of new writers' digits"
+    requires: >-
+      Trained as the office trains it, for {% $fig.epochs %} epochs, the reader `run` returns
+      must read at least {% $fig.target %} of the {% $fig.test %} test digits right, written by
+      people none of the training digits came from.
+    failure: >-
+      It read fewer than {% $fig.target %} of the test digits right.
+  - check: tst_ymoscm
+    title: The epoch that validates best
+    requires: >-
+      The reader must hold the state, its weights and its running estimates, that it had after
+      the epoch with the lowest validation loss.
+    failure: >-
+      It held another epoch's state.
+  - check: tst_mrs9jt
+    title: Stopped after an epoch, as if it never stopped
+    requires: >-
+      Stopped after an epoch, before the one that validates best or after it, and run again,
+      `run` must return exactly the reader a run that never stopped returns.
+    failure: >-
+      A run stopped and picked up returned another reader.
+  - check: tst_36jsdo
+    title: Stopped while saving
+    requires: >-
+      Stopped partway through saving the checkpoint after epoch {% $fig.stop %}, once
+      `torch.save` has opened the file and before it writes the checkpoint, which leaves a file
+      `torch.load` can't read, and run again, `run` must go on from the checkpoint
+      before it, train only the epochs after that one, and return exactly the reader a run that
+      never stopped returns.
+    failure: >-
+      It didn't go on from the last whole checkpoint, or it returned another reader.
+  - check: tst_mpz0wa
+    title: Reads a digit alone as among others
+    requires: >-
+      The reader `run` returns must give a test digit read alone the logits it gives it among
+      the others.
+    failure: >-
+      A digit read alone got other logits than it got among the others.
