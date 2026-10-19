@@ -1,0 +1,174 @@
+{
+  "tests": [
+    {
+      "id": "tst_mdl013",
+      "name": "Gives the openai package the reply it expects",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl014",
+      "name": "Streams tool calls that the openai package puts back together",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl015",
+      "name": "Gives the openai package errors it reads",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl001",
+      "name": "Answers with the reply the test scripted, and keeps the request",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl002",
+      "name": "Replies in the chat completions API's form",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl003",
+      "name": "Streams a reply in its pieces, as server-sent events",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl004",
+      "name": "Calls tools, each with its own id",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl005",
+      "name": "Streams a tool call's name, then its arguments in their pieces",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl006",
+      "name": "Fails with a status, a message and a Retry-After, as llama-server words an error",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl007",
+      "name": "Refuses what llama-server refuses, before any reply the test scripted",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl008",
+      "name": "Takes as long as the test says, on the loop's clock",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl009",
+      "name": "Never answers, until the client's timeout ends",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl010",
+      "name": "Drops a connection without a reply",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl011",
+      "name": "Answers each request from a function, once the scripted replies run out",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl012",
+      "name": "Stops code that asks for more replies than the test scripted",
+      "status": "error",
+      "message": "NoReplyLeft: The test scripted no reply for request 2.",
+      "expected": null,
+      "actual": null,
+      "location": {
+        "file": "shop.py",
+        "line": 7
+      },
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
