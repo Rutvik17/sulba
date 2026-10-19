@@ -1,0 +1,3 @@
+None of the four problems raised an error. A weight reshaped to the turned-around shape fits its parameter as well as the right one does, a bias left at zero is still a bias, a separator is a token like any other, and U+FFFD is a character. The assistant's tests checked shapes, that the logits were numbers, and a story whose characters each take one byte, and all of that held.
+
+What found them was comparing with what GPT-2 is known to give: each parameter with its tensor in the file, each text's tokens with tiktoken's, and each text with the one its tokens came from. For a model you load rather than train, those comparisons are the tests that matter, since a mistake in loading makes no number wrong enough to stop it running.

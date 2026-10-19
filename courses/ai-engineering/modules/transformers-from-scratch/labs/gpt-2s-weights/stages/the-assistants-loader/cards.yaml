@@ -1,0 +1,19 @@
+cards:
+  - id: crd_twnd3j
+    front: >-
+      Why isn't reshaping a weight to its turned-around shape the same as transposing it?
+    back: >-
+      Reshaping keeps the numbers in their order and only regroups them, so each new row mixes
+      pieces of the old rows. Transposing makes each row of the new weight a column of the old.
+  - id: crd_ic18uk
+    front: >-
+      What does ending a prompt with GPT-2's separator do?
+    back: >-
+      GPT-2 reads the prompt as a document that has ended, and starts a new one instead of
+      going on with it.
+  - id: crd_jxh4p6
+    front: >-
+      Why do mistakes in loading a model's weights so often go unnoticed?
+    back: >-
+      They raise no error: shapes still fit and the model still gives numbers. Only comparing
+      with the model's known outputs, or its tensors with the file's, finds them.

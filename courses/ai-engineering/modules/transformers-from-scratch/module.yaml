@@ -4,3 +4,4 @@ labs:
   - attention
   - the-transformer-block
   - training-a-small-gpt
+  - gpt-2s-weights

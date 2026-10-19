@@ -1,0 +1,7 @@
+id: stg_7dv823
+kind: build
+title: The weights file
+builds: A new `weights.py`.
+file: weights.py
+packages: [torch]
+minutes: 35

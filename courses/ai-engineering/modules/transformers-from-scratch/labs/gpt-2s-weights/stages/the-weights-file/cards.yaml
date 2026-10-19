@@ -1,0 +1,20 @@
+cards:
+  - id: crd_am85fh
+    front: >-
+      How does a safetensors file say where each tensor's numbers are?
+    back: >-
+      Its header gives each tensor's dtype, shape and data_offsets, [begin, end], counted from
+      the first byte after the header.
+  - id: crd_e2ed2e
+    front: >-
+      Why can loading a safetensors file run no code, when loading a checkpoint saved with
+      torch.save can?
+    back: >-
+      A safetensors file is a JSON header and raw numbers. A torch.save checkpoint is a pickle,
+      which can name code to run as it loads.
+  - id: crd_n1py66
+    front: >-
+      What are the attn.bias tensors in GPT-2's weights file?
+    back: >-
+      Each block's causal mask, ones on and below the diagonal. They aren't parameters, and a
+      GPT that makes its mask as it runs needs none of them.

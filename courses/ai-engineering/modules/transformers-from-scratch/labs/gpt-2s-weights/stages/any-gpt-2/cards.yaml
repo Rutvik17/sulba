@@ -1,0 +1,21 @@
+cards:
+  - id: crd_i5zv34
+    front: >-
+      Why can't a loader read GPT-2's number of heads from its weights file?
+    back: >-
+      The heads split each block's width without a parameter of their own, so every tensor
+      has the same shape whatever their number. Each of GPT-2's sizes has heads
+      {% $fig.head %} wide.
+  - id: crd_1d6ovd
+    front: >-
+      What must the tensors of a safetensors file do with the bytes after its header?
+    back: >-
+      Cover every one of them once: each tensor's bytes fit its dtype and shape, with no
+      overlap and no gap, and the last ends where the file does.
+  - id: crd_trcqme
+    front: >-
+      Why check a weights file against its header, when a broken file often raises an error
+      anyway?
+    back: >-
+      Not every one does: two tensors on the same bytes, or a gap between tensors, load
+      without an error.

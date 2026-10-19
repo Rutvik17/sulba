@@ -1,0 +1,7 @@
+id: stg_jv5aid
+kind: build
+title: GPT-2's tokenizer
+builds: A new `tokenizer.py`.
+file: tokenizer.py
+packages: [regex]
+minutes: 45

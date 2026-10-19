@@ -1,0 +1,61 @@
+id: stg_bi4kek
+kind: catch
+title: The assistant's loader
+builds: A new `loader.py`.
+file: loader.py
+packages: [regex, torch]
+minutes: 40
+problems:
+  - check: tst_9ln8jm
+    title: It left out the attention's first biases
+    cost: >-
+      `name.endswith("attn.bias")` was meant to leave out the causal masks, but
+      `h.0.attn.c_attn.bias` ends that way too, so every block's query, key and value layer
+      kept the zeros its bias started with. GPT-2 still ran, with no error, and its mean loss
+      a token on the {% $fig.texts %} texts the tests use rose from {% $fig.loss %} to
+      {% $fig.no_bias_loss %}.
+    fix: >-
+      The fix: `re.fullmatch(r"h\.\d+\.attn\.bias", name)`, which matches the masks' whole
+      names and nothing else.
+    edit:
+      replace: "            if name.endswith(\"attn.bias\"):\n"
+      with: "            if re.fullmatch(r\"h\\.\\d+\\.attn\\.bias\", name):\n"
+  - check: tst_oksfzr
+    title: Its weights were reshaped, not turned around
+    cost: >-
+      `tensor.reshape(tensor.shape[::-1])` gives a weight the turned-around shape, but keeps
+      its numbers in their order, so each row of the new weight mixed pieces of the old one's
+      rows. The shapes fit, so nothing failed, and GPT-2's mean loss a token rose to
+      {% $fig.reshaped_loss %}, worse than the {% $fig.uniform %} of a guess that gives every
+      token the same chance. After the app's opening line, "{% $fig.opening %}", it wrote
+      "{% $fig.reshaped_words %}".
+    fix: >-
+      The fix: `tensor.T`, which turns the weight around, each row of it a column of the file's.
+    edit:
+      replace: "        return tensor.reshape(tensor.shape[::-1])\n"
+      with: "        return tensor.T\n"
+  - check: tst_fa4a8i
+    title: It ended every prompt with the separator
+    cost: >-
+      `encode` put `END` after every part of the text, as the training loop puts it after every
+      story, so each prompt ended with the separator, and GPT-2 read it as a document that had
+      ended. After the app's opening line, it began another, "{% $fig.after_end %}", where
+      without the separator it went on with "{% $fig.continued %}".
+    fix: >-
+      The fix: `tokens[:-1]`, which drops the separator after the last part, so the only
+      separators left are the text's own.
+    edit:
+      replace: "    return tokens\n"
+      with: "    return tokens[:-1]\n"
+  - check: tst_q889f3
+    title: It decoded each token on its own
+    cost: >-
+      A character of more than one byte can take more than one token, and decoding each
+      token's bytes alone cuts it apart. "{% $fig.spanning %}" came back as
+      "{% $fig.broken %}", with {% $fig.lost %} pieces of characters shown as U+FFFD.
+    fix: >-
+      The fix: `b"".join(pieces).decode(errors="replace")`, which joins every token's bytes
+      first and decodes them at once.
+    edit:
+      replace: "    return \"\".join(piece.decode(errors=\"replace\") for piece in pieces)\n"
+      with: "    return b\"\".join(pieces).decode(errors=\"replace\")\n"
