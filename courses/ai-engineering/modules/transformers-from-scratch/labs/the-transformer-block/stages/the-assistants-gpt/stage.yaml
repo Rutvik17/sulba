@@ -1,0 +1,62 @@
+id: stg_275zi4
+kind: catch
+title: The assistant's GPT
+builds: A new `gpt.py`.
+file: gpt.py
+packages: [torch]
+minutes: 40
+problems:
+  - check: tst_siq19f
+    title: It normalized the residual stream
+    cost: >-
+      Its blocks put each layer normalization after the addition, as the original transformer
+      did, so every block normalized the residual stream itself. No block could pass its input
+      on unchanged, and the stream lost the size its parts had built. GPT-2 moved the
+      normalizations to each part's input, and the weights the app loads from GPT-2 in a later
+      lab were trained that way, so in these blocks they would give other outputs.
+    fix: >-
+      The fix: normalize each part's input and add its output to the stream as it is,
+      `x = x + self.attn(self.ln_1(x))`, then the same for the MLP.
+    edit:
+      replace: "        x = self.ln_1(x + self.attn(x))\n        return self.ln_2(x + self.mlp(x))\n"
+      with: "        x = x + self.attn(self.ln_1(x))\n        return x + self.mlp(self.ln_2(x))\n"
+  - check: tst_1cyo4f
+    title: Its output layer was a copy
+    cost: >-
+      `self.head.weight.data.copy_(...)` made the output layer a second table with the same
+      numbers, so the model held another {% $fig.copy %} parameters at GPT-2 small's size,
+      {% $fig.megabytes %} MB more in float32, and the first step of training moved the two
+      tables apart. The assistant's test compared them only before training.
+    fix: >-
+      The fix: `self.head.weight = self.wte.weight`, which makes both modules hold the same
+      parameter, so a step that moves one moves the other.
+    edit:
+      replace: "        self.head.weight.data.copy_(self.wte.weight.data)\n"
+      with: "        self.head.weight = self.wte.weight\n"
+  - check: tst_xstsxb
+    title: Its positions started at 1
+    cost: >-
+      `torch.arange(1, length + 1)` gave a story's first token the second position's vector,
+      and every later token the next one's. Position 0's vector was never read, so never
+      trained, and a story as long as the context, {% $fig.context %} tokens at GPT-2's
+      size, asked for a position past the table's end and raised `IndexError`.
+    fix: >-
+      The fix: `torch.arange(length)`, positions from 0.
+    edit:
+      replace: "        positions = torch.arange(1, tokens.shape[1] + 1)\n"
+      with: "        positions = torch.arange(tokens.shape[1])\n"
+  - check: tst_4ghj4a
+    title: Its stream grew with depth
+    cost: >-
+      Every weight started with the same spread, so each of the `$2L$` additions to the residual
+      stream added the same variance. At {% $fig.deep %} blocks, the stream at the start was
+      {% $fig.plain %} times as large as at one block, and the token and position embeddings,
+      which carry the story, made up {% $fig.plain_share %} of its variance. With GPT-2's
+      scaling, it stays {% $fig.scaled %} times as large, and they make up
+      {% $fig.scaled_share %}.
+    fix: >-
+      The fix: start the layers that write to the stream, `attn.out` and the MLP's `proj`,
+      with a standard deviation of `$0.02/\sqrt{2L}$`, as GPT-2 does.
+    edit:
+      replace: "                nn.init.normal_(param, std=0.02)\n"
+      with: "                deep = name.endswith((\"attn.out.weight\", \"proj.weight\"))\n                std = 0.02 / math.sqrt(2 * layers) if deep else 0.02\n                nn.init.normal_(param, std=std)\n"

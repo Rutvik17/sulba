@@ -1,0 +1,26 @@
+cards:
+  - id: crd_268bjx
+    front: >-
+      What is GPT-2's output layer?
+    back: >-
+      Its token embedding table, tied: a token's logit is the dot product of the final vector
+      with that token's own embedding.
+  - id: crd_wykka8
+    front: >-
+      Why can't GPT-2 read a story longer than its context?
+    back: >-
+      Its position embeddings are learnt, one vector for each place in the context, so it has
+      no vector for a later position.
+  - id: crd_41otbx
+    front: >-
+      Why does GPT-2 scale the starting weights of the layers that write to the residual stream
+      by `$1/\sqrt{2L}$`?
+    back: >-
+      The stream adds `$2L$` random outputs, so their variances add up. Dividing each one's
+      variance by `$2L$` keeps the stream's size the same at any depth.
+  - id: crd_ibg0ji
+    front: >-
+      How many parameters does GPT-2 small's tied output layer save?
+    back: >-
+      A matrix of the vocabulary by the width: {% $fig.tied %}, {% $fig.tied_share %} of the
+      model.

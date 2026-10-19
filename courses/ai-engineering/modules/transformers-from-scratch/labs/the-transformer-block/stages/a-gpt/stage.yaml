@@ -1,0 +1,7 @@
+id: stg_zjg4u7
+kind: build
+title: A GPT
+builds: Your `block.py` from stage 2.
+file: block.py
+packages: [torch]
+minutes: 50

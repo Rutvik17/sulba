@@ -1,0 +1,7 @@
+id: stg_o5qc6r
+kind: build
+title: Layer normalization
+builds: A new `block.py`.
+file: block.py
+packages: [torch]
+minutes: 40

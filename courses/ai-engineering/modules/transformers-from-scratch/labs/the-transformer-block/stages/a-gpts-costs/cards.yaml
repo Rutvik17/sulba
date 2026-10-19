@@ -1,0 +1,19 @@
+cards:
+  - id: crd_m4zr99
+    front: >-
+      How many parameters does a GPT-2 block of width `$n$` hold?
+    back: >-
+      `$12 n^2 + 13 n$`: attention's `$4n^2 + 4n$`, the MLP's `$8n^2 + 5n$`, and two layer
+      normalizations of `$2n$`.
+  - id: crd_p2ob38
+    front: >-
+      How many multiply-adds does a GPT take for each token of a forward pass?
+    back: >-
+      `$L\,(12 n^2 + 2 \ell n) + V n$`: about one for each parameter of the blocks and the
+      output layer, plus attention's, which grow with the story's length `$\ell$`.
+  - id: crd_3dkh3h
+    front: >-
+      Why does training take about three times a forward pass's multiply-adds?
+    back: >-
+      Each matrix multiply's backward pass takes two of its size, one for each input's
+      gradient.

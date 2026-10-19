@@ -1,0 +1,19 @@
+cards:
+  - id: crd_7jq3eo
+    front: >-
+      What does a GPT-2 block do to the residual stream `$x$`?
+    back: >-
+      `$x \leftarrow x + \text{attention}(\text{LN}_1(x))$`, then
+      `$x \leftarrow x + \text{MLP}(\text{LN}_2(x))$`.
+  - id: crd_8fm6y9
+    front: >-
+      Where do a pre-norm block's layer normalizations sit, and what do they leave alone?
+    back: >-
+      At each part's input, inside its branch. The residual stream itself is never normalized.
+  - id: crd_5kwneh
+    front: >-
+      How wide is a GPT-2 MLP's hidden layer, and what share of a block's parameters does the MLP
+      hold?
+    back: >-
+      Four times the width, so it holds `$8n^2 + 5n$` of the block's `$12n^2 + 13n$`: about two
+      thirds.
