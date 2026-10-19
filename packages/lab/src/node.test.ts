@@ -48,6 +48,13 @@ test.skipIf(!hasUv)(
   180_000,
 );
 
+test('Pyodide runs a session with its packages frozen, as the browser does', async () => {
+  const engine = await pyodideEngine();
+  const test = 'import gc\n\n\ndef test_frozen():\n    assert gc.get_freeze_count() > 0\n';
+  const frozen = { files: { 'tests/test_frozen.py': test }, tests: ['tests/test_frozen.py'] };
+  expect(engine.run({ ...frozen, packages: [] }).status).toBe('pass');
+}, 180_000);
+
 test.skipIf(!hasUv)(
   'CPython and Pyodide give the same figures',
   async () => {

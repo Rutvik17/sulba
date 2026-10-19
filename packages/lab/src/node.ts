@@ -49,11 +49,16 @@ export async function runnerFiles(): Promise<Record<string, string>> {
   };
 }
 
-/** Pyodide with every package sessions can use already loaded. */
+/**
+ * Pyodide with every package sessions can use already loaded, and what they leave alive frozen
+ * out of garbage collection, as the browser freezes it before a run, so a run's collections don't
+ * pass over the packages' objects.
+ */
 export async function pyodideEngine(): Promise<Engine> {
   const pyodide = await loadPyodide({ indexURL: pyodideFolder, packageCacheDir: pyodideFolder });
   const engine = await createEngine(pyodide, await runnerModules());
   await engine.load(pythonPackages);
+  engine.prepare({ files: {}, packages: [] });
   return engine;
 }
 
