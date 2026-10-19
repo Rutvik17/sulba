@@ -1,0 +1,26 @@
+cards:
+  - id: crd_n1gb9k
+    front: >-
+      How many parameters does `MultiHeadAttention(width, heads)` hold, and how does the number
+      of heads change it?
+    back: >-
+      `$4 \cdot \text{width}^2 + 4 \cdot \text{width}$`, whatever the number of heads: the
+      heads are slices of the same four layers.
+  - id: crd_ledwkg
+    front: >-
+      How do you split `(batch, length, width)` into heads for attention?
+    back: >-
+      `.view(batch, length, heads, width // heads).transpose(1, 2)`, giving
+      `(batch, heads, length, width / heads)`.
+  - id: crd_fsqsli
+    front: >-
+      Past what length do attention's scores and values cost more than its four layers?
+    back: >-
+      At `$L = 2 \cdot \text{width}$`: the layers take `$4 L \cdot \text{width}^2$` multiply-adds
+      and the scores and values `$2 L^2 \cdot \text{width}$`.
+  - id: crd_rovmet
+    front: >-
+      What does `True` mean in a mask of booleans that `nn.MultiheadAttention` takes?
+    back: >-
+      That the query may not see the key: the opposite of `F.scaled_dot_product_attention`'s
+      mask.

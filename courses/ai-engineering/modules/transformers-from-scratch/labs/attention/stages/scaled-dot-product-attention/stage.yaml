@@ -1,0 +1,7 @@
+id: stg_c23v7z
+kind: build
+title: Scaled dot-product attention
+builds: A new `attention.py`.
+file: attention.py
+packages: [torch]
+minutes: 50
