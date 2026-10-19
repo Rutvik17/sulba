@@ -1,0 +1,7 @@
+id: stg_1ticnq
+kind: build
+title: The survey's tiles
+builds: A new `tiles.py`.
+file: tiles.py
+packages: [numpy, pillow, torch]
+minutes: 40

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_q1lf3a
+    front: >-
+      What do DINOv2's own linear classifiers take from the backbone?
+    back: >-
+      The class token, and beside it the mean of the patches' tokens.
+  - id: crd_8mjdc2
+    front: >-
+      Why do larger tiles give a vision transformer better features, and what do they cost?
+    back: >-
+      More patches see each tile in finer pieces. The work grows with the tokens, and
+      attention's with their square.
+  - id: crd_2xwq7r
+    front: >-
+      Why do a satellite tile's turns and mirror images show the same thing to a classifier of
+      land use?
+    back: >-
+      Seen from above, the ground has no up and no left, so each of the square's
+      {% $fig.views %} symmetries shows the same land.

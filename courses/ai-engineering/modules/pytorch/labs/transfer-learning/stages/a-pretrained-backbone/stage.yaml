@@ -1,0 +1,7 @@
+id: stg_n0odw3
+kind: build
+title: A pretrained backbone
+builds: A new `backbone.py`, which starts with DINOv2's ViT-S/14.
+file: backbone.py
+packages: [numpy, pillow, torch]
+minutes: 60
