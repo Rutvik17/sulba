@@ -1,0 +1,66 @@
+id: stg_m7r898
+kind: catch
+title: The assistant's trainer
+builds: A new `trainer.py`.
+file: trainer.py
+packages: [regex, torch]
+minutes: 40
+problems:
+  - check: tst_bh9lzd
+    title: Its stories had no ends
+    cost: >-
+      `corpus` put each story's tokens straight after the last one's, without the separator,
+      so the model never saw a story end. Trained that way for {% $fig.steps %} steps on the
+      first {% $fig.training %} training stories, a small GPT gave the separator a
+      {% $fig.end_without %} chance where it came next in the validation stories, against
+      {% $fig.end_with %} when trained with the separators. The app's stories would almost
+      never end, and would run on until the app cut them off.
+    fix: >-
+      The fix: `encode(story + END, merges)`, so each story is followed by the separator, as
+      GPT-3's documents were.
+    edit:
+      replace: "        tokens += encode(story, merges)\n"
+      with: "        tokens += encode(story + END, merges)\n"
+  - check: tst_40el9v
+    title: Its targets were its inputs
+    cost: >-
+      `batch` took each window's targets from the same place as its inputs, so each target
+      was the token the model was reading, which causal attention lets it see. The small GPT
+      learnt to copy: its training loss fell to {% $fig.copy_last %} in {% $fig.steps %}
+      steps, while its loss on the next token of the validation stories was
+      {% $fig.copy_next %}, worse than the {% $fig.uniform %} of guessing every token as likely
+      as any other. Trained on the next token, it scored {% $fig.fixed_next %}.
+    fix: >-
+      The fix: targets one token on, `tokens[start + 1 : start + length + 1]`.
+    edit:
+      replace: "    targets = torch.stack([tokens[start : start + length] for start in starts])\n"
+      with: "    targets = torch.stack([tokens[start + 1 : start + length + 1] for start in starts])\n"
+  - check: tst_4ztkjc
+    title: Its learning rate went below zero
+    cost: >-
+      `0.9 * math.cos(...)` keeps falling once the cosine passes 0, so after the warm-up the
+      rate fell past a tenth of the peak to {% $fig.last_rate %} times the peak at the last
+      step. From step
+      {% $fig.below %}, the last {% $fig.below_share %} of the run, it was below zero, and
+      each step climbed the loss: the small GPT's training loss, {% $fig.lowest %} at step
+      {% $fig.lowest_step %}, was {% $fig.falling_last %} at the last step, where the fixed
+      schedule ended at {% $fig.fixed_last %}.
+    fix: >-
+      The fix: `(1 + math.cos(math.pi * progress)) / 2`, which runs from 1 to 0 as the cosine
+      runs from 1 to −1, so the rate falls from the peak to a tenth of it.
+    edit:
+      replace: "    return peak * (0.1 + 0.9 * math.cos(math.pi * progress))\n"
+      with: "    return peak * (0.1 + 0.9 * (1 + math.cos(math.pi * progress)) / 2)\n"
+  - check: tst_koncas
+    title: Past the context, it read the first tokens
+    cost: >-
+      `tokens[: model.context]` gave the model a story's first tokens, so once a story passed
+      the context, the model read the same window at every step, and each token after was
+      drawn as if it came straight after that window. {% $fig.longer %} of the
+      {% $fig.validation %} validation stories, {% $fig.longer_share %}, run past
+      {% $fig.app_context %} tokens, the context of the model the training loop stage trained.
+    fix: >-
+      The fix: `tokens[-model.context :]`, the latest tokens.
+    edit:
+      replace: "            logits = model(torch.tensor([tokens[: model.context]]))[0, -1]\n"
+      with: "            logits = model(torch.tensor([tokens[-model.context :]]))[0, -1]\n"

@@ -1,0 +1,7 @@
+id: stg_6isp7y
+kind: build
+title: Batches of tokens
+builds: A new `data.py`.
+file: data.py
+packages: [regex, torch]
+minutes: 40

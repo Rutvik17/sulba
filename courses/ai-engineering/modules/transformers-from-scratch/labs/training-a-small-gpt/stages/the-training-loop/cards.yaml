@@ -1,0 +1,18 @@
+cards:
+  - id: crd_7v9zrs
+    front: >-
+      In GPT-style training, which parameters take weight decay?
+    back: >-
+      The matrices: the embeddings and the linear layers' weights. The biases and the layer
+      normalizations' weights take none.
+  - id: crd_dn0kjr
+    front: >-
+      What did GPT-3's learning rate do over its run?
+    back: >-
+      It rose in a straight line over a warm-up, then fell along a cosine to a tenth of its
+      peak.
+  - id: crd_uihlgu
+    front: >-
+      Writing past its context, what does a GPT read?
+    back: >-
+      Only the last context's worth of tokens: the story so far, cut from the front.

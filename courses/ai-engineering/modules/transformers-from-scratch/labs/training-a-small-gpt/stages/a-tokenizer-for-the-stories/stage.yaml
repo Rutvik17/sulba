@@ -1,0 +1,7 @@
+id: stg_qg4rwc
+kind: build
+title: A tokenizer for the stories
+builds: A new `tokenizer.py`.
+file: tokenizer.py
+packages: [regex]
+minutes: 45

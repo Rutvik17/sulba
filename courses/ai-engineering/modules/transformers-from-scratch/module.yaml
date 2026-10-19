@@ -3,3 +3,4 @@ title: Transformers from scratch
 labs:
   - attention
   - the-transformer-block
+  - training-a-small-gpt

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_eotr4s
+    front: >-
+      What does a GPT learn when each target is the token it's reading?
+    back: >-
+      To copy: causal attention lets each position see its own token, so the loss falls fast
+      while the model learns nothing of the next token.
+  - id: crd_jpuutx
+    front: >-
+      In a cosine schedule from the peak down to a floor, what multiplies `$(1 - \text{floor}) \cdot \text{peak}$`?
+    back: >-
+      `$(1 + \cos \pi p)/2$`, which runs from 1 to 0 as `$p$` runs from 0 to 1. The cosine
+      alone runs down to −1, and takes the rate below zero.
+  - id: crd_50s7y0
+    front: >-
+      Writing a story longer than the context, which tokens should the model read?
+    back: >-
+      The latest ones, `tokens[-context:]`.
