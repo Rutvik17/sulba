@@ -146,6 +146,8 @@ export const pythonPackages = [
   'fastapi',
   'httpx',
   'pillow',
+  'openai',
+  'jsonschema',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -174,6 +176,8 @@ export const importNames: Readonly<Record<Package, string>> = {
   fastapi: 'fastapi',
   httpx: 'httpx',
   pillow: 'PIL',
+  openai: 'openai',
+  jsonschema: 'jsonschema',
   torch: 'torch',
   tokenizers: 'tokenizers',
 };
