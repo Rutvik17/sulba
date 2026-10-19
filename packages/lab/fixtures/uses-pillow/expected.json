@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_pil001",
+      "name": "Reads a PNG's pixels back as they were",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_pil002",
+      "name": "Reads a JPEG's pixels back close to what they were",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
