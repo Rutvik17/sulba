@@ -167,6 +167,20 @@ test("a machine lab installs torch from PyTorch's CPU index", async () => {
   ]);
 });
 
+test('a machine lab installs its other machine packages from PyPI', async () => {
+  const course = await withLedger((lab) => ({
+    ...lab,
+    project: {
+      ...lab.project,
+      'uv.lock': `${lab.project['uv.lock'] ?? ''}\n[[package]]\nname = "tokenizers"\nversion = "0.23.3"\nsource = { registry = "https://pypi.org/simple" }\n`,
+    },
+    stages: lab.stages.map((stage, at) =>
+      at === 0 ? { ...stage, packages: ['tokenizers' as const] } : stage,
+    ),
+  }));
+  expect(projectProblems([course], pyodide)).toEqual([]);
+});
+
 test("a machine lab's runner needs pytest", async () => {
   const course = await withLedger(
     relock('[[package]]\nname = "pytest"', '[[package]]\nname = "pytest-renamed"'),

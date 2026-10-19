@@ -2,12 +2,11 @@
 // installs what the browser runs: the Python version Pyodide runs, each package Pyodide also ships
 // at the version Pyodide ships it, and every package the lab's stages load. A lab that runs on the
 // learner's machine (decision record 28) runs nothing in the browser, so only pytest, which its
-// runner uses, and the packages its stages load are held to Pyodide's versions, and its machine
-// packages come from PyTorch's CPU index, which builds them for every platform.
-import { machinePackages } from '@sulba/lab/protocol';
+// runner uses, and the packages its stages load are held to Pyodide's versions, and torch comes
+// from PyTorch's CPU index, which builds it for every platform.
 import type { Course, Lab, Problem } from './load.ts';
 
-/** Where a machine lab's machine packages come from. */
+/** Where a machine lab's torch comes from. */
 const cpuIndex = 'https://download.pytorch.org/whl/cpu';
 
 /** What the browser runs: Pyodide's Python version, and each package's version by its name. */
@@ -93,13 +92,11 @@ export function projectProblems(courses: readonly Course[], pyodide: PyodideVers
               "pytest isn't locked, but the runner in the lab's download runs the tests with it.",
             );
           }
-          const indexes = lockedIndexes(lock);
-          for (const name of machinePackages.filter((each) => locked.has(each))) {
-            for (const index of (indexes.get(name) ?? ['no index']).filter(
-              (each) => each !== cpuIndex,
-            )) {
+          if (locked.has('torch')) {
+            const indexes = lockedIndexes(lock).get('torch') ?? ['no index'];
+            for (const index of indexes.filter((each) => each !== cpuIndex)) {
               note(
-                `${name} is locked from ${index}, but a machine lab installs it from ${cpuIndex}.`,
+                `torch is locked from ${index}, but a machine lab installs it from ${cpuIndex}.`,
               );
             }
           }
