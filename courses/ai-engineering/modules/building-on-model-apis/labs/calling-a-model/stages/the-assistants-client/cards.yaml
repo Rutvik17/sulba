@@ -1,0 +1,18 @@
+cards:
+  - id: crd_59j65k
+    front: >-
+      Where should the message of an error from the model's API go?
+    back: >-
+      To the shop's logs. The customer gets a message they can act on, such as calling the
+      shop.
+  - id: crd_b3vqcx
+    front: >-
+      Which replies may a customer be shown?
+    back: >-
+      Only those whose `finish_reason` is `stop`: a reply cut off at `length`, or one that calls
+      a tool, isn't an answer.
+  - id: crd_53mfpv
+    front: >-
+      What role does the model's earlier reply take when the conversation is sent again?
+    back: >-
+      `assistant`. Sent back as `user`, the model reads it as the customer's words.

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_dl6olv
+    front: >-
+      Which failures of a request to a model's API may pass when it's sent again?
+    back: >-
+      A `408`, `409`, `429` or any `5xx`, a timeout and a lost connection. A `400`, `401`,
+      `403` or `404` gets the same answer again.
+  - id: crd_ofsufg
+    front: >-
+      Why are a client's retry waits multiplied by a random factor?
+    back: >-
+      To spread out clients that failed together, which would otherwise all ask again at the
+      same moments.
+  - id: crd_0o0anc
+    front: >-
+      How do a request's timeout and a deadline differ?
+    back: >-
+      The timeout limits one attempt. The deadline limits every attempt and wait together, so
+      the last attempt gets only the time left.

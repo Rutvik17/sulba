@@ -1,0 +1,43 @@
+id: lab_2pob1q
+title: Calling a model
+summary: >-
+  Connect a bicycle repair shop's assistant to a model through the chat completions API:
+  requests and replies by hand over HTTP, the tokens a conversation takes and the model's
+  window, a month of the shop's questions priced from providers' published prices, a review of
+  an assistant's client, and a client that retries what it can within a deadline.
+fetch:
+  - kind: model
+    title: Qwen3.5-0.8B's tokenizer
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+    files:
+      - file: tokenizer.json
+        url: https://huggingface.co/Qwen/Qwen3.5-0.8B/resolve/2fc06364715b967f1860aea9cf38778875588b17/tokenizer.json
+        bytes: 12807982
+        sha256: 5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42
+      - file: chat_template.jinja
+        url: https://huggingface.co/Qwen/Qwen3.5-0.8B/resolve/2fc06364715b967f1860aea9cf38778875588b17/chat_template.jinja
+        bytes: 7755
+        sha256: 273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80
+model:
+  title: Qwen3.5-0.8B
+  creators: [Qwen]
+  url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+  licence:
+    name: Apache License 2.0
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+  file:
+    url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
+    bytes: 833592096
+    sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
+references: [tokens.json]
+runs: machine
+stages:
+  - chat-requests
+  - tokens-and-the-window
+  - what-a-month-costs
+  - the-assistants-client
+  - a-client-that-retries

@@ -1,0 +1,60 @@
+id: stg_lyjgba
+kind: catch
+title: The assistant's client
+builds: A new `client.py`.
+file: client.py
+packages: [httpx, tokenizers]
+minutes: 35
+problems:
+  - check: tst_8sv8b6
+    title: It showed customers the model's errors
+    cost: >-
+      While the model's server was still loading, a customer asking when the shop opens read
+      "Sorry, the model couldn't answer: Loading model". The message is no use to a customer,
+      and it tells anyone who asks how the shop's assistant is built. An error's message is for
+      the shop's logs.
+    fix: >-
+      The fix: `return SORRY` for every `ModelError`, which tells the customer what they can
+      do.
+    edit:
+      replace: "        except ModelError as error:\n            return f\"Sorry, the model couldn't answer: {error.message}\"\n"
+      with: "        except ModelError:\n            return SORRY\n"
+  - check: tst_bkrqet
+    title: It showed replies cut off at their limit
+    cost: >-
+      `if not reply.text` only caught replies with no text, so a reply that reached
+      `max_completion_tokens` went to the customer as it stood: "A full service includes new
+      brake pads, a gear tune and", with nothing to show that the rest was missing.
+    fix: >-
+      The fix: `if reply.finish_reason != "stop"`, which shows a reply only when the model
+      finished it, and catches a reply that only calls a tool too.
+    edit:
+      replace: "        if not reply.text:\n"
+      with: "        if reply.finish_reason != \"stop\":\n"
+  - check: tst_vhvt2m
+    title: It kept the model's replies as the customer's
+    cost: >-
+      The model's replies went back with the role `user`, so in every later request the model
+      read a conversation in which the customer had answered their own questions, and nothing
+      it had said itself. The template wrote "We open at 9 on Saturdays." as the customer's
+      words.
+    fix: >-
+      The fix: `{"role": "assistant", "content": reply.text}`, the role the model's own words
+      have.
+    edit:
+      replace: "        self.messages.append({\"role\": \"user\", \"content\": reply.text})\n"
+      with: "        self.messages.append({\"role\": \"assistant\", \"content\": reply.text})\n"
+  - check: tst_s5mojo
+    title: It left the reply no room in the window
+    cost: >-
+      `fit` kept as much of the conversation as the window holds, leaving nothing for the
+      reply. After {% $fig.questions %} questions, the prompt took {% $fig.prompt %} of the
+      window's {% $fig.window %} tokens, leaving {% $fig.left %} for a reply of up to
+      {% $fig.reply %}. llama.cpp's server stops a reply when the window is full, so the
+      customer's answers would have been cut off.
+    fix: >-
+      The fix: `fit(self.tokenizer, self.messages, WINDOW, REPLY)`, which keeps `REPLY` tokens
+      free for the reply.
+    edit:
+      replace: "        sent = fit(self.tokenizer, self.messages, WINDOW, 0)\n"
+      with: "        sent = fit(self.tokenizer, self.messages, WINDOW, REPLY)\n"

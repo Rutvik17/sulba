@@ -1,0 +1,7 @@
+id: stg_xu4s1a
+kind: build
+title: Chat requests
+builds: A new `chat.py`.
+file: chat.py
+packages: [httpx]
+minutes: 30
