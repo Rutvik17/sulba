@@ -1,0 +1,21 @@
+cards:
+  - id: crd_jealoi
+    front: >-
+      A server holds a reply to a schema while the model writes it. Can the reply still fail the
+      schema?
+    back: >-
+      Yes. A reply cut off at its token limit is the start of a valid reply, not a whole one, and
+      isn't valid JSON.
+  - id: crd_edq80t
+    front: >-
+      What does constrained decoding do with a token that can't lead to a reply the schema
+      allows?
+    back: >-
+      Takes it out before the model's choice: llama.cpp sets its score to minus infinity. The end
+      of the reply stays out until the reply is whole.
+  - id: crd_ior90u
+    front: >-
+      The model scores highest a token the schema doesn't allow. What does it write?
+    back: >-
+      The allowed token it scores highest, which may mean something else: the schema turns what
+      the model would have said into a reply that fits.

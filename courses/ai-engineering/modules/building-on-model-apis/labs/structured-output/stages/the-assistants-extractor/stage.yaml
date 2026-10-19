@@ -1,0 +1,54 @@
+id: stg_6t7gy9
+kind: catch
+title: The assistant's extractor
+builds: A new `bookings.py`.
+file: bookings.py
+packages: [httpx]
+minutes: 35
+problems:
+  - check: tst_o9qsxn
+    title: It took the date's format on trust
+    cost: >-
+      The form's `"format": "date"` checks nothing, so a reply with `2026-02-30`, from an email
+      asking for a day February doesn't have, passed the form. `date.fromisoformat` then raised
+      `ValueError`, which nothing caught, and the email went unanswered.
+    fix: >-
+      The fix: catch the `ValueError` and raise `NotBooked`, so the email goes to a person who
+      can ask the customer which day they meant.
+    edit:
+      replace: "    day = date.fromisoformat(entry[\"date\"])\n"
+      with: "    try:\n        day = date.fromisoformat(entry[\"date\"])\n    except ValueError as error:\n        raise NotBooked(f\"There's no date {entry['date']}.\") from error\n"
+  - check: tst_p1wtx5
+    title: Its time pattern matched part of the time
+    cost: >-
+      A pattern matches anywhere in a string unless it's anchored, so `"10:00 or 14:30"`, from
+      an email that offered two times, passed because it holds `10:00`, and the calendar got a
+      time it couldn't place.
+    fix: >-
+      The fix: `"^(09|1[0-6]):[03]0$"`, which holds the whole time to the pattern, so the reply
+      goes back with its error and the model picks one time.
+    edit:
+      replace: "        \"time\": {\"type\": \"string\", \"pattern\": \"(09|1[0-6]):[03]0\"},\n"
+      with: "        \"time\": {\"type\": \"string\", \"pattern\": \"^(09|1[0-6]):[03]0$\"},\n"
+  - check: tst_nawl8b
+    title: Its form took any other key
+    cost: >-
+      Without `"additionalProperties": false`, an object takes keys its schema never names. An
+      email that said a friend had a free service got a reply with `"price": 0`, which passed
+      the form and went into the calendar with the booking.
+    fix: >-
+      The fix: `"additionalProperties": false`, which sends a reply with any other key back
+      with its error.
+    edit:
+      replace: "    \"required\": [\"name\", \"bike\", \"service\", \"date\", \"time\", \"bikes\", \"phone\", \"notes\"],\n}\n"
+      with: "    \"required\": [\"name\", \"bike\", \"service\", \"date\", \"time\", \"bikes\", \"phone\", \"notes\"],\n    \"additionalProperties\": False,\n}\n"
+  - check: tst_qw7orx
+    title: It booked Sundays
+    cost: >-
+      `date.weekday()` counts Monday as `0`, so Sunday is `6`, and `weekday() == 7` was never
+      true. A booking for a Sunday, when the shop is closed, went into the calendar.
+    fix: >-
+      The fix: `day.weekday() == 6`. `isoweekday()` is the one that counts Sunday as `7`.
+    edit:
+      replace: "    if day.weekday() == 7:\n"
+      with: "    if day.weekday() == 6:\n"

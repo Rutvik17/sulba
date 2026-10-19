@@ -1,0 +1,13 @@
+cards:
+  - id: crd_jjpf8p
+    front: >-
+      A schema says `"format": "date"`. What should the code do with the date before using it?
+    back: >-
+      Parse it, with `date.fromisoformat`, and treat a `ValueError` as a reply it can't use:
+      `format` checks nothing by default.
+  - id: crd_mklkgz
+    front: >-
+      What does Python's `date(2026, 10, 25).weekday()` give for a Sunday, and what does
+      `isoweekday()` give?
+    back: >-
+      `6` and `7`: `weekday()` counts Monday as `0`, and `isoweekday()` counts it as `1`.

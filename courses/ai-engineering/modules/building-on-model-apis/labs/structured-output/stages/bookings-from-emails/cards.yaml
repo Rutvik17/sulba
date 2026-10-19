@@ -1,0 +1,13 @@
+cards:
+  - id: crd_c5rip8
+    front: >-
+      Which rules belong in a reply's schema, and which in the code that reads the reply?
+    back: >-
+      The schema holds the reply's shape: keys, types, lists of values, patterns. The code holds
+      what depends on the world: that a date exists, hasn't passed, and falls on an open day.
+  - id: crd_vn926y
+    front: >-
+      Why does a form a model fills in need a way to say no?
+    back: >-
+      A model held to a form fills it in whatever the input says: without a value such as
+      `null`, an email that asks for no booking still becomes one.

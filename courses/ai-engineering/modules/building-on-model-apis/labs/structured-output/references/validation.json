@@ -1,0 +1,1779 @@
+{
+ "jsonschema": "4.26.0",
+ "cases": {
+  "types": [
+   {
+    "schema": {
+     "type": "integer"
+    },
+    "value": 3,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "integer"
+    },
+    "value": 3.0,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "integer"
+    },
+    "value": 3.5,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "integer"
+    },
+    "value": true,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "integer"
+    },
+    "value": "3",
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "number"
+    },
+    "value": 2.5,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "number"
+    },
+    "value": false,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "boolean"
+    },
+    "value": 0,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "null"
+    },
+    "value": null,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "string"
+    },
+    "value": null,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "value": null,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "value": 5,
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "array"
+    },
+    "value": {},
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object"
+    },
+    "value": [],
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {},
+    "value": {
+     "anything": [
+      1,
+      "two",
+      null
+     ]
+    },
+    "errors": []
+   }
+  ],
+  "equality": [
+   {
+    "schema": {
+     "enum": [
+      1,
+      2,
+      3
+     ]
+    },
+    "value": 2,
+    "errors": []
+   },
+   {
+    "schema": {
+     "enum": [
+      1,
+      2,
+      3
+     ]
+    },
+    "value": 1.0,
+    "errors": []
+   },
+   {
+    "schema": {
+     "enum": [
+      1,
+      2,
+      3
+     ]
+    },
+    "value": true,
+    "errors": [
+     [
+      "$",
+      "enum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "enum": [
+      false,
+      null
+     ]
+    },
+    "value": 0,
+    "errors": [
+     [
+      "$",
+      "enum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "enum": [
+      false,
+      null
+     ]
+    },
+    "value": null,
+    "errors": []
+   },
+   {
+    "schema": {
+     "enum": [
+      "road",
+      "city"
+     ]
+    },
+    "value": "Road",
+    "errors": [
+     [
+      "$",
+      "enum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "enum": [
+      [
+       1,
+       2
+      ],
+      {
+       "a": 1
+      }
+     ]
+    },
+    "value": [
+     1,
+     2
+    ],
+    "errors": []
+   },
+   {
+    "schema": {
+     "enum": [
+      [
+       1,
+       2
+      ],
+      {
+       "a": 1
+      }
+     ]
+    },
+    "value": {
+     "a": true
+    },
+    "errors": [
+     [
+      "$",
+      "enum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "const": "booking"
+    },
+    "value": "booking",
+    "errors": []
+   },
+   {
+    "schema": {
+     "const": 0
+    },
+    "value": false,
+    "errors": [
+     [
+      "$",
+      "const"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "const": 0
+    },
+    "value": 0.0,
+    "errors": []
+   }
+  ],
+  "objects": [
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 1
+    },
+    "errors": [
+     [
+      "$",
+      "required"
+     ],
+     [
+      "$",
+      "required"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals.",
+     "price": 0,
+     "confirmed": true
+    },
+    "errors": [
+     [
+      "$",
+      "additionalProperties"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "bmx",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "9:30",
+     "bikes": "2",
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": [
+     [
+      "$.bike",
+      "enum"
+     ],
+     [
+      "$.bikes",
+      "type"
+     ],
+     [
+      "$.time",
+      "pattern"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 2.0,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 0,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": [
+     [
+      "$.bikes",
+      "minimum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 4,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": [
+     [
+      "$.bikes",
+      "maximum"
+     ],
+     [
+      "$.name",
+      "minLength"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": [
+     {
+      "name": "Ana Silva",
+      "bike": "city",
+      "service": "brakes",
+      "date": "2026-10-24",
+      "time": "10:30",
+      "bikes": 1,
+      "phone": "+44 7700 900123",
+      "notes": "The rear brake squeals."
+     }
+    ],
+    "errors": [
+     [
+      "$",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string"
+      }
+     },
+     "additionalProperties": {
+      "type": "integer"
+     }
+    },
+    "value": {
+     "name": "Ana",
+     "age": "40",
+     "size": 54
+    },
+    "errors": [
+     [
+      "$.age",
+      "type"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "properties": {
+      "name": {
+       "type": "string"
+      }
+     },
+     "additionalProperties": true
+    },
+    "value": {
+     "name": "Ana",
+     "age": "40"
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "required": [
+      "name"
+     ]
+    },
+    "value": "name",
+    "errors": []
+   }
+  ],
+  "arrays": [
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "bikes": {
+       "type": "array",
+       "minItems": 1,
+       "maxItems": 3,
+       "items": {
+        "type": "object",
+        "properties": {
+         "kind": {
+          "enum": [
+           "road",
+           "mountain",
+           "city",
+           "cargo",
+           "e-bike"
+          ]
+         },
+         "wheel size": {
+          "type": "integer"
+         }
+        },
+        "required": [
+         "kind"
+        ],
+        "additionalProperties": false
+       }
+      }
+     },
+     "required": [
+      "bikes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "bikes": [
+      {
+       "kind": "road"
+      },
+      {
+       "kind": "city",
+       "wheel size": 28
+      }
+     ]
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "bikes": {
+       "type": "array",
+       "minItems": 1,
+       "maxItems": 3,
+       "items": {
+        "type": "object",
+        "properties": {
+         "kind": {
+          "enum": [
+           "road",
+           "mountain",
+           "city",
+           "cargo",
+           "e-bike"
+          ]
+         },
+         "wheel size": {
+          "type": "integer"
+         }
+        },
+        "required": [
+         "kind"
+        ],
+        "additionalProperties": false
+       }
+      }
+     },
+     "required": [
+      "bikes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "bikes": []
+    },
+    "errors": [
+     [
+      "$.bikes",
+      "minItems"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "bikes": {
+       "type": "array",
+       "minItems": 1,
+       "maxItems": 3,
+       "items": {
+        "type": "object",
+        "properties": {
+         "kind": {
+          "enum": [
+           "road",
+           "mountain",
+           "city",
+           "cargo",
+           "e-bike"
+          ]
+         },
+         "wheel size": {
+          "type": "integer"
+         }
+        },
+        "required": [
+         "kind"
+        ],
+        "additionalProperties": false
+       }
+      }
+     },
+     "required": [
+      "bikes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "bikes": [
+      {
+       "kind": "road"
+      },
+      {
+       "kind": "bmx",
+       "wheel size": 20.5
+      },
+      {
+       "colour": "red"
+      },
+      {
+       "kind": "city"
+      }
+     ]
+    },
+    "errors": [
+     [
+      "$.bikes",
+      "maxItems"
+     ],
+     [
+      "$.bikes[1].kind",
+      "enum"
+     ],
+     [
+      "$.bikes[1]['wheel size']",
+      "type"
+     ],
+     [
+      "$.bikes[2]",
+      "additionalProperties"
+     ],
+     [
+      "$.bikes[2]",
+      "required"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "maxItems": 1
+    },
+    "value": "not an array",
+    "errors": []
+   }
+  ],
+  "strings": [
+   {
+    "schema": {
+     "type": "string",
+     "minLength": 2
+    },
+    "value": "🚲",
+    "errors": [
+     [
+      "$",
+      "minLength"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "string",
+     "minLength": 2
+    },
+    "value": "é",
+    "errors": [
+     [
+      "$",
+      "minLength"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "string",
+     "minLength": 2
+    },
+    "value": "é",
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "string",
+     "maxLength": 3
+    },
+    "value": "four",
+    "errors": [
+     [
+      "$",
+      "maxLength"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "maxLength": 2
+    },
+    "value": 12345,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "string",
+     "pattern": "[0-9]{4}"
+    },
+    "value": "Call 01234 567890",
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "string",
+     "pattern": "[0-9]{4}"
+    },
+    "value": "Call the shop",
+    "errors": [
+     [
+      "$",
+      "pattern"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:00\n",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:00 or 14:00",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": [
+     [
+      "$.time",
+      "pattern"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": "call me",
+     "notes": "The rear brake squeals."
+    },
+    "errors": [
+     [
+      "$.phone",
+      "pattern"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-10-24",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": null,
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   }
+  ],
+  "numbers": [
+   {
+    "schema": {
+     "type": "number",
+     "maximum": 3
+    },
+    "value": 3,
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "number",
+     "maximum": 3
+    },
+    "value": 3.5,
+    "errors": [
+     [
+      "$",
+      "maximum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "minimum": 1
+    },
+    "value": 0,
+    "errors": [
+     [
+      "$",
+      "minimum"
+     ]
+    ]
+   },
+   {
+    "schema": {
+     "minimum": 1
+    },
+    "value": "0",
+    "errors": []
+   },
+   {
+    "schema": {
+     "minimum": 1
+    },
+    "value": false,
+    "errors": []
+   }
+  ],
+  "formats": [
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "2026-02-30",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   },
+   {
+    "schema": {
+     "type": "object",
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 60
+      },
+      "bike": {
+       "enum": [
+        "road",
+        "mountain",
+        "city",
+        "cargo",
+        "e-bike"
+       ]
+      },
+      "service": {
+       "enum": [
+        "puncture",
+        "brakes",
+        "gears",
+        "full service"
+       ]
+      },
+      "date": {
+       "type": "string",
+       "format": "date"
+      },
+      "time": {
+       "type": "string",
+       "pattern": "^(09|1[0-6]):[03]0$"
+      },
+      "bikes": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      },
+      "phone": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\+?[0-9 ]{7,15}$"
+      },
+      "notes": {
+       "type": "string",
+       "maxLength": 500
+      }
+     },
+     "required": [
+      "name",
+      "bike",
+      "service",
+      "date",
+      "time",
+      "bikes",
+      "phone",
+      "notes"
+     ],
+     "additionalProperties": false
+    },
+    "value": {
+     "name": "Ana Silva",
+     "bike": "city",
+     "service": "brakes",
+     "date": "next Tuesday",
+     "time": "10:30",
+     "bikes": 1,
+     "phone": "+44 7700 900123",
+     "notes": "The rear brake squeals."
+    },
+    "errors": []
+   }
+  ]
+ }
+}
