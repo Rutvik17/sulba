@@ -119,7 +119,7 @@ def main(folder, data):
         },
     }
     (folder / "tokens.json").write_text(
-        json.dumps(recording, indent=1, ensure_ascii=False) + "\n"
+        json.dumps(recording, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
 
