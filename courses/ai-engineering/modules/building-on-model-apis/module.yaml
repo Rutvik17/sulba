@@ -3,3 +3,4 @@ title: Building on model APIs
 labs:
   - calling-a-model
   - structured-output
+  - tools-streaming-and-mcp

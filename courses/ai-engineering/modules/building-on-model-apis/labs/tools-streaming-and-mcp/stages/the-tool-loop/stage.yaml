@@ -1,0 +1,7 @@
+id: stg_z838lt
+kind: build
+title: The tool loop
+builds: A new `loop.py`.
+file: loop.py
+packages: [httpx]
+minutes: 35

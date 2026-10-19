@@ -1,0 +1,54 @@
+id: stg_w5ytf9
+kind: catch
+title: The assistant's tool loop
+builds: A new `assistant.py`.
+file: assistant.py
+packages: [httpx]
+minutes: 35
+problems:
+  - check: tst_knmhyk
+    title: It asked the model for as long as it called tools
+    cost: >-
+      `while True` asked the model again after every round of tool calls, with no end. A model
+      that called `opening_hours` again and again kept the customer waiting, and the model
+      busy, until something outside the assistant stopped it.
+    fix: >-
+      The fix: `for _ in range(ROUNDS):`, which gives the customer `SORRY` once the rounds are
+      spent.
+    edit:
+      replace: "        while True:\n"
+      with: "        for _ in range(ROUNDS):\n"
+  - check: tst_nsxzdt
+    title: It ran only the first tool call
+    cost: >-
+      When the model asked for Saturday's hours and Sunday's in one reply, only Saturday's
+      call ran, and Sunday's got no result for the model to answer from.
+    fix: >-
+      The fix: `for call in message["tool_calls"]:`, which runs every call in the reply and
+      sends each result back with its call's id.
+    edit:
+      replace: "            call = message[\"tool_calls\"][0]\n            content = json.dumps(run(call), ensure_ascii=False)\n            messages.append(\n                {\"role\": \"tool\", \"tool_call_id\": call[\"id\"], \"content\": content}\n            )\n"
+      with: "            for call in message[\"tool_calls\"]:\n                content = json.dumps(run(call), ensure_ascii=False)\n                messages.append(\n                    {\"role\": \"tool\", \"tool_call_id\": call[\"id\"], \"content\": content}\n                )\n"
+  - check: tst_4rd5s6
+    title: A tool's error stopped the assistant
+    cost: >-
+      `repair_price` raised `ValueError` for the `0` bikes the model passed it, and nothing
+      caught it, so `answer` raised and the customer got no answer. Sent back as the result,
+      the error would have let the model answer anyway.
+    fix: >-
+      The fix: catch the tool's `Exception` and send its message back as the result, so the
+      model reads what went wrong.
+    edit:
+      replace: "    return function(**json.loads(call[\"function\"][\"arguments\"]))\n"
+      with: "    try:\n        return function(**json.loads(call[\"function\"][\"arguments\"]))\n    except Exception as error:\n        return {\"error\": str(error)}\n"
+  - check: tst_rtokdk
+    title: It ran functions it never offered
+    cost: >-
+      `globals()` found any function in the file by the name the model gave, so a call to
+      `refund`, a tool the model was never offered, paid a customer back. The model's reply,
+      tool calls and all, follows from what it reads, and a customer writes part of that.
+    fix: >-
+      The fix: look the name up in `TOOLS`, and tell the model when there's no such tool.
+    edit:
+      replace: "    function = globals()[call[\"function\"][\"name\"]]\n"
+      with: "    name = call[\"function\"][\"name\"]\n    if name not in TOOLS:\n        return {\"error\": f\"There's no tool called {name!r}.\"}\n    function = TOOLS[name]\n"

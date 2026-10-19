@@ -1,0 +1,20 @@
+cards:
+  - id: crd_vd99qs
+    front: >-
+      An MCP tool call fails on the arguments the model gave. Does the server answer with a
+      JSON-RPC error or a result?
+    back: >-
+      A result, with `isError` true and text that says what went wrong, for the model to read.
+      JSON-RPC errors are for requests that are wrong in themselves, such as a call to a tool the
+      server doesn't have.
+  - id: crd_d04piv
+    front: >-
+      How does an MCP server of version `2026-07-28` know which version a request uses?
+    back: >-
+      From the request's own `_meta`, which carries `io.modelcontextprotocol/protocolVersion`
+      and the client's capabilities. There's no handshake: each request stands on its own.
+  - id: crd_uz0yw6
+    front: >-
+      Which JSON-RPC messages get no reply?
+    back: >-
+      Notifications: messages without an `id`.

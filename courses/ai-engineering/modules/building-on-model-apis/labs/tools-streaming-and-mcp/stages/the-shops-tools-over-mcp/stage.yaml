@@ -1,0 +1,56 @@
+id: stg_d0q885
+kind: ship
+title: The shop's tools over MCP
+builds: A new `server.py`.
+file: server.py
+packages: [jsonschema]
+minutes: 50
+checks:
+  - check: tst_75811q
+    title: Answers each request on a line, with its id
+    requires: >-
+      Each request gets one reply, on one line, with `"jsonrpc": "2.0"` and the request's own
+      id, a string or an integer, and `serve` writes each reply on a line of its own.
+    failure: >-
+      Echo the request's `id` exactly, and write each reply as one line of JSON.
+  - check: tst_dkcqjc
+    title: Never answers a notification
+    requires: >-
+      A message with no `id` gets no reply, whatever its method.
+    failure: >-
+      A notification has no `id`, and JSON-RPC forbids a reply to one: return `None`.
+  - check: tst_ljim9t
+    title: Refuses what isn't JSON-RPC
+    requires: >-
+      Text that isn't JSON gets `-32700`, and a message that isn't a request, such as a list, a
+      `jsonrpc` other than `"2.0"`, no method, `params` that aren't an object, or an id that
+      isn't a string or an integer, gets `-32600`, with its id only when the id is one.
+    failure: >-
+      Check a message's shape before its method, and leave out the `id` of an error when the
+      request's can't be read.
+  - check: tst_6c2zay
+    title: Reads each request's protocol version
+    requires: >-
+      A request without a protocol version and client capabilities in its `_meta` gets
+      `-32602`, and one for another version gets `-32022` with the versions the server supports
+      and the one requested.
+    failure: >-
+      Since version 2026-07-28, every request carries its version in `_meta`, and the server
+      answers each on its own.
+  - check: tst_qjrvcs
+    title: Lists the shop's tools
+    requires: >-
+      `tools/list` gives each tool's name, description and input schema as `describe` makes
+      them, `server/discover` the version and the `tools` capability, both with `TTL` and the
+      `public` cache scope, and an unknown method `-32601`.
+    failure: >-
+      An MCP tool's `inputSchema` is the parameters of the tool the chat completions API takes.
+  - check: tst_tfg2pb
+    title: Calls a tool, and tells the model what went wrong
+    requires: >-
+      A call's result is the tool's value as text, with `isError` false. Arguments that don't
+      fit the tool's schema, and a tool that raises, give `isError` true with what went wrong.
+      An unknown tool, or a call without a name or an object of arguments, gets `-32602`.
+    failure: >-
+      Check the arguments against the tool's schema before calling it, and put what goes wrong
+      with a call in its result, where the model can read it.

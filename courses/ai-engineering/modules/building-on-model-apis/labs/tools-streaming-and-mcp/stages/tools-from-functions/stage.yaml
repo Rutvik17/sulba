@@ -1,0 +1,6 @@
+id: stg_ptbrdn
+kind: build
+title: Tools from functions
+builds: A new `tools.py`.
+file: tools.py
+minutes: 35

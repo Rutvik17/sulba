@@ -1,0 +1,7 @@
+id: stg_0fsqam
+kind: build
+title: Streamed replies
+builds: A new `stream.py`.
+file: stream.py
+packages: [httpx, openai]
+minutes: 40

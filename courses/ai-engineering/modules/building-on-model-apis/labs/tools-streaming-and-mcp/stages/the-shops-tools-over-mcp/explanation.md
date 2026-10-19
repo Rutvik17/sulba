@@ -1,0 +1,7 @@
+MCP moves the tool loop's other end into a program of its own. The assistant still runs the loop, offering the tools to its model and sending back the results, while the server lists the tools and runs the calls, so one server's tools can serve any assistant that speaks the protocol. A tool's input schema is the JSON Schema the chat completions API takes for a tool's parameters, so one `describe` serves both.
+
+Version `2026-07-28` made MCP stateless. There's no handshake: every request carries its protocol version and the client's capabilities in its `_meta`, and the server accepts or refuses each one on its own. `server/discover` lets a client ask first which versions the server supports, and `-32022` lists them when a request asks for another.
+
+Errors come in two kinds. A JSON-RPC error says the request itself is wrong, which a model is less likely to fix: text that isn't JSON, a message that isn't a request, a method or a tool the server doesn't have, or params it can't use. A result with `isError` says the call ran and failed in a way the model can do something about, such as arguments that don't fit or a repair for no bikes, so it goes to the model as text it can read before trying again.
+
+The server checks every call's arguments against the tool's input schema, whatever the assistant checked first: the arguments are text a model wrote, and the server is the last place to stop them before they reach the shop's code.
