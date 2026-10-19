@@ -1,0 +1,63 @@
+id: stg_h333w2
+kind: catch
+title: The assistant's attention
+builds: A new `self_attention.py`.
+file: self_attention.py
+packages: [torch]
+minutes: 40
+problems:
+  - check: tst_rhdp9e
+    title: It scaled by the whole width
+    cost: >-
+      It divided the scores by the square root of the whole width, where a head's scores are
+      dot products of its own slice, so every score was `$\sqrt{\text{heads}}$` times too
+      small. At GPT-2's size, {% $fig.heads %} heads of {% $fig.size %}, that is
+      {% $fig.shrink %} times, and a query's largest weight over {% $fig.keys %} random keys
+      averages {% $fig.flat %} where it should average {% $fig.right %}. Spread evenly, each
+      weight would be {% $fig.even %}, so each head mixes the tokens nearly alike.
+    fix: >-
+      The fix: divide by `math.sqrt(size)`, the square root of a head's size, as
+      `F.scaled_dot_product_attention` does.
+    edit:
+      replace: "        scores = q @ k.transpose(-2, -1) / math.sqrt(self.width)\n"
+      with: "        scores = q @ k.transpose(-2, -1) / math.sqrt(size)\n"
+  - check: tst_440z3t
+    title: Each token saw the next one
+    cost: >-
+      `tril(diagonal=1)` keeps the diagonal above the main one too, so every token but the last
+      saw the token after it: the one the model is trained to predict. Training would teach it
+      to copy that token from its input, and the loss would fall, but when the app writes a
+      story, the next token doesn't exist yet, and the model would lean on a token it never
+      has.
+    fix: >-
+      The fix: `tril()`, which keeps the diagonal and everything below it, so a token sees
+      itself and the tokens before it.
+    edit:
+      replace: "        seen = torch.ones(length, length, dtype=torch.bool).tril(diagonal=1)\n"
+      with: "        seen = torch.ones(length, length, dtype=torch.bool).tril()\n"
+  - check: tst_iu6uvt
+    title: Its padding mask showed only the padding
+    cost: >-
+      `padding` is `True` at the padding, and `seen` is `True` where a token may be seen, so
+      `seen & padding` let each query see only padding, and with the causal mask, only padding
+      no later than itself. A story's padding comes after its tokens, so none of its tokens
+      saw any key: in a batch of stories of {% $fig.lengths %} tokens, all {% $fig.nan %} of
+      their tokens came out `nan`.
+    fix: >-
+      The fix: `seen & ~padding[:, None, None, :]`, which hides the padding.
+    edit:
+      replace: "            seen = seen & padding[:, None, None, :]\n"
+      with: "            seen = seen & ~padding[:, None, None, :]\n"
+  - check: tst_fqp1jj
+    title: It dropped weights in use
+    cost: >-
+      `F.dropout` drops unless told `training=False`, unlike `nn.Dropout`, which follows its
+      module's mode. So once the app put the model in use with `.eval()`, each run still set
+      about a tenth of the weights to 0 at random, and scaled the rest by {% $fig.scale %}: the
+      same story read differently every time.
+    fix: >-
+      The fix: `F.dropout(weights, self.dropout, training=self.training)`, which drops only
+      while the model trains.
+    edit:
+      replace: "        weights = F.dropout(weights, self.dropout)\n"
+      with: "        weights = F.dropout(weights, self.dropout, training=self.training)\n"

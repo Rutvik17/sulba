@@ -1,0 +1,3 @@
+Every one of these problems leaves the output's shape right and, without padding, its numbers finite, which is all the assistant's tests looked at. Attention's mistakes rarely raise an error: a wrong scale, a mask off by one, or a mask turned inside out all give tensors of the right shape. They show only when the code is compared with a reference, run on a story with a token changed, padded into a batch, or run twice.
+
+Each check here holds the code to one of those: the last token's output against `F.scaled_dot_product_attention`, earlier outputs unchanged when a later token changes, each story the same alone as in a batch, and the same output twice once the model is in use.

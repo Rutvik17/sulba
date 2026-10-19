@@ -1,0 +1,41 @@
+id: stg_ij9hn0
+kind: ship
+title: Attention in tiles
+builds: A new `tiles.py`.
+file: tiles.py
+packages: [torch]
+minutes: 60
+checks:
+  - check: tst_vqoccl
+    title: "Exact on stories of {% $fig.long %} tokens"
+    requires: >-
+      `tiled_attention` gives what `F.scaled_dot_product_attention` gives in float64, to its
+      last digits, on stories of {% $fig.long %} tokens, causal or not, and on fewer queries
+      than keys.
+    failure: >-
+      A running softmax is exact: each tile's exponentials must be rescaled whenever a query's
+      largest score grows, and so must its running sums.
+  - check: tst_9ivd64
+    title: A tile's scores at a time
+    requires: >-
+      With tiles of {% $fig.checked_tile %} keys, no operation makes more than
+      {% $fig.checked_tile %} numbers for each query, causal or not, and PyTorch's own
+      attention doesn't run.
+    failure: >-
+      The note gives the most numbers one operation made. Work out the scores of one tile of
+      keys at a time, and keep only the running values between tiles.
+  - check: tst_5bddgn
+    title: Large scores
+    requires: >-
+      Queries and keys {% $fig.larger %} times larger give finite outputs, as PyTorch's do.
+    failure: >-
+      Each tile's exponentials must be taken after subtracting the largest score so far, or
+      they overflow.
+  - check: tst_fmvs90
+    title: Any size of tile
+    requires: >-
+      A tile of one key, a tile that doesn't divide the story's length, and a tile longer than
+      the story all give the same output.
+    failure: >-
+      The last tile can be shorter than the others, and a query's first tiles can be all
+      hidden by the causal mask.

@@ -1,0 +1,7 @@
+id: stg_mv0uwk
+kind: build
+title: Batches of stories
+builds: Your `attention.py` from stage 2.
+file: attention.py
+packages: [torch]
+minutes: 45

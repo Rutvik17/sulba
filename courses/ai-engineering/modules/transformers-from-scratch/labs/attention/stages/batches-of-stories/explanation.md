@@ -1,0 +1,7 @@
+Padding before a story is where `nan` comes from. In a batch of {% $fig.stories %} stories of {% $fig.lengths %} tokens padded before them, {% $fig.padding %} of the batch's {% $fig.positions %} positions are padding. With attention that leaves a query that sees no key with the `nan` of its softmax, the first layer's outputs are `nan` at all of those positions and nowhere else, which looks harmless, as they are only padding. But the second layer makes their keys and values from those outputs, and though its mask gives padding a weight of exactly 0, every story token's weighted sum includes 0 times a `nan` value. After two layers, every token of the {% $fig.lost %} stories that had padding is `nan`, and so is every loss and gradient that touches them.
+
+Setting those rows' weights to 0 after the softmax keeps the `nan` from leaving the row. In the backward pass, every score in those rows was masked, and a masked score passes no gradient back to the queries and keys, so the `nan` goes no further there either.
+
+Padding after a story raises no such row: a padded query there sees its story's own tokens, all of which come before it. Its outputs are wasted work, and `unpad` drops them, but they are finite.
+
+The mask's shape `(batch, 1, longest, longest)` broadcasts over the heads, since every head of a story hides the same keys. `nn.MultiheadAttention` takes the padding as a `key_padding_mask` of shape `(batch, longest)`, where `True` again means a key to ignore.

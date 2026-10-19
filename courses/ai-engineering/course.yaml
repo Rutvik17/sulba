@@ -13,4 +13,4 @@ levels:
       A laptop with uv and about 1 GB free: Windows or Linux on x86-64, Linux on Arm, or
       macOS 14 or later on Apple silicon. Module 1 runs in your browser, and from Module 2
       labs run on your machine
-    modules: [neural-networks-from-scratch, pytorch]
+    modules: [neural-networks-from-scratch, pytorch, transformers-from-scratch]

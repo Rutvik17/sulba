@@ -1,0 +1,25 @@
+cards:
+  - id: crd_tegurj
+    front: >-
+      Why does scaled dot-product attention divide its scores by `$\sqrt{d}$`?
+    back: >-
+      A dot product of `$d$` entries of variance 1 has variance `$d$`. Dividing by `$\sqrt{d}$`
+      brings the scores back to a spread of 1, so the softmax doesn't put nearly all its weight
+      on one key, where its gradient vanishes.
+  - id: crd_y9q0wk
+    front: >-
+      How does a causal mask hide a later token from a query?
+    back: >-
+      Its score becomes `$-\infty$` before the softmax, so its weight is exactly 0 and the other
+      weights still add up to 1.
+  - id: crd_ynwqpa
+    front: >-
+      What does `True` mean in a mask of booleans that `F.scaled_dot_product_attention` takes?
+    back: >-
+      That the query may see the key: it takes part in attention.
+  - id: crd_li65qf
+    front: >-
+      Why does a softmax subtract each row's largest score first?
+    back: >-
+      It changes no weight, and it keeps `exp` from overflowing, past {% $fig.overflow64 %} in
+      float64 and {% $fig.overflow32 %} in float32.

@@ -1,0 +1,7 @@
+id: stg_rt6bom
+kind: build
+title: Multi-head attention
+builds: Your `attention.py` from stage 1.
+file: attention.py
+packages: [torch]
+minutes: 50

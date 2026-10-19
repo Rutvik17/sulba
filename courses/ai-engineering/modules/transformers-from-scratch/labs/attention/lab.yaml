@@ -1,0 +1,13 @@
+id: lab_0e2do3
+title: Attention
+summary: >-
+  Build the attention a reading app's story model runs in every layer: scaled dot-product
+  attention with its causal mask, heads split and merged, masks for batches of stories, and
+  attention in tiles that never holds a whole row of scores.
+runs: machine
+stages:
+  - scaled-dot-product-attention
+  - multi-head-attention
+  - batches-of-stories
+  - the-assistants-attention
+  - attention-in-tiles

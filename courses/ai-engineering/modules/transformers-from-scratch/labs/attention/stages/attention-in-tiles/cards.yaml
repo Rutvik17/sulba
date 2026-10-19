@@ -1,0 +1,19 @@
+cards:
+  - id: crd_3ymvwf
+    front: >-
+      What three values does a running softmax keep for each query?
+    back: >-
+      Its largest score so far `$m$`, the sum `$\ell$` of its exponentials less `$m$`, and the
+      sum `$o$` of the values weighted by them. The output is `$o / \ell$`.
+  - id: crd_ogno9h
+    front: >-
+      When a tile brings a larger score `$m'$`, what happens to the running sums?
+    back: >-
+      Both are multiplied by `$e^{m - m'}$`, which puts the old terms on the new footing, and
+      the tile's own terms are added.
+  - id: crd_qnfr98
+    front: >-
+      How does attention in tiles change its memory and its work?
+    back: >-
+      Its memory grows with the story's length rather than its square. Its work stays the
+      same: every query against every key.

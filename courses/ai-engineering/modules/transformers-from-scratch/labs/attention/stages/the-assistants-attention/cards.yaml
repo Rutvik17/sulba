@@ -1,0 +1,19 @@
+cards:
+  - id: crd_a08tx4
+    front: >-
+      What does `F.dropout(x, p)` do in a model put in use with `.eval()`?
+    back: >-
+      It still drops: its own `training` argument defaults to `True`. Pass
+      `training=self.training`, or use `nn.Dropout`, which follows its module's mode.
+  - id: crd_gu7tk3
+    front: >-
+      What does `tril(diagonal=1)` keep that a causal mask mustn't?
+    back: >-
+      The diagonal above the main one, so each token sees the next token: the one it is
+      trained to predict.
+  - id: crd_528if2
+    front: >-
+      In multi-head attention, the square root of what divides the scores?
+    back: >-
+      Of a head's size, `width / heads`, since each head's scores are dot products of its own
+      slice.

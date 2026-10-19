@@ -1,0 +1,24 @@
+cards:
+  - id: crd_xgmxpi
+    front: >-
+      Why does writing pad stories before them, rather than after?
+    back: >-
+      So that every story's last token, from which the next one is predicted, sits at the
+      batch's last position.
+  - id: crd_t6t6sj
+    front: >-
+      How does a padded query that sees no key spread `nan` through a story?
+    back: >-
+      Every score it has is `$-\infty$`, so its softmax is `nan`. The next layer makes keys and
+      values from its output, and 0 times `nan` is `nan`, so every token's weighted sum picks it
+      up.
+  - id: crd_oba64a
+    front: >-
+      What should attention give a query that sees no key?
+    back: >-
+      Weights of 0 and an output of 0, as `F.scaled_dot_product_attention` gives.
+  - id: crd_iludax
+    front: >-
+      Why can one mask `(batch, 1, length, length)` serve every head?
+    back: >-
+      Every head of a story hides the same keys, so the 1 broadcasts over the heads.
