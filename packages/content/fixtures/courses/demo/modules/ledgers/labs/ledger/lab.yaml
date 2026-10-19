@@ -23,5 +23,16 @@ fetch:
         url: https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
         bytes: 5148
         sha256: 67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5
+model:
+  title: stories260K
+  creators: [Andrej Karpathy]
+  url: https://huggingface.co/karpathy/tinyllamas
+  licence:
+    name: MIT
+    url: https://github.com/karpathy/llama2.c/blob/350e04fe35433e6d2941dce5a1f53308f87058eb/LICENSE
+  file:
+    url: https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf
+    bytes: 1185376
+    sha256: 270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d
 runs: machine
 stages: [balance, audit, close]

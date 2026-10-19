@@ -8,9 +8,13 @@
 // lab at that path in its folder of courses, such as
 // `ai-engineering/modules/pytorch/labs/transfer-learning`, so that CI can run each lab in a job of
 // its own. With `--every-file`, it then fetches each file a machine lab pins that isn't kept yet,
-// so that one job's folder holds them all for CI to keep.
+// so that one job's folder holds them all for CI to keep. With `--model`, it runs no stages: from a
+// download of the first lab that names each model, `uv run sulba.py model --check` fetches
+// llama.cpp's server for this system and the model, starts it and asks it one question (decision
+// record 32).
 //
 //   node scripts/machine.ts <folder of courses>... [--lab <path>] [--every-file] [--figures <file>]
+//   node scripts/machine.ts <folder of courses>... --model
 import { spawnSync } from 'node:child_process';
 import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -37,6 +41,7 @@ const { positionals, values } = parseArgs({
     figures: { type: 'string' },
     lab: { type: 'string' },
     'every-file': { type: 'boolean', default: false },
+    model: { type: 'boolean', default: false },
   },
 });
 const runner = await runnerFiles();
@@ -44,6 +49,8 @@ const problems: Problem[] = [];
 const figures: Record<string, Record<string, string> | null> = {};
 /** Each file a machine lab pins, with the lab's path. */
 const pinned: { path: string; file: FetchedFile }[] = [];
+/** The sha256 of each model checked, so a model several labs name is checked once. */
+const served = new Set<string>();
 let ran = 0;
 
 /** `uv run sulba.py` with these arguments in the download's folder, and its exit code. */
@@ -62,6 +69,7 @@ for (const root of positionals.map((each) => resolve(each))) {
   for (const { lab, path } of machineLabs(root, courses)) {
     pinned.push(...Object.values(fetchedFiles(lab)).map((file) => ({ path, file })));
     if (values.lab !== undefined && path !== values.lab) continue;
+    if (values.model && (!lab.model || served.has(lab.model.file.sha256))) continue;
     ran += 1;
     const problem = (message: string) => problems.push({ path, message });
     const folder = join(await mkdtemp(join(tmpdir(), 'sulba-machine-')), lab.slug);
@@ -76,6 +84,14 @@ for (const root of positionals.map((each) => resolve(each))) {
     for (const [name, text] of Object.entries(download)) {
       await mkdir(dirname(join(folder, name)), { recursive: true });
       await writeFile(join(folder, name), text);
+    }
+    if (values.model && lab.model) {
+      served.add(lab.model.file.sha256);
+      const asked = sulba(folder, 'model', '--check');
+      if (asked.code !== 0) problem(`its model should answer.\n${asked.output}`);
+      else console.log(`${path}: ${lab.model.title} answered from the download.`);
+      await rm(dirname(folder), { recursive: true, force: true, maxRetries: 3 });
+      continue;
     }
     const fetched = fetchedFiles(lab);
     const unkept: string[] = [];
@@ -129,7 +145,9 @@ for (const root of positionals.map((each) => resolve(each))) {
 if (values.lab !== undefined && ran === 0) {
   problems.push({
     path: values.lab,
-    message: "No lab that runs on the learner's machine is here.",
+    message: values.model
+      ? 'No lab that serves a model is here.'
+      : "No lab that runs on the learner's machine is here.",
   });
 }
 if (values['every-file']) {

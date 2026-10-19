@@ -311,6 +311,12 @@ class Reader {
         "fetch: Only a lab that runs on the learner's machine fetches files: set runs: machine, or serve the data as a dataset.",
       );
     }
+    if (file.model) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "model: Only a lab that runs on the learner's machine serves a model there: set runs: machine.",
+      );
+    }
     for (const stage of stages) {
       for (const name of stage.packages.filter(isMachinePackage)) {
         this.problem(

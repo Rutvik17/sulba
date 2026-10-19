@@ -129,6 +129,11 @@ export interface LabView {
    */
   readonly fetch: Lab['fetch'];
   /**
+   * The model a machine lab's runner serves on the learner's machine (decision record 32): its
+   * credit, and its file's address, size and sha256. Null when the lab has none.
+   */
+  readonly model: NonNullable<Lab['model']> | null;
+  /**
    * The files a download of the lab puts beside the learner's (decision record 25), each with its
    * path in the download and the address the site serves it at, which changes with its text. A
    * machine lab's include its runner. None without a project.
@@ -282,6 +287,7 @@ function entryOf(
       served: servedAt('references', file, text),
     })),
     fetch: lab.fetch,
+    model: lab.model ?? null,
     // A file in the runner's folder is served under its own name, one folder below the hash.
     project: Object.entries(project).map(([name, text]) => ({
       name,

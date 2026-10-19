@@ -249,6 +249,35 @@ jobs:
             done
           done
 
+  # Each model a lab serves on the learner's machine, from a download of the first lab that names
+  # it, on each system it supports (decision record 32): `uv run sulba.py model --check` fetches
+  # llama.cpp's server for the system and the model, starts it and asks it one question.
+  model:
+    name: Models on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    env:
+      UV_LOCKED: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @sulba/content...
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+      - shell: bash
+        run: pnpm check:machine --model
+
   # Every lab's references, recorded again by its make.py with the library and the versions it pins
   # (decision record 27), so each recorded file holds what the library gives.
   references:
@@ -352,7 +381,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [checks, content, machine-figures, references, database]
+    needs: [checks, content, machine-figures, model, references, database]
     # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
     # updates and pull requests from forks, which have no access to secrets, are tested only.
     if: >-

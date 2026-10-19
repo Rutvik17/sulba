@@ -105,7 +105,11 @@ const providers = [
       files too large for its zip, such as a dataset, the program downloads them from their
       publisher, whose address the lab's page gives, before its first run and again if one goes
       missing or changes; like any website, the publisher receives your IP address with the request.
-      When you pass a stage, it gives you a link to the lab's page. The part of the link after its
+      If a lab has a model, <code>uv run sulba.py model</code> downloads it, and llama.cpp's server
+      for your computer, from their publishers the same way, into a folder every lab shares, and
+      runs them on your computer. The model answers only programs on your computer, so what your
+      code sends it stays there. When you pass a stage, it gives you a link to the lab's page. The
+      part of the link after its
       <code>#</code>
       holds which stages you passed there, which problems you caught in a review, and each run of
       the tests since its last link, with how many passed, when, and the time between runs. Browsers
