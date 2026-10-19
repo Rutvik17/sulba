@@ -36,7 +36,8 @@ export function fetchedPath(file: FetchedFile, folder = fetchedFolder): Promise<
 
 async function keep(file: FetchedFile, folder: string, path: string): Promise<string> {
   if (await holds(path, file)) return path;
-  const response = await fetch(file.url);
+  // Zenodo refuses Node's own user agent, so checks name themselves, as the runner does.
+  const response = await fetch(file.url, { headers: { 'User-Agent': 'sulba' } });
   if (!response.ok || !response.body) throw new Error(`${file.url} answered ${response.status}.`);
   // A name of this process's own, since two checks on one machine may fetch the same file.
   const partial = `${path}.${process.pid}.partial`;
