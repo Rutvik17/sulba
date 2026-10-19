@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_oai001",
+      "name": "Sends a chat request and reads its reply",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_oai002",
+      "name": "Reads a streamed reply as it comes",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

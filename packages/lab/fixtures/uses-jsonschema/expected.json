@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_jsc001",
+      "name": "Finds nothing wrong with a valid booking",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_jsc002",
+      "name": "Says what is wrong with an invalid booking, and where",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}

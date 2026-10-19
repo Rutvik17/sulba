@@ -53,10 +53,11 @@ export const pypiWheels: readonly PyPIWheel[] = [
 /**
  * Dependencies that Pyodide's lock file leaves out, by package. mypy 1.19.1 requires
  * typing_extensions, mypy_extensions and pathspec, and the lock file lists only librt
- * (decision record 22).
+ * (decision record 22). openai 2.30.0 requires sniffio and tqdm too.
  */
 const missing: Readonly<Record<string, readonly string[]>> = {
   mypy: ['typing-extensions', 'mypy-extensions', 'pathspec'],
+  openai: ['sniffio', 'tqdm'],
 };
 
 const core = ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip'];
