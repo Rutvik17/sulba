@@ -1,0 +1,24 @@
+id: lab_0qd5a2
+title: Tools, streaming and MCP
+summary: >-
+  Give the bicycle repair shop's assistant tools: the shop's functions described for the model,
+  the loop that runs the calls it makes, its replies read as they stream in, a review of an
+  assistant's tool loop, and the shop's tools served over the Model Context Protocol.
+model:
+  title: Qwen3.5-0.8B
+  creators: [Qwen]
+  url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+  licence:
+    name: Apache License 2.0
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+  file:
+    url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
+    bytes: 833592096
+    sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
+runs: machine
+stages:
+  - tools-from-functions
+  - the-tool-loop
+  - streamed-replies
+  - the-assistants-tool-loop
+  - the-shops-tools-over-mcp

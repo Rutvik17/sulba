@@ -1,0 +1,14 @@
+cards:
+  - id: crd_q9v3u6
+    front: >-
+      After a reply with tool calls, what goes in the next request, besides the conversation so
+      far?
+    back: >-
+      The model's message with its calls, then a `tool` message for each call, in the order of
+      the calls, each with its `tool_call_id`.
+  - id: crd_y46vpo
+    front: >-
+      Why does a tool loop cap its rounds?
+    back: >-
+      Each round is another request to the model, which a customer waits on, and a model can
+      keep calling tools without ever answering.

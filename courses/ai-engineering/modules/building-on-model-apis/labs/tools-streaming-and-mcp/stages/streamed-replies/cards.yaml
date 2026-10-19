@@ -1,0 +1,19 @@
+cards:
+  - id: crd_n69d52
+    front: >-
+      In a streamed reply, when can the code parse a tool call's arguments?
+    back: >-
+      Once the reply has finished: the arguments come in pieces of JSON that don't parse until
+      the last one has come.
+  - id: crd_whd7cy
+    front: >-
+      Where does a server-sent events line end?
+    back: >-
+      At CR LF, at LF, or at CR, and nowhere else. Splitting text as `str.splitlines` does also
+      splits at characters such as U+2028.
+  - id: crd_l35bmj
+    front: >-
+      How does a streamed reply say how many tokens it used?
+    back: >-
+      With `"stream_options": {"include_usage": true}`, in a last chunk whose `choices` is empty,
+      before `data: [DONE]`.

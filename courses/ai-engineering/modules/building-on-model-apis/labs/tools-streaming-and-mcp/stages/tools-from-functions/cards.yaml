@@ -1,0 +1,19 @@
+cards:
+  - id: crd_4c9vex
+    front: >-
+      What does a model see of a tool before it calls it?
+    back: >-
+      Its name, its description and the JSON Schema of its parameters, so those are written for
+      the model to read.
+  - id: crd_mzywgj
+    front: >-
+      A tool call's arguments don't parse, or name a parameter the function doesn't have. What
+      should the code do?
+    back: >-
+      Send the model the error as the call's result, so it can call again. Raising ends the
+      conversation instead.
+  - id: crd_8djgto
+    front: >-
+      In strict mode, how is a parameter that can be left empty described?
+    back: >-
+      As required, with `null` among its types: strict mode requires every property.

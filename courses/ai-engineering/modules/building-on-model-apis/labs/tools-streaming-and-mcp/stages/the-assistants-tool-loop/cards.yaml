@@ -1,0 +1,13 @@
+cards:
+  - id: crd_gog1td
+    front: >-
+      A model's reply asks for two tool calls. How many does the code run?
+    back: >-
+      Both, sending each result back with its call's id: a reply can call several tools at
+      once, and each call needs its result.
+  - id: crd_ufqlrn
+    front: >-
+      Why does the code look up a tool call's name only among the tools it offered the model?
+    back: >-
+      A tool call is text the model wrote after reading the customer's message. Looked up
+      anywhere else, its name can run any function the code can reach.
