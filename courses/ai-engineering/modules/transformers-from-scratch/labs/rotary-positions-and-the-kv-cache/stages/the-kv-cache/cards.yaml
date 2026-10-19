@@ -1,0 +1,19 @@
+cards:
+  - id: crd_av9c5m
+    front: >-
+      Why can a KV cache keep the keys and values of the tokens already read?
+    back: >-
+      No token reads a later one, so the keys and values of the earlier tokens never change as
+      the story grows.
+  - id: crd_hi0qqi
+    front: >-
+      Why does a KV cache keep keys after rotating them?
+    back: >-
+      A key's angle depends only on its own position, which never changes, so it's turned
+      once, when it's made.
+  - id: crd_pw07i9
+    front: >-
+      How many bytes does SmolLM2's cache hold for each token in float32?
+    back: >-
+      {% $fig.token_bytes %}: a key and a value of {% $fig.kv_heads %} heads,
+      {% $fig.dim %} wide, in each of its {% $fig.layers %} blocks.

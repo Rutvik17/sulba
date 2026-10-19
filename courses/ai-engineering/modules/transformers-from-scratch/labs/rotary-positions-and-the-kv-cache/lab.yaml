@@ -1,0 +1,32 @@
+id: lab_hjn5es
+title: Rotary positions and the KV cache
+summary: >-
+  Run Hugging Face's SmolLM2-135M in your own code: rotary positions, RMSNorm, SwiGLU and
+  grouped-query attention matched to transformers' Llama, a KV cache that writes each token
+  without reading the story again, a review of an assistant's cached generator, and a generator
+  for batches of prompts.
+fetch:
+  - kind: model
+    title: SmolLM2-135M
+    creators: [Hugging Face]
+    url: https://huggingface.co/HuggingFaceTB/SmolLM2-135M
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    files:
+      - file: model.safetensors
+        url: https://huggingface.co/HuggingFaceTB/SmolLM2-135M/resolve/93efa2f097d58c2a74874c7e644dbc9b0cee75a2/model.safetensors
+        bytes: 269060552
+        sha256: 80521b40281d6ce74e35c9282c22539e75aa0ac8578892b2a59955ef78d55da1
+      - file: tokenizer.json
+        url: https://huggingface.co/HuggingFaceTB/SmolLM2-135M/resolve/93efa2f097d58c2a74874c7e644dbc9b0cee75a2/tokenizer.json
+        bytes: 2104556
+        sha256: 9ca9acddb6525a194ec8ac7a87f24fbba7232a9a15ffa1af0c1224fcd888e47c
+references: [rotary.json, tokens.json, logits.json, stories.json]
+runs: machine
+stages:
+  - rotary-positions
+  - smollm2-in-your-model
+  - the-kv-cache
+  - the-assistants-generator
+  - stories-in-batches

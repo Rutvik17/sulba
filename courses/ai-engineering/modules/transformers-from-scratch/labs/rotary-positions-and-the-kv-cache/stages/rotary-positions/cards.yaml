@@ -1,0 +1,20 @@
+cards:
+  - id: crd_o2hha4
+    front: >-
+      Why does a score between a rotated query and a rotated key depend only on how far apart
+      their tokens are?
+    back: >-
+      Each pair of the query turns through `$m\theta_i$` and of the key through `$n\theta_i$`,
+      so in their dot product each pair meets at `$(m - n)\theta_i$`.
+  - id: crd_uijxdh
+    front: >-
+      What angle does pair `$i$` of a head `$d$` wide turn through at position `$m$`?
+    back: >-
+      `$m\theta_i$`, with `$\theta_i = b^{-2i/d}$`. SmolLM2's base `$b$` is {% $fig.theta %}.
+  - id: crd_yo3j4u
+    front: >-
+      Which numbers does SmolLM2 pair when it rotates a head's query?
+    back: >-
+      Each number with the one half a head away, `$i$` with `$i + d/2$`, as the Llama code in
+      transformers does. The rotary paper paired neighbours, and a model's weights work with one
+      pairing only.

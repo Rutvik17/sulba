@@ -1,0 +1,7 @@
+id: stg_3xdd6w
+kind: build
+title: Rotary positions
+builds: A new `rope.py`.
+file: rope.py
+packages: [torch]
+minutes: 35

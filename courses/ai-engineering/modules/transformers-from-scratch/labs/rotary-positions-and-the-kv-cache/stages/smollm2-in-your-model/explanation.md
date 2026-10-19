@@ -1,0 +1,7 @@
+SmolLM2's file holds {% $fig.parameters %} numbers in BF16, two bytes each, {% $fig.file_bytes %} bytes with its header. BF16 keeps float32's exponent and the first {% $fig.bf16_bits %} of its {% $fig.float32_bits %} fraction bits, so it holds the same range of sizes with fewer digits, and widening it to float32 loses nothing. Of the numbers, {% $fig.embedding %}, or {% $fig.embedding_share %}, are the token embeddings, which are the output layer too. Each of its {% $fig.layers %} blocks holds {% $fig.block %}.
+
+Grouped-query attention keeps {% $fig.kv_heads %} key and value heads for {% $fig.heads %} query heads, so a block's key and value layers hold {% $fig.kv %} numbers where a head of their own for every query head would take {% $fig.kv_full %}, {% $fig.saved %} fewer across the blocks. The larger saving comes in the next stage, which keeps every token's keys and values.
+
+SwiGLU's MLP has three matrices where GELU's had two, so SmolLM2, as Meta's first Llama models did, makes it two thirds of four times as wide: {% $fig.hidden %} for its width of {% $fig.width %}. Its {% $fig.mlp %} weights are then exactly as many as the two matrices of a GELU MLP {% $fig.four_width %} wide. RMSNorm only rescales, with {% $fig.width %} numbers where a layer normalization holds {% $fig.layer_norm %}.
+
+Given "{% $fig.prompt %}", SmolLM2's {% $fig.likeliest %} likeliest next tokens, with their chances, are {% $fig.shares %}.

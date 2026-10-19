@@ -1,0 +1,7 @@
+id: stg_rgglap
+kind: build
+title: SmolLM2 in your model
+builds: Your `rope.py` from stage 1.
+file: smollm.py
+packages: [torch]
+minutes: 50

@@ -1,0 +1,20 @@
+cards:
+  - id: crd_dmmkh7
+    front: >-
+      Why must a cached step's new tokens carry their positions on from the cache's length?
+    back: >-
+      The cached keys were turned by their own positions, so a new token turned as if at
+      position 0 reads them as if it stood at the start of the story.
+  - id: crd_xhhw8q
+    front: >-
+      Why does PyTorch's `is_causal=True` go wrong with a KV cache?
+    back: >-
+      With fewer queries than keys, it lines its triangle up with the first keys, so each new
+      token reads the start of the story instead of the whole cache.
+  - id: crd_o17ynr
+    front: >-
+      With {% $fig.heads %} query heads in groups of {% $fig.group %}, why repeat the key heads
+      with `repeat_interleave`, not `repeat`?
+    back: >-
+      `repeat_interleave` repeats each key head in place, so each group of neighbouring query
+      heads reads its own key head. `repeat` lays whole sets one after another.
