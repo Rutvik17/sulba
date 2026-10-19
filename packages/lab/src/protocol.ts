@@ -145,6 +145,7 @@ export const pythonPackages = [
   'packaging',
   'fastapi',
   'httpx',
+  'pillow',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -172,6 +173,7 @@ export const importNames: Readonly<Record<Package, string>> = {
   packaging: 'packaging',
   fastapi: 'fastapi',
   httpx: 'httpx',
+  pillow: 'PIL',
   torch: 'torch',
 };
 
