@@ -399,6 +399,8 @@ if __name__ == "__main__":
     # {"files": {...}, "figures": true} asks for figures.py's numbers, and
     # {"files": {...}, "chart": {...}} for what chart.py draws with those values. A run or a
     # figures request may add {"links": {...}}: files on disk, by their path in the session.
+    # Requests come in UTF-8, which Windows doesn't read a pipe in by default.
+    sys.stdin.reconfigure(encoding="utf-8")
     for line in sys.stdin:
         request = json.loads(line)
         files = json.dumps(request["files"])

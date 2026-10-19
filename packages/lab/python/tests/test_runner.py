@@ -1,5 +1,6 @@
 import gc
 import json
+import os
 import subprocess
 import sys
 import weakref
@@ -244,6 +245,22 @@ def test_batch_mode_answers_a_figures_request() -> None:
         check=True,
     )
     assert json.loads(done.stdout)["figures"] == {"yes": "2", "share": "0.6667"}
+
+
+def test_batch_mode_reads_utf_8_in_any_locale() -> None:
+    # Node writes its requests in UTF-8, and Windows reads a pipe in its own code page.
+    files = {"figures.py": "def figures():\n    return {'warmest': '21 °C'}\n"}
+    done = subprocess.run(
+        [sys.executable, "sulba_runner.py"],
+        input=json.dumps({"files": files, "figures": True}, ensure_ascii=False) + "\n",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=Path(__file__).parents[1],
+        env={**os.environ, "PYTHONIOENCODING": "cp1252"},
+        check=True,
+    )
+    assert json.loads(done.stdout)["figures"] == {"warmest": "21 °C"}
 
 
 SHARES = {
