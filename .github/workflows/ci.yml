@@ -265,6 +265,18 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The files machine labs fetch, which a make.py can read (decision record 30), from the cache
+      # the Machine labs jobs save. Each is checked against its sha256 before make.py reads it.
+      - id: fetched
+        shell: bash
+        run: |
+          pins=$(grep -rhoE --include=lab.yaml 'sha256: [0-9a-f]{64}' courses packages/content/fixtures)
+          echo "key=fetched-$(sort -u <<< "$pins" | cksum | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-fetched
+          key: ${{ steps.fetched.outputs.key }}
+          restore-keys: fetched-
       # What each make.py installs, such as PyTorch's CPU build, comes from the cache while the
       # make.py files stay the same.
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0

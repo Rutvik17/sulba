@@ -33,5 +33,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [27. Check a from-scratch build against a library's recorded results](0027-check-a-from-scratch-build-against-recorded-results.md) | Accepted |
 | [28. Run a lab that needs PyTorch from its download, and bring its results back by a link](0028-run-a-pytorch-lab-from-its-download.md) | Accepted |
 | [29. Fetch a machine lab's large files from their publishers, pinned by size and sha256](0029-fetch-a-machine-labs-large-files-from-their-publishers.md) | Accepted |
+| [30. Give a lab's make.py the lab's data, fetched files included](0030-give-a-labs-make-py-the-labs-data.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
