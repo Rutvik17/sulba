@@ -4,17 +4,22 @@
 // next stage. The runner fetches the lab's files from their publishers (decision record 29), all
 // but those kept from an earlier run, and keeps the ones it fetched for the next. With
 // `--figures <file>`, each stage's figures, computed in the download's own environment, go to that
-// file, whose text must then be the same on every system.
+// file, whose text must then be the same on every system. With `--lab <path>`, it runs only the
+// lab at that path in its folder of courses, such as
+// `ai-engineering/modules/pytorch/labs/transfer-learning`, so that CI can run each lab in a job of
+// its own. With `--every-file`, it then fetches each file a machine lab pins that isn't kept yet,
+// so that one job's folder holds them all for CI to keep.
 //
-//   node scripts/machine.ts <folder of courses>... [--figures <file>]
+//   node scripts/machine.ts <folder of courses>... [--lab <path>] [--every-file] [--figures <file>]
 import { spawnSync } from 'node:child_process';
 import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import { fetchedFolder, holds } from '@sulba/lab/fetched';
+import { fetchedFolder, fetchedPath, holds } from '@sulba/lab/fetched';
 import { machineDownload } from '@sulba/lab/machine';
 import { figuresInCPython, runnerFiles } from '@sulba/lab/node';
+import type { FetchedFile } from '@sulba/lab/protocol';
 import {
   courseSlugs,
   fetchedFiles,
@@ -28,11 +33,18 @@ import {
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
-  options: { figures: { type: 'string' } },
+  options: {
+    figures: { type: 'string' },
+    lab: { type: 'string' },
+    'every-file': { type: 'boolean', default: false },
+  },
 });
 const runner = await runnerFiles();
 const problems: Problem[] = [];
 const figures: Record<string, Record<string, string> | null> = {};
+/** Each file a machine lab pins, with the lab's path. */
+const pinned: { path: string; file: FetchedFile }[] = [];
+let ran = 0;
 
 /** `uv run sulba.py` with these arguments in the download's folder, and its exit code. */
 function sulba(folder: string, ...args: string[]): { code: number | null; output: string } {
@@ -48,6 +60,9 @@ for (const root of positionals.map((each) => resolve(each))) {
     if (loaded.course) courses.push(loaded.course);
   }
   for (const { lab, path } of machineLabs(root, courses)) {
+    pinned.push(...Object.values(fetchedFiles(lab)).map((file) => ({ path, file })));
+    if (values.lab !== undefined && path !== values.lab) continue;
+    ran += 1;
     const problem = (message: string) => problems.push({ path, message });
     const folder = join(await mkdtemp(join(tmpdir(), 'sulba-machine-')), lab.slug);
     const [first] = lab.stages;
@@ -111,6 +126,19 @@ for (const root of positionals.map((each) => resolve(each))) {
   }
 }
 
+if (values.lab !== undefined && ran === 0) {
+  problems.push({
+    path: values.lab,
+    message: "No lab that runs on the learner's machine is here.",
+  });
+}
+if (values['every-file']) {
+  for (const { path, file } of pinned) {
+    await fetchedPath(file).catch((error: Error) =>
+      problems.push({ path, message: error.message }),
+    );
+  }
+}
 if (values.figures) await writeFile(values.figures, `${JSON.stringify(figures, null, 2)}\n`);
 for (const { path, message } of problems) console.error(`${path}: ${message}`);
 console.log(`${Object.keys(figures).length} stages' figures, ${problems.length} problems.`);
