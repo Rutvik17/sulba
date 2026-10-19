@@ -2,3 +2,4 @@ id: mod_x89z6q
 title: Transformers from scratch
 labs:
   - attention
+  - the-transformer-block

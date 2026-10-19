@@ -1,0 +1,7 @@
+id: stg_qaeqrs
+kind: build
+title: The block
+builds: Your `block.py` from stage 1.
+file: block.py
+packages: [torch]
+minutes: 45

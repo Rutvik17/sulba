@@ -1,0 +1,30 @@
+id: stg_rgvdya
+kind: ship
+title: A GPT's costs
+builds: A new `costs.py`.
+file: costs.py
+packages: [torch]
+minutes: 45
+checks:
+  - check: tst_rjjtas
+    title: GPT-2's four sizes
+    requires: >-
+      `costs` gives the parameters and the multiply-adds of each of GPT-2's four sizes on a
+      story of {% $fig.context %} tokens, as PyTorch counts them.
+    failure: >-
+      Count each block's layers, its layer normalizations, the embeddings and the final layer
+      normalization, and remember that the output layer is tied.
+  - check: tst_87pwys
+    title: Any configuration
+    requires: >-
+      `costs` gives what PyTorch counts for other widths, depths and vocabularies, on stories
+      shorter than the context, down to a single token.
+    failure: >-
+      Attention's scores and values grow with the length of the story read, not the context.
+  - check: tst_nwb2u5
+    title: GPT-3, without building it
+    requires: >-
+      `costs` gives GPT-3's from its configuration, without making any module.
+    failure: >-
+      Work the numbers out from the configuration: a model of GPT-3's size can't be built on a
+      laptop.

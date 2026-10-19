@@ -1,0 +1,13 @@
+id: lab_yjggjt
+title: The transformer block
+summary: >-
+  Build the app's GPT as GPT-2 builds it: layer normalization by hand, the MLP and the
+  pre-norm residual block, a GPT with learned positions and a tied output layer, and what a
+  GPT costs, worked out from its configuration.
+runs: machine
+stages:
+  - layer-normalization
+  - the-block
+  - a-gpt
+  - the-assistants-gpt
+  - a-gpts-costs

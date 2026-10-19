@@ -1,0 +1,18 @@
+cards:
+  - id: crd_qhkj4m
+    front: >-
+      Over what does layer normalization take its mean and variance?
+    back: >-
+      Over each token's own vector, its last dimension, so it does the same in training and in
+      use, whatever else is in the batch.
+  - id: crd_jq5cr7
+    front: >-
+      Does layer normalization's variance divide by `$n$` or `$n - 1$`, and where does `$\epsilon$`
+      go?
+    back: >-
+      By `$n$`, and `$\epsilon$` goes inside the square root: `$(x - \mu)/\sqrt{\sigma^2 + \epsilon}$`.
+  - id: crd_zlcfm3
+    front: >-
+      What can layer normalization's weight and bias do that the normalization can't?
+    back: >-
+      Undo it: a weight of `$\sigma$` and a bias of `$\mu$` give the vector back.

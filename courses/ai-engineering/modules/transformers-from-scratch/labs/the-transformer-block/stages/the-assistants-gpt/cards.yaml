@@ -1,0 +1,19 @@
+cards:
+  - id: crd_2jbov4
+    front: >-
+      How do you tie an output layer to a token embedding table in PyTorch?
+    back: >-
+      Assign the parameter: `head.weight = wte.weight`. Copying its numbers makes a second
+      parameter that drifts once training starts.
+  - id: crd_9oqthx
+    front: >-
+      Where did the original transformer put its layer normalizations, and where does GPT-2?
+    back: >-
+      The original after each addition, normalizing the residual stream itself. GPT-2 at each
+      part's input, leaving the stream alone.
+  - id: crd_u4obfq
+    front: >-
+      What goes wrong when a GPT's positions start at 1?
+    back: >-
+      Position 0's vector is never used, and a story as long as the context asks for a
+      position past the table's end.
