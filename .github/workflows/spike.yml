@@ -1,0 +1,32 @@
+name: Spike
+
+# Runs llama.cpp's server with Qwen3.5-0.8B on each system a learner may have, before the runtime's
+# decision record. This branch is never merged.
+on:
+  push:
+    branches: [spike/llama-server]
+
+permissions:
+  contents: read
+
+jobs:
+  llama:
+    name: llama-server on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, windows-11-arm, macos-15, macos-15-intel]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+      - shell: bash
+        run: uv run --no-project --python 3.14 tools/spike/llama.py "$RUNNER_TEMP/spike"
+      - if: always()
+        shell: bash
+        run: tail -n 60 "$RUNNER_TEMP/spike/server.log" || true
