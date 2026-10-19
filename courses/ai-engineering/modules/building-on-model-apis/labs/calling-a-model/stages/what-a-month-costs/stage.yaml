@@ -1,0 +1,6 @@
+id: stg_4wuakd
+kind: build
+title: What a month costs
+builds: A new `costs.py`.
+file: costs.py
+minutes: 35

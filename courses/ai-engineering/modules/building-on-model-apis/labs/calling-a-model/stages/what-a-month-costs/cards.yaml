@@ -1,0 +1,20 @@
+cards:
+  - id: crd_27tffd
+    front: >-
+      Which tokens does OpenAI's `prompt_tokens` include that Anthropic's `input_tokens` leave
+      out?
+    back: >-
+      Those read from the cache and those written to it: OpenAI counts them inside
+      `prompt_tokens`, and Anthropic reports them beside `input_tokens`.
+  - id: crd_idd13n
+    front: >-
+      A model charges more for prompts over a limit. Which tokens count toward the limit?
+    back: >-
+      All the prompt's tokens, those read from the cache and written to it included, and the
+      higher prices then apply to every token of that request.
+  - id: crd_8y07oz
+    front: >-
+      Why does a month's cost come from pricing each request, not the month's total tokens?
+    back: >-
+      Prices can depend on each request's prompt length, so one long request pays more on its
+      own, without changing the price of the others.

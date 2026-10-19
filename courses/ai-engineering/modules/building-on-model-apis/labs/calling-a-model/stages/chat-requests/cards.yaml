@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ku1crx
+    front: >-
+      What does each request to the chat completions API carry?
+    back: >-
+      The whole conversation so far: the API keeps nothing between requests, and the model reads
+      all of it again.
+  - id: crd_697sda
+    front: >-
+      Which value of `finish_reason` says that a reply was cut off at its token limit?
+    back: >-
+      `length`. A reply that finished its answer has `stop`, and one that calls a tool has
+      `tool_calls`.
+  - id: crd_yh5yg2
+    front: >-
+      Which error statuses get the same answer when the same request is sent again?
+    back: >-
+      `400`, `401`, `403` and `404`: the request, the key or the path has to change first. A
+      `429`, `500` or `503` may pass.

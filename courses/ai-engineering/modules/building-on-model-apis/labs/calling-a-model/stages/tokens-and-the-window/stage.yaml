@@ -1,0 +1,7 @@
+id: stg_nxp78a
+kind: build
+title: Tokens and the window
+builds: A new `window.py`.
+file: window.py
+packages: [tokenizers]
+minutes: 40

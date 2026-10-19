@@ -1,0 +1,19 @@
+cards:
+  - id: crd_18moha
+    front: >-
+      Why does the model read more tokens for a message than the message's own words take?
+    back: >-
+      Its chat template wraps every message in special tokens that mark where it starts and
+      whose it is, and starts the reply with tokens of its own.
+  - id: crd_mrnkyu
+    front: >-
+      What do a conversation's tokens have to fit in, besides the prompt?
+    back: >-
+      The reply's tokens: the server's window holds both, so a client leaves room for the
+      reply.
+  - id: crd_tc576v
+    front: >-
+      When a conversation is too long, which messages go first?
+    back: >-
+      The oldest whole turns, each a customer's message with its replies. The system message
+      stays.

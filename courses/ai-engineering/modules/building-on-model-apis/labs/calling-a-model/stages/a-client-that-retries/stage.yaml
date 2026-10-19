@@ -1,0 +1,50 @@
+id: stg_z03ub8
+kind: ship
+title: A client that retries
+builds: A new `retry.py`.
+file: retry.py
+packages: [httpx]
+minutes: 45
+checks:
+  - check: tst_f9cgur
+    title: Asks again after what may pass
+    requires: >-
+      `ask_within` asks again after a `503`, a `429`, a `500`, a dropped connection and a request
+      that timed out, and returns the reply that comes after them.
+    failure: >-
+      A `408`, `409`, `429` or any `5xx`, a timeout and a lost connection may pass when the
+      request is sent again.
+  - check: tst_3hr478
+    title: Never asks again for the same error
+    requires: >-
+      After a `400`, `401` or `404`, `ask_within` raises `ModelError` with its status and
+      message at once, after one request.
+    failure: >-
+      The same request gets the same answer to these: raise the error.
+  - check: tst_zybxgk
+    title: Waits as asked, then longer
+    requires: >-
+      After a `429` whose Retry-After asks for {% $fig.asked %} seconds, the next request goes
+      that much later. After a failure that asks for nothing, the wait is
+      {% $fig.first %} second after the first attempt, doubling after each one after, and at
+      most {% $fig.most %}.
+    failure: >-
+      Wait the seconds a Retry-After gives, and otherwise `min(2 ** (attempt - 1), 8)` seconds
+      times the random factor, counting attempts from 1.
+  - check: tst_4ihpft
+    title: Spreads its own waits
+    requires: >-
+      With `jitter` giving 0, the waits `ask_within` chooses are halved, and the wait a
+      Retry-After asks for isn't.
+    failure: >-
+      Multiply the waits you choose by `0.5 + jitter() / 2`, and wait the server's seconds as
+      they are.
+  - check: tst_bxsc6k
+    title: Within the deadline
+    requires: >-
+      When the model never answers, `ask_within` raises `GaveUp` from the last timeout by the
+      deadline, and when a Retry-After asks for longer than the time left, it raises `GaveUp`
+      at once.
+    failure: >-
+      Give each attempt at most the time left, never start a wait that ends at or past the
+      deadline, and raise `GaveUp` from the last failure.
