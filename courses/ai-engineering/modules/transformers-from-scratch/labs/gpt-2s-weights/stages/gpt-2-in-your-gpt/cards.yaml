@@ -1,0 +1,19 @@
+cards:
+  - id: crd_7jkfds
+    front: >-
+      Why must GPT-2's linear weights be turned around to go into nn.Linear?
+    back: >-
+      GPT-2's code multiplies x @ weight, so it keeps a weight as (inputs, outputs), and
+      nn.Linear keeps (outputs, inputs).
+  - id: crd_np4ljl
+    front: >-
+      Why can a weight copied without turning it around go unnoticed?
+    back: >-
+      Where a layer's inputs and outputs are the same size, it fits, and the model runs with
+      other numbers. Only a check against the model's own outputs finds it.
+  - id: crd_laotkz
+    front: >-
+      Why does taking the likeliest token every time make poor stories?
+    back: >-
+      It often makes the model repeat itself. Drawing each token from its chances, as write does,
+      lets what it writes vary.

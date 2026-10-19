@@ -1,0 +1,43 @@
+id: stg_9xhhbg
+kind: ship
+title: Any GPT-2
+builds: A new `load.py`.
+file: load.py
+packages: [torch]
+minutes: 45
+checks:
+  - check: tst_wnoi1x
+    title: GPT-2's four sizes
+    requires: >-
+      `configuration` gives each of GPT-2's four sizes from its header, with the causal masks
+      or without them.
+    failure: >-
+      Count the blocks from the tensors' names, and take the heads from the width: each of
+      GPT-2's heads is {% $fig.head %} wide.
+  - check: tst_hw4owk
+    title: Other GPT-2s
+    requires: >-
+      `load` gives the GPT in a file laid out as GPT-2's at other sizes, with or without the
+      masks, its tensors in any order, and a header that holds `__metadata__` or ends in
+      spaces.
+    failure: >-
+      Build your GPT of the configuration the header gives, copy every tensor into it as
+      `gpt2.load` does, and give it back in evaluation mode.
+  - check: tst_lvrxly
+    title: Damaged files
+    requires: >-
+      `load` raises `ValueError` for a file cut short, a web page saved in its place, a header
+      written over, a tensor whose bytes don't fit its shape, two tensors on the same bytes, a
+      gap between two tensors, bytes after the last tensor, and tensors that aren't `F32`.
+    failure: >-
+      Check the whole file against its header before building any tensor: its length, its
+      header's JSON, and each tensor's dtype and bytes, which together must cover every byte
+      after the header once.
+  - check: tst_zxv4m0
+    title: Files that aren't GPT-2's
+    requires: >-
+      `load` raises `ValueError` for a file with a tensor missing, a tensor of the wrong
+      shape, a tensor GPT-2 doesn't have, or a width that isn't a whole number of heads.
+    failure: >-
+      Compare the header with every name and shape a GPT-2 of its configuration has, and
+      refuse a width that heads {% $fig.head %} wide don't divide.

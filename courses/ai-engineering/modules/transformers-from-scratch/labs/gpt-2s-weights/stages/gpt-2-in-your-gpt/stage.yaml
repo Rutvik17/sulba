@@ -1,0 +1,7 @@
+id: stg_hllyhv
+kind: build
+title: GPT-2 in your GPT
+builds: Your `weights.py` from stage 1.
+file: gpt2.py
+packages: [torch]
+minutes: 45

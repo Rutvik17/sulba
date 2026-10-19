@@ -1,0 +1,5 @@
+GPT-2 small's file holds {% $fig.tensors %} tensors. {% $fig.parameter_tensors %} of them are parameters, {% $fig.parameters %} numbers in all: the count The transformer block lab gave GPT-2 small. The other {% $fig.masks %}, one in each of its {% $fig.layers %} blocks, are named `attn.bias` but aren't parameters. Each is a {% $fig.mask_shape %} causal mask, ones on and below the diagonal, and together they take {% $fig.mask_bytes %} bytes, {% $fig.mask_share %} of the file. Hugging Face's library skips them when it loads the file, and your GPT's attention makes its causal mask as it runs, so it needs none of them.
+
+A safetensors file holds a header and numbers, nothing else. A checkpoint saved with `torch.save` is a pickle, which can run code as it loads, so the Transfer learning lab read one with `weights_only=True`. Reading this file takes only the format's rules, and nothing in it can run.
+
+`torch.frombuffer` makes a tensor of bytes already in memory without copying them, so the tensors `tensors` returns all share one buffer of the file's numbers.

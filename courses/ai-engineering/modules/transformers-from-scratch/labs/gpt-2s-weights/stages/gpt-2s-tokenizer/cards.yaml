@@ -1,0 +1,19 @@
+cards:
+  - id: crd_wb9gkd
+    front: >-
+      How do GPT-2's vocabulary files write bytes as text?
+    back: >-
+      Each byte has a character: the bytes that print as themselves in Latin-1 keep theirs, and
+      the others take characters from U+0100 on, so a space is Ġ.
+  - id: crd_54215s
+    front: >-
+      In GPT-2's tokenizer, which pair of strings in a piece is joined next?
+    back: >-
+      Of the pairs of neighbouring strings, the one listed first in merges.txt, wherever it
+      stands. Joining stops when no pair left is a merge.
+  - id: crd_vyl82u
+    front: >-
+      Why does decoding join all the tokens' bytes before turning them into text?
+    back: >-
+      One character can take more than one token, so decoding each token alone would cut it in
+      pieces, each shown as U+FFFD.
