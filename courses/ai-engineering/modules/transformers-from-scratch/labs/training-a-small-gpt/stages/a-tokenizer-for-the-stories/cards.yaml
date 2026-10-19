@@ -1,0 +1,19 @@
+cards:
+  - id: crd_4ixqo6
+    front: >-
+      Why does the app's tokenizer give `<|endoftext|>` a token of its own?
+    back: >-
+      So a story's end is one token the model can learn to write and the app can stop on, and
+      text in a story can never spell it.
+  - id: crd_s2l9uk
+    front: >-
+      What does doubling a GPT's vocabulary cost, and what does it buy?
+    back: >-
+      It doubles the token embedding, which is the output layer too, and makes each token only a
+      little longer, so a story takes a few fewer tokens.
+  - id: crd_08zvym
+    front: >-
+      How can training byte-pair merges avoid counting every pair again after each merge?
+    back: >-
+      Keep each pair's count and the pieces it's in. A merge then updates only the pieces it
+      changes: their old pairs come off the counts, their new ones go on.

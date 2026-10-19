@@ -1,0 +1,3 @@
+The assistant's tests looked at what each function gives on its own: the stories' text, the batches' shapes, the rate during the warm-up, and a few tokens written well inside the context. Every problem passes them. Each shows only in a training run or a long story: a model that never learns to end a story, a loss that falls while the model learns nothing of the next token, a run that undoes itself in its second half, and stories that loop once they pass the context.
+
+The second problem fools the loss itself. When each target is the token being read, the training loss falls faster than any model's that predicts the next token, so a loss far below what a model of its size should reach is a reason to look at the targets.

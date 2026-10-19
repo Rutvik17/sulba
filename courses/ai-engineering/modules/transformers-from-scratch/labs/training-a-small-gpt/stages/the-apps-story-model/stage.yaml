@@ -1,0 +1,34 @@
+id: stg_zxa6um
+kind: ship
+title: The app's story model
+builds: Your `data.py` and `train.py` from stages 2 and 3.
+file: story.py
+packages: [regex, torch]
+minutes: 50
+checks:
+  - check: tst_i8c849
+    title: Within the budget
+    requires: >-
+      Training the model `make()` gives with `fit`, on the tokens of the
+      {% $fig.training_stories %} training stories, must take at most `$\fig{budget}$`
+      multiply-adds, as PyTorch's `FlopCounterMode` counts them with attention run as matrix
+      multiplies.
+    failure: >-
+      It took more. Work out a run's multiply-adds from its model and the tokens it reads, as
+      in The transformer block lab.
+  - check: tst_fe40tq
+    title: "A loss of {% $fig.target %} or less on new stories"
+    requires: >-
+      Trained that way, the model's mean loss a token on the validation stories, read in
+      windows of its own context, must be at most {% $fig.target %}.
+    failure: >-
+      Its loss was higher. Within the same budget, a smaller model can read more tokens.
+  - check: tst_k2w8fs
+    title: Its stories end
+    requires: >-
+      Of {% $fig.stories %} stories your `write` draws from the trained model, each started
+      from the separator, at least {% $fig.ended %} must end with the separator within
+      {% $fig.longest %} tokens.
+    failure: >-
+      Fewer ended. A model learns where a story ends from the separators in its training
+      tokens.

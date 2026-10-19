@@ -1,0 +1,168 @@
+"""The app's GPT, and how it learns from the stories and writes its own."""
+
+import math
+
+import torch
+import torch.nn.functional as F
+
+# The GPT you built in The transformer block lab.
+
+
+def layer_norm(x, weight, bias, eps=1e-5):
+    """x normalized along its last dimension: less its mean, over the square root of its
+    variance plus eps, then times weight and plus bias."""
+    mean = x.mean(dim=-1, keepdim=True)
+    variance = (x - mean).pow(2).mean(dim=-1, keepdim=True)
+    return (x - mean) / torch.sqrt(variance + eps) * weight + bias
+
+
+class LayerNorm(torch.nn.Module):
+    """Layer normalization with a weight, starting at 1, and a bias, starting at 0."""
+
+    def __init__(self, width, eps=1e-5):
+        super().__init__()
+        self.weight = torch.nn.Parameter(torch.ones(width))
+        self.bias = torch.nn.Parameter(torch.zeros(width))
+        self.eps = eps
+
+    def forward(self, x):
+        return layer_norm(x, self.weight, self.bias, self.eps)
+
+
+class CausalSelfAttention(torch.nn.Module):
+    """Causal self-attention in heads, as you built it in the Attention lab: its query, key
+    and value layers in one, qkv, as GPT-2 holds them, and an output layer, out."""
+
+    def __init__(self, width, heads):
+        super().__init__()
+        self.heads = heads
+        self.qkv = torch.nn.Linear(width, 3 * width)
+        self.out = torch.nn.Linear(width, width)
+
+    def forward(self, x):
+        batch, length, width = x.shape
+        q, k, v = (
+            part.view(batch, length, self.heads, width // self.heads).transpose(1, 2)
+            for part in self.qkv(x).split(width, dim=-1)
+        )
+        mixed = torch.nn.functional.scaled_dot_product_attention(
+            q, k, v, is_causal=True
+        )
+        return self.out(mixed.transpose(1, 2).reshape(batch, length, width))
+
+
+def gelu(x):
+    """GELU in the tanh form GPT-2 uses."""
+    return 0.5 * x * (1 + torch.tanh((2 / torch.pi) ** 0.5 * (x + 0.044715 * x**3)))
+
+
+class MLP(torch.nn.Module):
+    """A linear layer to four times the width, fc, GELU, and a linear layer back, proj."""
+
+    def __init__(self, width):
+        super().__init__()
+        self.fc = torch.nn.Linear(width, 4 * width)
+        self.proj = torch.nn.Linear(4 * width, width)
+
+    def forward(self, x):
+        return self.proj(gelu(self.fc(x)))
+
+
+class Block(torch.nn.Module):
+    """ln_1 and attn, then ln_2 and mlp, each adding its output to the residual stream."""
+
+    def __init__(self, width, heads):
+        super().__init__()
+        self.ln_1 = LayerNorm(width)
+        self.attn = CausalSelfAttention(width, heads)
+        self.ln_2 = LayerNorm(width)
+        self.mlp = MLP(width)
+
+    def forward(self, x):
+        x = x + self.attn(self.ln_1(x))
+        return x + self.mlp(self.ln_2(x))
+
+
+class GPT(torch.nn.Module):
+    """GPT-2's model: token and position embeddings, the blocks, a final layer
+    normalization, and an output layer that is the token embeddings' own weight."""
+
+    def __init__(self, vocab, context, width, layers, heads):
+        super().__init__()
+        self.context = context
+        self.wte = torch.nn.Embedding(vocab, width)
+        self.wpe = torch.nn.Embedding(context, width)
+        self.blocks = torch.nn.ModuleList(Block(width, heads) for _ in range(layers))
+        self.ln_f = LayerNorm(width)
+        for name, param in self.named_parameters():
+            if name.endswith(("attn.out.weight", "mlp.proj.weight")):
+                torch.nn.init.normal_(param, std=0.02 / (2 * layers) ** 0.5)
+            elif param.dim() == 2:
+                torch.nn.init.normal_(param, std=0.02)
+            elif name.endswith("bias"):
+                torch.nn.init.zeros_(param)
+
+    def forward(self, tokens):
+        """The logits (batch, length, vocab) for tokens (batch, length). Raises ValueError for
+        a story longer than the context."""
+        length = tokens.shape[-1]
+        if length > self.context:
+            raise ValueError(f"{length} tokens don't fit a context of {self.context}")
+        x = self.wte(tokens) + self.wpe(torch.arange(length, device=tokens.device))
+        for block in self.blocks:
+            x = block(x)
+        return self.ln_f(x) @ self.wte.weight.T
+
+
+def schedule(step, steps, peak, warmup, floor=0.1):
+    """The learning rate at step, counting from 0, of a run of steps: up in a straight line to
+    peak over the first warmup steps, then down a cosine to floor times peak at the last step."""
+    if step < warmup:
+        return peak * (step + 1) / warmup
+    progress = (step - warmup) / max(1, steps - 1 - warmup)
+    return peak * (floor + (1 - floor) * (1 + math.cos(math.pi * progress)) / 2)
+
+
+def train(model, batches, steps, peak, warmup):
+    """Trains the model on steps batches from batches, with AdamW, and gives each step's
+    loss."""
+    matrices = [param for param in model.parameters() if param.dim() >= 2]
+    others = [param for param in model.parameters() if param.dim() < 2]
+    optimizer = torch.optim.AdamW(
+        [
+            {"params": matrices, "weight_decay": 0.1},
+            {"params": others, "weight_decay": 0.0},
+        ],
+        lr=peak,
+        betas=(0.9, 0.95),
+        eps=1e-8,
+    )
+    model.train()
+    losses = []
+    for step in range(steps):
+        for group in optimizer.param_groups:
+            group["lr"] = schedule(step, steps, peak, warmup)
+        inputs, targets = next(batches)
+        loss = F.cross_entropy(model(inputs).flatten(0, 1), targets.flatten())
+        optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
+        losses.append(loss.item())
+    return losses
+
+
+def write(model, tokens, count, generator, temperature=1.0):
+    """The tokens with up to count more, each drawn from the model's next token at temperature,
+    the model reading at most its context. It stops after the separator."""
+    end = model.wte.num_embeddings - 1
+    tokens = list(tokens)
+    with torch.no_grad():
+        for _ in range(count):
+            logits = model(torch.tensor([tokens[-model.context :]]))[0, -1]
+            chances = torch.softmax(logits / temperature, dim=-1)
+            token = torch.multinomial(chances, 1, generator=generator).item()
+            tokens.append(token)
+            if token == end:
+                break
+    return tokens

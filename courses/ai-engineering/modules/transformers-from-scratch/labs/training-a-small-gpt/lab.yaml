@@ -1,0 +1,27 @@
+id: lab_82nv8v
+title: Training a small GPT
+summary: >-
+  Train the reading app's story model on your own machine: a tokenizer learnt from the stories,
+  batches of tokens packed as GPT-3 packs its documents, a training loop with AdamW, warm-up,
+  cosine decay and clipping, a review of an assistant's trainer, and a model that beats a target
+  loss within a budget of compute.
+fetch:
+  - kind: data
+    title: TinyStories
+    creators: [Ronen Eldan, Yuanzhi Li]
+    url: https://huggingface.co/datasets/roneneldan/TinyStories
+    licence:
+      name: CDLA-Sharing-1.0
+      url: https://cdla.dev/sharing-1-0/
+    files:
+      - file: TinyStoriesV2-GPT4-valid.txt
+        url: https://huggingface.co/datasets/roneneldan/TinyStories/resolve/f54c09fd23315a6f9c86f9dc80f725de7d8f9c64/TinyStoriesV2-GPT4-valid.txt
+        bytes: 22502601
+        sha256: 6874bae9a4c1a4e7edcf0e53b86c17817e9cf881fc75ff2368da457b80c0585d
+runs: machine
+stages:
+  - a-tokenizer-for-the-stories
+  - batches-of-tokens
+  - the-training-loop
+  - the-assistants-trainer
+  - the-apps-story-model

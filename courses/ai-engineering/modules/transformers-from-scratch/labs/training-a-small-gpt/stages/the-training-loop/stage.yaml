@@ -1,0 +1,7 @@
+id: stg_844e5l
+kind: build
+title: The training loop
+builds: A new `train.py`.
+file: train.py
+packages: [regex, torch]
+minutes: 50

@@ -1,0 +1,19 @@
+cards:
+  - id: crd_n9ib7v
+    front: >-
+      How did GPT-3 put its documents into its context windows?
+    back: >-
+      One after another, each followed by an end-of-text token, in windows of the full context
+      that run across the separators, with nothing masked.
+  - id: crd_frdur8
+    front: >-
+      What loss does a GPT start near, with a vocabulary of `$V$` tokens, and why?
+    back: >-
+      `$\ln V$`, the loss of guessing every token as likely as any other: its first logits are
+      all close to 0.
+  - id: crd_mxzld2
+    front: >-
+      Why hold back whole stories to validate with, rather than windows of one stream?
+    back: >-
+      Windows of one stream would put parts of the same story in training and in validation,
+      and a model scores well on a story it has partly read.

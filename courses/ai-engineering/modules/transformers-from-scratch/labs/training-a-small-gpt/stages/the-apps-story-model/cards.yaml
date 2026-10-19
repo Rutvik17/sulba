@@ -1,0 +1,18 @@
+cards:
+  - id: crd_7x6o6l
+    front: >-
+      For a fixed budget of compute, how should a language model's size and its training tokens
+      grow, by Chinchilla's results?
+    back: >-
+      Together: for every doubling of the model's size, double its training tokens.
+  - id: crd_qh1sw6
+    front: >-
+      What does training a GPT cost for each token it reads?
+    back: >-
+      About three times a forward pass of one token: `$3(12 L d^2 + 2 L n d + V d)$`
+      multiply-adds.
+  - id: crd_dlqs61
+    front: >-
+      With the compute fixed, what does making a GPT smaller buy?
+    back: >-
+      More tokens read: a run's multiply-adds are its tokens times its cost a token.
