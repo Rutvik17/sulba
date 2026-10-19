@@ -1,0 +1,57 @@
+id: stg_lurb8v
+kind: ship
+title: Bookings from emails
+builds: A new `inbox.py`.
+file: inbox.py
+packages: [httpx]
+minutes: 45
+checks:
+  - check: tst_y9e97c
+    title: Holds the reply to a strict form
+    requires: >-
+      The request asks for a reply held to the form with `"strict": true`, and every object in
+      the form lists each of its properties in `required` and sets `"additionalProperties":
+      false`.
+    failure: >-
+      Send the form as a `json_schema` response format with `strict`, and make each object in it
+      list all its keys and refuse any other.
+  - check: tst_yaj4pt
+    title: Books what the email asks
+    requires: >-
+      A reply that fits the form and the shop's hours becomes a `Booking` with its date as a
+      `date` and its bikes as an `int`, on any open day and time, the last of each day included.
+    failure: >-
+      JSON Schema's integers include numbers such as `2.0`, so make the bikes an `int`, and take
+      every time the shop opens, Saturday's last included.
+  - check: tst_8ylujc
+    title: Sends back a reply that doesn't fit the form
+    requires: >-
+      A reply with a key the form doesn't have, a time other than one the shop opens at, bikes
+      that aren't whole, a missing key, a bike the shop doesn't fix, a date in another format, or
+      a booking that isn't an object or `null` goes back to the model, and the next reply is
+      booked.
+    failure: >-
+      The form decides what goes back to the model: list every time a booking can start, and
+      give each field the type and the pattern it must have.
+  - check: tst_n7xcdl
+    title: Books only days and times the shop is open
+    requires: >-
+      A Sunday, a Saturday afternoon, a time outside the shop's hours, a date that doesn't exist,
+      today, a date that has passed, and a date more than `AHEAD` after today are never booked.
+    failure: >-
+      Check what the form can't: that the date exists, that it falls after today and within
+      `AHEAD`, that it isn't a Sunday, and Saturday's earlier close.
+  - check: tst_qg4fe6
+    title: Says no when an email asks for no booking
+    requires: >-
+      A reply of `{"booking": null}` raises `NotBooked`, after one request.
+    failure: >-
+      Let the form's `booking` be `null`, and raise `NotBooked` when it is.
+  - check: tst_ey8o75
+    title: Gives up, and leaves the API's errors to be retried
+    requires: >-
+      When no reply fits the form, `book` raises `NotBooked` after `ask_for`'s attempts, and an
+      error from the model's API is raised as `ModelError`.
+    failure: >-
+      Turn `NoMatch` into `NotBooked`, and let `ModelError` through, so the email can be tried
+      again later.

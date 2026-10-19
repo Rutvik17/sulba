@@ -1,0 +1,7 @@
+id: stg_imaa2i
+kind: build
+title: Constrained decoding
+builds: A new `constrain.py`.
+file: constrain.py
+packages: [regex]
+minutes: 50

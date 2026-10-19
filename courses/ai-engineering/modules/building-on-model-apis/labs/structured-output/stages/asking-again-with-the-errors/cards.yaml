@@ -1,0 +1,20 @@
+cards:
+  - id: crd_ael8db
+    front: >-
+      A reply fails the schema. Why does it go back to the model as the assistant's message, with
+      its errors after it?
+    back: >-
+      The model then reads what it wrote and what's wrong with it. The same request sent again
+      tends to get the same reply.
+  - id: crd_quifvq
+    front: >-
+      What does OpenAI's strict mode ask of every object in a schema?
+    back: >-
+      Every property listed in `required`, and `"additionalProperties": false`. A field that may
+      be empty is required too, with `null` among its types.
+  - id: crd_wvfr2f
+    front: >-
+      A reply's `finish_reason` is `length`. Should the code read its JSON?
+    back: >-
+      No: the reply was cut off at its token limit, and what the model meant to write next is
+      missing.

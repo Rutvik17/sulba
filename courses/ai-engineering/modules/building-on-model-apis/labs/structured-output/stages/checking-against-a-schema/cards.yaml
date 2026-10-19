@@ -1,0 +1,26 @@
+cards:
+  - id: crd_ko5ql5
+    front: >-
+      Does `{"type": "integer"}` accept `3.0`? And `true`?
+    back: >-
+      `3.0`, yes: an integer is any number with no fractional part. `true`, no: JSON's booleans
+      aren't numbers, though Python's `True == 1`.
+  - id: crd_mdoynf
+    front: >-
+      What does `"format": "date"` check, by default?
+    back: >-
+      Nothing: `format` is a note for the application unless the validator is set to check it,
+      so a date that doesn't exist passes. Check dates in code.
+  - id: crd_yfcfhz
+    front: >-
+      Which strings does `"pattern": "[0-9]{4}"` accept?
+    back: >-
+      Any with four digits in a row anywhere in it: a pattern isn't anchored unless it starts
+      with `^` and ends with `$`.
+  - id: crd_tffwz9
+    front: >-
+      An object's schema has `properties` but no `additionalProperties`. Which other keys does it
+      accept?
+    back: >-
+      Any, with any values. `"additionalProperties": false` refuses keys `properties` doesn't
+      name.

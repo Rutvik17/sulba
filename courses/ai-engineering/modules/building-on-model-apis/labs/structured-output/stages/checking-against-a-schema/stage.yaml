@@ -1,0 +1,6 @@
+id: stg_xggvlk
+kind: build
+title: Checking against a schema
+builds: A new `schema.py`.
+file: schema.py
+minutes: 45
