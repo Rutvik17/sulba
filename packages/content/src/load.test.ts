@@ -613,6 +613,52 @@ test('a machine lab lists the files it fetches, with their credit', async () => 
   ]);
 });
 
+test('a machine lab can name the model it serves, with its credit', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const lab = course?.levels[1]?.modules[0]?.labs[0];
+  expect(lab?.model?.title).toBe('stories260K');
+  expect(lab?.model?.licence.name).toBe('MIT');
+  expect(lab?.model?.file).toEqual({
+    url: 'https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf',
+    bytes: 1185376,
+    sha256: '270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d',
+  });
+});
+
+test("a lab's model is a .gguf file, pinned by its address, size and sha256", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const yaml = join(root, ledger, 'lab.yaml');
+    await edit(yaml, 'stories260K-f32.gguf', 'stories260K-f32.bin');
+    await edit(yaml, 'bytes: 1185376', 'bytes: -1');
+    await edit(yaml, 'sha256: 270c', 'sha256: 270C');
+  });
+  const fields = problems
+    .filter(({ path }) => path === `${ledger}/lab.yaml`)
+    .map(({ message }) => message.split(':')[0]);
+  expect(fields).toEqual(['model.file.url', 'model.file.bytes', 'model.file.sha256']);
+});
+
+test('a lab that runs in the browser serves no model', async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const model = (await readFile(join(root, ledger, 'lab.yaml'), 'utf8')).match(
+      /^model:\n(?: {2}.*\n)+/m,
+    )?.[0];
+    if (!model) throw new Error("The ledger lab's lab.yaml has no model.");
+    await edit(
+      join(root, 'demo/modules/counting/labs/tallies/lab.yaml'),
+      'stages:',
+      `${model}stages:`,
+    );
+  });
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message:
+        "model: Only a lab that runs on the learner's machine serves a model there: set runs: machine.",
+    },
+  ]);
+});
+
 test('a file a lab fetches is pinned by its address, size and sha256', async () => {
   const { problems } = await loadChanged(async (root) => {
     const yaml = join(root, ledger, 'lab.yaml');

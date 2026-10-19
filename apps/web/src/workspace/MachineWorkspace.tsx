@@ -4,7 +4,7 @@ import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchedOf } from '../lib/lab-facts';
+import { fetchedOf, servedOf } from '../lib/lab-facts';
 import type { LabView, StageView } from '../lib/labs';
 import { labData, projectFiles } from './data';
 import { type Report, reportOf } from './link';
@@ -236,6 +236,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
   // there all along, since its runs are on the learner's machine.
   const solutionOpen = !isCatch || review !== null;
   const fetched = fetchedOf(lab);
+  const served = servedOf(lab);
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
@@ -352,6 +353,14 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
             <p>
               The first time, it also downloads the files the lab needs into <code>data</code>:{' '}
               {fetched.size}, from {fetched.hosts}.
+            </p>
+          )}
+          {served && (
+            <p>
+              <code>uv run sulba.py model</code> starts the lab’s model, {served.title}, on your
+              machine, where your code can call it at <code>http://127.0.0.1:9931/v1</code>. The
+              first time, it downloads the model, {served.size}, from {served.host}, and llama.cpp’s
+              server for your system, from github.com.
             </p>
           )}
           {isCatch && (

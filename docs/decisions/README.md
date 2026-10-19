@@ -35,5 +35,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [29. Fetch a machine lab's large files from their publishers, pinned by size and sha256](0029-fetch-a-machine-labs-large-files-from-their-publishers.md) | Accepted |
 | [30. Give a lab's make.py the lab's data, fetched files included](0030-give-a-labs-make-py-the-labs-data.md) | Accepted |
 | [31. Test a lab's model calls against a scripted model](0031-test-a-labs-model-calls-against-a-scripted-model.md) | Accepted |
+| [32. Run a lab's model on the learner's machine with llama.cpp's server](0032-run-a-labs-model-with-llama-cpps-server.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

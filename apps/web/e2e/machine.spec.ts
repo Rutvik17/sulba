@@ -75,6 +75,24 @@ test('a lab that fetches files says how much its first run downloads, and from w
   );
 });
 
+test('a lab with a model says how to start it and what that downloads, and credits it', async ({
+  page,
+}) => {
+  await page.goto(path);
+
+  await expect(
+    page.getByText(
+      'uv run sulba.py model starts the lab’s model, stories260K, on your machine, where your code can call it at http://127.0.0.1:9931/v1. The first time, it downloads the model, 1.2 MB, from huggingface.co, and llama.cpp’s server for your system, from github.com.',
+    ),
+  ).toBeVisible();
+  const credit = page.getByText('Model: stories260K, by Andrej Karpathy, MIT.');
+  await expect(credit).toBeVisible();
+  await expect(credit.getByRole('link', { name: 'stories260K' })).toHaveAttribute(
+    'href',
+    'https://huggingface.co/karpathy/tinyllamas',
+  );
+});
+
 test('its download holds the project, the runner, its stages and the first stage’s code', async ({
   page,
 }) => {
@@ -113,6 +131,13 @@ test('its download holds the project, the runner, its stages and the first stage
       sha256: '67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5',
     },
   ]);
+  // `uv run sulba.py model` fetches the model too, into the cache folder every lab shares.
+  expect(lab.model).toEqual({
+    title: 'stories260K',
+    url: 'https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf',
+    bytes: 1185376,
+    sha256: '270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d',
+  });
   expect(lab.stages.map((stage: { slug: string }) => stage.slug)).toEqual([
     'balance',
     'audit',

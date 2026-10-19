@@ -7,8 +7,10 @@ import shutil
 import socket
 import subprocess
 import sys
+import tarfile
 import threading
 import uuid
+import zipfile
 import zlib
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -657,3 +659,199 @@ def test_a_link_holds_the_newest_attempts_that_fit() -> None:
     sent = carried(address)["attempts"]
     assert 1 < len(sent) < len(runs)
     assert sent == runs[-len(sent) :]
+
+
+# A stand-in for llama.cpp's server: it answers its health check, and every chat request with the
+# same reply, at the port it's given, unless it's told to stop at once and say why.
+FAKE_SERVER = """import json
+import sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+if "--stop" in sys.argv:
+    print(sys.argv[sys.argv.index("--stop") + 1])
+    sys.exit(1)
+port = int(sys.argv[sys.argv.index("--port") + 1])
+
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'{"status": "ok"}')
+
+    def do_POST(self):
+        self.rfile.read(int(self.headers["Content-Length"]))
+        reply = {
+            "choices": [{"message": {"content": "Hello there."}}],
+            "usage": {"prompt_tokens": 9, "completion_tokens": 3},
+        }
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps(reply).encode())
+
+    def log_message(self, *args):
+        pass
+
+
+HTTPServer(("127.0.0.1", port), Handler).serve_forever()
+"""
+
+
+def free_port() -> int:
+    with socket.socket() as unused:
+        unused.bind(("127.0.0.1", 0))
+        return unused.getsockname()[1]
+
+
+def model_lab(folder: Path, url: str, body: bytes) -> dict[str, Any]:
+    """The lab in folder with a model at url, whose file is body."""
+    path = folder / ".sulba" / "lab.json"
+    lab = json.loads(path.read_text(encoding="utf-8"))
+    sha256 = hashlib.sha256(body).hexdigest()
+    lab["model"] = {"title": "Tiny", "url": url, "bytes": len(body), "sha256": sha256}
+    path.write_text(json.dumps(lab), encoding="utf-8")
+    return lab
+
+
+def build_archive(tmp_path: Path) -> bytes:
+    """A build of the server as llama.cpp packs one for Linux and macOS: the stand-in, runnable, in
+    a folder named for its release."""
+    server = tmp_path / "llama-b0" / "llama-server"
+    server.parent.mkdir()
+    server.write_text(f"#!{sys.executable}\n{FAKE_SERVER}", encoding="utf-8")
+    server.chmod(0o755)
+    archive = tmp_path / "build.tar.gz"
+    with tarfile.open(archive, "w:gz") as packed:
+        packed.add(server.parent, arcname="llama-b0")
+    return archive.read_bytes()
+
+
+def test_a_lab_without_a_model_says_so(folder: Path) -> None:
+    ran = command(folder, "model")
+    assert ran.returncode == 1
+    assert ran.stdout == "This lab has no model to run.\n"
+
+
+def test_a_system_without_a_build_says_so(
+    folder: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    lab = model_lab(folder, "https://example.com/tiny.gguf", b"GGUF")
+    monkeypatch.setattr(sulba.platform, "system", lambda: "Plan9")
+    monkeypatch.setattr(sulba.platform, "machine", lambda: "mips")
+    assert sulba.serve_model(lab, free_port(), check=True) == 1
+    assert capsys.readouterr().out == "llama.cpp has no build of its server for Plan9 on mips.\n"
+
+
+def test_windows_without_the_runtime_is_told_where_to_get_it_before_any_fetch(
+    folder: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    lab = model_lab(folder, "https://example.com/tiny.gguf", b"GGUF")
+    monkeypatch.setattr(sulba.platform, "system", lambda: "Windows")
+    monkeypatch.setattr(sulba.platform, "machine", lambda: "ARM64")
+    (tmp_path / "windows" / "System32").mkdir(parents=True)
+    (tmp_path / "windows" / "System32" / "vcruntime140.dll").touch()
+    monkeypatch.setenv("SYSTEMROOT", str(tmp_path / "windows"))
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    assert sulba.serve_model(lab, free_port(), check=True) == 1
+    said = capsys.readouterr().out
+    assert "needs Microsoft's Visual C++ runtime" in said
+    assert "Install it from https://aka.ms/vc14/vc_redist.arm64.exe, then run this again." in said
+    assert not (tmp_path / "cache").exists()
+
+
+def test_a_model_and_its_server_are_fetched_once_for_every_lab(
+    folder: Path,
+    tmp_path: Path,
+    publisher: Publisher,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    build = build_archive(tmp_path)
+    publisher.files["/b0/llama-b0-bin-test.tar.gz"] = build
+    publisher.files["/tiny.gguf"] = b"GGUF" * 100
+    lab = model_lab(folder, f"{publisher.address}/tiny.gguf", b"GGUF" * 100)
+    system = (sulba.platform.system(), sulba.platform.machine())
+    pinned = ("bin-test.tar.gz", len(build), hashlib.sha256(build).hexdigest())
+    monkeypatch.setattr(sulba, "LLAMA", "b0")
+    monkeypatch.setattr(sulba, "LLAMA_RELEASES", publisher.address)
+    monkeypatch.setattr(sulba, "LLAMA_BUILDS", {system: pinned})
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    assert sulba.serve_model(lab, free_port(), check=True) == 0
+    said = capsys.readouterr().out
+    cache = tmp_path / "cache" / "sulba"
+    assert f"Fetching the model and its server into {cache}:" in said
+    assert "llama.cpp's server b0, " in said
+    assert "Tiny, 400 bytes, from 127.0.0.1" in said
+    assert "The model said: 'Hello there.'\nIt read 9 tokens and wrote 3.\n" in said
+    assert (cache / "llama.cpp" / "b0" / "server" / "llama-b0" / "llama-server").is_file()
+    assert sulba.serve_model(lab, free_port(), check=True) == 0
+    assert "Fetching" not in capsys.readouterr().out
+    assert len(publisher.requests) == 2
+
+
+def test_a_build_is_unpacked_once_beside_its_archive(tmp_path: Path) -> None:
+    archive = tmp_path / "bin-win-cpu-x64.zip"
+    with zipfile.ZipFile(archive, "w") as packed:
+        packed.writestr("llama-server.exe", "MZ")
+        packed.writestr("ggml.dll", "MZ")
+    server = sulba.unpacked(archive)
+    assert server == tmp_path / "server" / "llama-server.exe"
+    archive.unlink()
+    assert sulba.unpacked(archive) == server
+
+
+def test_the_model_answers_until_it_is_asked_one_question(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    script = tmp_path / "server.py"
+    script.write_text(FAKE_SERVER, encoding="utf-8")
+    port = free_port()
+    command = [sys.executable, str(script), "--port", str(port)]
+    assert sulba.serve(command, port, tmp_path / "server.log", check=True) == 0
+    assert capsys.readouterr().out == (
+        "Loading the model...\nThe model said: 'Hello there.'\nIt read 9 tokens and wrote 3.\n"
+    )
+    assert not sulba.in_use(port)
+
+
+def test_a_server_that_stops_shows_why(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    script = tmp_path / "server.py"
+    script.write_text(FAKE_SERVER, encoding="utf-8")
+    port = free_port()
+    stops = [sys.executable, str(script), "--stop", "error: failed to load model"]
+    assert sulba.serve(stops, port, tmp_path / "server.log", check=True) == 1
+    said = capsys.readouterr().out
+    assert "The model's server stopped. The last of what it wrote:\n" in said
+    assert "  error: failed to load model\n" in said
+    taken = [sys.executable, str(script), "--stop", "couldn't bind HTTP server socket, port: 1"]
+    assert sulba.serve(taken, port, tmp_path / "server.log", check=True) == 1
+    assert f"Port {port} is in use" in capsys.readouterr().out
+
+
+def test_a_port_in_use_is_said_before_the_server_starts(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    with socket.socket() as taken:
+        taken.bind(("127.0.0.1", 0))
+        taken.listen()
+        port = taken.getsockname()[1]
+        command = [sys.executable, "-c", "raise SystemExit('started')"]
+        assert sulba.serve(command, port, tmp_path / "server.log", check=True) == 1
+    assert capsys.readouterr().out == (
+        f"Port {port} is in use, perhaps by the model already running. Stop that, or run "
+        f"uv run sulba.py model --port {port + 1}.\n"
+    )
+    assert not (tmp_path / "server.log").exists()
+
+
+def test_the_cache_folder_is_placed_as_hugging_faces_is(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "xdg"))
+    assert sulba.cache_folder() == tmp_path / "xdg" / "sulba"
+    monkeypatch.delenv("XDG_CACHE_HOME")
+    monkeypatch.setattr(sulba.Path, "home", lambda: tmp_path / "home")
+    assert sulba.cache_folder() == tmp_path / "home" / ".cache" / "sulba"

@@ -76,6 +76,27 @@ const fetchSource = z.strictObject({
     .min(1),
 });
 
+/**
+ * The model a lab that runs on the learner's machine serves there, through llama.cpp's server, with
+ * `uv run sulba.py model` (decision record 32): the credit its licence asks for, and its GGUF file's
+ * address, size and sha256.
+ */
+const servedModel = z.strictObject({
+  title,
+  creators: z.array(title).min(1),
+  url: z.url({ protocol: /^https$/ }),
+  licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
+  file: z.strictObject({
+    url: z
+      .url({ protocol: /^https$/ })
+      .refine((address) => new URL(address).pathname.endsWith('.gguf'), {
+        message: 'Expected the address of a .gguf file',
+      }),
+    bytes: z.int().positive(),
+    sha256: z.string().regex(/^[0-9a-f]{64}$/, 'Expected a sha256 in lowercase hex'),
+  }),
+});
+
 /** Code by others that a lab ports, with the credit and the notice its licence asks for. */
 const portedCode = z.strictObject({
   title,
@@ -95,6 +116,7 @@ export const labFile = z.strictObject({
   summary: title,
   data: z.array(dataset).default([]),
   fetch: z.array(fetchSource).default([]),
+  model: servedModel.optional(),
   /**
    * A library's results that the lab's tests compare with, each a JSON file in `references/`,
    * which the folder's `make.py` records (decision record 27).

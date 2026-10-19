@@ -1,5 +1,13 @@
 import { expect, test } from 'vitest';
-import { aboutTime, fetchedOf, labFacts, levelFacts, moduleFacts, sizeOf } from './lab-facts';
+import {
+  aboutTime,
+  fetchedOf,
+  labFacts,
+  levelFacts,
+  moduleFacts,
+  servedOf,
+  sizeOf,
+} from './lab-facts';
 import type { LabView } from './labs';
 
 const stage = (kind: LabView['stages'][number]['kind'], file: string, minutes: number) =>
@@ -59,6 +67,26 @@ test("a machine lab's first run downloads its fetched files, from their hosts in
   expect(fetchedOf({ fetch })).toEqual({
     size: '182.9 MB',
     hosts: 'zenodo.org and dl.fbaipublicfiles.com',
+  });
+});
+
+test("a lab's model is named with the size of its file and the host it comes from", () => {
+  expect(servedOf({ model: null })).toBeNull();
+  const model = {
+    title: 'Qwen3.5-0.8B',
+    creators: ['Qwen'],
+    url: 'https://huggingface.co/Qwen/Qwen3.5-0.8B',
+    licence: { name: 'Apache License 2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0' },
+    file: {
+      url: 'https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620/Qwen3.5-0.8B-Q8_0.gguf',
+      bytes: 833_592_096,
+      sha256: 'a'.repeat(64),
+    },
+  };
+  expect(servedOf({ model })).toEqual({
+    title: 'Qwen3.5-0.8B',
+    size: '833.6 MB',
+    host: 'huggingface.co',
   });
 });
 
