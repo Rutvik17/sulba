@@ -1,0 +1,19 @@
+cards:
+  - id: crd_o7c4jh
+    front: >-
+      What does testing an assistant against a model that obeys every injection show?
+    back: >-
+      That each guarantee holds in code: whatever the model calls or writes, no other customer's
+      data, no unconfirmed action, no unsafe reply and no spending past a limit.
+  - id: crd_f5o47l
+    front: >-
+      Where can a prompt injection reach a shop's assistant from?
+    back: >-
+      From anything the model reads: the customer's own message, and any text a tool returns,
+      such as reviews or notes others wrote.
+  - id: crd_r7jnx4
+    front: >-
+      What should a tool result say when the database fails?
+    back: >-
+      Only that the records can't be read. Table names, SQL and error messages describe the
+      shop's internals, which the model may repeat.

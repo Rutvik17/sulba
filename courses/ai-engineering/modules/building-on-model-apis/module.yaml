@@ -4,3 +4,4 @@ labs:
   - calling-a-model
   - structured-output
   - tools-streaming-and-mcp
+  - securing-the-assistant

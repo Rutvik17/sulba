@@ -1,0 +1,19 @@
+cards:
+  - id: crd_akvjtw
+    front: >-
+      Why does the chat window show no image from a model's reply?
+    back: >-
+      A browser fetches an image as soon as it's shown, so an address the model was told to
+      write can send the customer's details out without a click.
+  - id: crd_b1v6ni
+    front: >-
+      Why check a link's address with a WHATWG URL parser rather than `urllib.parse`?
+    back: >-
+      The check must read the address as the browser will. `urlsplit` reads
+      `https://evil.example\@bikes.example/` as `bikes.example`; a browser goes to `evil.example`.
+  - id: crd_3uf3hc
+    front: >-
+      When does a link in a model's reply match the shop's host?
+    back: >-
+      Only when its host equals one of the shop's exactly. `bikes.example.evil.example` starts
+      with the shop's name and is someone else's.

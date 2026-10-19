@@ -1,0 +1,60 @@
+id: stg_215wp7
+kind: ship
+title: The assistant against prompt injections
+builds: A new `chat.py`.
+file: chat.py
+packages: [httpx, ada-url]
+minutes: 50
+checks:
+  - check: tst_ljpe8k
+    title: Keeps each customer's data their own
+    requires: >-
+      Whether it comes in the customer's message, a review or their booking's notes, an
+      injection that asks for another customer's booking, by its reference, by a `customer`
+      the call names, or by SQL in a reference, reaches none of that customer's data.
+    failure: >-
+      Answer every lookup through `Tools`, for the customer signed in, and let no call choose
+      the customer.
+  - check: tst_gokl09
+    title: Acts only when the customer confirms
+    requires: >-
+      However an injection asks, the model's calls change no booking. Cancelling one of the
+      customer's own bookings waits in the reply as an action whose id never reaches the
+      model, and only that customer's press takes it.
+    failure: >-
+      Propose with `Actions`, keep the id out of every tool result, and take an action only in
+      `press`.
+  - check: tst_tdq275
+    title: Shows only safe replies
+    requires: >-
+      Whatever an injection has the model write, from scripts and images to raw HTML and links
+      that lead elsewhere, a reply's HTML holds only paragraphs, line breaks, bold text and
+      links to the shop.
+    failure: >-
+      Show every reply through `render`.
+  - check: tst_c9se5g
+    title: Stays within its limits
+    requires: >-
+      A message longer than `LONGEST` gets `TOO_LONG` with no request. Every request asks for
+      at most `REPLY_TOKENS`, a message takes at most `ROUNDS` requests, and once a customer's
+      requests that day have used `DAILY_TOKENS`, prompts and replies, they get `SPENT` with
+      no request until the next day. Each customer's day is their own.
+    failure: >-
+      Count each reply's `total_tokens` against the customer and the day, and check the limits
+      before every request.
+  - check: tst_wnipuw
+    title: Keeps its instructions apart
+    requires: >-
+      Every request starts with `INSTRUCTIONS` as its one system message, whatever the
+      customer, a review or a booking's notes say, and nothing about the customer joins it.
+    failure: >-
+      Send the customer's words as the user's, tool results in tool messages, and leave the
+      system message as it is.
+  - check: tst_s0yd1u
+    title: Fails safely
+    requires: >-
+      An error from the API, a dropped connection, a timeout and a reply cut off at its limit
+      each give the customer `SORRY`. When the shop's records can't be read, the model gets an
+      error that says no more, and the customer still gets a reply.
+    failure: >-
+      Catch httpx's errors around each request, and sqlite3's around each tool call.
