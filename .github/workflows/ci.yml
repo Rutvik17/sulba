@@ -45,8 +45,8 @@ jobs:
           restore-keys: figures-
       # The files machine labs fetch from their publishers (packages/lab/src/fetched.ts), under a key
       # named for the sha256s the labs pin, so it changes only when a file does. Only the Machine
-      # labs jobs save it, since only they fetch every file. Each run checks every file kept here
-      # against its sha256 again, and fetches any that doesn't match.
+      # labs jobs save it, one on each system, which fetches every file. Each run checks every file
+      # kept here against its sha256 again, and fetches any that doesn't match.
       - id: fetched
         shell: bash
         run: |
@@ -142,18 +142,42 @@ jobs:
         env:
           PARTS: ${{ needs.content-part.result }}
 
+  # The labs that run on the learner's machine, each by its path in its folder of courses, for the
+  # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch.
+  machine-labs:
+    name: Machine labs to run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      labs: ${{ steps.list.outputs.labs }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: list
+        run: |
+          set -o pipefail
+          labs=$(grep -lx 'runs: machine' courses/*/modules/*/labs/*/lab.yaml packages/content/fixtures/courses/*/modules/*/labs/*/lab.yaml \
+            | sed -E 's#^(packages/content/fixtures/)?courses/##; s#/lab\.yaml$##' \
+            | jq -Rc 'split("/") as $p | {path: ., name: "\($p[2])/\($p[4])", key: "\($p[2])-\($p[4])"}' \
+            | jq -sc 'to_entries | map(.value + {keep: (.key == 0)})')
+          echo "labs=$labs" >> "$GITHUB_OUTPUT"
+
   # Each lab that runs on the learner's machine, run from its download as a learner runs it, on
-  # each system it supports (decision record 28): each stage's starter fails and its solution passes
-  # through `uv run sulba.py`, and each stage's figures are kept for machine-figures to compare. The
-  # runner fetches each file new to this system's cache from its publisher (decision record 29).
+  # each system it supports (decision record 28), in a job of its own, so a run takes as long as its
+  # longest lab: each stage's starter fails and its solution passes through `uv run sulba.py`, and
+  # each stage's figures are kept for machine-figures to compare. The runner fetches each file new
+  # to this system's cache from its publisher (decision record 29).
   machine:
-    name: Machine labs on ${{ matrix.os }}
+    name: Machine lab ${{ matrix.lab.name }} on ${{ matrix.os }}
+    needs: machine-labs
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, windows-2025, macos-15]
+        lab: ${{ fromJSON(needs.machine-labs.outputs.labs) }}
     env:
       UV_LOCKED: 1
     steps:
@@ -171,23 +195,37 @@ jobs:
         run: |
           pins=$(grep -rhoE --include=lab.yaml 'sha256: [0-9a-f]{64}' courses packages/content/fixtures)
           echo "key=fetched-$(sort -u <<< "$pins" | cksum | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - id: kept
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: node_modules/.cache/sulba-fetched
           key: ${{ steps.fetched.outputs.key }}
           restore-keys: fetched-
+      # Only the first lab's job saves what it installs, as only it saves the files: each job's
+      # cache holds what its own lab needs, and the first to finish would save its own.
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
+          save-cache: ${{ matrix.lab.keep }}
           cache-python: true
           cache-dependency-glob: |
             courses/**/project/uv.lock
             packages/content/fixtures/**/project/uv.lock
-      - run: pnpm check:machine --figures "${{ runner.temp }}/figures.json"
+      # The first lab's job also fetches every file the other labs pin, so the folder it keeps for
+      # the next run holds them all.
+      - shell: bash
+        run: pnpm check:machine --lab "$LAB" ${{ matrix.lab.keep && '--every-file' || '' }} --figures "$RUNNER_TEMP/figures.json"
+        env:
+          LAB: ${{ matrix.lab.path }}
+      - if: matrix.lab.keep && steps.kept.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-fetched
+          key: ${{ steps.fetched.outputs.key }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: figures-${{ matrix.os }}
+          name: figures-${{ matrix.os }}-${{ matrix.lab.key }}
           path: ${{ runner.temp }}/figures.json
           retention-days: 1
 
@@ -202,9 +240,13 @@ jobs:
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: figures-*
+      # Each lab's figures on Windows and macOS against its figures on Linux.
       - run: |
-          for os in windows-2025 macos-15; do
-            diff -u figures-ubuntu-24.04/figures.json "figures-$os/figures.json"
+          for linux in figures-ubuntu-24.04-*; do
+            lab=${linux#figures-ubuntu-24.04-}
+            for os in windows-2025 macos-15; do
+              diff -u "$linux/figures.json" "figures-$os-$lab/figures.json"
+            done
           done
 
   # Every lab's references, recorded again by its make.py with the library and the versions it pins
