@@ -1,0 +1,20 @@
+cards:
+  - id: crd_8tarm9
+    front: >-
+      What does `OneCycleLR` do to the learning rate?
+    back: >-
+      It raises it along a cosine from a {% $fig.start %}th of its peak to the peak over the
+      first {% $fig.rise %} of the steps, then lowers it along a cosine to far below where it
+      started, and moves the momentum the other way.
+  - id: crd_78mtuc
+    front: >-
+      Why does batch norm let a network train at a higher learning rate?
+    back: >-
+      It makes each layer's gradients depend less on the scale of the weights before it, so
+      larger steps don't make training diverge.
+  - id: crd_mv20mb
+    front: >-
+      Why read the test photos only once, at the end?
+    back: >-
+      Choices made by looking at them fit them, and they'd no longer measure how the classifier
+      does on photos it hasn't seen. Choices are tried on photos held out of the training set.

@@ -1,0 +1,20 @@
+cards:
+  - id: crd_9535tp
+    front: >-
+      What does the magic number at the start of an idx file give?
+    back: >-
+      Its third byte gives the type of the data, 8 for unsigned bytes, and its fourth the number
+      of dimensions, whose sizes follow it.
+  - id: crd_wp6w5r
+    front: >-
+      In what shape does a convolution take its input, and how does a batch of grey photos get
+      it?
+    back: >-
+      `(N, C, H, W)`. Grey photos have one channel, which `unsqueeze(1)` adds to a batch of shape
+      `(N, H, W)`.
+  - id: crd_ffcac0
+    front: >-
+      Why check an idx file's data against its header?
+    back: >-
+      A file cut short, or the wrong file, would otherwise give tensors of the wrong shape or
+      kinds out of step with their photos, and training raises no error on either.

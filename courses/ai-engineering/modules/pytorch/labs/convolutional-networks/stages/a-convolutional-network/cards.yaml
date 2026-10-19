@@ -1,0 +1,34 @@
+cards:
+  - id: crd_e2p671
+    front: >-
+      What does `X.to(device)` do that `net.to(device)` doesn't?
+    back: >-
+      It gives `X` on the device, a copy unless it's there already, and leaves `X` where it was.
+      `net.to(device)` moves the network's own parameters and buffers in place.
+  - id: crd_fx2vxu
+    front: >-
+      Under `torch.autocast` with bfloat16 on the CPU, what runs in bfloat16, and what stays
+      float32?
+    back: >-
+      Convolutions, linear layers and matrix multiplies run in bfloat16. Cross-entropy runs in
+      float32, and the weights and their gradients stay float32.
+  - id: crd_ld1vks
+    front: >-
+      Why does bfloat16 training need no loss scaling, where float16 training does?
+    back: >-
+      bfloat16 has float32's {% $fig.exponent %} bits of exponent, so small gradients keep their
+      range. In float16 they lose precision below {% $fig.f16_small %}, and far smaller ones round
+      to 0.
+  - id: crd_kbv4in
+    front: >-
+      What is a tensor on the `meta` device?
+    back: >-
+      A shape and a dtype with no data: a forward pass there works out every shape and computes
+      nothing.
+  - id: crd_zk0o5p
+    front: >-
+      What share of the shop's network's parameters sit in its convolutions, and what share of
+      its multiply-adds do they do?
+    back: >-
+      {% $fig.conv_params %} of the parameters, and {% $fig.conv_macs %} of the multiply-adds:
+      their weights work at every position.

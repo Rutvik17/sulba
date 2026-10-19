@@ -1,0 +1,7 @@
+id: stg_6ymbzu
+kind: build
+title: Convolution
+builds: A new `conv.py`.
+file: conv.py
+packages: [torch]
+minutes: 60

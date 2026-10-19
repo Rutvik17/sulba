@@ -1,0 +1,7 @@
+id: stg_muo8j3
+kind: build
+title: A convolutional network
+builds: Your `photos.py` from stage 2, and a new `net.py`.
+file: net.py
+packages: [numpy, torch]
+minutes: 60

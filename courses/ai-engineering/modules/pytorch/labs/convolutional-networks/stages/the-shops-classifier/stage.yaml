@@ -1,0 +1,45 @@
+id: stg_sdg61j
+kind: ship
+title: The shop's classifier
+builds: Your `photos.py` and `net.py` from stages 2 and 3.
+file: shop.py
+packages: [numpy, torch]
+minutes: 60
+checks:
+  - check: tst_m5wdy2
+    title: "At most {% $fig.budget %} multiply-adds a photo"
+    requires: >-
+      A forward pass of one photo through the network `make()` gives must take at most
+      {% $fig.budget %} multiply-adds in its convolutions and linear layers, counted as your
+      `multiply_adds` counts them.
+    failure: >-
+      It takes more.
+  - check: tst_8e4fdj
+    title: "{% $fig.target %} of the test photos"
+    requires: >-
+      Made after `torch.manual_seed(0)` and trained by `fit` on the {% $fig.train %} training
+      photos with seed 0, the network must read at least {% $fig.target %} of the
+      {% $fig.test %} test photos right.
+    failure: >-
+      It read fewer than {% $fig.target %} of them right.
+  - check: tst_1g4p37
+    title: "{% $fig.epochs %} epochs"
+    requires: >-
+      `fit` must train on at most {% $fig.epochs %} times as many photos as it's given: each
+      photo that goes through the network in training mode counts once.
+    failure: >-
+      It trained on more.
+  - check: tst_k17yx8
+    title: The seed decides the classifier
+    requires: >-
+      Two networks made from the same start and trained by `fit` on the same photos must come
+      out the same with the same seed, and differently with different seeds.
+    failure: >-
+      The same seed gave different networks, or different seeds the same one.
+  - check: tst_209ta9
+    title: A photo alone as among others
+    requires: >-
+      The network `fit` returns must give a test photo read alone the logits it gives it among
+      others.
+    failure: >-
+      A photo read alone got other logits.

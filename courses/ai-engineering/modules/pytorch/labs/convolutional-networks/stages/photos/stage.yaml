@@ -1,0 +1,7 @@
+id: stg_7esf51
+kind: build
+title: The shop's photos
+builds: A new `photos.py`.
+file: photos.py
+packages: [numpy, torch]
+minutes: 40
