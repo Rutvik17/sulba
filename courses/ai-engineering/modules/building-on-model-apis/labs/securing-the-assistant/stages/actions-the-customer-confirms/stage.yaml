@@ -1,0 +1,6 @@
+id: stg_lpvdlt
+kind: build
+title: Actions the customer confirms
+builds: A new `actions.py`.
+file: actions.py
+minutes: 35

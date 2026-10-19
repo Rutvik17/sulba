@@ -1,0 +1,13 @@
+cards:
+  - id: crd_3gwyhh
+    front: >-
+      Why does the tool the model calls to cancel a booking only propose it?
+    back: >-
+      Anything the model reads can talk it into a call. The customer confirms with a button the
+      model can't press.
+  - id: crd_taeu69
+    front: >-
+      Why is a pending action's id random, rather than built from its booking?
+    back: >-
+      Whoever has the id can try to confirm the action, so it mustn't be guessable:
+      `secrets.token_urlsafe(16)` gives 16 random bytes.

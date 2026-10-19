@@ -1,0 +1,54 @@
+id: stg_is2amu
+kind: catch
+title: The assistant's guardrails
+builds: A new `assistant.py`.
+file: assistant.py
+packages: [httpx, ada-url]
+minutes: 35
+problems:
+  - check: tst_shbsx0
+    title: Its booked times came with whole bookings
+    cost: >-
+      `taken_times` sent the model every booking on the day, with its reference, customer and notes,
+      when the times were all it needed. A customer who asked about the booking after theirs was
+      told another customer's gate code.
+    fix: >-
+      The fix: `SELECT time`, and only the times in the result.
+    edit:
+      replace: "                    \"SELECT * FROM bookings WHERE day = ? AND status = 'booked'\"\n                    \" ORDER BY time\",\n                    (arguments[\"day\"],),\n                )\n                return json.dumps({\"taken\": [list(row) for row in rows]})\n"
+      with: "                    \"SELECT time FROM bookings WHERE day = ? AND status = 'booked'\"\n                    \" ORDER BY time\",\n                    (arguments[\"day\"],),\n                )\n                return json.dumps({\"taken\": [time for (time,) in rows]})\n"
+  - check: tst_56c0fb
+    title: The model could confirm its own actions
+    cost: >-
+      `confirm_cancel` let the model take any action whose id it had read, and each proposal sent it
+      the id. A review that said the customer had agreed was enough for the model to cancel their
+      booking.
+    fix: >-
+      The fix: no tool confirms an action, and no tool result holds its id. Only the customer's
+      button does, through `confirm`.
+    edit:
+      replace: "                return json.dumps(\n                    {\"waiting_for_the_customer\": action.question, \"id\": action.id}\n                )\n            if name == \"confirm_cancel\":\n                done = self.actions.confirm(\n                    self.customer, arguments[\"id\"], self.clock()\n                )\n                return json.dumps({\"done\": done})\n"
+      with: "                return json.dumps({\"waiting_for_the_customer\": action.question})\n"
+  - check: tst_rh4b71
+    title: Its instructions held the members' code
+    cost: >-
+      `INSTRUCTIONS` gave the model the members' discount code, and a customer who asked the model
+      to repeat its instructions got it. Whatever the instructions hold can reach whoever talks to
+      the model.
+    fix: >-
+      The fix: keep the code out of the instructions. Code that knows who's signed in can give it to
+      members.
+    edit:
+      replace: "    \"for their bookings, the times already booked on a day, and reviews of parts. \"\n    \"Members get 10% off a full service with the code SPOKES10.\"\n"
+      with: "    \"for their bookings, the times already booked on a day, and reviews of parts.\"\n"
+  - check: tst_hp6d55
+    title: The day's limit counted only replies
+    cost: >-
+      `spend` counted each reply's `completion_tokens` and none of the prompt's, though each
+      request's prompt carries the whole conversation and its tool results. A customer could go on,
+      conversation after conversation, long past the day's limit.
+    fix: >-
+      The fix: `total_tokens`, the prompt's tokens and the reply's.
+    edit:
+      replace: "            self.spend(reply[\"usage\"][\"completion_tokens\"])\n"
+      with: "            self.spend(reply[\"usage\"][\"total_tokens\"])\n"

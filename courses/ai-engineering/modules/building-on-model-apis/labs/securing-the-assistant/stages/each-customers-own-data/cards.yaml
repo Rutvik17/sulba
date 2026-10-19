@@ -1,0 +1,19 @@
+cards:
+  - id: crd_tfi3yz
+    front: >-
+      Where should a tool that answers for the signed-in customer get the customer from?
+    back: >-
+      From the shop's sign-in, held by the code. Taken from the model's arguments, it's whatever
+      the model was talked into writing.
+  - id: crd_ttd1zq
+    front: >-
+      Why should another customer's booking read exactly like a missing one?
+    back: >-
+      So no answer reveals anything about bookings the customer can't see, not even that they
+      exist.
+  - id: crd_2nj6lv
+    front: >-
+      What does the reference `B-2001' OR '1'='1` do to SQL built by formatting it in?
+    back: >-
+      It closes the string and adds a condition every row meets. Passed as a parameter, `?`,
+      it's only a value to compare.

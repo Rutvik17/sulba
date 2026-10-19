@@ -1,0 +1,6 @@
+id: stg_ds14pm
+kind: build
+title: Each customer's own data
+builds: A new `shop.py`.
+file: shop.py
+minutes: 35

@@ -1,0 +1,5 @@
+Every check used a model that did whatever it read, so every guarantee had to come from the code: which customer's rows a query reads, which actions wait for a press, what HTML reaches the window, and how much a customer can spend. OWASP's Top 10 for LLM Applications says why: given how models work, it's unclear whether foolproof prevention of prompt injection exists, so its mitigations include ways to limit what an injection can do, such as least privilege, a person's approval for high-risk actions, and output checked in code.
+
+Instructions still matter with a real model. Clear instructions, and text from others kept in tool results and marked as data, can limit an injection's influence. They can't stop it, and the injections here came from three places: the customer's own message, a review anyone could write, and the notes on the customer's own booking.
+
+A suite of injections run against a model that obeys them is also on OWASP's list, as adversarial testing. It turns each guardrail into a check that fails when the guardrail is gone, which a test against a well-behaved model never does.

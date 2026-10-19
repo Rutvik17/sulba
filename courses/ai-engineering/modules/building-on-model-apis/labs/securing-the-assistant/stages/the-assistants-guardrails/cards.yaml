@@ -1,0 +1,12 @@
+cards:
+  - id: crd_g285s3
+    front: >-
+      What should a tool's result hold?
+    back: >-
+      Only what the answer needs. The model may repeat any of it to whoever it's talking to.
+  - id: crd_aevls2
+    front: >-
+      Why shouldn't a model's instructions hold a discount code, a key or a password?
+    back: >-
+      A model can be talked into repeating its instructions, so anything in them can reach any
+      customer.
