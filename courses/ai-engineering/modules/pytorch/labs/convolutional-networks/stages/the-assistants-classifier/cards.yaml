@@ -1,0 +1,20 @@
+cards:
+  - id: crd_c41h6s
+    front: >-
+      What does `nn.Sequential(*[Block(16, 16)] * 2)` hold?
+    back: >-
+      One block, twice: the list repeats the same module, so both places run it with the same
+      weights.
+  - id: crd_1r9upc
+    front: >-
+      What does `F.cross_entropy` take, and what goes wrong if a network ends in a softmax?
+    back: >-
+      Logits: it applies its own log-softmax. Given probabilities, it takes a softmax of them, and
+      the loss can't fall below {% $fig.floor %}.
+  - id: crd_vk0xws
+    front: >-
+      Why does mixed precision keep the weights in float32?
+    back: >-
+      In bfloat16, a weight moves in steps of {% $fig.fine %} to {% $fig.coarse %} of its size,
+      so smaller updates round away. Autocast runs the convolutions and linear layers in
+      bfloat16 and leaves the weights in float32.

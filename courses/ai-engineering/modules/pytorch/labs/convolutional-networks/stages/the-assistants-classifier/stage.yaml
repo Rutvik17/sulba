@@ -1,0 +1,66 @@
+id: stg_7ab154
+kind: catch
+title: The assistant's classifier
+builds: Your `photos.py` from stage 2.
+file: classifier.py
+packages: [numpy, torch]
+minutes: 40
+problems:
+  - check: tst_shu6d1
+    title: Its two blocks were one
+    cost: >-
+      `[Block(16, 16)] * 2` is a list that holds one block twice, so `blocks` ran the same
+      block two times over. The network had {% $fig.shared %} parameters where the shop
+      designed {% $fig.params %}, yet still did all {% $fig.macs %} multiply-adds a photo: its
+      second block's filters were its first's, and each step moved them by the sum of both
+      uses' gradients.
+    fix: >-
+      The fix: `nn.Sequential(Block(16, 16), Block(16, 16))`, two blocks, each with weights of
+      its own.
+    edit:
+      replace: "        self.blocks = nn.Sequential(*[Block(16, 16)] * 2)\n"
+      with: "        self.blocks = nn.Sequential(Block(16, 16), Block(16, 16))\n"
+  - check: tst_wi2gw6
+    title: It trained on probabilities
+    cost: >-
+      The head ended in a softmax, so the network gave probabilities, and `F.cross_entropy`,
+      which takes logits, took a softmax of them again. However sure the network grew, the loss
+      it trained on couldn't fall below {% $fig.floor %}, and on the first batch of the shop's
+      training, the gradient that reached the logits was {% $fig.shrink %} times smaller than
+      the cross-entropy of the logits themselves gives. `classify` took a softmax of the probabilities too, so no
+      photo could get more than {% $fig.cap %} for any kind on the site.
+    fix: >-
+      The fix: no softmax in the head, so the network gives logits, which `F.cross_entropy`
+      takes and `classify` turns into probabilities once.
+    edit:
+      replace: "        self.head = nn.Sequential(\n            nn.Flatten(), nn.Linear(16 * 7 * 7, 10), nn.Softmax(dim=1)\n        )\n"
+      with: "        self.head = nn.Sequential(nn.Flatten(), nn.Linear(16 * 7 * 7, 10))\n"
+  - check: tst_p9g8ml
+    title: It stored its weights in bfloat16
+    cost: >-
+      `net.bfloat16()` stored the network's weights and its batch norms' running estimates in
+      bfloat16, and `.bfloat16()` the photos, so every layer and the loss ran in bfloat16, and
+      every update was rounded to bfloat16 as it landed. There, a weight moves in steps of
+      between {% $fig.fine %} and {% $fig.coarse %} of its size, and an update smaller than half
+      a step leaves it where it was. Run in float64, where no update is lost, the shop's
+      training asked at its first step for updates of which {% $fig.first %} were smaller than
+      half a bfloat16 step at their weight, and at step {% $fig.step %} for updates of which
+      more than {% $fig.lost %} were: in bfloat16, all of those would have been lost.
+    fix: >-
+      The fix: the forward pass and the loss under
+      `torch.autocast("cpu", dtype=torch.bfloat16)`, which runs the convolutions and the linear
+      layer in bfloat16 and the loss in float32, and keeps the weights in float32.
+    edit:
+      replace: "            loss = F.cross_entropy(\n                net.bfloat16()(images[batch].bfloat16()), labels[batch]\n            )\n"
+      with: "            with torch.autocast(\"cpu\", dtype=torch.bfloat16):\n                loss = F.cross_entropy(net(images[batch]), labels[batch])\n"
+  - check: tst_8x2l6w
+    title: It trained only its head
+    cost: >-
+      The optimizer held `net.head.parameters()` alone, so the {% $fig.frozen %} parameters of
+      the stem and the blocks never left where they started, and only the head's
+      {% $fig.head %} learned: the network sorted the photos by features no training chose.
+    fix: >-
+      The fix: `torch.optim.SGD(net.parameters(), ...)`, every parameter of the network.
+    edit:
+      replace: "net.head.parameters()"
+      with: "net.parameters()"

@@ -1,0 +1,25 @@
+cards:
+  - id: crd_h8oc7v
+    front: >-
+      How many positions across does `nn.Conv2d(1, 16, 3, stride=2, padding=1)` take on a
+      photo {% $fig.side %} pixels wide?
+    back: >-
+      {% $fig.strided %}: `$\lfloor (H + 2p - d(k-1) - 1)/s \rfloor + 1$`.
+  - id: crd_lbo9nm
+    front: >-
+      Why does a convolution hold so few parameters next to a dense layer?
+    back: >-
+      Each filter takes the same weights to every position of the photo, so its parameters
+      don't grow with the photo's size.
+  - id: crd_kel5k6
+    front: >-
+      What does `groups=C` give a convolution over `$C$` channels?
+    back: >-
+      A depthwise convolution: each channel gets filters of its own, and the layer holds `$1/C$`
+      of the weights.
+  - id: crd_mzunif
+    front: >-
+      Where does max pooling send its gradient?
+    back: >-
+      To the pixel each window kept, the first largest when several tie. The window's other
+      pixels get none.

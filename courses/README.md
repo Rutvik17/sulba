@@ -136,6 +136,10 @@ A lab whose stages load a package Pyodide doesn't ship, such as `torch`, sets `r
 
 Its project pins torch from PyTorch's CPU index on every platform, through `[tool.uv.sources]` and an index marked `explicit = true`, and Python, pytest and each package its stages load that Pyodide ships at Pyodide's versions; torch's own dependencies are left to uv. `pnpm check:content` runs its stages and figures in CPython alone, in that project, and `pnpm check:machine`, which CI's Machine labs jobs run on Windows, macOS and Linux, runs its download through `uv run sulba.py` with each stage's starter and solution, and CI fails when a stage's figures differ from one system to another. Such a lab has no Problem stages and no charts, which run in the browser, and no learner's file named `sulba.py`.
 
+Each figure must come out the same on every system. Counts, sizes and exact roundings do, and so does a float64 run whose results stand clear of the last digits a system's sums can change, which `figures.py` asserts. No figure comes from float32 or bfloat16 training. Float64 training still drifts apart from one system to another, as kernels sum in different orders and each step grows the difference, so a figure read from a long run is stated as a bound that `figures.py` asserts.
+
+On some Windows machines, the process ends at PyTorch's first bfloat16 matrix multiply, which oneDNN runs. A test or check that runs bfloat16 turns oneDNN off first, with `monkeypatch.setattr(torch.backends.mkldnn, "enabled", False)`, so PyTorch runs bfloat16 in its own kernels.
+
 ### Fetched files
 
 A lab that runs on the learner's machine can fetch files too large for the site to serve, such as a dataset or a model's weights, from their publisher (decision record 29). `fetch` in `lab.yaml` lists each source with its credit, and each of its files with the address its publisher serves it from, its size in bytes and its sha256:

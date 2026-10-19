@@ -3,3 +3,4 @@ title: PyTorch
 labs:
   - tensors-and-autograd
   - modules-and-training-loops
+  - convolutional-networks
