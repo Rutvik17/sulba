@@ -7,9 +7,11 @@ import { join } from 'node:path';
 import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
 import { fetchedPath, holds } from './fetched.ts';
 
-// A publisher's server, sending each file it has by its path, and counting the requests for each.
+// A publisher's server, sending each file it has by its path, and keeping each request's path
+// and the user agent it named.
 const files = new Map<string, Uint8Array>();
 const requests: string[] = [];
+const agents: string[] = [];
 let server: Server;
 let address: string;
 const folders: string[] = [];
@@ -17,6 +19,7 @@ const folders: string[] = [];
 beforeAll(async () => {
   server = createServer((request, response) => {
     requests.push(request.url ?? '');
+    agents.push(request.headers['user-agent'] ?? '');
     const body = files.get(request.url ?? '');
     if (!body) {
       response.writeHead(404).end();
@@ -33,6 +36,7 @@ afterAll(() => new Promise<void>((done) => server.close(() => done())));
 afterEach(async () => {
   files.clear();
   requests.length = 0;
+  agents.length = 0;
   for (const folder of folders.splice(0)) await rm(folder, { recursive: true, force: true });
 });
 
@@ -60,6 +64,11 @@ test('a file is fetched once, and kept under its sha256', async () => {
   expect(new Uint8Array(await readFile(path))).toEqual(tiles);
   expect(await fetchedPath(file, kept)).toBe(path);
   expect(requests).toEqual(['/tiles.bin']);
+});
+
+test('a fetch names its client, which some publishers require', async () => {
+  await fetchedPath(served('/tiles.bin', tiles), await folder());
+  expect(agents).toEqual(['sulba']);
 });
 
 test('checks that want the same file at once share one fetch', async () => {
