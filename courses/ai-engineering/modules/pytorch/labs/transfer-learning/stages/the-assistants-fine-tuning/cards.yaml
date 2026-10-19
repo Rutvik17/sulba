@@ -1,0 +1,21 @@
+cards:
+  - id: crd_wvz5zo
+    front: >-
+      Why does fine-tuning give a pretrained backbone a smaller rate than its new head?
+    back: >-
+      AdamW moves each weight by about its rate at every step, so at the head's rate the
+      backbone soon leaves the weights that made its features good.
+  - id: crd_hu5809
+    front: >-
+      A layer's parameters aren't in the optimizer, but `requires_grad` is on. What does a
+      training step cost for them?
+    back: >-
+      Autograd still works out and keeps their gradients, at about twice the work of their
+      forward pass, and nothing uses them.
+  - id: crd_k9489f
+    front: >-
+      What goes wrong when a model is trained on inputs prepared one way and used on inputs
+      prepared another?
+    back: >-
+      It learned from features unlike those it's given in use, so its scores no longer mean
+      what they meant in training.

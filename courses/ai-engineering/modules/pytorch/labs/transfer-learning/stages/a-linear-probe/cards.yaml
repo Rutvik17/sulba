@@ -1,0 +1,26 @@
+cards:
+  - id: crd_tk0nip
+    front: >-
+      What does a linear probe learn, and from what?
+    back: >-
+      A linear layer that gives each kind a score, learned from a frozen backbone's features of
+      a few labelled examples.
+  - id: crd_jaw2x2
+    front: >-
+      Why does a probe keep the mean and deviation it standardized the labelled tiles with?
+    back: >-
+      A new tile is standardized as they were, so its scores don't depend on the tiles scored
+      with it.
+  - id: crd_nbnmtc
+    front: >-
+      Why does a probe on {% $fig.labelled_total %} tiles of {% $fig.width %} features need weight
+      decay?
+    back: >-
+      Planes can always split so few points in so many dimensions, so without decay the weights
+      grow without end as the loss falls toward 0. With it, the loss has one lowest point.
+  - id: crd_zdmzcx
+    front: >-
+      What is the standard error of a share `$p$` right of `$n$` test tiles?
+    back: >-
+      `$\sqrt{p(1-p)/n}$`: on another `$n$` tiles like them, the share usually comes within about
+      twice that of `$p$`.

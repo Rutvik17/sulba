@@ -1,0 +1,36 @@
+id: stg_ug8up6
+kind: ship
+title: The survey's classifier
+builds: Your `tiles.py`, `backbone.py` and `probe.py` from stages 1 to 3.
+file: survey.py
+packages: [numpy, pillow, torch]
+minutes: 60
+checks:
+  - check: tst_63th8l
+    title: "{% $fig.target %} of the test tiles"
+    requires: >-
+      Trained on the survey's {% $fig.labelled %} labelled tiles of each kind, the classifier
+      must give at least {% $fig.target %} of its {% $fig.tested %} test tiles,
+      {% $fig.per_test %} of each kind, their kinds.
+    failure: >-
+      It gave fewer than {% $fig.target %} of them their kinds.
+  - check: tst_flghe9
+    title: "At most {% $fig.budget %} multiply-adds a tile"
+    requires: >-
+      `classify` must take at most {% $fig.budget %} multiply-adds a tile, counted by PyTorch's
+      `FlopCounterMode` in its matrix products and convolutions, with attention's two products.
+    failure: >-
+      It takes more.
+  - check: tst_6vo9ig
+    title: The same tiles make the same classifier
+    requires: >-
+      Trained twice on the same labelled tiles, the classifier must give every test tile the
+      same kind both times.
+    failure: >-
+      The two gave some tiles different kinds.
+  - check: tst_ky628h
+    title: A tile alone as among others
+    requires: >-
+      A tile classified alone must get the kind it gets among others.
+    failure: >-
+      A tile classified alone got another kind.

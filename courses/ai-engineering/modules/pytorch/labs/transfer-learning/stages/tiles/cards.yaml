@@ -1,0 +1,28 @@
+cards:
+  - id: crd_o7k3vy
+    front: >-
+      Why number a dataset's kinds by their sorted names, rather than in the order its files
+      list them?
+    back: >-
+      Files can be listed in any order, and another copy can list them in another. Sorted names
+      give each kind the same number from any copy, so a model's outputs are read as the right
+      kinds.
+  - id: crd_lcmfbw
+    front: >-
+      Why sort the names before picking tiles from them at random?
+    back: >-
+      The tiles picked then depend only on the names and the seed, so the same seed picks the
+      same tiles from a copy that lists them in another order.
+  - id: crd_9v6xjn
+    front: >-
+      Why pick as many tiles of each kind for a test set?
+    back: >-
+      Accuracy then weighs every kind the same, and a classifier that always gives one kind is
+      right on {% $fig.chance %} of them.
+  - id: crd_jc5fob
+    front: >-
+      In what order of dimensions do Pillow's pixels come, and in what order does PyTorch take
+      a batch?
+    back: >-
+      Pillow, through NumPy, gives rows, columns, channels. PyTorch takes `(N, C, H, W)`, which
+      `permute(0, 3, 1, 2)` gives from a stack of `(N, H, W, C)`.

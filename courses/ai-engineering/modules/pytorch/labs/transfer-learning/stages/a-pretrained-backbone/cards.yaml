@@ -1,0 +1,31 @@
+cards:
+  - id: crd_z9xbjp
+    front: >-
+      What does `weights_only=True` guard against when loading a checkpoint?
+    back: >-
+      A checkpoint is a pickle, which can run code as it loads. With it, `torch.load` rebuilds
+      only tensors and plain containers, and refuses the rest.
+  - id: crd_en350m
+    front: >-
+      What does `strict=True` catch when weights are loaded into a model?
+    back: >-
+      Names that don't match: a parameter the checkpoint lacks, which would keep its random
+      starting values, or a weight with no parameter to go to.
+  - id: crd_jm6od0
+    front: >-
+      Why must an image's sides be multiples of {% $fig.patch %} for DINOv2's ViT-S/14?
+    back: >-
+      It cuts images into patches of {% $fig.patch %} by {% $fig.patch %} pixels, which must
+      cover the image.
+  - id: crd_swplue
+    front: >-
+      Why are tiles normalized with ImageNet's mean and standard deviation before DINOv2?
+    back: >-
+      The backbone learned from images normalized that way, so its layers expect inputs on that
+      scale.
+  - id: crd_w3oclh
+    front: >-
+      Why can't features computed under `torch.inference_mode()` train a layer?
+    back: >-
+      Its tensors can't be saved for a backward pass, which the layer's gradient needs.
+      `torch.no_grad()` gives ordinary tensors.

@@ -1,0 +1,5 @@
+The solution gives the probe two things more than stage 3's. Beside the class token, it takes the mean of the patches' tokens, which DINOv2's own linear classifiers take too, so the probe sees what each part of a tile shows as well as the backbone's summary of it. And it gives the backbone tiles at {% $fig.large %} pixels, {% $fig.large_patches %} patches where {% $fig.side %} pixels give {% $fig.patches %}, so the backbone sees each tile in finer pieces. It gives {% $fig.solution %} of the test tiles their kinds, at {% $fig.solution_macs %} multiply-adds a tile.
+
+A tile seen from above has no up, so its {% $fig.views %} turns and mirror images show the same ground. The features averaged over them are another way to spend the budget: the {% $fig.views %} at {% $fig.side %} pixels take {% $fig.views_macs %} multiply-adds a tile.
+
+The probe is fitted from zero weights to the labelled tiles' features, in `float64`, so the same tiles make the same classifier. It standardizes a tile's features by the labelled tiles' mean and deviation, so a tile gets the same kind alone as among others.

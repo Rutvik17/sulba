@@ -1,0 +1,7 @@
+id: stg_gqt30h
+kind: build
+title: A linear probe
+builds: A new `probe.py`, which starts with `Probe`.
+file: probe.py
+packages: [numpy, pillow, torch]
+minutes: 50

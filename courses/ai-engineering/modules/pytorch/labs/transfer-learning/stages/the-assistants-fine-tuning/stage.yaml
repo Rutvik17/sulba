@@ -1,0 +1,70 @@
+id: stg_biw0mc
+kind: catch
+title: The assistant's fine-tuning
+builds: Your `tiles.py` and `backbone.py` from stages 1 and 2.
+file: finetune.py
+packages: [numpy, pillow, torch]
+minutes: 40
+problems:
+  - check: tst_5yzkyu
+    title: It fine-tuned the backbone at the head's rate
+    cost: >-
+      `fine_tune` gave AdamW every parameter at `HEAD_RATE`, so the backbone learned at the
+      head's rate of {% $fig.head_rate %}, where the survey asked for {% $fig.backbone_rate %}.
+      AdamW's first step moves nearly every weight by its rate, whatever the size of its
+      gradient: at {% $fig.head_rate %}, by {% $fig.share %} of the backbone's median weight,
+      {% $fig.median %}, in one step, where its own rate moves it by {% $fig.small_share %}. The
+      survey's fine-tuning takes {% $fig.steps %} steps, which at that size add up to
+      {% $fig.drift %}, {% $fig.times %} times the median weight: enough to carry the backbone
+      far from the weights that gave the survey its features.
+    fix: >-
+      The fix: two groups of parameters for AdamW, the backbone's at `BACKBONE_RATE` and the
+      head's at `HEAD_RATE`.
+    edit:
+      replace: "    optimizer = torch.optim.AdamW(model.parameters(), lr=HEAD_RATE, weight_decay=DECAY)\n"
+      with: "    optimizer = torch.optim.AdamW(\n        [\n            {\"params\": model.backbone.parameters(), \"lr\": BACKBONE_RATE},\n            {\"params\": model.head.parameters(), \"lr\": HEAD_RATE},\n        ],\n        weight_decay=DECAY,\n    )\n"
+  - check: tst_1afcpy
+    title: It trained on tiles it never normalized
+    cost: >-
+      `train` resized the tiles itself and left out ImageNet's mean and standard deviation,
+      while `scores` prepares tiles with `prepare`. The head learned from the backbone's features
+      of unnormalized tiles, and in use is given its features of normalized ones, which differ.
+      A probe like stage 3's, trained on the features of unnormalized tiles and then given those
+      of normalized ones, is right on fewer than {% $fig.bound %} of the test tiles. Trained and
+      given normalized tiles, it's right on {% $fig.normalized %}.
+    fix: >-
+      The fix: `prepare(images, side)` in `train`, as in `scores`, so the classifier learns from
+      tiles as it will be given them.
+    edit:
+      replace: "            images = F.interpolate(images / 255, size=(side, side), mode=\"bicubic\")\n"
+      with: "            images = prepare(images, side)\n"
+  - check: tst_aq77o4
+    title: It named the kinds in the zip's order
+    cost: >-
+      `dict.fromkeys` keeps the order the zip lists its folders in, which starts with
+      {% $fig.first_listed %}, while the classifier learned each kind by the number `tiles.py`
+      gives it from the sorted names, which start with {% $fig.first_sorted %}.
+      {% $fig.moved %} of the {% $fig.kinds %} kinds would be reported by another kind's name:
+      every tile the classifier found to be {% $fig.first_sorted %}, for one, as
+      {% $fig.first_listed %}.
+    fix: >-
+      The fix: `sorted`, so each kind's name is the one `tiles.py` numbers it by.
+    edit:
+      replace: "    return list(dict.fromkeys(PurePosixPath(name).parent.name for name in names))\n"
+      with: "    return sorted({PurePosixPath(name).parent.name for name in names})\n"
+  - check: tst_gwtnu6
+    title: Its warm-up worked out the backbone's gradients
+    cost: >-
+      `train` turned on the gradients of every parameter, the backbone's too, so at every step
+      of the warm-up autograd worked out gradients that its optimizer, which holds only the
+      head's parameters, never used. They take {% $fig.backward %} multiply-adds a tile in the
+      backbone's linear layers alone, twice their forward pass's {% $fig.linear_forward %}:
+      {% $fig.wasted %} over the warm-up's {% $fig.warm_tiles %} tiles at {% $fig.side %} pixels,
+      besides the activations kept for the backward pass and {% $fig.grad_mb %} to hold the
+      gradients.
+    fix: >-
+      The fix: `model.train()` alone in `train`. `fine_tune` turns the backbone's gradients on
+      when its training starts.
+    edit:
+      replace: "    model.train().requires_grad_(True)\n"
+      with: "    model.train()\n"
