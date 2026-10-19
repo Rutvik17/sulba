@@ -1,0 +1,3 @@
+None of the four problems raised an error. The assistant's tests checked shapes, the cache's length and the story's length, and all four problems keep those. Each one changed what the model read instead: where a token stood, which heads it read, which tokens it saw, and which token it went on from.
+
+What found them was working out by hand what each part must give, such as the positions of new tokens after cached ones or the tokens one new token reads, and a model small enough that its next token is known. A KV cache is right when every step's logits are the full pass's, so for a cached generator, that comparison is the test that matters.

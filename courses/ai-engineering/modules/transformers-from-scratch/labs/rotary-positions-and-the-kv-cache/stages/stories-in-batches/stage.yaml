@@ -1,0 +1,41 @@
+id: stg_pou7ju
+kind: ship
+title: Stories in batches
+builds: A new `batch.py`.
+file: batch.py
+packages: [torch]
+minutes: 50
+checks:
+  - check: tst_s7roiq
+    title: Every story as it goes alone
+    requires: >-
+      `stories` writes, in one batch, the {% $fig.steps %} tokens SmolLM2 writes after each of
+      {% $fig.stories %} prompts alone, from {% $fig.shortest %} to {% $fig.longest %} tokens
+      long.
+    failure: >-
+      Pad each prompt on the left, keep padded places out of every story's reads, and count
+      each story's positions from its own first token.
+  - check: tst_ncpy4u
+    title: Any prompts, in any order
+    requires: >-
+      `stories` gives each prompt its own story, whatever else is in the batch, the same
+      prompt twice included.
+    failure: >-
+      A story must depend on its own prompt alone: check which places each row reads and where
+      its positions start.
+  - check: tst_989mk3
+    title: One pass a step
+    requires: >-
+      `stories` runs the model's own parts once a step for every story together, not once for
+      each story.
+    failure: >-
+      Put the stories in one batch: a tensor (batch, length) of tokens, and a cache whose keys
+      and values hold every story.
+  - check: tst_dltwuy
+    title: Within the budget
+    requires: >-
+      Writing the {% $fig.stories %} stories takes at most {% $fig.budget %} multiply-adds a
+      token written, twice the {% $fig.token %} of SmolLM2 reading one token.
+    failure: >-
+      Keep each story's keys and values in the cache, so that each step reads only each
+      story's new token.

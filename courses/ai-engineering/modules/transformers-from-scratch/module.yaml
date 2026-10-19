@@ -5,3 +5,4 @@ labs:
   - the-transformer-block
   - training-a-small-gpt
   - gpt-2s-weights
+  - rotary-positions-and-the-kv-cache

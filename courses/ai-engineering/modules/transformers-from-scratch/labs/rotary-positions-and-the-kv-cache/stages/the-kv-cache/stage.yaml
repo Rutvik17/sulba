@@ -1,0 +1,7 @@
+id: stg_zrbod6
+kind: build
+title: The KV cache
+builds: Your `smollm.py` from stage 2.
+file: cache.py
+packages: [torch]
+minutes: 45

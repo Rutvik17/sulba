@@ -1,0 +1,5 @@
+Batching doesn't save multiply-adds. In one batch, the {% $fig.stories %} stories took {% $fig.spent %} a token written, against a budget of {% $fig.budget %}, and one at a time with the cache they take {% $fig.alone %}. What batching saves is passes: {% $fig.passes %} for {% $fig.steps %} tokens, where one story at a time takes {% $fig.passes_alone %}. A pass reads every weight of the model once, whatever the batch, so a batch shares that reading among all its stories. Without the cache, reading every story again at each step would take {% $fig.uncached %} multiply-adds a token written.
+
+Padding costs a little. The prompts, from {% $fig.shortest %} to {% $fig.longest %} tokens long, fill {% $fig.places %} places in the first step, {% $fig.pads %} of them padding, and their keys stay in the cache, read by no row.
+
+Rotary positions forgive the padding. A score depends only on how far apart two tokens are, so positions counted from the batch's first column, not each story's own first token, would turn a story's queries and keys further but leave its scores the same, up to rounding. The app's GPT, with a learnt vector for each position, has no such give.

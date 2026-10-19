@@ -1,0 +1,18 @@
+cards:
+  - id: crd_nwzonv
+    front: >-
+      Why pad a batch of prompts on the left, not the right?
+    back: >-
+      Every prompt's last token lands in the last column, so each story's next token comes
+      from the same row of logits, and the tokens written after it line up.
+  - id: crd_ezswhu
+    front: >-
+      Where do the positions of a story padded on the left start?
+    back: >-
+      At its own first token, as they would alone: each place less the row's padding.
+  - id: crd_gc729q
+    front: >-
+      What does writing stories in a batch save, with a KV cache?
+    back: >-
+      Passes, not multiply-adds: one pass a step reads the model's weights once for every
+      story in the batch.

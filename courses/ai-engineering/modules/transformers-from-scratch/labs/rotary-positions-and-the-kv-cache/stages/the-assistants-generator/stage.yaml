@@ -1,0 +1,60 @@
+id: stg_lgzo0n
+kind: catch
+title: The assistant's generator
+builds: A new `generator.py`.
+file: generator.py
+packages: [torch]
+minutes: 40
+problems:
+  - check: tst_phrpbm
+    title: It started every step's positions at 0
+    cost: >-
+      `positions` left out `start`, so every token read after the prompt was turned as if it
+      stood at the start of the story, while the cache's keys were turned by where they stood.
+      After the app's opening line, "{% $fig.opening %}", the story went "{% $fig.positions %}"
+      where it should have gone "{% $fig.right %}".
+    fix: >-
+      The fix: `torch.arange(start, start + length)`, which carries the positions on from the
+      cache's.
+    edit:
+      replace: "    return torch.arange(length)\n"
+      with: "    return torch.arange(start, start + length)\n"
+  - check: tst_ip3snc
+    title: It gave query heads the wrong key heads
+    cost: >-
+      `heads.repeat(group, 1, 1)` lays the key heads out one whole set after another, where
+      SmolLM2 was trained with each repeated in place, so only {% $fig.right_heads %} of its
+      {% $fig.heads %} query heads read the key and value head they were trained with. After
+      the app's opening line, the story went "{% $fig.shared %}".
+    fix: >-
+      The fix: `heads.repeat_interleave(group, dim=0)`, which repeats each head
+      {% $fig.group %} times in place.
+    edit:
+      replace: "    return heads.repeat(group, 1, 1)\n"
+      with: "    return heads.repeat_interleave(group, dim=0)\n"
+  - check: tst_9jiu3b
+    title: Each new token read only the story's first token
+    cost: >-
+      `.tril()` lines its triangle up with the first keys, which is right for a full pass, but
+      with a cache the new tokens' rows come after the cached ones, so each token written after
+      the prompt read only the story's first token. After the app's opening line, the story
+      went "{% $fig.reads %}". PyTorch's `is_causal=True` lines its mask up the same way when
+      there are fewer queries than keys.
+    fix: >-
+      The fix: `.tril(start)`, which moves the triangle along by the cached tokens, so each new
+      token reads all of them and the new ones up to itself.
+    edit:
+      replace: "    return torch.ones(length, start + length, dtype=torch.bool).tril()\n"
+      with: "    return torch.ones(length, start + length, dtype=torch.bool).tril(start)\n"
+  - check: tst_rccuzi
+    title: It began each story after the prompt's first word
+    cost: >-
+      `[0]` took the first row of the prompt's logits, which predicts what follows the
+      prompt's first token, "{% $fig.first_word %}", not its last. After that first token,
+      every step read one token, so the rest of the story followed the whole prompt. After the
+      app's opening line, the story went "{% $fig.first %}".
+    fix: >-
+      The fix: `[-1]`, the row of the last token read, which predicts what comes next.
+    edit:
+      replace: "            written.append(int(step(model, tokens, cache)[0].argmax()))\n"
+      with: "            written.append(int(step(model, tokens, cache)[-1].argmax()))\n"

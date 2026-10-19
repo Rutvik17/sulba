@@ -1,0 +1,20 @@
+cards:
+  - id: crd_6mbnlj
+    front: >-
+      What does RMSNorm leave out of layer normalization?
+    back: >-
+      The mean and the bias: it divides by the root mean square and multiplies by a learnt
+      weight, nothing else.
+  - id: crd_4u3fju
+    front: >-
+      In grouped-query attention with {% $fig.heads %} query heads and {% $fig.kv_heads %} key
+      and value heads, which key head does a query head read?
+    back: >-
+      Its group's: each key and value head serves {% $fig.group %} neighbouring query heads,
+      which `repeat_interleave` lines up.
+  - id: crd_c4m890
+    front: >-
+      Why is SmolLM2's SwiGLU MLP {% $fig.hidden %} wide, not four times its width?
+    back: >-
+      SwiGLU has three matrices, so two thirds of four times the width keeps its parameters
+      those of a two-matrix MLP four times as wide.
