@@ -15,7 +15,8 @@ jobs:
   deploy:
     name: Deploy to Cloudflare
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    # The build computes every stage's figures afresh, which takes longer as the courses grow.
+    timeout-minutes: 45
     environment:
       name: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
       url: ${{ steps.deploy.outputs.url }}
