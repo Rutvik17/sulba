@@ -4,6 +4,7 @@ import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { fetchedOf } from '../lib/lab-facts';
 import type { LabView, StageView } from '../lib/labs';
 import { labData, projectFiles } from './data';
 import { type Report, reportOf } from './link';
@@ -234,6 +235,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
   // A Catch stage's explanation and solution open with its review; another stage's solution is
   // there all along, since its runs are on the learner's machine.
   const solutionOpen = !isCatch || review !== null;
+  const fetched = fetchedOf(lab);
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
@@ -346,6 +348,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
             to this page that marks it done here, and <code>uv run sulba.py next</code> starts the
             next stage.
           </p>
+          {fetched && (
+            <p>
+              The first time, it also downloads the files the lab needs into <code>data</code>:{' '}
+              {fetched.size}, from {fetched.hosts}.
+            </p>
+          )}
           {isCatch && (
             <p>
               Fix every problem you find in <code>{stage.file}</code>, then finish the review with{' '}

@@ -2,15 +2,16 @@
 // CPython, every stage's prose with the numbers its figures.py gives in each, every chart as each
 // draws it, and each lab project's lock against Pyodide's versions and its pyproject.toml. A lab
 // that runs on the learner's machine runs its stages and figures in CPython alone, in its own
-// project (decision record 28). Prints each problem and fails if there is one. With `--shard 2/4`,
-// it still checks every file against its schema and every project's lock, but runs only the second
-// stage of every four, with that stage's figures, prose and chart, so that four checks side by side
-// cover every stage.
+// project, with the files it fetches (decision records 28 and 29). Prints each problem and fails if
+// there is one. With `--shard 2/4`, it still checks every file against its schema and every
+// project's lock, but runs only the second stage of every four, with that stage's figures, prose
+// and chart, so that four checks side by side cover every stage.
 import { execFile } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { pyodideFolder } from '@sulba/lab/assemble';
+import { fetchedPath, holds } from '@sulba/lab/fetched';
 import { chartsInCPython, figuresInCPython, pyodideEngine, runInCPython } from '@sulba/lab/node';
 import {
   type Course,
@@ -19,6 +20,7 @@ import {
   computeFigures,
   courseSlugs,
   duplicateIds,
+  fetchedFiles,
   loadCourse,
   machineLabs,
   type Problem,
@@ -96,19 +98,36 @@ if (problems.length === 0) {
     { Pyodide: async (fileSets) => fileSets.map(engine.figures), CPython: figuresInCPython },
     inBrowser,
   );
-  for (const { lab, project } of machine) {
+  for (const { lab, path, project } of machine) {
     const stages = new Set(lab.stages.map((stage) => stage.id).filter((id) => only.has(id)));
     if (stages.size === 0) continue;
+    const where = { folder: project, fetched: fetchedFiles(lab) };
+    const kept = new Map<string, string>();
+    try {
+      for (const [name, file] of Object.entries(where.fetched)) {
+        kept.set(name, await fetchedPath(file));
+      }
+    } catch (error) {
+      problems.push({ path: `${path}/lab.yaml`, message: `fetch: ${(error as Error).message}` });
+      continue;
+    }
     const run = (requests: Parameters<typeof runInCPython>[0]) =>
-      runInCPython(requests, undefined, project);
+      runInCPython(requests, undefined, where);
     problems.push(...(await prove(courses, run, 'CPython', stages)));
     const computed = await computeFigures(
       courses,
-      { CPython: (fileSets) => figuresInCPython(fileSets, project) },
+      { CPython: (fileSets) => figuresInCPython(fileSets, where) },
       stages,
     );
     found.push(...computed.problems);
     for (const [id, values] of computed.figures) figures.set(id, values);
+    // Runs have each fetched file as a link to the one kept, so a run that wrote to one would
+    // change every run after it.
+    for (const [name, file] of Object.entries(where.fetched)) {
+      if (!(await holds(kept.get(name) ?? '', file))) {
+        problems.push({ path: `${path}/lab.yaml`, message: `fetch: a run changed ${name}.` });
+      }
+    }
   }
   problems.push(...found, ...proseProblems(courses, figures, mathFontCharacters(), only));
   problems.push(

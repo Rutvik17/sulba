@@ -21,7 +21,8 @@ jobs:
   checks:
     name: Lint, types, unit tests and build
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    # A change to the runner computes every stage's figures again, which takes about 5 minutes.
+    timeout-minutes: 20
     env:
       # uv fails instead of updating uv.lock when it no longer matches pyproject.toml.
       UV_LOCKED: 1
@@ -42,6 +43,20 @@ jobs:
           path: node_modules/.cache/sulba-figures
           key: figures-${{ github.sha }}
           restore-keys: figures-
+      # The files machine labs fetch from their publishers (packages/lab/src/fetched.ts), under a key
+      # named for the sha256s the labs pin, so it changes only when a file does. Only the Machine
+      # labs jobs save it, since only they fetch every file. Each run checks every file kept here
+      # against its sha256 again, and fetches any that doesn't match.
+      - id: fetched
+        shell: bash
+        run: |
+          pins=$(grep -rhoE --include=lab.yaml 'sha256: [0-9a-f]{64}' courses packages/content/fixtures)
+          echo "key=fetched-$(sort -u <<< "$pins" | cksum | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-fetched
+          key: ${{ steps.fetched.outputs.key }}
+          restore-keys: fetched-
       # Pyodide's files (packages/lab/src/assemble.ts), so a run fetches wheels from Pyodide's CDN
       # only when Pyodide or the packages sessions load change. Each run checks every wheel kept
       # here against its sha256 again, and fetches any that doesn't match.
@@ -95,6 +110,16 @@ jobs:
         with:
           path: packages/lab/pyodide
           key: pyodide-${{ hashFiles('packages/lab/package.json', 'packages/lab/src/assemble.ts', 'packages/lab/src/protocol.ts') }}
+      - id: fetched
+        shell: bash
+        run: |
+          pins=$(grep -rhoE --include=lab.yaml 'sha256: [0-9a-f]{64}' courses packages/content/fixtures)
+          echo "key=fetched-$(sort -u <<< "$pins" | cksum | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-fetched
+          key: ${{ steps.fetched.outputs.key }}
+          restore-keys: fetched-
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version-file: packages/lab/python/pyproject.toml
@@ -119,7 +144,8 @@ jobs:
 
   # Each lab that runs on the learner's machine, run from its download as a learner runs it, on
   # each system it supports (decision record 28): each stage's starter fails and its solution passes
-  # through `uv run sulba.py`, and each stage's figures are kept for machine-figures to compare.
+  # through `uv run sulba.py`, and each stage's figures are kept for machine-figures to compare. The
+  # runner fetches each file new to this system's cache from its publisher (decision record 29).
   machine:
     name: Machine labs on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -140,6 +166,16 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter @sulba/content...
+      - id: fetched
+        shell: bash
+        run: |
+          pins=$(grep -rhoE --include=lab.yaml 'sha256: [0-9a-f]{64}' courses packages/content/fixtures)
+          echo "key=fetched-$(sort -u <<< "$pins" | cksum | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules/.cache/sulba-fetched
+          key: ${{ steps.fetched.outputs.key }}
+          restore-keys: fetched-
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version-file: packages/lab/python/pyproject.toml

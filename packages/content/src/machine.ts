@@ -61,5 +61,13 @@ function stageOf(stage: Stage): MachineStage {
 
 /** A machine lab as its download's lab.json holds it, opening at stage `start`. */
 export function machineLabOf(lab: Lab, page: string, start: number): Omit<MachineLab, 'format'> {
-  return { id: lab.id, title: lab.title, page, start, stages: lab.stages.map(stageOf) };
+  return {
+    id: lab.id,
+    title: lab.title,
+    page,
+    start,
+    data: lab.data.map((set) => `data/${set.file}`),
+    fetch: lab.fetch.flatMap((source) => source.files),
+    stages: lab.stages.map(stageOf),
+  };
 }

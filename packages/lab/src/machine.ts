@@ -1,7 +1,9 @@
 // What a machine lab's download tells its runner, sulba.py (decision record 28): the lab's stages
-// in `.sulba/lab.json`, with each stage's tests and checks, and the stage the download starts at.
+// in `.sulba/lab.json`, with each stage's tests and checks, the stage the download starts at, the
+// lab's datasets, and the files the runner fetches from their publishers (decision record 29).
 // Test files and a Catch stage's fixed code are in base64, so a look through the folder doesn't
 // show them; they are there to be found, as they are in the page.
+import type { FetchedFile } from './protocol.ts';
 
 /** Where the download keeps what only the runner reads. */
 export const runnerFolder = '.sulba';
@@ -35,6 +37,12 @@ export interface MachineStage {
   readonly fixed: string | null;
 }
 
+/** A file the runner fetches into the download's `data/` before the first run. */
+export interface MachineFetch extends FetchedFile {
+  /** Its name in `data/`. */
+  readonly file: string;
+}
+
 export interface MachineLab {
   readonly format: 1;
   readonly id: string;
@@ -43,6 +51,12 @@ export interface MachineLab {
   readonly page: string;
   /** The stage the download starts at, counting from 0. */
   readonly start: number;
+  /**
+   * The lab's datasets, by their path in the download and in a run, such as `data/votes.csv`: the
+   * only files in `data/` a run reads as text.
+   */
+  readonly data: readonly string[];
+  readonly fetch: readonly MachineFetch[];
   readonly stages: readonly MachineStage[];
 }
 

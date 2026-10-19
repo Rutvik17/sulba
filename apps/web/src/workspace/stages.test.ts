@@ -68,6 +68,7 @@ const lab: LabView = {
   module: 'Module',
   data: [],
   references: [],
+  fetch: [],
   project: [],
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
@@ -274,6 +275,54 @@ test("a machine lab's download opens at the first stage not done, on the solutio
   expect(atob(three.tests['tests/checks/test_three.py'])).toBe('# checks for three\n');
   expect(atob(three.fixed)).toBe('class Screener:\n    draft = True\n# solved\n');
   expect(written.stages[0].fixed).toBeNull();
+});
+
+test("a machine lab's download tells its runner the lab's datasets and the files it fetches", () => {
+  const labels = {
+    file: 'labels.gz',
+    url: 'https://example.com/labels.gz',
+    bytes: 5148,
+    sha256: '67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5',
+  };
+  const machine: LabView = {
+    ...lab,
+    runs: 'machine',
+    data: [
+      {
+        file: 'votes.csv',
+        title: 'Votes',
+        creators: ['Sulba'],
+        url: 'https://example.com/votes',
+        licence: { name: 'CC0 1.0', url: 'https://example.com/cc0' },
+        changes: 'Made up.',
+        path: 'data/votes.csv',
+        served: '/data/0123456789abcdef/votes.csv',
+      },
+    ],
+    fetch: [
+      {
+        kind: 'data',
+        title: 'Labels',
+        creators: ['Sulba'],
+        url: 'https://example.com/labels',
+        licence: { name: 'MIT', url: 'https://example.com/mit' },
+        files: [labels],
+      },
+    ],
+  };
+  const files = machineDownloadOf(
+    machine,
+    data,
+    keeping({}),
+    {},
+    'https://sulba.dev/',
+    (html) => html,
+  );
+  const written = JSON.parse(files['.sulba/lab.json'] ?? '');
+  expect(written.data).toEqual(['data/votes.csv']);
+  expect(written.fetch).toEqual([labels]);
+  // The runner fetches them, so the download doesn't carry them.
+  expect(Object.keys(files)).not.toContain('data/labels.gz');
 });
 
 test('a machine lab done to its end downloads at its last stage', () => {

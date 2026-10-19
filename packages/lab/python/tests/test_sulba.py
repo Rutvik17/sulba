@@ -1,11 +1,17 @@
 import base64
+import hashlib
+import http.server
 import json
 import random
 import shutil
+import socket
 import subprocess
 import sys
+import threading
 import uuid
 import zlib
+from collections.abc import Iterator
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -202,6 +208,8 @@ def folder(tmp_path: Path) -> Path:
         "title": "Tallies",
         "page": "https://sulba.dev/demo/counting/tallies/",
         "start": 0,
+        "data": ["data/votes.csv"],
+        "fetch": [],
         "stages": STAGES,
     }
     (runner / "lab.json").write_text(json.dumps(lab), encoding="utf-8")
@@ -357,6 +365,224 @@ def test_a_folder_without_a_lab_says_so(tmp_path: Path) -> None:
     ran = command(tmp_path)
     assert ran.returncode == 1
     assert "it has no .sulba/lab.json" in ran.stdout
+
+
+def test_a_run_reads_only_the_labs_own_datasets_in_data(folder: Path) -> None:
+    (folder / "data" / "tile.jpg").write_bytes(b"\xff\xd8\xff\xe0")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "0 of 2 tests passed." in ran.stdout
+
+
+# A file a lab fetches from its publisher (decision record 29): bytes, not text.
+BALLOTS = bytes(range(256)) * 64
+
+BALLOTS_TEST = '''import pytest
+
+
+@pytest.mark.id("tst_iiiiii")
+def test_ballots():
+    """Reads the fetched ballots"""
+    with open("data/ballots.bin", "rb") as file:
+        assert len(file.read()) == 16384
+'''
+
+
+@dataclass
+class Publisher:
+    """A publisher's server: the files it sends, by path, whether it sends part of one when asked
+    to, how many bytes it sends before it stops early, and each request's path and Range."""
+
+    address: str = ""
+    files: dict[str, bytes] = field(default_factory=dict)
+    ranges: bool = True
+    stops: int | None = None
+    requests: list[tuple[str, str | None]] = field(default_factory=list)
+
+
+@pytest.fixture
+def publisher() -> Iterator[Publisher]:
+    served = Publisher(files={"/ballots.bin": BALLOTS})
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            asked = self.headers.get("Range")
+            served.requests.append((self.path, asked))
+            body = served.files.get(self.path)
+            if body is None:
+                self.send_error(404)
+                return
+            part = bool(asked) and served.ranges
+            start = int(asked.removeprefix("bytes=").removesuffix("-")) if asked and part else 0
+            self.send_response(206 if part else 200)
+            if part:
+                self.send_header("Content-Range", f"bytes {start}-{len(body) - 1}/{len(body)}")
+            self.send_header("Content-Length", str(len(body) - start))
+            self.end_headers()
+            end = len(body) if served.stops is None else start + served.stops
+            self.wfile.write(body[start:end])
+
+        def log_message(self, *args: Any) -> None:
+            pass
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    served.address = f"http://127.0.0.1:{server.server_port}"
+    yield served
+    server.shutdown()
+    server.server_close()
+
+
+def fetching(folder: Path, url: str) -> None:
+    """The lab in folder fetches ballots.bin from url, and its first stage's tests read it."""
+    path = folder / ".sulba" / "lab.json"
+    lab = json.loads(path.read_text(encoding="utf-8"))
+    sha256 = hashlib.sha256(BALLOTS).hexdigest()
+    lab["fetch"] = [{"file": "ballots.bin", "url": url, "bytes": len(BALLOTS), "sha256": sha256}]
+    test = base64.b64encode(BALLOTS_TEST.encode()).decode()
+    lab["stages"][0]["tests"]["tests/test_ballots.py"] = test
+    path.write_text(json.dumps(lab), encoding="utf-8")
+
+
+def test_a_labs_files_are_fetched_before_its_first_run(folder: Path, publisher: Publisher) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "Fetching the lab's files into data:" in ran.stdout
+    assert "ballots.bin, 16.4 kB, from 127.0.0.1" in ran.stdout
+    assert "✓ Reads the fetched ballots" in ran.stdout
+    assert "1 of 3 tests passed." in ran.stdout
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+    assert not (folder / "data" / "ballots.bin.partial").exists()
+    assert publisher.requests == [("/ballots.bin", None)]
+
+
+def test_a_file_already_fetched_is_not_fetched_again(folder: Path, publisher: Publisher) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    command(folder)
+    ran = command(folder)
+    assert "Fetching" not in ran.stdout
+    assert "✓ Reads the fetched ballots" in ran.stdout
+    assert len(publisher.requests) == 1
+
+
+def test_a_fetch_cut_short_goes_on_from_where_it_stopped(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    (folder / "data" / "ballots.bin.partial").write_bytes(BALLOTS[:1000])
+    command(folder)
+    assert publisher.requests == [("/ballots.bin", "bytes=1000-")]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_fetch_the_publisher_stops_early_keeps_what_came(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.stops = 8000
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "The fetch stopped: 127.0.0.1 stopped after 8.0 kB of 16.4 kB" in ran.stdout
+    assert "Run uv run sulba.py again to go on from where it stopped." in ran.stdout
+    assert (folder / "data" / "ballots.bin.partial").read_bytes() == BALLOTS[:8000]
+    publisher.stops = None
+    command(folder)
+    assert publisher.requests == [("/ballots.bin", None), ("/ballots.bin", "bytes=8000-")]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_publisher_that_sends_all_of_a_file_asked_for_in_part_is_heard(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.ranges = False
+    (folder / "data" / "ballots.bin.partial").write_bytes(BALLOTS[:1000])
+    command(folder)
+    assert publisher.requests == [("/ballots.bin", "bytes=1000-")]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_fetch_stopped_once_all_of_its_file_had_come_only_moves_it(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    (folder / "data" / "ballots.bin.partial").write_bytes(BALLOTS)
+    command(folder)
+    assert publisher.requests == []
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+    assert not (folder / "data" / "ballots.bin.partial").exists()
+
+
+def test_a_file_cut_short_that_does_not_go_on_is_fetched_again(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    (folder / "data" / "ballots.bin.partial").write_bytes(bytes(1000))
+    command(folder)
+    assert publisher.requests == [("/ballots.bin", "bytes=1000-"), ("/ballots.bin", None)]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_file_changed_since_it_was_fetched_is_fetched_again(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    command(folder)
+    (folder / "data" / "ballots.bin").write_bytes(bytes(len(BALLOTS)))
+    ran = command(folder)
+    assert "Fetching the lab's files into data:" in ran.stdout
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_file_other_than_the_labs_is_refused(folder: Path, publisher: Publisher) -> None:
+    publisher.files["/ballots.bin"] = bytes(len(BALLOTS))
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "127.0.0.1 sent a different file from the one the lab was made with." in ran.stdout
+    assert "tests passed" not in ran.stdout
+    assert list((folder / "data").iterdir()) == [folder / "data" / "votes.csv"]
+    assert progress(folder)["attempts"] == []
+
+
+def test_a_file_of_another_size_is_refused_before_it_comes(
+    folder: Path, publisher: Publisher
+) -> None:
+    publisher.files["/ballots.bin"] = BALLOTS[:100]
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "127.0.0.1 sent a different file from the one the lab was made with." in ran.stdout
+    assert len(publisher.requests) == 1
+    assert list((folder / "data").iterdir()) == [folder / "data" / "votes.csv"]
+
+
+def test_a_file_the_publisher_does_not_have_is_said(folder: Path, publisher: Publisher) -> None:
+    fetching(folder, f"{publisher.address}/gone.bin")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "127.0.0.1 answered 404 Not Found. Try again later." in ran.stdout
+
+
+def test_a_publisher_out_of_reach_stops_the_run(folder: Path) -> None:
+    with socket.socket() as unused:
+        unused.bind(("127.0.0.1", 0))
+        port = unused.getsockname()[1]
+    fetching(folder, f"http://127.0.0.1:{port}/ballots.bin")
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "The fetch stopped:" in ran.stdout
+    assert "Run uv run sulba.py again to go on from where it stopped." in ran.stdout
+
+
+def test_a_size_is_shown_in_decimal_units() -> None:
+    assert [sulba.size(count) for count in [512, 5148, 26_421_880, 1_500_000_000]] == [
+        "512 bytes",
+        "5.1 kB",
+        "26.4 MB",
+        "1.5 GB",
+    ]
 
 
 # A link from the runner, which the lab's page reads in its own tests

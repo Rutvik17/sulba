@@ -11,8 +11,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
   modules/<module>/
     module.yaml             id, title, and its labs in order
     labs/<lab>/
-      lab.yaml              id, title, summary, datasets and ported code with their credit,
-                            where its stages run, and its stages in order
+      lab.yaml              id, title, summary, datasets, fetched files and ported code with
+                            their credit, where its stages run, and its stages in order
       data/<file>.csv       each dataset lab.yaml lists
       references/           optional: the results of a library the lab's tests compare with:
                             each JSON file lab.yaml lists, and the make.py that records them
@@ -136,6 +136,28 @@ A lab whose stages load a package Pyodide doesn't ship, such as `torch`, sets `r
 
 Its project pins torch from PyTorch's CPU index on every platform, through `[tool.uv.sources]` and an index marked `explicit = true`, and Python, pytest and each package its stages load that Pyodide ships at Pyodide's versions; torch's own dependencies are left to uv. `pnpm check:content` runs its stages and figures in CPython alone, in that project, and `pnpm check:machine`, which CI's Machine labs jobs run on Windows, macOS and Linux, runs its download through `uv run sulba.py` with each stage's starter and solution, and CI fails when a stage's figures differ from one system to another. Such a lab has no Problem stages and no charts, which run in the browser, and no learner's file named `sulba.py`.
 
+### Fetched files
+
+A lab that runs on the learner's machine can fetch files too large for the site to serve, such as a dataset or a model's weights, from their publisher (decision record 29). `fetch` in `lab.yaml` lists each source with its credit, and each of its files with the address its publisher serves it from, its size in bytes and its sha256:
+
+```yaml
+fetch:
+  - kind: data               # data, or model for a model's weights
+    title: Fashion-MNIST
+    creators: [Zalando Research]
+    url: https://github.com/zalandoresearch/fashion-mnist
+    licence:
+      name: MIT
+      url: https://github.com/zalandoresearch/fashion-mnist/blob/master/LICENSE
+    files:
+      - file: t10k-labels-idx1-ubyte.gz
+        url: https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
+        bytes: 5148
+        sha256: 67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5
+```
+
+Take the address from the publisher's own page, over HTTPS, and the size and sha256 from a copy fetched from it. Before a run, the runner fetches into the download's `data/` each file that is missing or doesn't match, and a run has it at `data/<file>`, beside the lab's datasets, which keep their own names. Runs only read a fetched file: `pnpm check:content` fails when one changes it. The checks and the build fetch each file too, and keep it under its sha256 in `node_modules/.cache/sulba-fetched`, which CI keeps between runs; each process checks its copy against the sha256 before using it. The lab's page credits each source and says how much the first run downloads and from where, so the project's `README.md` says so too. A file is used only under a licence that allows a paid course, as for a dataset.
+
 ## Review cards
 
 Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:
@@ -248,4 +270,4 @@ Course code follows the rules and style the editor applies to learners' code (`r
 
 ## Licence
 
-Course content is all rights reserved ([LICENSE](LICENSE)). Each dataset, and the code by others a lab ports, keeps its own licence, credited in its lab's `lab.yaml`.
+Course content is all rights reserved ([LICENSE](LICENSE)). Each dataset, each fetched file, and the code by others a lab ports, keeps its own licence, credited in its lab's `lab.yaml`.

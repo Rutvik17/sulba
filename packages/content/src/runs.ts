@@ -1,7 +1,7 @@
 // What a stage's tests run against. A stage builds on the stages before it: their files are
 // there as the learner left them, and a stage on a file an earlier stage made adds its starter
 // to the end of the learner's code.
-import type { RunRequest } from '@sulba/lab/protocol';
+import type { FetchedFile, RunRequest } from '@sulba/lab/protocol';
 import type { CatchProblem, Lab, Stage } from './load.ts';
 
 /** The learner's code with a stage's starter added below it. */
@@ -22,6 +22,18 @@ export function labFiles(lab: Lab): Record<string, string> {
   const files: Record<string, string> = {};
   for (const set of lab.data) files[`data/${set.file}`] = set.text;
   for (const reference of lab.references) files[`references/${reference.file}`] = reference.text;
+  return files;
+}
+
+/**
+ * The files a machine lab fetches from their publishers (decision record 29), by their path in a
+ * run: each in `data/`, beside the lab's datasets.
+ */
+export function fetchedFiles(lab: Lab): Record<string, FetchedFile> {
+  const files: Record<string, FetchedFile> = {};
+  for (const source of lab.fetch) {
+    for (const { file, ...pinned } of source.files) files[`data/${file}`] = pinned;
+  }
   return files;
 }
 

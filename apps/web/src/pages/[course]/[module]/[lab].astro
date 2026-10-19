@@ -56,12 +56,18 @@ const [course, module] = lab.path.split('/');
     <p slot="fallback" class="loading">Loading the workspace…</p>
   </Workspace>
 
-  {(lab.data.length > 0 || code.length > 0) && (
+  {(lab.data.length > 0 || lab.fetch.length > 0 || code.length > 0) && (
     <footer class="credit">
       {lab.data.map((set) => (
         <p>
           Data: <a href={set.url}>{set.title}</a>, by {set.creators.join(', ')},{' '}
           <a href={set.licence.url}>{set.licence.name}</a>. {set.changes}
+        </p>
+      ))}
+      {lab.fetch.map((source) => (
+        <p>
+          {source.kind === 'model' ? 'Model' : 'Data'}: <a href={source.url}>{source.title}</a>, by{' '}
+          {source.creators.join(', ')}, <a href={source.licence.url}>{source.licence.name}</a>.
         </p>
       ))}
       {code.map((port) => (

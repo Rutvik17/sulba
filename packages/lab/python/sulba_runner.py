@@ -14,6 +14,7 @@ import io
 import json
 import math
 import os
+import shutil
 import sys
 import tempfile
 import time
@@ -31,17 +32,19 @@ from sulba_fixtures import check_types
 LIMIT = 1000
 
 
-def run(files_json: str, tests_json: str) -> str:
-    """Write the files to a new folder, run the test files there, and return the result."""
+def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
+    """Write the files to a new folder, with the linked files beside them, run the test files
+    there, and return the result."""
     files: dict[str, str] = json.loads(files_json)
     tests: list[str] = json.loads(tests_json)
-    with tempfile.TemporaryDirectory(prefix="sulba-") as folder:
+    with session_folder() as folder:
         # An empty config file beside the session, so pytest never picks up one from a folder
         # above it.
         config = Path(folder, "pytest.ini")
         config.write_text("[pytest]\n", encoding="utf-8")
         root = Path(folder, "session").resolve()
         write(root, files)
+        link(root, json.loads(links_json))
         report = Report(root)
         started = time.perf_counter()
         # The fixtures are a plugin of their own, so a run inside a test can load them too.
@@ -88,7 +91,7 @@ def warm(files: dict[str, str]) -> None:
     while the file is unchanged, so the files are checked from their folder by name, as a test
     checks them."""
     sources = [name for name in files if name.endswith(".py") and not name.startswith("tests/")]
-    with tempfile.TemporaryDirectory(prefix="sulba-") as folder, chdir(folder):
+    with session_folder() as folder, chdir(folder):
         write(Path(folder), {name: files[name] for name in sources})
         check_types(*sources)
 
@@ -113,16 +116,17 @@ def imported(files: dict[str, str]) -> list[str]:
     return list(found)
 
 
-def figures(files_json: str) -> str:
+def figures(files_json: str, links_json: str = "{}") -> str:
     """Call figures() in the session's figures.py, and return the numbers it gives or its error.
 
     A stage's prose shows numbers from its figures.py rather than typing them, so every number a
     learner reads is computed, the same way in the browser's Python and in CPython.
     """
     files: dict[str, str] = json.loads(files_json)
-    with tempfile.TemporaryDirectory(prefix="sulba-") as folder:
+    with session_folder() as folder:
         root = Path(folder).resolve()
         write(root, files)
+        link(root, json.loads(links_json))
         try:
             values = within(root, lambda: importlib.import_module("figures").figures())
         except Exception as error:
@@ -144,7 +148,7 @@ def chart(files_json: str, values_json: str) -> str:
     """
     files: dict[str, str] = json.loads(files_json)
     values: dict[str, float] = json.loads(values_json)
-    with tempfile.TemporaryDirectory(prefix="sulba-") as folder:
+    with session_folder() as folder:
         root = Path(folder).resolve()
         write(root, files)
         try:
@@ -172,12 +176,31 @@ def plain(value: object) -> object:
     return value
 
 
+def session_folder() -> tempfile.TemporaryDirectory[str]:
+    """A new folder for a session. Windows can't delete a file that is open, so a file the
+    session's code leaves open stays behind in it rather than stopping the run."""
+    return tempfile.TemporaryDirectory(prefix="sulba-", ignore_cleanup_errors=True)
+
+
 def write(root: Path, files: dict[str, str]) -> None:
     root.mkdir(parents=True, exist_ok=True)
     for name, text in files.items():
         path = root / safe(name)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8", newline="")
+
+
+def link(root: Path, links: dict[str, str]) -> None:
+    """Put each file on disk at its path in the session: a hard link to it where the system
+    allows one, and a copy where it doesn't. A machine lab's fetched files, such as a dataset or
+    a model's weights, are too large to send as text (decision record 29)."""
+    for name, source in links.items():
+        path = root / safe(name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(source, path)
+        except OSError:
+            shutil.copyfile(source, path)
 
 
 def arguments(tests: list[str], config: Path) -> list[str]:
@@ -374,13 +397,15 @@ if __name__ == "__main__":
     # One request per line of standard input and its answer on one line of standard output, so
     # checks can run many sessions in one process. A run is {"files": {...}, "tests": [...]},
     # {"files": {...}, "figures": true} asks for figures.py's numbers, and
-    # {"files": {...}, "chart": {...}} for what chart.py draws with those values.
+    # {"files": {...}, "chart": {...}} for what chart.py draws with those values. A run or a
+    # figures request may add {"links": {...}}: files on disk, by their path in the session.
     for line in sys.stdin:
         request = json.loads(line)
         files = json.dumps(request["files"])
+        links = json.dumps(request.get("links", {}))
         if request.get("figures"):
-            print(figures(files), flush=True)
+            print(figures(files, links), flush=True)
         elif "chart" in request:
             print(chart(files, json.dumps(request["chart"])), flush=True)
         else:
-            print(run(files, json.dumps(request["tests"])), flush=True)
+            print(run(files, json.dumps(request["tests"]), links), flush=True)

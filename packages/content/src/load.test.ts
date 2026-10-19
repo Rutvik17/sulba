@@ -597,6 +597,75 @@ test("a lab that runs on the learner's machine says so, and has its project", as
   expect(Object.keys(lab?.project ?? {})).toEqual(['README.md', 'pyproject.toml', 'uv.lock']);
 });
 
+test('a machine lab lists the files it fetches, with their credit', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const lab = course?.levels[1]?.modules[0]?.labs[0];
+  expect(lab?.fetch.map(({ kind, title, licence }) => [kind, title, licence.name])).toEqual([
+    ['data', 'Fashion-MNIST', 'MIT'],
+  ]);
+  expect(lab?.fetch[0]?.files).toEqual([
+    {
+      file: 't10k-labels-idx1-ubyte.gz',
+      url: 'https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz',
+      bytes: 5148,
+      sha256: '67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5',
+    },
+  ]);
+});
+
+test('a file a lab fetches is pinned by its address, size and sha256', async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const yaml = join(root, ledger, 'lab.yaml');
+    await edit(yaml, 'file: t10k-labels-idx1-ubyte.gz', 'file: labels.gz.partial');
+    await edit(yaml, 'url: https://fashion-mnist.s3', 'url: http://fashion-mnist.s3');
+    await edit(yaml, 'bytes: 5148', 'bytes: 0');
+    await edit(yaml, 'sha256: 67da', 'sha256: 67DA');
+  });
+  // A lab.yaml that breaks its schema leaves the lab's folders unlisted, which are problems too.
+  const fields = problems
+    .filter(({ path }) => path === `${ledger}/lab.yaml`)
+    .map(({ message }) => message.split(':')[0]);
+  expect(fields).toEqual([
+    'fetch.0.files.0.file',
+    'fetch.0.files.0.url',
+    'fetch.0.files.0.bytes',
+    'fetch.0.files.0.sha256',
+  ]);
+});
+
+test('each file a lab fetches has a name of its own in data/', async () => {
+  const { problems } = await loadChanged((root) =>
+    edit(join(root, ledger, 'lab.yaml'), 'file: t10k-labels-idx1-ubyte.gz', 'file: Entries.csv'),
+  );
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/lab.yaml`,
+      message: 'fetch.0.files.0.file: data/ already has a file named Entries.csv.',
+    },
+  ]);
+});
+
+test('a lab that runs in the browser fetches no files', async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const fetched = (await readFile(join(root, ledger, 'lab.yaml'), 'utf8')).match(
+      /^fetch:\n(?: {2}.*\n)+/m,
+    )?.[0];
+    if (!fetched) throw new Error("The ledger lab's lab.yaml has no fetch.");
+    await edit(
+      join(root, 'demo/modules/counting/labs/tallies/lab.yaml'),
+      'stages:',
+      `${fetched}stages:`,
+    );
+  });
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message:
+        "fetch: Only a lab that runs on the learner's machine fetches files: set runs: machine, or serve the data as a dataset.",
+    },
+  ]);
+});
+
 test("a lab that runs on the learner's machine runs from its project", async () => {
   const { problems } = await loadChanged((root) =>
     rm(join(root, ledger, 'project'), { recursive: true }),

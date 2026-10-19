@@ -46,6 +46,36 @@ const dataset = z.strictObject({
   changes: title,
 });
 
+/**
+ * Files a lab that runs on the learner's machine fetches from their publisher, being too large for
+ * the site to serve (decision record 29): the credit their licence asks for, and each file with
+ * its address, size and sha256.
+ */
+const fetchSource = z.strictObject({
+  /** What the files are, which names them in the credit: a dataset, or a model's weights. */
+  kind: z.enum(['data', 'model']),
+  title,
+  creators: z.array(title).min(1),
+  url: z.url({ protocol: /^https$/ }),
+  licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
+  files: z
+    .array(
+      z.strictObject({
+        /** Its name in `data/`, where a run has it. */
+        file: z
+          .string()
+          .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, 'Expected letters, digits, dots, dashes and _')
+          .refine((name) => !name.endsWith('.partial'), {
+            message: 'The runner fetches a file through a name ending in .partial.',
+          }),
+        url: z.url({ protocol: /^https$/ }),
+        bytes: z.int().positive(),
+        sha256: z.string().regex(/^[0-9a-f]{64}$/, 'Expected a sha256 in lowercase hex'),
+      }),
+    )
+    .min(1),
+});
+
 /** Code by others that a lab ports, with the credit and the notice its licence asks for. */
 const portedCode = z.strictObject({
   title,
@@ -64,6 +94,7 @@ export const labFile = z.strictObject({
   /** What the learner builds, in a sentence or two, under the lab's title. */
   summary: title,
   data: z.array(dataset).default([]),
+  fetch: z.array(fetchSource).default([]),
   /**
    * A library's results that the lab's tests compare with, each a JSON file in `references/`,
    * which the folder's `make.py` records (decision record 27).

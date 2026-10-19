@@ -106,6 +106,85 @@ def test_files_outside_the_session_are_refused() -> None:
         run(json.dumps({"../stats.py": ""}), json.dumps([]))
 
 
+# A file on disk a run links into its session, as a machine lab's fetched files are: bytes, not
+# text.
+TILES = bytes(range(256)) * 4
+
+TILES_TEST = '''import pytest
+
+
+@pytest.mark.id("tst_aaaaaa")
+def test_tiles():
+    """Reads the linked tiles"""
+    with open("data/tiles.bin", "rb") as file:
+        assert len(file.read()) == 1024
+'''
+
+
+def test_a_run_has_each_linked_file_at_its_path(tmp_path: Path) -> None:
+    source = tmp_path / "tiles.bin"
+    source.write_bytes(TILES)
+    files = {"tests/test_tiles.py": TILES_TEST}
+    links = {"data/tiles.bin": str(source)}
+    result = json.loads(run(json.dumps(files), json.dumps(list(files)), json.dumps(links)))
+    assert [test["status"] for test in result["tests"]] == ["pass"]
+    # The session goes when the run ends, and the file stays as it was.
+    assert source.read_bytes() == TILES
+
+
+def test_a_file_the_system_cannot_link_is_copied(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def unlinkable(source: str, path: Path) -> None:
+        raise OSError("Hard links aren't supported here.")
+
+    monkeypatch.setattr("os.link", unlinkable)
+    source = tmp_path / "tiles.bin"
+    source.write_bytes(TILES)
+    files = {"tests/test_tiles.py": TILES_TEST}
+    links = {"data/tiles.bin": str(source)}
+    result = json.loads(run(json.dumps(files), json.dumps(list(files)), json.dumps(links)))
+    assert [test["status"] for test in result["tests"]] == ["pass"]
+
+
+def test_linked_files_outside_the_session_are_refused(tmp_path: Path) -> None:
+    source = tmp_path / "tiles.bin"
+    source.write_bytes(TILES)
+    with pytest.raises(ValueError, match="inside the session"):
+        run(json.dumps({}), json.dumps([]), json.dumps({"../tiles.bin": str(source)}))
+
+
+def test_figures_have_each_linked_file_at_its_path(tmp_path: Path) -> None:
+    source = tmp_path / "tiles.bin"
+    source.write_bytes(TILES)
+    files = {
+        "figures.py": (
+            "def figures():\n"
+            "    with open('data/tiles.bin', 'rb') as file:\n"
+            "        return {'bytes': str(len(file.read()))}\n"
+        )
+    }
+    answer = json.loads(figures(json.dumps(files), json.dumps({"data/tiles.bin": str(source)})))
+    assert answer == {"figures": {"bytes": "1024"}, "problem": None}
+
+
+def test_batch_mode_links_each_requests_files(tmp_path: Path) -> None:
+    source = tmp_path / "tiles.bin"
+    source.write_bytes(TILES)
+    files = {"tests/test_tiles.py": TILES_TEST}
+    request = {"files": files, "tests": list(files), "links": {"data/tiles.bin": str(source)}}
+    done = subprocess.run(
+        [sys.executable, "sulba_runner.py"],
+        input=json.dumps(request) + "\n",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=Path(__file__).parents[1],
+        check=True,
+    )
+    assert [test["status"] for test in json.loads(done.stdout)["tests"]] == ["pass"]
+
+
 def test_batch_mode_answers_each_line_with_a_result() -> None:
     requests = []
     for case in ("passes", "syntax-error"):

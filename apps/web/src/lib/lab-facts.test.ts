@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { aboutTime, labFacts, levelFacts, moduleFacts } from './lab-facts';
+import { aboutTime, fetchedOf, labFacts, levelFacts, moduleFacts, sizeOf } from './lab-facts';
 import type { LabView } from './labs';
 
 const stage = (kind: LabView['stages'][number]['kind'], file: string, minutes: number) =>
@@ -33,6 +33,33 @@ test("a lab that runs on the learner's machine says so", () => {
     value: 'Your machine',
   });
   expect(labFacts({ stages, runs: 'browser' })).toHaveLength(3);
+});
+
+test('a size is given in decimal units, to a tenth', () => {
+  expect([512, 5148, 26_421_880, 1_500_000_000].map(sizeOf)).toEqual([
+    '512 bytes',
+    '5.1 kB',
+    '26.4 MB',
+    '1.5 GB',
+  ]);
+});
+
+test("a machine lab's first run downloads its fetched files, from their hosts in order", () => {
+  const file = (url: string, bytes: number) => ({ file: 'x', url, bytes, sha256: '0'.repeat(64) });
+  const source = (files: ReturnType<typeof file>[]) =>
+    ({ kind: 'data', title: 'Tiles', files }) as LabView['fetch'][number];
+  expect(fetchedOf({ fetch: [] })).toBeNull();
+  const fetch = [
+    source([file('https://zenodo.org/a.zip', 94_658_721)]),
+    source([
+      file('https://dl.fbaipublicfiles.com/b.pth', 88_283_115),
+      file('https://zenodo.org/c.zip', 1_000),
+    ]),
+  ];
+  expect(fetchedOf({ fetch })).toEqual({
+    size: '182.9 MB',
+    hosts: 'zenodo.org and dl.fbaipublicfiles.com',
+  });
 });
 
 test('problems are counted as one Problem or as Problems', () => {

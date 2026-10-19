@@ -8,10 +8,12 @@ import { fileURLToPath } from 'node:url';
 import { loadPyodide } from 'pyodide';
 import { pyodideFolder } from './assemble.ts';
 import { createEngine, type Engine, type RunnerModules } from './engine.ts';
+import { fetchedPath } from './fetched.ts';
 import { runnerFolder } from './machine.ts';
 import {
   type ChartRequest,
   type ChartResult,
+  type FetchedFile,
   type Figures,
   pythonPackages,
   type RunRequest,
@@ -69,17 +71,33 @@ export async function pyodideRuntime(): Promise<string> {
   return hash.digest('hex');
 }
 
+/** The files a machine lab fetches from their publishers, by their path in a run. */
+export type Fetched = Readonly<Record<string, FetchedFile>>;
+
 /**
  * A hash of what an answer from CPython in a machine lab's project depends on besides its files:
- * the runner's modules, and the project's uv.lock, which holds the version of every package.
+ * the runner's modules, the project's uv.lock, which holds the version of every package, and the
+ * files the lab fetches.
  */
-export async function projectRuntime(lock: string): Promise<string> {
+export async function projectRuntime(lock: string, fetched: Fetched = {}): Promise<string> {
   const runner = await runnerModules();
   const hash = createHash('sha256');
   for (const text of [runner['sulba_runner.py'], runner['sulba_fixtures.py'], lock]) {
     hash.update(text).update('\0');
   }
+  for (const path of Object.keys(fetched).sort()) {
+    hash.update(`${path}\0${fetched[path]?.sha256}\0`);
+  }
   return hash.digest('hex');
+}
+
+/**
+ * Where a machine lab's runs and figures go (decision records 28 and 29): its project's folder,
+ * whose environment they run in, and the files it fetches, which each run has beside its own.
+ */
+export interface MachineProject {
+  readonly folder: string;
+  readonly fetched: Fetched;
 }
 
 /** A CPython process ended for running past its time limit. */
@@ -87,17 +105,25 @@ class TimeLimit extends Error {}
 
 /**
  * Send each request to one CPython process, at the versions in python/uv.lock or, with `project`,
- * in that machine lab's project, at the versions its uv.lock pins (decision record 28), and read
- * back an answer per line. With `limitMs`, a process still running then is ended, and nothing
+ * in that machine lab's project, at the versions its uv.lock pins, with the files it fetches, and
+ * read back an answer per line. With `limitMs`, a process still running then is ended, and nothing
  * comes back.
  */
-function inCPython(
+async function inCPython(
   requests: readonly object[],
   limitMs?: number,
-  project?: string,
+  project?: MachineProject,
 ): Promise<unknown[]> {
+  const links = Object.fromEntries(
+    await Promise.all(
+      Object.entries(project?.fetched ?? {}).map(
+        async ([path, file]) => [path, await fetchedPath(file)] as const,
+      ),
+    ),
+  );
+  const lines = requests.map((request) => JSON.stringify({ ...request, links }));
   return new Promise((resolve, reject) => {
-    const where = project === undefined ? [] : ['--project', project];
+    const where = project === undefined ? [] : ['--project', project.folder];
     const child = spawn(
       'uv',
       ['run', ...where, '--directory', python, 'python', 'sulba_runner.py'],
@@ -133,7 +159,7 @@ function inCPython(
       }
       resolve(answers);
     });
-    for (const request of requests) child.stdin.write(`${JSON.stringify(request)}\n`);
+    for (const line of lines) child.stdin.write(`${line}\n`);
     child.stdin.end();
   });
 }
@@ -142,7 +168,7 @@ function inCPython(
 export async function runInCPython(
   requests: readonly RunRequest[],
   limitMs?: number,
-  project?: string,
+  project?: MachineProject,
 ): Promise<RunResult[]> {
   const answers = await inCPython(
     requests.map(({ files, tests }) => ({ files, tests })),
@@ -186,7 +212,7 @@ export async function runEachInCPython(
 /** Each set of files' figures, computed in CPython, in a machine lab's project when one is given. */
 export async function figuresInCPython(
   fileSets: readonly RunRequest['files'][],
-  project?: string,
+  project?: MachineProject,
 ): Promise<Figures[]> {
   const answers = await inCPython(
     fileSets.map((files) => ({ files, figures: true })),

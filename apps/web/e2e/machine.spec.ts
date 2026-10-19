@@ -57,6 +57,24 @@ test('a lab that runs on the machine says how to run it there, and loads no Pyth
   expect(fetched.filter((each) => each.startsWith('/pyodide/'))).toEqual([]);
 });
 
+test('a lab that fetches files says how much its first run downloads, and from where', async ({
+  page,
+}) => {
+  await page.goto(path);
+
+  await expect(
+    page.getByText(
+      'The first time, it also downloads the files the lab needs into data: 5.1 kB, from fashion-mnist.s3.eu-central-1.amazonaws.com.',
+    ),
+  ).toBeVisible();
+  const credit = page.getByText('Data: Fashion-MNIST, by Zalando Research, MIT.');
+  await expect(credit).toBeVisible();
+  await expect(credit.getByRole('link', { name: 'Fashion-MNIST' })).toHaveAttribute(
+    'href',
+    'https://github.com/zalandoresearch/fashion-mnist',
+  );
+});
+
 test('its download holds the project, the runner, its stages and the first stage’s code', async ({
   page,
 }) => {
@@ -85,6 +103,16 @@ test('its download holds the project, the runner, its stages and the first stage
   const lab = JSON.parse(text('.sulba/lab.json'));
   expect(lab).toMatchObject({ format: 1, id: 'lab_demo03', start: 0 });
   expect(lab.page).toMatch(/\/demo\/ledgers\/ledger\/$/);
+  // The runner fetches the lab's larger files itself, so the zip doesn't carry them.
+  expect(lab.data).toEqual(['data/entries.csv']);
+  expect(lab.fetch).toEqual([
+    {
+      file: 't10k-labels-idx1-ubyte.gz',
+      url: 'https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz',
+      bytes: 5148,
+      sha256: '67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5',
+    },
+  ]);
   expect(lab.stages.map((stage: { slug: string }) => stage.slug)).toEqual([
     'balance',
     'audit',

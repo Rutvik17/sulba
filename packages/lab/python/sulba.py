@@ -5,25 +5,34 @@
     uv run sulba.py next     start the next stage, once this one is done
 
 When a stage is done, it gives you a link to the lab's page, which marks the stage done there.
+Before the first run, it fetches into data/ any files the lab needs that are too large for the
+download, such as a dataset, from their publishers.
 """
 
 # A lab that runs on the learner's machine downloads with this file at its top and its stages in
 # .sulba/lab.json (decision record 28). The link's fragment carries the stage's attempts as the
 # attempts table takes them (decision record 18), so the page records them as its own; a fragment
-# never reaches the server. It holds them as JSON compressed with DEFLATE, in base64url.
+# never reaches the server. It holds them as JSON compressed with DEFLATE, in base64url. The files
+# a lab fetches are each pinned by its size and sha256 (decision record 29).
 
 from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
+import http.client
 import json
+import os
 import sys
+import urllib.error
+import urllib.request
 import uuid
 import webbrowser
 import zlib
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / ".sulba"
@@ -37,6 +46,10 @@ MAX_ATTEMPTS = 200
 # The longest link the runner makes. Parts of Windows still cut an address at 2,083 characters, so
 # a link holds the newest of its attempts that fit in this.
 MAX_LINK = 2000
+# A fetch writes its file in parts of this many bytes.
+CHUNK = 1 << 20
+# How long a fetch waits on its publisher to connect or send more, in seconds.
+TIMEOUT = 60
 
 
 def main(argv: list[str]) -> int:
@@ -80,10 +93,16 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
     if finishing and stage["id"] in progress["passed"]:
         print("This review is finished.")
         return 0
+    if not fetched(lab):
+        return 1
     import sulba_runner
 
     result = json.loads(
-        sulba_runner.run(json.dumps(session_files(lab, index)), json.dumps(list(stage["tests"])))
+        sulba_runner.run(
+            json.dumps(session_files(lab, index)),
+            json.dumps(list(stage["tests"])),
+            json.dumps(session_links(lab)),
+        )
     )
     report(stage, result)
     tests, checks = split(stage, result)
@@ -116,14 +135,18 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
 
 
 def session_files(lab: dict[str, Any], index: int) -> dict[str, str]:
-    """A run's files: the lab's data and references, the learner's files up to this stage, and
-    the stage's tests and checks."""
+    """A run's files: the lab's datasets and references, the learner's files up to this stage,
+    and the stage's tests and checks. Of data/, only the lab's own datasets are read: it also
+    holds the files the lab fetches, and whatever the learner puts there."""
     files: dict[str, str] = {}
-    for folder, prefix in [(HERE / "data", "data"), (RUNNER / "references", "references")]:
-        for path in sorted(folder.rglob("*")) if folder.is_dir() else []:
-            if path.is_file():
-                name = f"{prefix}/{path.relative_to(folder).as_posix()}"
-                files[name] = path.read_text(encoding="utf-8")
+    for name in lab["data"]:
+        if (HERE / name).is_file():
+            files[name] = (HERE / name).read_text(encoding="utf-8")
+    folder = RUNNER / "references"
+    for path in sorted(folder.rglob("*")) if folder.is_dir() else []:
+        if path.is_file():
+            name = f"references/{path.relative_to(folder).as_posix()}"
+            files[name] = path.read_text(encoding="utf-8")
     for stage in lab["stages"][: index + 1]:
         path = HERE / stage["file"]
         if path.is_file():
@@ -133,8 +156,123 @@ def session_files(lab: dict[str, Any], index: int) -> dict[str, str]:
     return files
 
 
+def session_links(lab: dict[str, Any]) -> dict[str, str]:
+    """The files the lab fetches, by their path in a run, each where it is in data/."""
+    return {f"data/{each['file']}": str(HERE / "data" / each["file"]) for each in lab["fetch"]}
+
+
 def decoded(text: str) -> str:
     return base64.b64decode(text).decode("utf-8")
+
+
+class Mismatch(Exception):
+    """A publisher sent a file other than the one its sha256 names."""
+
+
+def fetched(lab: dict[str, Any]) -> bool:
+    """Puts in data/ each file the lab fetches from its publisher, fetching those not there yet,
+    and says why when one can't be fetched. Returns whether they are all there."""
+    missing = [each for each in lab["fetch"] if not whole(HERE / "data" / each["file"], each)]
+    if not missing:
+        return True
+    print("Fetching the lab's files into data:")
+    for each in missing:
+        host = urlsplit(each["url"]).hostname
+        about = f"  {each['file']}, {size(each['bytes'])}, from {host}"
+        print(about, end="", flush=True)
+        try:
+            fetch(each, HERE / "data" / each["file"], about)
+        except urllib.error.HTTPError as error:
+            print(f"\n\n{host} answered {error.code} {error.reason}. Try again later.")
+            return False
+        except Mismatch:
+            print(f"\n\n{host} sent a different file from the one the lab was made with.")
+            print("Try again later.")
+            return False
+        except (OSError, http.client.HTTPException) as error:
+            print(f"\n\nThe fetch stopped: {error}")
+            print("Run uv run sulba.py again to go on from where it stopped.")
+            return False
+        print()
+    print()
+    return True
+
+
+def fetch(file: dict[str, Any], path: Path, about: str) -> None:
+    """Fetches the file to path, through a file beside it that a fetch cut short goes on from, and
+    moves it into place once it's whole."""
+    partial = path.with_name(f"{path.name}.partial")
+    path.parent.mkdir(exist_ok=True)
+    # A fetch stopped after all of its file had come has only to move it into place.
+    if not whole(partial, file):
+        kept = partial.is_file()
+        receive(file, partial, about)
+        if kept and not whole(partial, file):
+            # What a fetch cut short kept may not be the start of this file, so it starts again.
+            partial.unlink()
+            receive(file, partial, about)
+        if not whole(partial, file):
+            partial.unlink()
+            raise Mismatch(file["url"])
+    os.replace(partial, path)
+
+
+def receive(file: dict[str, Any], partial: Path, about: str) -> None:
+    """Writes the file into partial: the part after what partial holds, or all of it when partial
+    holds no less than the whole file or the publisher sends all of it. At a terminal, it shows how
+    much has come after `about`. A publisher whose answer is another size of file has another file,
+    and one that stops early leaves partial for the next fetch to go on from."""
+    start = partial.stat().st_size if partial.is_file() else 0
+    if start >= file["bytes"]:
+        start = 0
+    headers = {"User-Agent": "sulba.py"}
+    if start:
+        headers["Range"] = f"bytes={start}-"
+    request = urllib.request.Request(file["url"], headers=headers)
+    with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+        if response.status != 206:
+            start = 0
+        if declared(response, start) not in (None, file["bytes"]):
+            partial.unlink(missing_ok=True)
+            raise Mismatch(file["url"])
+        with partial.open("ab" if start else "wb") as out:
+            done = start
+            while chunk := response.read(CHUNK):
+                out.write(chunk)
+                done += len(chunk)
+                if sys.stdout.isatty():
+                    shown = min(100, done * 100 // file["bytes"])
+                    print(f"\r{about}: {shown}%", end="", flush=True)
+        # http.client ends a read early without an error when the connection closes.
+        if done < file["bytes"]:
+            host = urlsplit(file["url"]).hostname
+            raise ConnectionError(f"{host} stopped after {size(done)} of {size(file['bytes'])}")
+
+
+def declared(response: http.client.HTTPResponse, start: int) -> int | None:
+    """The size of the whole file as the publisher's answer gives it, if it does: the total in a
+    part's Content-Range, or the Content-Length of all of it."""
+    if start:
+        total = response.headers.get("Content-Range", "").rpartition("/")[2]
+    else:
+        total = response.headers.get("Content-Length", "")
+    return int(total) if total.isdigit() else None
+
+
+def whole(path: Path, file: dict[str, Any]) -> bool:
+    """Whether path holds the file: its size, then its sha256."""
+    if not path.is_file() or path.stat().st_size != file["bytes"]:
+        return False
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest() == file["sha256"]
+
+
+def size(count: int) -> str:
+    """A size in bytes as a download shows it, such as 26.4 MB."""
+    for unit, scale in (("GB", 10**9), ("MB", 10**6), ("kB", 10**3)):
+        if count >= scale:
+            return f"{count / scale:.1f} {unit}"
+    return f"{count} bytes"
 
 
 def status_of(result: dict[str, Any]) -> str:
