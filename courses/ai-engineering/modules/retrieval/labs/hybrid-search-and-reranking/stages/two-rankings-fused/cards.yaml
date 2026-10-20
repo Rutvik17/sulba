@@ -1,0 +1,21 @@
+cards:
+  - id: crd_c2zhao
+    front: >-
+      Why fuse BM25's ranking and the vectors' by rank rather than by score?
+    back: >-
+      Their scores are on scales of their own, so a sum would be decided by the larger. Ranks
+      are on one scale.
+  - id: crd_mzc86p
+    front: >-
+      What does reciprocal rank fusion add up for a passage?
+    back: >-
+      `$1 / (k + r)$` for its rank `$r$` in each ranking, the first rank being 1. Cormack,
+      Clarke and Büttcher set `$k$` to {% $fig.rrf %}.
+  - id: crd_mgd29g
+    front: >-
+      On the help desk's validation questions, how did the fused ranking compare with the
+      vectors'?
+    back: >-
+      It found more among its first {% $fig.more %}, {% $fig.fused_more %} against
+      {% $fig.vectors_more %}, and less among its first {% $fig.k %}, {% $fig.fused %}
+      against {% $fig.vectors %}.

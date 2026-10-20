@@ -1,0 +1,21 @@
+cards:
+  - id: crd_h0ywwm
+    front: >-
+      Why does a generated `tsvector` column need `STORED` before Postgres can index it?
+    back: >-
+      Postgres makes a generated column virtual unless it says otherwise, worked out each
+      time it's read, and a virtual column can't be indexed.
+  - id: crd_vorej2
+    front: >-
+      How does `websearch_to_tsquery` join a question's words?
+    back: >-
+      With AND, unless `or` stands between two of them: a passage must hold every word. Of
+      the help desk's {% $fig.questions %} validation questions, {% $fig.none %} found no
+      passage that way.
+  - id: crd_cuz28m
+    front: >-
+      What does `ts_rank_cd` rank a passage by, for a question's words joined by OR?
+    back: >-
+      How many times the words appear in it, {% $fig.weight %} for each. A common word
+      counts as much as a rare one, since Postgres's ranking uses nothing about the other
+      passages.

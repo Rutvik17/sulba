@@ -1,0 +1,7 @@
+id: stg_84ruv1
+kind: build
+title: Two rankings fused
+builds: A new `fuse.py`.
+file: fuse.py
+packages: [numpy]
+minutes: 35

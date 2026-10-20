@@ -1,0 +1,20 @@
+cards:
+  - id: crd_ls1twx
+    front: >-
+      In BM25, why does a word that few passages hold count for more than a common one?
+    back: >-
+      Its idf weighs its count by how few passages hold it. In the help desk, the commonest
+      word, “{% $fig.common %}”, in {% $fig.common_held %} of the {% $fig.passages %}
+      passages, weighs {% $fig.common_idf %}, and a word one passage holds {% $fig.rare_idf %}.
+  - id: crd_uaciqv
+    front: >-
+      Why does Lucene add 1 inside BM25's logarithm?
+    back: >-
+      Without it, a word that more than half the passages hold weighs less than zero, and
+      lowers the score of every passage that holds it.
+  - id: crd_c5uzcc
+    front: >-
+      What do BM25's `$k_1$` and `$b$` set?
+    back: >-
+      `$k_1$`, how fast a word's count levels off; `$b$`, how much a passage's length takes
+      away, none at 0 and in full at 1.

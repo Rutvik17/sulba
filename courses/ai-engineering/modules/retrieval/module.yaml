@@ -4,3 +4,4 @@ labs:
   - embeddings-for-search
   - vector-search-in-postgres
   - chunking
+  - hybrid-search-and-reranking

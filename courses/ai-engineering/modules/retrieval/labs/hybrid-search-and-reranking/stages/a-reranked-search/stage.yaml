@@ -1,0 +1,42 @@
+id: stg_cs03nb
+kind: ship
+title: A reranked search
+builds: A new `desk.py`, which uses your `bm25.py` and `fuse.py`.
+file: desk.py
+packages: [httpx, numpy]
+minutes: 45
+checks:
+  - check: tst_s19j01
+    title: "Finds more among the first {% $fig.k %}"
+    requires: >-
+      On the {% $fig.test %} test questions, with the scores the reranker gave them, recall at
+      {% $fig.k %} is at least {% $fig.floor %}, where the fused ranking's first
+      {% $fig.k %} passages, each text once, find {% $fig.test_once %}.
+    failure: >-
+      Send the reranker the fused ranking's first {% $fig.depth %} texts, and give the
+      passages in the order of the scores its results give, each found by its `index`.
+  - check: tst_5dar7f
+    title: "{% $fig.depth %} texts, in one request"
+    requires: >-
+      Each search sends the reranker one request, for the model `Qwen3-Reranker-0.6B`, with
+      the question as its query and the texts of the fused ranking's first
+      {% $fig.depth %} passages as its documents, in order, each text once.
+    failure: >-
+      Pass over a passage whose text one ranked before it holds, and stop at
+      {% $fig.depth %} texts.
+  - check: tst_okpa2d
+    title: In the reranker's order
+    requires: >-
+      `search` gives the `k` passages the reranker scores highest, highest first, and of two
+      that score the same, the one ranked first.
+    failure: >-
+      The results come highest first, not in the order they were sent: find each passage by
+      its result's `index`, and sort ties by it.
+  - check: tst_54x2zy
+    title: Answers when the reranker can't
+    requires: >-
+      When the reranker answers with an error, drops the connection or doesn't answer,
+      `search` gives the fused ranking's first `k` passages, each text once.
+    failure: >-
+      Catch `httpx.HTTPError`, which a timeout, a dropped connection and `raise_for_status`
+      all raise, and give the passages in the fused ranking's order.

@@ -1,0 +1,29 @@
+cards:
+  - id: crd_ryu5g3
+    front: >-
+      Why does a search rerank only a fused ranking's first passages, rather than every
+      passage?
+    back: >-
+      A reranker reads the question and a passage together, so it takes a run of the model
+      for each passage it scores. Vectors, made before the question, search every passage at
+      once.
+  - id: crd_v16qt0
+    front: >-
+      What does Qwen3-Reranker give as a passage's score?
+    back: >-
+      The probability it gives the answer yes, asked whether the passage meets the
+      requirements the question sets. It orders one question's passages; nothing says it
+      compares across questions.
+  - id: crd_001gg0
+    front: >-
+      In what order does llama.cpp's server give a rerank request's results?
+    back: >-
+      By score, highest first, not in the order the documents were sent: each result's
+      `index` names its document.
+  - id: crd_u5me63
+    front: >-
+      On the help desk's validation questions, what did reranking the fused ranking's first
+      {% $fig.depth %} texts do to recall at {% $fig.k %}?
+    back: >-
+      It rose from {% $fig.once %}, the fused ranking's with each text once, to
+      {% $fig.reranked %}.
