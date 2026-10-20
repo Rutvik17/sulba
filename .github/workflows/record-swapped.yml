@@ -1,0 +1,52 @@
+# Spike: records Granite Guardian's grades of the replies people wrote, each with the own
+# passages of another service's question, from the files the pilot committed to spike/out, and
+# commits them to spike/swapped on this branch. A push made with the workflow's own token starts
+# no run.
+name: Record swapped
+on:
+  push:
+    branches: [spike/evals-swapped]
+permissions:
+  contents: read
+env:
+  LLAMA: https://github.com/ggml-org/llama.cpp/releases/download/b11734/llama-b11734-bin-ubuntu-x64.tar.gz
+  LLAMA_SHA256: 5d20cbcde04ef743b96e91b6173663b1925077a13fa86d0d98e69a5a5b59a16a
+  PASSAGES: courses/ai-engineering/modules/retrieval/labs/hybrid-search-and-reranking/data/passages.csv
+jobs:
+  grade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: llama-server b11734
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir -p llama
+          mkdir -p models
+          mkdir -p desk
+          tar -xzf llama.tar.gz -C llama
+          find "$PWD/llama" -name llama-server -type f | head -1 > server.txt
+          test -s server.txt
+      - name: Grades
+        run: |
+          cp spike/out/questions.csv spike/out/runs.csv spike/out/relevant.csv "$PASSAGES" desk/
+          cp spike/out/human-replies.csv desk/
+          printf 'question,release,sample,reply,finish,tokens\n' > desk/replies.csv
+          uv run tools/datasets/multidoc2dial_to_grade.py desk all.csv
+          python3 -c "import csv,sys; r=list(csv.reader(open('all.csv',newline='',encoding='utf-8'))); w=csv.writer(open('to-grade.csv','w',newline='',encoding='utf-8'),lineterminator='\n'); w.writerow(r[0]); w.writerows(x for x in r[1:] if x[0].endswith('/human/swapped'))"
+          wc -l to-grade.csv
+          uv run tools/datasets/guardian.py to-grade.csv "$(cat server.txt)" grades.csv 1/1 models
+      - name: Commit
+        run: |
+          mkdir -p spike/swapped
+          cp grades.csv spike/swapped/grades.csv
+          wc -l spike/swapped/grades.csv
+          git config user.name github-actions
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add spike/swapped
+          git commit -m "Record the swapped grades of Evals"
+          git push origin HEAD:spike/evals-swapped
