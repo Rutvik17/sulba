@@ -68,7 +68,7 @@ export function machineLabOf(lab: Lab, page: string, start: number): Omit<Machin
     start,
     data: lab.data.map((set) => `data/${set.file}`),
     fetch: lab.fetch.flatMap((source) => source.files),
-    model: lab.model ? { title: lab.model.title, ...lab.model.file } : null,
+    models: lab.models.map(({ title, kind, file }) => ({ title, kind, ...file })),
     stages: lab.stages.map(stageOf),
   };
 }

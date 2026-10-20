@@ -69,7 +69,7 @@ const lab: LabView = {
   data: [],
   references: [],
   fetch: [],
-  model: null,
+  models: [],
   project: [],
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),

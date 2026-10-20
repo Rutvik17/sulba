@@ -70,23 +70,47 @@ test("a machine lab's first run downloads its fetched files, from their hosts in
   });
 });
 
-test("a lab's model is named with the size of its file and the host it comes from", () => {
-  expect(servedOf({ model: null })).toBeNull();
-  const model = {
+test("a lab's models are named with the size of their files and the hosts they come from", () => {
+  expect(servedOf({ models: [] })).toBeNull();
+  const licence = {
+    name: 'Apache License 2.0',
+    url: 'https://www.apache.org/licenses/LICENSE-2.0',
+  };
+  const chat = {
     title: 'Qwen3.5-0.8B',
+    kind: 'chat' as const,
     creators: ['Qwen'],
     url: 'https://huggingface.co/Qwen/Qwen3.5-0.8B',
-    licence: { name: 'Apache License 2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0' },
+    licence,
     file: {
       url: 'https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620/Qwen3.5-0.8B-Q8_0.gguf',
       bytes: 833_592_096,
       sha256: 'a'.repeat(64),
     },
   };
-  expect(servedOf({ model })).toEqual({
-    title: 'Qwen3.5-0.8B',
+  expect(servedOf({ models: [chat] })).toEqual({
+    count: 1,
+    titles: 'Qwen3.5-0.8B',
     size: '833.6 MB',
-    host: 'huggingface.co',
+    hosts: 'huggingface.co',
+  });
+  const embedding = {
+    ...chat,
+    title: 'nomic-embed-text-v1.5',
+    kind: 'embedding' as const,
+    file: { ...chat.file, url: 'https://example.com/nomic.gguf', bytes: 146_146_432 },
+  };
+  const reranking = {
+    ...chat,
+    title: 'Qwen3-Reranker-0.6B',
+    kind: 'reranking' as const,
+    file: { ...chat.file, bytes: 639_153_184 },
+  };
+  expect(servedOf({ models: [chat, embedding, reranking] })).toEqual({
+    count: 3,
+    titles: 'Qwen3.5-0.8B, nomic-embed-text-v1.5 and Qwen3-Reranker-0.6B',
+    size: '1.6 GB',
+    hosts: 'huggingface.co and example.com',
   });
 });
 

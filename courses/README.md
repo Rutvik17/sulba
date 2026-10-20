@@ -164,25 +164,26 @@ fetch:
 
 Take the address from the publisher's own page, over HTTPS, and the size and sha256 from a copy fetched from it. Before a run, the runner fetches into the download's `data/` each file that is missing or doesn't match, and a run has it at `data/<file>`, beside the lab's datasets, which keep their own names. Runs only read a fetched file: `pnpm check:content` fails when one changes it. The checks and the build fetch each file too, and keep it under its sha256 in `node_modules/.cache/sulba-fetched`, which CI keeps between runs; each process checks its copy against the sha256 before using it. The lab's page credits each source and says how much the first run downloads and from where, so the project's `README.md` says so too. A file is used only under a licence that allows a paid course, as for a dataset.
 
-### A lab's model
+### A lab's models
 
-A lab that runs on the learner's machine can name a model, which `uv run sulba.py model` serves there with llama.cpp's server, for the learner's code to call through the chat completions API at `http://127.0.0.1:9931/v1` (decision record 32). `model` in `lab.yaml` gives its credit, and its GGUF file's address, size and sha256:
+A lab that runs on the learner's machine can name models, which `uv run sulba.py model` serves there with one llama.cpp server, for the learner's code to call by each one's title at `http://127.0.0.1:9931/v1` (decision record 34): a chat model through the chat completions API, an embedding model through `/v1/embeddings` and a reranker through `/v1/rerank`. Each entry in `models` in `lab.yaml` gives the model's title, its kind, which is `chat`, `embedding` or `reranking`, its credit, and its GGUF file's address, size and sha256:
 
 ```yaml
-model:
-  title: Qwen3.5-0.8B
-  creators: [Qwen]
-  url: https://huggingface.co/Qwen/Qwen3.5-0.8B
-  licence:
-    name: Apache License 2.0
-    url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
-  file:
-    url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
-    bytes: 833592096
-    sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
+models:
+  - title: Qwen3.5-0.8B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+    file:
+      url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
+      bytes: 833592096
+      sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
 ```
 
-The first time a learner runs the command, the runner fetches the model and the build of llama.cpp's server for their system, which `sulba.py` pins, into `sulba` in their cache folder, where every lab finds them. The server reads a conversation of up to 4,096 tokens, with reasoning off. A lab's tests never call the model: they call the `model` fixture's scripted model (decision record 31), so no figure comes from the real model. The lab's page credits the model and says how much the command downloads and from where, so the project's `README.md` says so too. `pnpm check:machine --model`, which CI's Models jobs run on Windows, macOS and Linux, asks each model a question from a lab's download.
+A title has only letters, digits, dots, dashes and _, and each model in a lab has a title of its own. The first time a learner runs the command, the runner fetches the models and the build of llama.cpp's server for their system, which `sulba.py` pins, into `sulba` in their cache folder, where every lab finds them. It loads every model before it says they answer. A chat model reads a conversation of up to 4,096 tokens, with reasoning off; an embedding model embeds a text of up to 2,048 tokens; and a reranker scores a query and a passage of up to 2,048 tokens together. Where a model was trained on fewer tokens, the server holds it to those. On macOS, a chat model runs on the GPU and the others on the CPU. A lab's tests never call the models: they call the `model` fixture's scripted model (decision record 31), so no figure comes from a real model. The lab's page credits each model and says how much the command downloads and from where, so the project's `README.md` says so too. `pnpm check:machine --model`, which CI's Models jobs run on Windows, macOS and Linux, asks each model one thing, as its kind allows, from the download of a lab that serves it.
 
 ### A lab's database
 

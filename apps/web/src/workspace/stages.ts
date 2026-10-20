@@ -177,7 +177,7 @@ export function machineDownloadOf(
       start,
       data: lab.data.map(({ path }) => path),
       fetch: lab.fetch.flatMap((source) => source.files),
-      model: lab.model ? { title: lab.model.title, ...lab.model.file } : null,
+      models: lab.models.map(({ title, kind, file }) => ({ title, kind, ...file })),
       stages,
     },
   });

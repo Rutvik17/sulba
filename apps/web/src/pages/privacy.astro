@@ -105,10 +105,10 @@ const providers = [
       files too large for its zip, such as a dataset, the program downloads them from their
       publisher, whose address the lab's page gives, before its first run and again if one goes
       missing or changes; like any website, the publisher receives your IP address with the request.
-      If a lab has a model, <code>uv run sulba.py model</code> downloads it, and llama.cpp's server
+      If a lab has models, <code>uv run sulba.py model</code> downloads them, and llama.cpp's server
       for your computer, from their publishers the same way, into a folder every lab shares, and
-      runs them on your computer. The model answers only programs on your computer, so what your
-      code sends it stays there. If a lab has a database, its tests and{' '}
+      runs them on your computer. The models answer only programs on your computer, so what your
+      code sends them stays there. If a lab has a database, its tests and{' '}
       <code>uv run sulba.py db</code>
       run Postgres, which comes with the packages the lab installs, on your computer. On Linux, the
       first run fetches pgvector, the part that searches by vector, from apt.postgresql.org the same

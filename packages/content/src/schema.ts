@@ -1,5 +1,6 @@
 // The YAML files that give a course its structure. Folders are named by their address in the
 // URL; the order of modules, labs and stages comes from these files, and ids from neither.
+import { modelKinds } from '@sulba/lab/machine';
 import { machinePackages, pythonPackages } from '@sulba/lab/protocol';
 import { z } from 'zod';
 import { type IdKind, idPattern } from './ids.ts';
@@ -11,6 +12,9 @@ const id = (kind: IdKind) =>
 export const slug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Expected lowercase-with-dashes');
 
 const title = z.string().trim().min(1);
+
+/** A file's name in a lab's download, or a model's: letters, digits, dots, dashes and _. */
+const fileName = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
 export const courseFile = z.strictObject({
   id: id('course'),
@@ -64,7 +68,7 @@ const fetchSource = z.strictObject({
         /** Its name in `data/`, where a run has it. */
         file: z
           .string()
-          .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, 'Expected letters, digits, dots, dashes and _')
+          .regex(fileName, 'Expected letters, digits, dots, dashes and _')
           .refine((name) => !name.endsWith('.partial'), {
             message: 'The runner fetches a file through a name ending in .partial.',
           }),
@@ -77,21 +81,27 @@ const fetchSource = z.strictObject({
 });
 
 /**
- * The model a lab that runs on the learner's machine serves there, through llama.cpp's server, with
- * `uv run sulba.py model` (decision record 32): the credit its licence asks for, and its GGUF file's
- * address, size and sha256.
+ * A model a lab that runs on the learner's machine serves there, through llama.cpp's server, with
+ * `uv run sulba.py model` (decision record 34): its title, which a request gives to reach it, its
+ * kind, the credit its licence asks for, and its GGUF file's address, size and sha256.
  */
 const servedModel = z.strictObject({
-  title,
+  title: z.string().regex(fileName, 'Expected letters, digits, dots, dashes and _'),
+  kind: z.enum(modelKinds),
   creators: z.array(title).min(1),
   url: z.url({ protocol: /^https$/ }),
   licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
   file: z.strictObject({
-    url: z
-      .url({ protocol: /^https$/ })
-      .refine((address) => new URL(address).pathname.endsWith('.gguf'), {
-        message: 'Expected the address of a .gguf file',
-      }),
+    url: z.url({ protocol: /^https$/ }).refine(
+      (address) => {
+        const name = new URL(address).pathname.split('/').at(-1) ?? '';
+        return fileName.test(name) && name.endsWith('.gguf');
+      },
+      {
+        message:
+          'Expected the address of a .gguf file, named with letters, digits, dots, dashes and _',
+      },
+    ),
     bytes: z.int().positive(),
     sha256: z.string().regex(/^[0-9a-f]{64}$/, 'Expected a sha256 in lowercase hex'),
   }),
@@ -116,7 +126,12 @@ export const labFile = z.strictObject({
   summary: title,
   data: z.array(dataset).default([]),
   fetch: z.array(fetchSource).default([]),
-  model: servedModel.optional(),
+  models: z
+    .array(servedModel)
+    .refine((models) => new Set(models.map((model) => model.title)).size === models.length, {
+      message: 'Each model needs a title of its own.',
+    })
+    .default([]),
   /**
    * A library's results that the lab's tests compare with, each a JSON file in `references/`,
    * which the folder's `make.py` records (decision record 27).

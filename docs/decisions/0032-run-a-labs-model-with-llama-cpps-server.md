@@ -1,6 +1,6 @@
 # 32. Run a lab's model on the learner's machine with llama.cpp's server
 
-- Status: accepted
+- Status: superseded by [34. Serve a lab's models on the learner's machine with llama.cpp's server](0034-serve-a-labs-models-with-llama-cpps-server.md)
 - Date: 2026-10-19
 
 ## Context

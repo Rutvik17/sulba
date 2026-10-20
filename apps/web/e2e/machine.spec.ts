@@ -75,14 +75,14 @@ test('a lab that fetches files says how much its first run downloads, and from w
   );
 });
 
-test('a lab with a model says how to start it and what that downloads, and credits it', async ({
+test('a lab with models says how to start them and what that downloads, and credits each', async ({
   page,
 }) => {
   await page.goto(path);
 
   await expect(
     page.getByText(
-      'uv run sulba.py model starts the lab’s model, stories260K, on your machine, where your code can call it at http://127.0.0.1:9931/v1. The first time, it downloads the model, 1.2 MB, from huggingface.co, and llama.cpp’s server for your system, from github.com.',
+      'uv run sulba.py model starts the lab’s models, stories260K, bge-small-en-v1.5 and jina-reranker-v1-tiny-en, on your machine, where your code can call each by its name at http://127.0.0.1:9931/v1. The first time, it downloads the models, 136.0 MB, from huggingface.co, and llama.cpp’s server for your system, from github.com.',
     ),
   ).toBeVisible();
   const credit = page.getByText('Model: stories260K, by Andrej Karpathy, MIT.');
@@ -91,6 +91,10 @@ test('a lab with a model says how to start it and what that downloads, and credi
     'href',
     'https://huggingface.co/karpathy/tinyllamas',
   );
+  await expect(page.getByText('Model: bge-small-en-v1.5, by BAAI, MIT.')).toBeVisible();
+  await expect(
+    page.getByText('Model: jina-reranker-v1-tiny-en, by Jina AI, Apache License 2.0.'),
+  ).toBeVisible();
 });
 
 test('its download holds the project, the runner, its stages and the first stage’s code', async ({
@@ -131,9 +135,17 @@ test('its download holds the project, the runner, its stages and the first stage
       sha256: '67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5',
     },
   ]);
-  // `uv run sulba.py model` fetches the model too, into the cache folder every lab shares.
-  expect(lab.model).toEqual({
+  // `uv run sulba.py model` fetches the models too, into the cache folder every lab shares.
+  expect(
+    lab.models.map((model: { title: string; kind: string }) => [model.title, model.kind]),
+  ).toEqual([
+    ['stories260K', 'chat'],
+    ['bge-small-en-v1.5', 'embedding'],
+    ['jina-reranker-v1-tiny-en', 'reranking'],
+  ]);
+  expect(lab.models[0]).toEqual({
     title: 'stories260K',
+    kind: 'chat',
     url: 'https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf',
     bytes: 1185376,
     sha256: '270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d',

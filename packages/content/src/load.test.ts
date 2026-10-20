@@ -613,12 +613,15 @@ test('a machine lab lists the files it fetches, with their credit', async () => 
   ]);
 });
 
-test('a machine lab can name the model it serves, with its credit', async () => {
+test('a machine lab names the models it serves, each with its kind and credit', async () => {
   const { course } = await loadCourse(fixtures, 'demo');
   const lab = course?.levels[1]?.modules[0]?.labs[0];
-  expect(lab?.model?.title).toBe('stories260K');
-  expect(lab?.model?.licence.name).toBe('MIT');
-  expect(lab?.model?.file).toEqual({
+  expect(lab?.models.map(({ title, kind, licence }) => [title, kind, licence.name])).toEqual([
+    ['stories260K', 'chat', 'MIT'],
+    ['bge-small-en-v1.5', 'embedding', 'MIT'],
+    ['jina-reranker-v1-tiny-en', 'reranking', 'Apache License 2.0'],
+  ]);
+  expect(lab?.models[0]?.file).toEqual({
     url: 'https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf',
     bytes: 1185376,
     sha256: '270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d',
@@ -635,15 +638,37 @@ test("a lab's model is a .gguf file, pinned by its address, size and sha256", as
   const fields = problems
     .filter(({ path }) => path === `${ledger}/lab.yaml`)
     .map(({ message }) => message.split(':')[0]);
-  expect(fields).toEqual(['model.file.url', 'model.file.bytes', 'model.file.sha256']);
+  expect(fields).toEqual(['models.0.file.url', 'models.0.file.bytes', 'models.0.file.sha256']);
 });
 
-test('a lab that runs in the browser serves no model', async () => {
+test("a lab's models each have a kind and a title of their own, which a request can give", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const yaml = join(root, ledger, 'lab.yaml');
+    await edit(yaml, 'kind: reranking', 'kind: vision');
+    await edit(yaml, 'title: jina-reranker-v1-tiny-en', 'title: bge-small-en-v1.5');
+    await edit(yaml, 'title: stories260K', 'title: stories 260K');
+  });
+  expect(
+    problems.filter(({ path }) => path === `${ledger}/lab.yaml`).map(({ message }) => message),
+  ).toEqual([
+    'models.0.title: Expected letters, digits, dots, dashes and _',
+    'models.2.kind: Invalid option: expected one of "chat"|"embedding"|"reranking"',
+  ]);
+  const { problems: shared } = await loadChanged(async (root) => {
+    const yaml = join(root, ledger, 'lab.yaml');
+    await edit(yaml, 'title: jina-reranker-v1-tiny-en', 'title: bge-small-en-v1.5');
+  });
+  expect(shared.filter(({ path }) => path === `${ledger}/lab.yaml`)).toEqual([
+    { path: `${ledger}/lab.yaml`, message: 'models: Each model needs a title of its own.' },
+  ]);
+});
+
+test('a lab that runs in the browser serves no models', async () => {
   const { problems } = await loadChanged(async (root) => {
     const model = (await readFile(join(root, ledger, 'lab.yaml'), 'utf8')).match(
-      /^model:\n(?: {2}.*\n)+/m,
+      /^models:\n(?: {2}.*\n)+/m,
     )?.[0];
-    if (!model) throw new Error("The ledger lab's lab.yaml has no model.");
+    if (!model) throw new Error("The ledger lab's lab.yaml has no models.");
     await edit(
       join(root, 'demo/modules/counting/labs/tallies/lab.yaml'),
       'stages:',
@@ -654,7 +679,7 @@ test('a lab that runs in the browser serves no model', async () => {
     {
       path: 'demo/modules/counting/labs/tallies/lab.yaml',
       message:
-        "model: Only a lab that runs on the learner's machine serves a model there: set runs: machine.",
+        "models: Only a lab that runs on the learner's machine serves models there: set runs: machine.",
     },
   ]);
 });

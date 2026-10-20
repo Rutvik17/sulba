@@ -23,16 +23,39 @@ fetch:
         url: https://fashion-mnist.s3.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz
         bytes: 5148
         sha256: 67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5
-model:
-  title: stories260K
-  creators: [Andrej Karpathy]
-  url: https://huggingface.co/karpathy/tinyllamas
-  licence:
-    name: MIT
-    url: https://github.com/karpathy/llama2.c/blob/350e04fe35433e6d2941dce5a1f53308f87058eb/LICENSE
-  file:
-    url: https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf
-    bytes: 1185376
-    sha256: 270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d
+models:
+  - title: stories260K
+    kind: chat
+    creators: [Andrej Karpathy]
+    url: https://huggingface.co/karpathy/tinyllamas
+    licence:
+      name: MIT
+      url: https://github.com/karpathy/llama2.c/blob/350e04fe35433e6d2941dce5a1f53308f87058eb/LICENSE
+    file:
+      url: https://huggingface.co/ggml-org/test-model-stories260K/resolve/479896ec924af6d40fd419ab8f4d1eb2101de00d/stories260K-f32.gguf
+      bytes: 1185376
+      sha256: 270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d
+  - title: bge-small-en-v1.5
+    kind: embedding
+    creators: [BAAI]
+    url: https://huggingface.co/BAAI/bge-small-en-v1.5
+    licence:
+      name: MIT
+      url: https://opensource.org/license/mit
+    file:
+      url: https://huggingface.co/ggml-org/models-moved/resolve/499bc8821c6b12b4e53c5bffcb21ec206f212d81/bert-bge-small/ggml-model-f16.gguf
+      bytes: 67308128
+      sha256: f0b2fef971e8366438bfd2d9aefea1b0115919389448806d290237f638bae999
+  - title: jina-reranker-v1-tiny-en
+    kind: reranking
+    creators: [Jina AI]
+    url: https://huggingface.co/jinaai/jina-reranker-v1-tiny-en
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/ggml-org/models-moved/resolve/499bc8821c6b12b4e53c5bffcb21ec206f212d81/jina-reranker-v1-tiny-en/ggml-model-f16.gguf
+      bytes: 67504480
+      sha256: ad9f450c1053a431e2e3746d1f9f7768fb9183cf0796e046983a3449dca093c2
 runs: machine
 stages: [balance, audit, close]

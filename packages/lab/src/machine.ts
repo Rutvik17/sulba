@@ -1,7 +1,7 @@
 // What a machine lab's download tells its runner, sulba.py (decision record 28): the lab's stages
 // in `.sulba/lab.json`, with each stage's tests and checks, the stage the download starts at, the
 // lab's datasets, the files the runner fetches from their publishers (decision record 29), and the
-// model `uv run sulba.py model` serves (decision record 32).
+// models `uv run sulba.py model` serves (decision record 34).
 // Test files and a Catch stage's fixed code are in base64, so a look through the folder doesn't
 // show them; they are there to be found, as they are in the page.
 import type { FetchedFile } from './protocol.ts';
@@ -44,9 +44,20 @@ export interface MachineFetch extends FetchedFile {
   readonly file: string;
 }
 
-/** The model the runner serves with llama.cpp's server: its name, and its GGUF file's pin. */
+/**
+ * What a model does, which sets how llama.cpp's server runs it: a chat model answers a
+ * conversation, an embedding model turns text into a vector, and a reranker scores passages for a
+ * query.
+ */
+export const modelKinds = ['chat', 'embedding', 'reranking'] as const;
+
+/**
+ * A model the runner serves with llama.cpp's server: its name, which a request gives to reach it,
+ * its kind, and its GGUF file's pin.
+ */
 export interface MachineModel extends FetchedFile {
   readonly title: string;
+  readonly kind: (typeof modelKinds)[number];
 }
 
 export interface MachineLab {
@@ -63,8 +74,8 @@ export interface MachineLab {
    */
   readonly data: readonly string[];
   readonly fetch: readonly MachineFetch[];
-  /** The model `uv run sulba.py model` serves, or null when the lab has none. */
-  readonly model: MachineModel | null;
+  /** The models `uv run sulba.py model` serves, each by its title. */
+  readonly models: readonly MachineModel[];
   readonly stages: readonly MachineStage[];
 }
 

@@ -4,6 +4,7 @@ import http.server
 import json
 import random
 import shutil
+import signal
 import socket
 import subprocess
 import sys
@@ -661,33 +662,72 @@ def test_a_link_holds_the_newest_attempts_that_fit() -> None:
     assert sent == runs[-len(sent) :]
 
 
-# A stand-in for llama.cpp's server: it answers its health check, and every chat request with the
-# same reply, at the port it's given, unless it's told to stop at once and say why.
+# A stand-in for llama.cpp's server in router mode, at the port it's given: it reads the models in
+# its preset file, lists them as loading at first, then as loaded, or as failed when their weights
+# aren't where the preset says from the folder it runs in, and answers each request for a model by
+# its name, as the model's kind allows. Told to stop at once, it says why.
 FAKE_SERVER = """import json
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
 
 if "--stop" in sys.argv:
     print(sys.argv[sys.argv.index("--stop") + 1])
     sys.exit(1)
 port = int(sys.argv[sys.argv.index("--port") + 1])
+models = {}
+for line in Path(sys.argv[sys.argv.index("--models-preset") + 1]).read_text().splitlines():
+    if line.startswith("["):
+        options = models[line[1:-1]] = {}
+    elif " = " in line and models:
+        key, value = line.split(" = ")
+        options[key] = value
+for name, options in models.items():
+    if not Path(options["model"]).is_file():
+        print(f"[{name}] failed to load model {options['model']}", flush=True)
+polls = []
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b'{"status": "ok"}')
+        polls.append(self.path)
+        listed = []
+        for name, options in models.items():
+            if len(polls) == 1:
+                status = {"value": "loading"}
+            elif Path(options["model"]).is_file():
+                status = {"value": "loaded"}
+            else:
+                status = {"value": "unloaded", "failed": True, "exit_code": 1}
+            listed.append({"id": name, "status": status})
+        self.answer(200, {"data": listed})
 
     def do_POST(self):
-        self.rfile.read(int(self.headers["Content-Length"]))
-        reply = {
-            "choices": [{"message": {"content": "Hello there."}}],
-            "usage": {"prompt_tokens": 9, "completion_tokens": 3},
-        }
-        self.send_response(200)
+        body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        options = models.get(body.get("model"))
+        if options is None:
+            self.answer(400, {"error": {"message": "model not found"}})
+        elif options.get("embeddings"):
+            self.served("/v1/embeddings", {"data": [{"index": 0, "embedding": [0.5] * 4}]})
+        elif options.get("reranking"):
+            scores = [(1, 0.0123), (0, 0.9876)]
+            results = [{"index": index, "relevance_score": score} for index, score in scores]
+            self.served("/v1/rerank", {"results": results})
+        else:
+            reply = {"content": f"Hello from {body['model']}."}
+            usage = {"prompt_tokens": 9, "completion_tokens": 3}
+            self.served("/v1/chat/completions", {"choices": [{"message": reply}], "usage": usage})
+
+    def served(self, path, body):
+        if self.path == path:
+            self.answer(200, body)
+        else:
+            self.answer(501, {"error": {"message": "This model doesn't serve " + self.path}})
+
+    def answer(self, status, body):
+        self.send_response(status)
         self.end_headers()
-        self.wfile.write(json.dumps(reply).encode())
+        self.wfile.write(json.dumps(body).encode())
 
     def log_message(self, *args):
         pass
@@ -696,6 +736,9 @@ class Handler(BaseHTTPRequestHandler):
 HTTPServer(("127.0.0.1", port), Handler).serve_forever()
 """
 
+# A chat model, an embedding model and a reranker, by title and kind.
+KINDS = [("Tiny", "chat"), ("Tiny-Embed", "embedding"), ("Tiny-Rerank", "reranking")]
+
 
 def free_port() -> int:
     with socket.socket() as unused:
@@ -703,12 +746,20 @@ def free_port() -> int:
         return unused.getsockname()[1]
 
 
-def model_lab(folder: Path, url: str, body: bytes) -> dict[str, Any]:
-    """The lab in folder with a model at url, whose file is body."""
+def model_lab(folder: Path, models: list[tuple[str, str, str, bytes]]) -> dict[str, Any]:
+    """The lab in folder serving models, each a title, a kind, an address and the file there."""
     path = folder / ".sulba" / "lab.json"
     lab = json.loads(path.read_text(encoding="utf-8"))
-    sha256 = hashlib.sha256(body).hexdigest()
-    lab["model"] = {"title": "Tiny", "url": url, "bytes": len(body), "sha256": sha256}
+    lab["models"] = [
+        {
+            "title": title,
+            "kind": kind,
+            "url": url,
+            "bytes": len(body),
+            "sha256": hashlib.sha256(body).hexdigest(),
+        }
+        for title, kind, url, body in models
+    ]
     path.write_text(json.dumps(lab), encoding="utf-8")
     return lab
 
@@ -726,6 +777,33 @@ def build_archive(tmp_path: Path) -> bytes:
     return archive.read_bytes()
 
 
+def fake_server(folder: Path, port: int, kinds: list[tuple[str, str]]) -> list[dict[str, Any]]:
+    """The models of these kinds in folder, with their weights and a preset there, and the stand-in
+    beside them, to run at the port in folder."""
+    models = [{"title": title, "kind": kind} for title, kind in kinds]
+    weights = [Path("models", f"{title}.gguf") for title, _ in kinds]
+    (folder / "models").mkdir()
+    for path in weights:
+        (folder / path).write_bytes(b"GGUF")
+    preset = sulba.preset_of(models, weights, "Linux")
+    (folder / f"models-{port}.ini").write_text(preset, encoding="utf-8")
+    (folder / "server.py").write_text(FAKE_SERVER, encoding="utf-8")
+    return models
+
+
+def fake_command(folder: Path, port: int) -> list[str]:
+    """The stand-in's command, with the preset fake_server wrote for the port."""
+    preset = f"models-{port}.ini"
+    return [
+        sys.executable,
+        str(folder / "server.py"),
+        "--models-preset",
+        preset,
+        "--port",
+        str(port),
+    ]
+
+
 def test_a_lab_without_a_model_says_so(folder: Path) -> None:
     ran = command(folder, "model")
     assert ran.returncode == 1
@@ -735,7 +813,7 @@ def test_a_lab_without_a_model_says_so(folder: Path) -> None:
 def test_a_system_without_a_build_says_so(
     folder: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    lab = model_lab(folder, "https://example.com/tiny.gguf", b"GGUF")
+    lab = model_lab(folder, [("Tiny", "chat", "https://example.com/tiny.gguf", b"GGUF")])
     monkeypatch.setattr(sulba.platform, "system", lambda: "Plan9")
     monkeypatch.setattr(sulba.platform, "machine", lambda: "mips")
     assert sulba.serve_model(lab, free_port(), check=True) == 1
@@ -748,7 +826,7 @@ def test_windows_without_the_runtime_is_told_where_to_get_it_before_any_fetch(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    lab = model_lab(folder, "https://example.com/tiny.gguf", b"GGUF")
+    lab = model_lab(folder, [("Tiny", "chat", "https://example.com/tiny.gguf", b"GGUF")])
     monkeypatch.setattr(sulba.platform, "system", lambda: "Windows")
     monkeypatch.setattr(sulba.platform, "machine", lambda: "ARM64")
     (tmp_path / "windows" / "System32").mkdir(parents=True)
@@ -757,7 +835,7 @@ def test_windows_without_the_runtime_is_told_where_to_get_it_before_any_fetch(
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
     assert sulba.serve_model(lab, free_port(), check=True) == 1
     said = capsys.readouterr().out
-    assert "needs Microsoft's Visual C++ runtime" in said
+    assert "llama.cpp's server needs Microsoft's Visual C++ runtime" in said
     assert "Install it from https://aka.ms/vc14/vc_redist.arm64.exe, then run this again." in said
     assert not (tmp_path / "cache").exists()
 
@@ -772,7 +850,7 @@ def test_a_model_and_its_server_are_fetched_once_for_every_lab(
     build = build_archive(tmp_path)
     publisher.files["/b0/llama-b0-bin-test.tar.gz"] = build
     publisher.files["/tiny.gguf"] = b"GGUF" * 100
-    lab = model_lab(folder, f"{publisher.address}/tiny.gguf", b"GGUF" * 100)
+    lab = model_lab(folder, [("Tiny", "chat", f"{publisher.address}/tiny.gguf", b"GGUF" * 100)])
     system = (sulba.platform.system(), sulba.platform.machine())
     pinned = ("bin-test.tar.gz", len(build), hashlib.sha256(build).hexdigest())
     monkeypatch.setattr(sulba, "LLAMA", "b0")
@@ -785,11 +863,93 @@ def test_a_model_and_its_server_are_fetched_once_for_every_lab(
     assert f"Fetching the model and its server into {cache}:" in said
     assert "llama.cpp's server b0, " in said
     assert "Tiny, 400 bytes, from 127.0.0.1" in said
-    assert "The model said: 'Hello there.'\nIt read 9 tokens and wrote 3.\n" in said
+    assert said.endswith(
+        "Loading Tiny...\nTiny said: 'Hello from Tiny.'\nIt read 9 tokens and wrote 3.\n"
+    )
     assert (cache / "llama.cpp" / "b0" / "server" / "llama-b0" / "llama-server").is_file()
     assert sulba.serve_model(lab, free_port(), check=True) == 0
     assert "Fetching" not in capsys.readouterr().out
     assert len(publisher.requests) == 2
+
+
+def test_a_labs_models_answer_each_by_its_name_and_kind(
+    folder: Path,
+    tmp_path: Path,
+    publisher: Publisher,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    build = build_archive(tmp_path)
+    publisher.files["/b0/llama-b0-bin-test.tar.gz"] = build
+    models = []
+    for title, kind in KINDS:
+        body = title.encode() * 10
+        publisher.files[f"/{title}.gguf"] = body
+        models.append((title, kind, f"{publisher.address}/{title}.gguf", body))
+    lab = model_lab(folder, models)
+    system = (sulba.platform.system(), sulba.platform.machine())
+    pinned = ("bin-test.tar.gz", len(build), hashlib.sha256(build).hexdigest())
+    monkeypatch.setattr(sulba, "LLAMA", "b0")
+    monkeypatch.setattr(sulba, "LLAMA_RELEASES", publisher.address)
+    monkeypatch.setattr(sulba, "LLAMA_BUILDS", {system: pinned})
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    port = free_port()
+    assert sulba.serve_model(lab, port, check=True) == 0
+    said = capsys.readouterr().out
+    cache = tmp_path / "cache" / "sulba"
+    assert f"Fetching the models and their server into {cache}:" in said
+    assert said.endswith(
+        "Loading Tiny, Tiny-Embed and Tiny-Rerank...\n"
+        "Tiny said: 'Hello from Tiny.'\n"
+        "It read 9 tokens and wrote 3.\n"
+        "Tiny-Embed embedded 'The brakes stop the wheels.' as 4 numbers.\n"
+        "Tiny-Rerank scored two passages for 'Which part of a bicycle stops it?':\n"
+        "  0.9876  The brakes stop the wheels.\n"
+        "  0.0123  The saddle is where the rider sits.\n"
+    )
+    # The preset names each model's weights from the cache folder, where the server runs.
+    preset = (cache / f"models-{port}.ini").read_text(encoding="utf-8")
+    for title, _, _, body in models:
+        sha256 = hashlib.sha256(body).hexdigest()
+        assert f"[{title}]\nmodel = models/{sha256}/{title}.gguf\n" in preset
+
+
+def test_each_kind_of_model_runs_with_its_options() -> None:
+    models = [{"title": title, "kind": kind} for title, kind in KINDS]
+    weights = [
+        Path("models", "a", "chat.gguf"),
+        Path("models", "b", "e.gguf"),
+        Path("models", "c", "r.gguf"),
+    ]
+    linux = sulba.preset_of(models, weights, "Linux")
+    assert linux == (
+        "version = 1\n"
+        "\n"
+        "[Tiny]\n"
+        "model = models/a/chat.gguf\n"
+        "load-on-startup = true\n"
+        "ctx-size = 4096\n"
+        "reasoning = off\n"
+        "\n"
+        "[Tiny-Embed]\n"
+        "model = models/b/e.gguf\n"
+        "load-on-startup = true\n"
+        "embeddings = true\n"
+        "ctx-size = 2048\n"
+        "batch-size = 2048\n"
+        "ubatch-size = 2048\n"
+        "\n"
+        "[Tiny-Rerank]\n"
+        "model = models/c/r.gguf\n"
+        "load-on-startup = true\n"
+        "reranking = true\n"
+        "ctx-size = 4096\n"
+        "batch-size = 2048\n"
+        "ubatch-size = 2048\n"
+    )
+    # On macOS, only the chat model runs on the GPU.
+    macos = sulba.preset_of(models, weights, "Darwin")
+    assert macos == linux.replace("ubatch-size = 2048\n", "ubatch-size = 2048\ndevice = none\n")
 
 
 def test_a_build_is_unpacked_once_beside_its_archive(tmp_path: Path) -> None:
@@ -803,45 +963,78 @@ def test_a_build_is_unpacked_once_beside_its_archive(tmp_path: Path) -> None:
     assert sulba.unpacked(archive) == server
 
 
-def test_the_model_answers_until_it_is_asked_one_question(
+@pytest.mark.skipif(sys.platform == "win32", reason="Ctrl+C reaches a program as a POSIX signal")
+def test_the_models_answer_once_loaded_until_ctrl_c(tmp_path: Path) -> None:
+    port = free_port()
+    models = fake_server(tmp_path, port, KINDS)
+    serve = (
+        "import json, sys, sulba; from pathlib import Path; "
+        "sys.exit(sulba.serve(json.loads(sys.argv[1]), Path(sys.argv[2]), "
+        "json.loads(sys.argv[3]), int(sys.argv[4]), check=False))"
+    )
+    arguments = [json.dumps(fake_command(tmp_path, port)), str(tmp_path), json.dumps(models)]
+    running = subprocess.Popen(
+        [sys.executable, "-c", serve, *arguments, str(port)],
+        cwd=PYTHON,
+        stdout=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+    )
+    assert running.stdout is not None
+    assert running.stdout.readline() == "Loading Tiny, Tiny-Embed and Tiny-Rerank...\n"
+    assert running.stdout.readline() == (
+        f"Tiny, Tiny-Embed and Tiny-Rerank answer at http://127.0.0.1:{port}/v1, each by its name. "
+        "Press Ctrl+C to stop them.\n"
+    )
+    asked = sulba.posted(f"http://127.0.0.1:{port}", "embeddings", "Tiny-Embed", input="Hello.")
+    assert len(asked["data"][0]["embedding"]) == 4
+    running.send_signal(signal.SIGINT)
+    assert running.communicate(timeout=60)[0] == "Stopped Tiny, Tiny-Embed and Tiny-Rerank.\n"
+    assert running.returncode == 0
+    assert not sulba.in_use(port)
+
+
+def test_a_model_that_doesnt_load_is_named_with_why(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    script = tmp_path / "server.py"
-    script.write_text(FAKE_SERVER, encoding="utf-8")
     port = free_port()
-    command = [sys.executable, str(script), "--port", str(port)]
-    assert sulba.serve(command, port, tmp_path / "server.log", check=True) == 0
+    models = fake_server(tmp_path, port, KINDS)
+    (tmp_path / "models" / "Tiny-Rerank.gguf").unlink()
+    assert sulba.serve(fake_command(tmp_path, port), tmp_path, models, port, check=True) == 1
     assert capsys.readouterr().out == (
-        "Loading the model...\nThe model said: 'Hello there.'\nIt read 9 tokens and wrote 3.\n"
+        "Loading Tiny, Tiny-Embed and Tiny-Rerank...\n"
+        "Tiny-Rerank didn't load. The last of what llama.cpp's server wrote:\n"
+        "  [Tiny-Rerank] failed to load model models/Tiny-Rerank.gguf\n"
     )
     assert not sulba.in_use(port)
 
 
 def test_a_server_that_stops_shows_why(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    script = tmp_path / "server.py"
-    script.write_text(FAKE_SERVER, encoding="utf-8")
     port = free_port()
-    stops = [sys.executable, str(script), "--stop", "error: failed to load model"]
-    assert sulba.serve(stops, port, tmp_path / "server.log", check=True) == 1
+    models = fake_server(tmp_path, port, KINDS[:1])
+    script = str(tmp_path / "server.py")
+    stops = [sys.executable, script, "--stop", "error: failed to read the preset"]
+    assert sulba.serve(stops, tmp_path, models, port, check=True) == 1
     said = capsys.readouterr().out
-    assert "The model's server stopped. The last of what it wrote:\n" in said
-    assert "  error: failed to load model\n" in said
-    taken = [sys.executable, str(script), "--stop", "couldn't bind HTTP server socket, port: 1"]
-    assert sulba.serve(taken, port, tmp_path / "server.log", check=True) == 1
+    assert "llama.cpp's server stopped. The last of what it wrote:\n" in said
+    assert "  error: failed to read the preset\n" in said
+    taken = [sys.executable, script, "--stop", "couldn't bind HTTP server socket, port: 1"]
+    assert sulba.serve(taken, tmp_path, models, port, check=True) == 1
     assert f"Port {port} is in use" in capsys.readouterr().out
 
 
 def test_a_port_in_use_is_said_before_the_server_starts(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    models = [{"title": "Tiny", "kind": "chat"}]
     with socket.socket() as taken:
         taken.bind(("127.0.0.1", 0))
         taken.listen()
         port = taken.getsockname()[1]
-        command = [sys.executable, "-c", "raise SystemExit('started')"]
-        assert sulba.serve(command, port, tmp_path / "server.log", check=True) == 1
+        started = [sys.executable, "-c", "raise SystemExit('started')"]
+        assert sulba.serve(started, tmp_path, models, port, check=True) == 1
     assert capsys.readouterr().out == (
-        f"Port {port} is in use, perhaps by the model already running. Stop that, or run "
+        f"Port {port} is in use, perhaps by llama.cpp's server already running. Stop that, or run "
         f"uv run sulba.py model --port {port + 1}.\n"
     )
-    assert not (tmp_path / "server.log").exists()
+    assert not (tmp_path / f"server-{port}.log").exists()
