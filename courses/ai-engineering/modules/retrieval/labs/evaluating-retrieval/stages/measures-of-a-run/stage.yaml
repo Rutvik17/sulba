@@ -1,0 +1,6 @@
+id: stg_p5oqz6
+kind: build
+title: Measures of a run
+builds: A new `measures.py`.
+file: measures.py
+minutes: 30

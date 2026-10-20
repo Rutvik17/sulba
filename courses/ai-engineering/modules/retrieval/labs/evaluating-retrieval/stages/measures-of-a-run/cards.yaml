@@ -1,0 +1,20 @@
+cards:
+  - id: crd_jxkmix
+    front: >-
+      What does the hit rate at k ask that recall at k doesn't?
+    back: >-
+      Whether any relevant passage is among the first k. Recall asks what share of the
+      relevant passages are; the two are the same for a question one passage answers.
+  - id: crd_i8uuv8
+    front: >-
+      Why must a run's mean count a question the search showed nothing for?
+    back: >-
+      Left out, it lifts the mean: the confident search's hit rate at {% $fig.k %} would rise
+      from {% $fig.confident_hit %} to {% $fig.confident_left_out %}, above the search it
+      keeps a part of.
+  - id: crd_82hs24
+    front: >-
+      In what order does trec_eval read the passages of a run?
+    back: >-
+      In the order of their scores, highest first, a tie broken by the passages' ids. It
+      ignores the ranks the run gives them.

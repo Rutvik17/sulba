@@ -1,0 +1,21 @@
+cards:
+  - id: crd_ff0t9z
+    front: >-
+      Why judge a search's passages by their texts when some passages are copies?
+    back: >-
+      A second copy of an answer adds nothing for the reader, yet judged by passage it adds to
+      recall and nDCG, and a search that leaves the copies out loses.
+  - id: crd_d0nmmz
+    front: >-
+      Which measures are the same judged by passage and by text?
+    back: >-
+      The hit rate and the reciprocal rank: each counts only the first relevant passage, and
+      the first copy of a text is never a repeat.
+  - id: crd_gsbxow
+    front: >-
+      Judged by passage and then by text, how did `fused` and `fused-once` compare by nDCG at
+      {% $fig.depth %} on the validation questions?
+    back: >-
+      By passage, `fused` came first, {% $fig.fused_ndcg_passage %} against
+      {% $fig.fused_once_ndcg_passage %}; by text, `fused-once`, {% $fig.fused_once_ndcg_text %}
+      against {% $fig.fused_ndcg_text %}.

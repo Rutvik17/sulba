@@ -1,0 +1,64 @@
+id: lab_j86tbx
+title: Evaluating retrieval
+summary: >-
+  Measure the help desk's searches as its readers meet them: hit rate, recall, MRR and nDCG
+  over every question, each text judged once, each part's share found by taking it away
+  and testing the difference question by question, a review of an assistant's report, and
+  a release check that decides whether a new search replaces the old.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue whose next turn answers it from the same page: 500
+      of the dataset's training dialogues, chosen at random, for validation, and 362 of its
+      validation dialogues, for testing.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: runs.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Nine searches' first 20 passages for each question: BM25 over the passages' words;
+      the vectors nomic-embed-text-v1.5 at 8 bits gave the passages and the questions,
+      through llama.cpp's server, release b11734; the two rankings fused by reciprocal rank
+      fusion, with k = 60, and fused with each text once; the first 20 texts of each of the
+      three in the order of the scores Qwen3-Reranker-0.6B at 8 bits gave them, through the
+      same server, on 20 October 2026; the fused ranking's first 20 passages in that order;
+      and the reranked fused ranking's passages scored 0.5 or more.
+references: [measures.json, comparisons.json]
+runs: machine
+stages:
+  - measures-of-a-run
+  - each-text-once
+  - is-the-difference-real
+  - the-assistants-report
+  - a-release-check
