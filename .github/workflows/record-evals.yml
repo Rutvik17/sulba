@@ -1,0 +1,245 @@
+# Spike: records the help desk's files for Evals, the reranker's scores for its questions, one
+# reply from each release to each question, Granite Guardian's grades of those replies, of the
+# replies people wrote and of BEGIN's labelled replies, and IBM's own model's grades of BEGIN's
+# first replies, and commits them to this branch. A push made with the workflow's own token
+# starts no run.
+name: Record evals
+on:
+  push:
+    branches: [spike/evals]
+permissions:
+  contents: read
+env:
+  LLAMA: https://github.com/ggml-org/llama.cpp/releases/download/b11734/llama-b11734-bin-ubuntu-x64.tar.gz
+  LLAMA_SHA256: 5d20cbcde04ef743b96e91b6173663b1925077a13fa86d0d98e69a5a5b59a16a
+jobs:
+  questions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Questions
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir llama downloads && tar -xzf llama.tar.gz -C llama
+          server=$(find "$PWD/llama" -name llama-server -type f | head -1)
+          lscpu | grep "Model name"
+          uv run tools/datasets/multidoc2dial_evals.py desk "$server" downloads
+          wc -l desk/*.csv
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desk
+          path: desk
+  begin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - run: uv run tools/datasets/begin.py begin && wc -l begin/begin.csv
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: begin
+          path: begin
+  rerank:
+    needs: questions
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desk
+          path: desk
+      - name: Scores
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir llama downloads && tar -xzf llama.tar.gz -C llama
+          server=$(find "$PWD/llama" -name llama-server -type f | head -1)
+          uv run tools/datasets/multidoc2dial_rerank.py desk "$server" \
+            "rerank-${{ matrix.shard }}.csv" "${{ matrix.shard }}/10" downloads
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rerank-${{ matrix.shard }}
+          path: rerank-${{ matrix.shard }}.csv
+  runs:
+    needs: rerank
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desk
+          path: desk
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: rerank-*
+          merge-multiple: true
+      - name: Runs
+        run: |
+          python3 spike/join.py desk/rerank-scores.csv $(for i in $(seq 1 10); do echo rerank-$i.csv; done)
+          uv run tools/datasets/multidoc2dial_runs.py desk desk/runs.csv
+          wc -l desk/rerank-scores.csv desk/runs.csv
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desk-runs
+          path: desk
+  replies:
+    needs: runs
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desk-runs
+          path: desk
+      - name: Replies
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir llama downloads && tar -xzf llama.tar.gz -C llama
+          server=$(find "$PWD/llama" -name llama-server -type f | head -1)
+          lscpu | grep "Model name"
+          uv run --no-project --python 3.14.2 python spike/pilot.py desk "$server" "replies-${{ matrix.shard }}.csv" \
+            "${{ matrix.shard }}/20" downloads
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: replies-${{ matrix.shard }}
+          path: |
+            replies-${{ matrix.shard }}.csv
+            downloads/llama-server.log
+  grade:
+    needs: replies
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desk-runs
+          path: desk
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: replies-*
+          merge-multiple: true
+      - name: Grades
+        run: |
+          python3 spike/join.py desk/replies.csv $(for i in $(seq 1 20); do echo replies-$i.csv; done)
+          uv run tools/datasets/multidoc2dial_to_grade.py desk to-grade.csv
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir llama downloads && tar -xzf llama.tar.gz -C llama
+          server=$(find "$PWD/llama" -name llama-server -type f | head -1)
+          uv run tools/datasets/guardian.py to-grade.csv "$server" \
+            "grades-${{ matrix.shard }}.csv" "${{ matrix.shard }}/20" downloads
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: grades-${{ matrix.shard }}
+          path: grades-${{ matrix.shard }}.csv
+  begin-grades:
+    needs: begin
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: begin
+          path: begin
+      - name: Grades
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir llama downloads && tar -xzf llama.tar.gz -C llama
+          server=$(find "$PWD/llama" -name llama-server -type f | head -1)
+          uv run tools/datasets/guardian.py begin/begin.csv "$server" \
+            "begin-grades-${{ matrix.shard }}.csv" "${{ matrix.shard }}/10" downloads
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: begin-grades-${{ matrix.shard }}
+          path: begin-grades-${{ matrix.shard }}.csv
+  ibm:
+    needs: begin
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: begin
+          path: begin
+      - run: HF_HUB_DISABLE_TELEMETRY=1 uv run spike/ibm.py begin/begin.csv 40 ibm.csv
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ibm
+          path: ibm.csv
+  join:
+    needs: [grade, begin-grades, ibm]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desk-runs
+          path: desk
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: begin
+          path: begin
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: "*grades-*"
+          merge-multiple: true
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: replies-*
+          merge-multiple: true
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ibm
+      - name: Join and commit
+        run: |
+          mkdir -p spike/out
+          python3 spike/join.py spike/out/replies.csv $(for i in $(seq 1 20); do echo replies-$i.csv; done)
+          python3 spike/join.py spike/out/grades.csv $(for i in $(seq 1 20); do echo grades-$i.csv; done)
+          python3 spike/join.py spike/out/begin-grades.csv $(for i in $(seq 1 10); do echo begin-grades-$i.csv; done)
+          cp ibm.csv begin/begin.csv spike/out/
+          cp desk/questions.csv desk/relevant.csv desk/human-replies.csv desk/rerank-scores.csv desk/runs.csv spike/out/
+          wc -l spike/out/*
+          git config user.name github-actions
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add spike/out
+          git commit -m "Record the pilot of Evals"
+          git push origin HEAD:spike/evals
