@@ -55,7 +55,7 @@ MODELS = {
         "370f27d7550e0def9b39c1f16d3fbaa13aa67728/Qwen3-Embedding-0.6B-Q8_0.gguf",
         "size": 639150592,
         "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
-        "args": ["--embeddings", "--pooling", "last", "-c", "8192", "-b", "8192", "-ub", "8192"],
+        "args": ["--embeddings", "--pooling", "last", "-c", "4096", "-b", "2048", "-ub", "2048"],
         "query": lambda q: f"Instruct: {QWEN_TASK}\nQuery:{q}",
         "document": lambda d: d,
     },
@@ -73,14 +73,7 @@ MODELS = {
         "a02f48bb4f057028298c21fa033da2b30d7742d5/qwen3-reranker-0.6b-q8_0.gguf",
         "size": 639153184,
         "sha256": "22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48",
-        "args": ["--rerank", "-c", "8192", "-b", "8192", "-ub", "8192"],
-    },
-    "jina-reranker-v1-turbo-en": {
-        "url": f"{HF}/ggml-org/jina-reranker-v1-turbo-en-GGUF/resolve/"
-        "607d8664c787e517e5d6e339d21f680f9002c931/Jina-Bert-Implementation-38M-F16.gguf",
-        "size": 76971168,
-        "sha256": "71abc010bb3dce97812ee971509a5cb6ff6f6b8cfffd8480129242f605521fca",
-        "args": ["--rerank", "-c", "8192", "-b", "8192", "-ub", "8192"],
+        "args": ["--rerank", "-c", "4096", "-b", "2048", "-ub", "2048"],
     },
 }
 PORT = 8092
@@ -261,10 +254,9 @@ def router(server, folder):
     embed = (folder / "Qwen3-Embedding-0.6B.gguf").resolve().as_posix()
     rerank = (folder / "Qwen3-Reranker-0.6B.gguf").resolve().as_posix()
     preset.write_text(
-        "version = 1\n\n[*]\nc = 8192\n\n"
-        f"[embeddings]\nmodel = {embed}\nembeddings = true\npooling = last\n"
-        "batch-size = 8192\nubatch-size = 8192\n\n"
-        f"[reranker]\nmodel = {rerank}\nrerank = true\nbatch-size = 8192\nubatch-size = 8192\n",
+        "version = 1\n\n[*]\nc = 4096\nbatch-size = 2048\nubatch-size = 2048\n\n"
+        f"[embeddings]\nmodel = {embed}\nembeddings = true\npooling = last\n\n"
+        f"[reranker]\nmodel = {rerank}\nrerank = true\n",
         encoding="utf-8",
     )
     process, found["ready_s"] = serve(
@@ -305,12 +297,22 @@ def main(folder):
     build, size, sha256 = BUILDS[(platform.system(), platform.machine())]
     archive = fetched(f"{RELEASE}/llama-{TAG}-{build}", size, sha256, folder / f"llama-{build}")
     server = unpacked(archive, folder / "llama")
-    for name, model in MODELS.items():
+    # On a Mac the server runs a model on the GPU, through Metal, and with --device none on the
+    # CPU alone, as it does on the other systems.
+    runs = [(name, model, []) for name, model in MODELS.items()]
+    if platform.system() == "Darwin":
+        runs += [
+            (f"{name} on the CPU", model, ["--device", "none"])
+            for name, model in MODELS.items()
+            if name.startswith("Qwen3")
+        ]
+    for label, model, extra in runs:
+        name = label.removesuffix(" on the CPU")
         result = {}
         try:
             path = fetched(model["url"], model["size"], model["sha256"], folder / f"{name}.gguf")
             process, result["ready_s"] = serve(
-                server, path, model["args"], folder / f"{name}.log"
+                server, path, model["args"] + extra, folder / f"{label}.log"
             )
             try:
                 result |= (embedding if "query" in model else reranking)(name, model)
@@ -319,8 +321,8 @@ def main(folder):
                 process.wait(timeout=60)
         except Exception as error:
             result["error"] = f"{type(error).__name__}: {error}"[-3000:]
-        found[name] = result
-        print(json.dumps({name: result}, indent=1), flush=True)
+        found[label] = result
+        print(json.dumps({label: result}, indent=1), flush=True)
     try:
         found["router"] = router(server, folder)
     except Exception as error:

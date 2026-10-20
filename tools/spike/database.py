@@ -333,10 +333,19 @@ def native(bin_dir, folder):
     if not WINDOWS:
         options += " -c unix_socket_directories="
     started = time.time()
-    done = run([
-        bin_dir / exe("pg_ctl"), "-D", data, "-l", folder / "server.log", "-w", "-t", "60",
-        "-o", options, "start",
-    ])
+    # pg_ctl's output goes to a file: the server it starts would hold a pipe open, and on
+    # Windows reading the pipe to its end would wait as long as the server runs.
+    with open(folder / "pg_ctl.txt", "w", encoding="utf-8") as output:
+        code = subprocess.run(
+            [str(a) for a in [
+                bin_dir / exe("pg_ctl"), "-D", data, "-l", folder / "server.log", "-w", "-t",
+                "60", "-o", options, "start",
+            ]],
+            stdout=output,
+            stderr=subprocess.STDOUT,
+        ).returncode
+    done = subprocess.CompletedProcess([], code, (folder / "pg_ctl.txt").read_text(
+        encoding="utf-8", errors="replace"), "")
     out["start_s"] = round(time.time() - started, 2)
     if done.returncode != 0:
         out["start"] = (done.stdout + done.stderr)[-1500:]
