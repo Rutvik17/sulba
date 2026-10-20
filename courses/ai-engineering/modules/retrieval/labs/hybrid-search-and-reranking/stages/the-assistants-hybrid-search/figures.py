@@ -17,7 +17,7 @@ WORD = re.compile(r"\w+")
 # A system's logarithm can differ in its last digits, so BM25 scores this close might come in
 # either order: each figure is worked out both ways, and must come out the same.
 CLEAR = 1e-9
-# The recalls the prose shows.
+# The hit rates the prose shows.
 SHOWN = [
     "right",
     "right_more",

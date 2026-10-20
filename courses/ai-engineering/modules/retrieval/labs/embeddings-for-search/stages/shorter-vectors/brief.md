@@ -9,15 +9,15 @@ In `shorten.py`, write:
 
 On the {% $fig.questions %} validation questions, each cut as the passages are and searched against every passage:
 
-| Each passage | Bytes | Recall at 5 |
+| Each passage | Bytes | Hit rate at 5 |
 | --- | --- | --- |
-| All {% $fig.numbers %} numbers | {% $fig.bytes_full %} | {% $fig.recall_full %} |
-| The first 256 | {% $fig.bytes_256 %} | {% $fig.recall_256 %} |
-| The first 128 | {% $fig.bytes_128 %} | {% $fig.recall_128 %} |
-| The first 64 | {% $fig.bytes_64 %} | {% $fig.recall_64 %} |
-| The first 256, a byte each | {% $fig.bytes_bytes %} | {% $fig.recall_bytes %} |
+| All {% $fig.numbers %} numbers | {% $fig.bytes_full %} | {% $fig.hit_rate_full %} |
+| The first 256 | {% $fig.bytes_256 %} | {% $fig.hit_rate_256 %} |
+| The first 128 | {% $fig.bytes_128 %} | {% $fig.hit_rate_128 %} |
+| The first 64 | {% $fig.bytes_64 %} | {% $fig.hit_rate_64 %} |
+| The first 256, a byte each | {% $fig.bytes_bytes %} | {% $fig.hit_rate_bytes %} |
 
-Recall at 5 is the share of questions with a passage that answers them among the first five found.
+The hit rate at 5 is the share of questions with a passage that answers them among the first five found.
 
 ```
 shorten(vectors, numbers) -> np.ndarray

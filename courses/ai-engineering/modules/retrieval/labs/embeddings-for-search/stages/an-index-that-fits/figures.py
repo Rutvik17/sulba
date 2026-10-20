@@ -49,7 +49,7 @@ def figures():
                 relevant[row["question"]].add(row["passage"])
     answers = [relevant[question_ids[index]] for index in rows]
 
-    def recall(scores):
+    def hit_rate(scores):
         best = np.argsort(-scores, axis=1, kind="stable")[:, :K]
         found = [
             bool({passage_ids[index] for index in row} & want)
@@ -66,9 +66,9 @@ def figures():
         "test": str(len(rows)),
         "k": str(K),
         "kept": str(round(KEPT * 100)),
-        "full": recall(questions @ passages.T),
+        "full": hit_rate(questions @ passages.T),
         "bytes": "256",
         "bytes_full": f"{numbers * 4:,}",
-        "recall_bytes": recall(as_bytes),
-        "recall_64": recall(first_64),
+        "hit_rate_bytes": hit_rate(as_bytes),
+        "hit_rate_64": hit_rate(first_64),
     }

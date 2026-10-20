@@ -11,7 +11,7 @@ problems:
     cost: >-
       `find` embedded each question after `search_document: `, the passages' prefix, so the
       model read every question as a passage to be searched. On the {% $fig.questions %}
-      validation questions, recall at {% $fig.k %} fell from {% $fig.right %} to
+      validation questions, the hit rate at {% $fig.k %} fell from {% $fig.right %} to
       {% $fig.as_passages %}, and no error said so.
     fix: >-
       The fix: `QUERY`, the prefix the model's card gives questions.
@@ -24,8 +24,8 @@ problems:
       `vectors[:, :NUMBERS]` kept each vector's first numbers without the card's other
       steps, so each passage's first numbers kept the length they had, from
       {% $fig.shortest %} to {% $fig.longest %}, and of two passages at the same angle to a
-      question, the longer scored higher. Recall at {% $fig.k %} fell from {% $fig.right %}
-      to {% $fig.sliced %}.
+      question, the longer scored higher. The hit rate at {% $fig.k %} fell from
+      {% $fig.right %} to {% $fig.sliced %}.
     fix: >-
       The fix: `shorten(vectors, NUMBERS)`, which cuts each vector as the model's card does
       and brings it back to a length of 1.
@@ -37,8 +37,8 @@ problems:
     cost: >-
       `sorted(passages)` sorted the ids as text, `p1`, `p10`, `p100`, `p1000`, while the
       vectors stayed in the passages' order, so {% $fig.moved %} of the {% $fig.passages %}
-      passages were found under another passage's id. Recall at {% $fig.k %} fell from
-      {% $fig.right %} to {% $fig.ids %}.
+      passages were found under another passage's id. The hit rate at {% $fig.k %} fell
+      from {% $fig.right %} to {% $fig.ids %}.
     fix: >-
       The fix: `list(passages)`, the ids in the order the vectors were made.
     edit:

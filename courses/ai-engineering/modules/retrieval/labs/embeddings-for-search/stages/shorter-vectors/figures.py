@@ -27,7 +27,7 @@ def whole(vectors):
     return np.rint(vectors * STEPS).astype(np.int64)
 
 
-def recall(scores, relevant):
+def hit_rate(scores, relevant):
     """The share of questions with a relevant passage among the first K, ties going to
     the passage that comes first."""
     order = np.argsort(-scores, axis=1, kind="stable")[:, :K]
@@ -55,15 +55,15 @@ def figures():
                 relevant[row["question"]].add(place[row["passage"]])
     answers = [relevant[question_ids[index]] for index in rows]
     numbers = passages.shape[1]
-    found = {"full": recall(questions @ passages.T, answers)}
+    found = {"full": hit_rate(questions @ passages.T, answers)}
     for kept in (256, 128, 64):
         short = whole(shortened(questions, kept)) @ whole(shortened(passages, kept)).T
-        found[kept] = recall(short, answers)
+        found[kept] = hit_rate(short, answers)
     short = shortened(passages, 256)
     low, high = short.min(axis=0), short.max(axis=0)
     codes = np.clip(np.round((short - low) / (high - low) * 255), 0, 255)
     restored = low + codes * ((high - low) / 255)
-    found["bytes"] = recall(
+    found["bytes"] = hit_rate(
         whole(shortened(questions, 256)) @ whole(restored).T, answers
     )
     size = numbers * 4 * len(passage_ids)
@@ -78,9 +78,9 @@ def figures():
         "bytes_128": str(128 * 4),
         "bytes_64": str(64 * 4),
         "bytes_bytes": "256",
-        "recall_full": f"{found['full']:.3f}",
-        "recall_256": f"{found[256]:.3f}",
-        "recall_128": f"{found[128]:.3f}",
-        "recall_64": f"{found[64]:.3f}",
-        "recall_bytes": f"{found['bytes']:.3f}",
+        "hit_rate_full": f"{found['full']:.3f}",
+        "hit_rate_256": f"{found[256]:.3f}",
+        "hit_rate_128": f"{found[128]:.3f}",
+        "hit_rate_64": f"{found[64]:.3f}",
+        "hit_rate_bytes": f"{found['bytes']:.3f}",
     }

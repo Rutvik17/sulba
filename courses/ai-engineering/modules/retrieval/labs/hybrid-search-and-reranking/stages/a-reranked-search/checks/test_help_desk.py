@@ -13,7 +13,7 @@ from fuse import fused, nearest
 MODEL = "Qwen3-Reranker-0.6B"
 DEPTH = 20
 K = 5
-# The test questions' recall at K the search must reach.
+# The test questions' hit rate at K the search must reach.
 FLOOR = 0.80
 
 
@@ -82,8 +82,8 @@ def first_texts(texts, vectors, index, question):
 
 
 @pytest.mark.id("tst_s19j01")
-def test_recall(model, help_desk):
-    """Recall at 5 of at least 0.80 on the test questions"""
+def test_hit_rate(model, help_desk):
+    """A hit rate at 5 of at least 0.80 on the test questions"""
     texts, vectors, _, questions, scores = help_desk
     model.ranks(scores)
     desk = Desk(model.client(), texts, vectors)

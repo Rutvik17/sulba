@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from bm25 import BM25, words
-from fuse import fused, nearest, recall
+from fuse import fused, hit_rate, nearest
 
 
 def read(path):
@@ -83,22 +83,22 @@ def test_ties():
 
 
 @pytest.mark.id("tst_drkp5v")
-def test_recall():
+def test_hit_rate():
     """The share of questions with a relevant row among the first k"""
     rankings = [np.array([3, 1, 2, 0]), np.array([0, 1, 2, 3]), np.array([2, 0, 1, 3])]
     relevant = [{1}, {3}, {0, 2}]
-    assert recall(rankings, relevant, 1) == pytest.approx(1 / 3)
-    assert recall(rankings, relevant, 2) == pytest.approx(2 / 3)
-    assert recall(rankings, relevant, 4) == 1
+    assert hit_rate(rankings, relevant, 1) == pytest.approx(1 / 3)
+    assert hit_rate(rankings, relevant, 2) == pytest.approx(2 / 3)
+    assert hit_rate(rankings, relevant, 4) == 1
 
 
 @pytest.mark.id("tst_5iclr4")
 def test_validation(validation):
-    """Every tenth validation question's two rankings fused, and their recall"""
+    """Every tenth validation question's two rankings fused, and their hit rate"""
     asked = validation[::10]
     for bm25, vectors, _ in asked:
         assert fused([bm25, vectors])[:20].tolist() == exact([bm25, vectors])[:20]
     rankings = [fused([bm25, vectors]) for bm25, vectors, _ in asked]
     relevant = [rows for *_, rows in asked]
     hits = [not rows.isdisjoint(exact([b, v])[:5]) for b, v, rows in asked]
-    assert recall(rankings, relevant, 5) == pytest.approx(sum(hits) / len(hits))
+    assert hit_rate(rankings, relevant, 5) == pytest.approx(sum(hits) / len(hits))

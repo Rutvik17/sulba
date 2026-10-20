@@ -4,9 +4,9 @@ Postgres makes a generated column virtual unless it says `STORED`: worked out ea
 
 `websearch_to_tsquery` reads a question as a search box would: its words joined by AND, `or` between two words making an OR, and a `-` before a word leaving out the passages that hold it. A question in full has words that few passages hold all of: of the {% $fig.questions %} validation questions, {% $fig.none %} found no passage that holds every one. A question made only of stop words, such as `What is it?`, leaves an empty query, which matches nothing.
 
-Joined by OR, the questions find passages again. Recall at {% $fig.k %} is the share of questions with a passage that answers them among the first {% $fig.k %} found:
+Joined by OR, the questions find passages again. The hit rate at {% $fig.k %} is the share of questions with a passage that answers them among the first {% $fig.k %} found:
 
-| Search | Recall at {% $fig.k %} | Recall at {% $fig.more %} |
+| Search | Hit rate at {% $fig.k %} | Hit rate at {% $fig.more %} |
 | --- | --- | --- |
 | Any word, by `ts_rank_cd` | {% $fig.any %} | {% $fig.any_more %} |
 | The vectors | {% $fig.vectors %} | {% $fig.vectors_more %} |

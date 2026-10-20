@@ -12,7 +12,7 @@ problems:
       `WORD.findall(question)` kept the question's capitals, while every passage's words are
       lowercased, so each capitalised word of a question, its first among them, matched
       nothing: {% $fig.lost %} of the {% $fig.question_words %} words of the
-      {% $fig.questions %} validation questions. Recall at {% $fig.k %} fell from
+      {% $fig.questions %} validation questions. The hit rate at {% $fig.k %} fell from
       {% $fig.right %} to {% $fig.capitals %}.
     fix: >-
       The fix: `words(question)`, which reads a question into words as it reads a passage.
@@ -25,7 +25,7 @@ problems:
       `math.log((count - n + 0.5) / (n + 0.5))` is below zero for a word that more than half
       the passages hold, as {% $fig.below_zero %} of the help desk's words are, the
       commonest, “{% $fig.common %}”, at {% $fig.common_weight %}. Each lowered the score of
-      every passage that holds it. BM25's own recall at {% $fig.k %} fell from
+      every passage that holds it. BM25's own hit rate at {% $fig.k %} fell from
       {% $fig.bm25 %} to {% $fig.negative_bm25 %}, and the search's from {% $fig.right %} to
       {% $fig.negative %}.
     fix: >-
@@ -40,7 +40,7 @@ problems:
       Each stored number fits in 16 bits, but their products don't, and NumPy wraps a 16-bit
       whole number past {% $fig.int16_max %} around without a word. The first validation
       question's nearest passage, at a dot product of {% $fig.dot %}, came out at
-      {% $fig.wrapped_dot %}. The vectors' own recall at {% $fig.k %} fell from
+      {% $fig.wrapped_dot %}. The vectors' own hit rate at {% $fig.k %} fell from
       {% $fig.vectors %} to {% $fig.wrapped_vectors %}, and the search's from
       {% $fig.right %} to {% $fig.wrapped %}.
     fix: >-
@@ -53,7 +53,7 @@ problems:
     cost: >-
       At the median, a question's best passage scores {% $fig.bm25_best %} by BM25, and a
       cosine is at most 1, so BM25 decided the sum, and the vectors counted only between
-      passages whose BM25 scores were close. Recall at {% $fig.k %} fell from
+      passages whose BM25 scores were close. The hit rate at {% $fig.k %} fell from
       {% $fig.right %} to {% $fig.added %}, and at {% $fig.more %} from {% $fig.right_more %}
       to {% $fig.added_more %}, close to BM25's own {% $fig.bm25 %} and
       {% $fig.bm25_more %}.
