@@ -38,5 +38,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [32. Run a lab's model on the learner's machine with llama.cpp's server](0032-run-a-labs-model-with-llama-cpps-server.md) | Superseded by 34 |
 | [33. Run a lab's database on the learner's machine with Postgres and pgvector](0033-run-a-labs-database-with-postgres-and-pgvector.md) | Accepted |
 | [34. Serve a lab's models on the learner's machine with llama.cpp's server](0034-serve-a-labs-models-with-llama-cpps-server.md) | Accepted |
+| [35. Answer a lab's models through a forwarder that keeps each connection open](0035-answer-a-labs-models-through-a-forwarder.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

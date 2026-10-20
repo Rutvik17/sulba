@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import http.client
 import http.server
 import json
 import random
@@ -740,12 +741,6 @@ HTTPServer(("127.0.0.1", port), Handler).serve_forever()
 KINDS = [("Tiny", "chat"), ("Tiny-Embed", "embedding"), ("Tiny-Rerank", "reranking")]
 
 
-def free_port() -> int:
-    with socket.socket() as unused:
-        unused.bind(("127.0.0.1", 0))
-        return unused.getsockname()[1]
-
-
 def model_lab(folder: Path, models: list[tuple[str, str, str, bytes]]) -> dict[str, Any]:
     """The lab in folder serving models, each a title, a kind, an address and the file there."""
     path = folder / ".sulba" / "lab.json"
@@ -793,15 +788,7 @@ def fake_server(folder: Path, port: int, kinds: list[tuple[str, str]]) -> list[d
 
 def fake_command(folder: Path, port: int) -> list[str]:
     """The stand-in's command, with the preset fake_server wrote for the port."""
-    preset = f"models-{port}.ini"
-    return [
-        sys.executable,
-        str(folder / "server.py"),
-        "--models-preset",
-        preset,
-        "--port",
-        str(port),
-    ]
+    return [sys.executable, str(folder / "server.py"), "--models-preset", f"models-{port}.ini"]
 
 
 def test_a_lab_without_a_model_says_so(folder: Path) -> None:
@@ -816,7 +803,7 @@ def test_a_system_without_a_build_says_so(
     lab = model_lab(folder, [("Tiny", "chat", "https://example.com/tiny.gguf", b"GGUF")])
     monkeypatch.setattr(sulba.platform, "system", lambda: "Plan9")
     monkeypatch.setattr(sulba.platform, "machine", lambda: "mips")
-    assert sulba.serve_model(lab, free_port(), check=True) == 1
+    assert sulba.serve_model(lab, sulba.free_port(), check=True) == 1
     assert capsys.readouterr().out == "llama.cpp has no build of its server for Plan9 on mips.\n"
 
 
@@ -833,7 +820,7 @@ def test_windows_without_the_runtime_is_told_where_to_get_it_before_any_fetch(
     (tmp_path / "windows" / "System32" / "vcruntime140.dll").touch()
     monkeypatch.setenv("SYSTEMROOT", str(tmp_path / "windows"))
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
-    assert sulba.serve_model(lab, free_port(), check=True) == 1
+    assert sulba.serve_model(lab, sulba.free_port(), check=True) == 1
     said = capsys.readouterr().out
     assert "llama.cpp's server needs Microsoft's Visual C++ runtime" in said
     assert "Install it from https://aka.ms/vc14/vc_redist.arm64.exe, then run this again." in said
@@ -857,7 +844,7 @@ def test_a_model_and_its_server_are_fetched_once_for_every_lab(
     monkeypatch.setattr(sulba, "LLAMA_RELEASES", publisher.address)
     monkeypatch.setattr(sulba, "LLAMA_BUILDS", {system: pinned})
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
-    assert sulba.serve_model(lab, free_port(), check=True) == 0
+    assert sulba.serve_model(lab, sulba.free_port(), check=True) == 0
     said = capsys.readouterr().out
     cache = tmp_path / "cache" / "sulba"
     assert f"Fetching the model and its server into {cache}:" in said
@@ -867,7 +854,7 @@ def test_a_model_and_its_server_are_fetched_once_for_every_lab(
         "Loading Tiny...\nTiny said: 'Hello from Tiny.'\nIt read 9 tokens and wrote 3.\n"
     )
     assert (cache / "llama.cpp" / "b0" / "server" / "llama-b0" / "llama-server").is_file()
-    assert sulba.serve_model(lab, free_port(), check=True) == 0
+    assert sulba.serve_model(lab, sulba.free_port(), check=True) == 0
     assert "Fetching" not in capsys.readouterr().out
     assert len(publisher.requests) == 2
 
@@ -893,7 +880,7 @@ def test_a_labs_models_answer_each_by_its_name_and_kind(
     monkeypatch.setattr(sulba, "LLAMA_RELEASES", publisher.address)
     monkeypatch.setattr(sulba, "LLAMA_BUILDS", {system: pinned})
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
-    port = free_port()
+    port = sulba.free_port()
     assert sulba.serve_model(lab, port, check=True) == 0
     said = capsys.readouterr().out
     cache = tmp_path / "cache" / "sulba"
@@ -965,7 +952,7 @@ def test_a_build_is_unpacked_once_beside_its_archive(tmp_path: Path) -> None:
 
 @pytest.mark.skipif(sys.platform == "win32", reason="Ctrl+C reaches a program as a POSIX signal")
 def test_the_models_answer_once_loaded_until_ctrl_c(tmp_path: Path) -> None:
-    port = free_port()
+    port = sulba.free_port()
     models = fake_server(tmp_path, port, KINDS)
     serve = (
         "import json, sys, sulba; from pathlib import Path; "
@@ -997,7 +984,7 @@ def test_the_models_answer_once_loaded_until_ctrl_c(tmp_path: Path) -> None:
 def test_a_model_that_doesnt_load_is_named_with_why(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    port = free_port()
+    port = sulba.free_port()
     models = fake_server(tmp_path, port, KINDS)
     (tmp_path / "models" / "Tiny-Rerank.gguf").unlink()
     assert sulba.serve(fake_command(tmp_path, port), tmp_path, models, port, check=True) == 1
@@ -1010,7 +997,7 @@ def test_a_model_that_doesnt_load_is_named_with_why(
 
 
 def test_a_server_that_stops_shows_why(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    port = free_port()
+    port = sulba.free_port()
     models = fake_server(tmp_path, port, KINDS[:1])
     script = str(tmp_path / "server.py")
     stops = [sys.executable, script, "--stop", "error: failed to read the preset"]
@@ -1018,9 +1005,6 @@ def test_a_server_that_stops_shows_why(tmp_path: Path, capsys: pytest.CaptureFix
     said = capsys.readouterr().out
     assert "llama.cpp's server stopped. The last of what it wrote:\n" in said
     assert "  error: failed to read the preset\n" in said
-    taken = [sys.executable, script, "--stop", "couldn't bind HTTP server socket, port: 1"]
-    assert sulba.serve(taken, tmp_path, models, port, check=True) == 1
-    assert f"Port {port} is in use" in capsys.readouterr().out
 
 
 def test_a_port_in_use_is_said_before_the_server_starts(
@@ -1038,3 +1022,146 @@ def test_a_port_in_use_is_said_before_the_server_starts(
         f"uv run sulba.py model --port {port + 1}.\n"
     )
     assert not (tmp_path / f"server-{port}.log").exists()
+
+
+def test_a_port_held_without_answering_is_said(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    models = [{"title": "Tiny", "kind": "chat"}]
+    with socket.socket() as held:
+        held.bind(("127.0.0.1", 0))
+        port = held.getsockname()[1]
+        started = [sys.executable, "-c", "raise SystemExit('started')"]
+        assert sulba.serve(started, tmp_path, models, port, check=True) == 1
+    assert capsys.readouterr().out == (
+        f"Port {port} is in use, perhaps by llama.cpp's server already running. Stop that, or run "
+        f"uv run sulba.py model --port {port + 1}.\n"
+    )
+    assert not (tmp_path / f"server-{port}.log").exists()
+
+
+@dataclass
+class Forwarding:
+    """The forwarder's port, in front of a stand-in for the server in router mode, and what lets
+    the stand-in send the rest of a stream."""
+
+    port: int
+    go: threading.Event
+
+
+@pytest.fixture
+def forwarding() -> Iterator[Forwarding]:
+    go = threading.Event()
+
+    class Router(http.server.BaseHTTPRequestHandler):
+        """The server in router mode as it answers: in chunks, closing the connection after each
+        answer without saying so. A POST gets its body's length, a stream an event and, once the
+        test lets it, the rest, and any other path the server's 404."""
+
+        protocol_version = "HTTP/1.1"
+
+        def do_GET(self) -> None:
+            error = {"code": 404, "message": "File Not Found", "type": "not_found_error"}
+            self.start(404, "application/json; charset=utf-8")
+            self.part(json.dumps({"error": error}))
+            self.end()
+
+        def do_POST(self) -> None:
+            body = self.rfile.read(int(self.headers["Content-Length"]))
+            if self.path == "/v1/chat/completions":
+                self.start(200, "text/event-stream")
+                self.part("data: 1\n\n")
+                self.part("data: 2\n\n" if go.wait(10) else "data: late\n\n")
+            else:
+                self.start(200, "application/json; charset=utf-8")
+                self.part(str(len(body)))
+            self.end()
+
+        def start(self, status: int, kind: str) -> None:
+            self.send_response_only(status)
+            self.send_header("Content-Type", kind)
+            self.send_header("Transfer-Encoding", "chunked")
+            self.end_headers()
+
+        def part(self, text: str) -> None:
+            self.wfile.write(b"%X\r\n%s\r\n" % (len(text), text.encode()))
+
+        def end(self) -> None:
+            self.wfile.write(b"0\r\n\r\n")
+            self.close_connection = True
+
+        def log_message(self, *args: Any) -> None:
+            pass
+
+    forwarder = sulba.Forwarder(0)
+    router = http.server.ThreadingHTTPServer(("127.0.0.1", forwarder.target), Router)
+    for server in (forwarder, router):
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+    yield Forwarding(forwarder.server_address[1], go)
+    for server in (forwarder, router):
+        server.shutdown()
+        server.server_close()
+
+
+def test_a_program_keeps_its_connection_from_request_to_request(forwarding: Forwarding) -> None:
+    connection = http.client.HTTPConnection("127.0.0.1", forwarding.port, timeout=10)
+    connection.connect()
+    opened = connection.sock
+    for count in range(1, 51):
+        connection.request("POST", "/v1/embeddings", body=b"x" * count)
+        answer = connection.getresponse()
+        assert (answer.status, answer.read()) == (200, str(count).encode())
+        assert connection.sock is opened
+    connection.close()
+
+
+def test_the_servers_answers_come_back_as_they_are(forwarding: Forwarding) -> None:
+    connection = http.client.HTTPConnection("127.0.0.1", forwarding.port, timeout=10)
+    connection.request("GET", "/v1/nothing")
+    answer = connection.getresponse()
+    assert answer.status == 404
+    assert answer.getheader("Content-Type") == "application/json; charset=utf-8"
+    assert json.loads(answer.read())["error"]["message"] == "File Not Found"
+    connection.close()
+
+
+def test_a_streamed_answer_comes_as_the_server_sends_it(forwarding: Forwarding) -> None:
+    connection = http.client.HTTPConnection("127.0.0.1", forwarding.port, timeout=30)
+    connection.request("POST", "/v1/chat/completions", body=b'{"stream": true}')
+    answer = connection.getresponse()
+    assert answer.getheader("Content-Type") == "text/event-stream"
+    first = b""
+    while len(first) < len(b"data: 1\n\n"):
+        first += answer.read1()
+    # The stand-in sends the rest only once the first event has come through the forwarder.
+    forwarding.go.set()
+    assert first + answer.read() == b"data: 1\n\ndata: 2\n\n"
+    connection.close()
+
+
+def test_a_request_sent_in_chunks_reaches_the_server_whole(forwarding: Forwarding) -> None:
+    connection = http.client.HTTPConnection("127.0.0.1", forwarding.port, timeout=10)
+    connection.request("POST", "/v1/embeddings", body=iter([b"abc", b"de"]))
+    answer = connection.getresponse()
+    assert (answer.status, answer.read()) == (200, b"5")
+    connection.request("POST", "/v1/embeddings", body=b"abc")
+    assert connection.getresponse().read() == b"3"
+    connection.close()
+
+
+def test_the_models_are_loading_until_the_server_listens() -> None:
+    forwarder = sulba.Forwarder(0)
+    threading.Thread(target=forwarder.serve_forever, daemon=True).start()
+    connection = http.client.HTTPConnection("127.0.0.1", forwarder.server_address[1], timeout=10)
+    try:
+        for _ in range(2):
+            connection.request("GET", "/v1/models")
+            answer = connection.getresponse()
+            assert answer.status == 503
+            assert json.loads(answer.read()) == {
+                "error": {"message": "Loading model", "type": "unavailable_error", "code": 503}
+            }
+    finally:
+        connection.close()
+        forwarder.shutdown()
+        forwarder.server_close()

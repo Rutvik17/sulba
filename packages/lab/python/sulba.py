@@ -30,8 +30,10 @@ from __future__ import annotations
 
 import argparse
 import base64
+import contextlib
 import hashlib
 import http.client
+import http.server
 import json
 import os
 import platform
@@ -39,10 +41,12 @@ import secrets
 import shutil
 import signal
 import socket
+import socketserver
 import subprocess
 import sys
 import tarfile
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -110,6 +114,19 @@ LLAMA_BUILDS = {
 }
 # Where the models answer, at llama.cpp's own port.
 PORT = 9931
+# The headers about one connection, not the request or the answer they come with, which the
+# forwarder sets for each of its connections itself.
+HOP_BY_HOP = {
+    "connection",
+    "content-length",
+    "host",
+    "keep-alive",
+    "proxy-connection",
+    "te",
+    "trailer",
+    "transfer-encoding",
+    "upgrade",
+}
 # How the server runs each kind of model, in its preset file's options: a chat model reads a
 # conversation of up to 4,096 tokens with reasoning off, an embedding model embeds a text of up to
 # 2,048 tokens in one pass, and a reranker scores a query and a document of up to 2,048 tokens
@@ -409,7 +426,7 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
     preset = f"models-{port}.ini"
     (folder / preset).write_text(preset_of(models, weights, system), encoding="utf-8")
     command = [str(server), "--models-preset", preset, "--models-max", str(len(models))]
-    command += ["--host", "127.0.0.1", "--port", str(port)]
+    command += ["--host", "127.0.0.1"]
     return serve(command, folder, models, port, check=check)
 
 
@@ -517,14 +534,33 @@ def unpacked(archive: Path) -> Path:
 def serve(
     command: list[str], folder: Path, models: list[dict[str, Any]], port: int, *, check: bool
 ) -> int:
-    """Runs the server in folder, with its output in a log there, says where the models answer once
-    it has loaded them all, and keeps it running until Ctrl+C. With check, it asks each model one
-    thing instead and stops."""
-    address = f"http://127.0.0.1:{port}"
-    titles = listed([model["title"] for model in models])
+    """Runs the server in folder, behind a forwarder at the port, with its output in a log there,
+    says where the models answer once it has loaded them all, and keeps it running until Ctrl+C.
+    With check, it asks each model one thing instead and stops."""
     if in_use(port):
         print(port_in_use(port))
         return 1
+    try:
+        forwarder = Forwarder(port)
+    except OSError:
+        # Something holds the port without answering at it.
+        print(port_in_use(port))
+        return 1
+    with forwarder:
+        threading.Thread(target=forwarder.serve_forever, daemon=True).start()
+        try:
+            command = [*command, "--port", str(forwarder.target)]
+            return run_server(command, folder, models, port, check=check)
+        finally:
+            forwarder.shutdown()
+
+
+def run_server(
+    command: list[str], folder: Path, models: list[dict[str, Any]], port: int, *, check: bool
+) -> int:
+    """Runs the server as serve says, once the forwarder holds the port."""
+    address = f"http://127.0.0.1:{port}"
+    titles = listed([model["title"] for model in models])
     log = folder / f"server-{port}.log"
     with log.open("wb") as output:
         try:
@@ -536,7 +572,7 @@ def serve(
             print(f"Loading {titles}...", flush=True)
             unloaded = loading(process, address, models)
             if unloaded:
-                print(stopped(log, port) if process.poll() is not None else failed(log, unloaded))
+                print(stopped(log) if process.poll() is not None else failed(log, unloaded))
                 return 1
             if check:
                 return asked(address, models)
@@ -551,7 +587,7 @@ def serve(
             except KeyboardInterrupt:
                 print(f"Stopped {titles}.")
                 return 0
-            print(stopped(log, port))
+            print(stopped(log))
             return 1
         finally:
             if process.poll() is None:
@@ -560,6 +596,100 @@ def serve(
                     process.wait(timeout=30)
                 except subprocess.TimeoutExpired:
                     process.kill()
+
+
+class Forwarder(socketserver.ThreadingTCPServer):
+    """Where a lab's models answer: it passes each request to llama.cpp's server, at a port of its
+    own on this computer, and the server's answer back as it comes. In router mode, the server
+    closes a connection after each answer without saying so, and a program that sends its next
+    request on the connection before it closes gets no answer. The forwarder keeps each program's
+    connection open instead (decision record 35)."""
+
+    daemon_threads = True
+    # Lets the runner start again at once at a port it has just left. On Windows the option would
+    # let it share a port another program holds.
+    allow_reuse_address = os.name != "nt"
+
+    def __init__(self, port: int) -> None:
+        super().__init__(("127.0.0.1", port), Forwarded)
+        # Where the server answers, behind the forwarder.
+        self.target = free_port()
+
+
+class Forwarded(http.server.BaseHTTPRequestHandler):
+    """A program's connection to the forwarder, open from one request to the next."""
+
+    protocol_version = "HTTP/1.1"
+    server: Forwarder
+
+    def do_GET(self) -> None:
+        self.forward()
+
+    def do_POST(self) -> None:
+        self.forward()
+
+    def forward(self) -> None:
+        """Sends the request on to the server, on a connection of its own, and its answer back in
+        chunks as they come, so that a streamed reply streams."""
+        body = self.body()
+        headers = {
+            key: value for key, value in self.headers.items() if key.lower() not in HOP_BY_HOP
+        }
+        with contextlib.closing(http.client.HTTPConnection("127.0.0.1", self.server.target)) as to:
+            try:
+                to.request(self.command, self.path, body, {**headers, "Connection": "close"})
+                answer = to.getresponse()
+            except OSError:
+                # Nothing answers at the server's port until it has started.
+                self.starting()
+                return
+            self.send_response_only(answer.status, answer.reason)
+            for key, value in answer.getheaders():
+                if key.lower() not in HOP_BY_HOP:
+                    self.send_header(key, value)
+            self.send_header("Transfer-Encoding", "chunked")
+            self.end_headers()
+            try:
+                while chunk := answer.read1():
+                    self.wfile.write(b"%X\r\n%s\r\n" % (len(chunk), chunk))
+                self.wfile.write(b"0\r\n\r\n")
+            except OSError, http.client.HTTPException:
+                # The program or the server closed its connection before the answer ended, which
+                # the program learns as this connection closes too.
+                self.close_connection = True
+
+    def body(self) -> bytes:
+        """The request's body, whether it gives its length or comes in chunks."""
+        if "chunked" not in self.headers.get("Transfer-Encoding", "").lower():
+            return self.rfile.read(int(self.headers.get("Content-Length") or 0))
+        parts = []
+        while size := int(self.rfile.readline().split(b";")[0], 16):
+            parts.append(self.rfile.read(size))
+            self.rfile.readline()
+        # The chunks end with an empty line, after any trailer fields.
+        while self.rfile.readline().strip():
+            pass
+        return b"".join(parts)
+
+    def starting(self) -> None:
+        """The server's own answer while it starts: 503 and "Loading model"."""
+        error = {"message": "Loading model", "type": "unavailable_error", "code": 503}
+        body = json.dumps({"error": error}).encode()
+        self.send_response_only(503, "Service Unavailable")
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format: str, *args: Any) -> None:
+        """Writes nothing: the server's log has each request."""
+
+
+def free_port() -> int:
+    """A port on this computer that nothing listens at."""
+    with socket.socket() as unused:
+        unused.bind(("127.0.0.1", 0))
+        return unused.getsockname()[1]
 
 
 def in_use(port: int) -> bool:
@@ -644,11 +774,9 @@ def posted(address: str, path: str, model: str, **body: Any) -> dict[str, Any]:
         return json.load(response)
 
 
-def stopped(log: Path, port: int) -> str:
+def stopped(log: Path) -> str:
     """Why the server stopped, from the end of what it wrote."""
     lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
-    if any("couldn't bind" in line for line in lines):
-        return port_in_use(port)
     return f"llama.cpp's server stopped. The last of what it wrote:\n{tail(lines)}"
 
 
