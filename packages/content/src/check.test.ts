@@ -6,7 +6,7 @@ import { pyodideEngine } from '@sulba/lab/node';
 import type { RunRequest } from '@sulba/lab/protocol';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 import { duplicateIds, prove, type Runner, shard } from './check.ts';
-import { type Course, loadCourse } from './load.ts';
+import { type Course, loadCourse, type Problem } from './load.ts';
 
 // Each proof runs the fixture course's stages in Pyodide, several runs to a stage.
 vi.setConfig({ testTimeout: 60_000 });
@@ -36,6 +36,21 @@ async function load(root: string, slug = 'demo'): Promise<Course> {
   return course;
 }
 
+/**
+ * The course's stages proved in Pyodide, as the content check proves them: a lab that runs on the
+ * learner's machine runs its stages in CPython alone, in its own project.
+ */
+function proveInPyodide(course: Course): Promise<Problem[]> {
+  const inBrowser = course.levels.flatMap((level) =>
+    level.modules.flatMap((module) =>
+      module.labs
+        .filter((lab) => lab.runs === 'browser')
+        .flatMap((lab) => lab.stages.map((stage) => stage.id)),
+    ),
+  );
+  return prove([course], runner, 'Pyodide', new Set(inBrowser));
+}
+
 /** The fixture course, with one file's text replaced. */
 async function changed(file: string, from: string, to: string): Promise<Course> {
   const root = await mkdtemp(join(tmpdir(), 'sulba-content-'));
@@ -47,14 +62,14 @@ async function changed(file: string, from: string, to: string): Promise<Course> 
   return load(root);
 }
 
-test('every stage of the fixture course works', async () => {
-  expect(await prove([await load(fixtures)], runner, 'Pyodide')).toEqual([]);
+test('every stage of the fixture course that runs in the browser works', async () => {
+  expect(await proveInPyodide(await load(fixtures))).toEqual([]);
 });
 
 test('a solution that fails a test is a problem', async () => {
   const course = await changed(`${share}/solution/tally.py`, '/ len(choices)', '/ 2');
   // The Catch stage after it uses share too, so its runs fail as well.
-  expect(await prove([course], runner, 'Pyodide')).toContainEqual({
+  expect(await proveInPyodide(course)).toContainEqual({
     path: share,
     message:
       'Pyodide: The solution fails: "Two of three votes for yes": assert 1.0 == 0.6666666666666666 ± 6.7e-07',
@@ -67,7 +82,7 @@ test('a starter that already passes is a problem', async () => {
     'raise NotImplementedError',
     'return sum(1 for each in choices if each == choice)',
   );
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(await proveInPyodide(course)).toEqual([
     {
       path: count,
       message: 'Pyodide: The starter passes every test, so the stage asks for nothing.',
@@ -81,7 +96,7 @@ test("a solution that breaks an earlier stage's tests is a problem", async () =>
     'if each == choice',
     'if each != choice',
   );
-  const problems = await prove([course], runner, 'Pyodide');
+  const problems = await proveInPyodide(course);
   expect(problems.map((problem) => problem.message)).toContainEqual(
     expect.stringMatching(/^Pyodide: The solution breaks an earlier stage: "Two votes for yes"/),
   );
@@ -93,7 +108,7 @@ test('a test without an id is a problem', async () => {
     '@pytest.mark.id("tst_demo03")\n',
     '',
   );
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(await proveInPyodide(course)).toEqual([
     {
       path: share,
       message:
@@ -114,7 +129,7 @@ test('two tests with one id is a problem', async () => {
 
 test("an assistant's test that fails on its own code is a problem", async () => {
   const course = await changed(`${check}/tests/test_report.py`, '== 2', '== 3');
-  expect(await prove([course], runner, 'Pyodide')).toContainEqual({
+  expect(await proveInPyodide(course)).toContainEqual({
     path: check,
     message: `Pyodide: The assistant's tests must pass on its code, but "One line per choice" fails.`,
   });
@@ -126,7 +141,7 @@ test("a check that passes on the assistant's code is a problem", async () => {
     'assert given == votes()',
     'assert given == given',
   );
-  expect(await prove([course], runner, 'Pyodide')).toContainEqual({
+  expect(await proveInPyodide(course)).toContainEqual({
     path: check,
     message:
       'Pyodide: "Leaves the list of votes as it was" passes on the assistant\'s code, so it finds no problem.',
@@ -139,7 +154,7 @@ test("a problem's edit that fixes another problem instead is a problem", async (
     'replace: "sorted(set(choices))]"\n      with: "sorted(set(choices), key=lambda each: -share(choices, each))]"',
     'replace: "    choices.sort()\\n"\n      with: ""',
   );
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(await proveInPyodide(course)).toEqual([
     {
       path: check,
       message:
@@ -159,7 +174,7 @@ test("a Ship stage's solution that fails a check is a problem", async () => {
     '    return max(set(choices), key=choices.count)',
     '    choices.sort()\n    return max(set(choices), key=choices.count)',
   );
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(await proveInPyodide(course)).toEqual([
     {
       path: ship,
       message:
@@ -174,7 +189,7 @@ test("a Ship stage's starter that passes every test and check is a problem", asy
     'raise NotImplementedError',
     'return max(set(choices), key=choices.count)',
   );
-  expect(await prove([course], runner, 'Pyodide')).toEqual([
+  expect(await proveInPyodide(course)).toEqual([
     {
       path: ship,
       message: 'Pyodide: The starter passes every test, so the stage asks for nothing.',
@@ -220,6 +235,7 @@ test('two courses that share an id is a problem', async () => {
     `The id crd_demo04 is already used by ${ledger}/balance/cards.yaml.`,
     `The id tst_demo20 is already used by ${ledger}/balance/tests/test_ledger.py.`,
     `The id tst_demo21 is already used by ${ledger}/balance/tests/test_ledger.py.`,
+    `The id tst_demo26 is already used by ${ledger}/balance/tests/test_ledger.py.`,
     `The id stg_demo07 is already used by ${ledger}/audit/stage.yaml.`,
     `The id tst_demo22 is already used by ${ledger}/audit/tests/test_audit.py.`,
     `The id tst_demo23 is already used by ${ledger}/audit/checks/test_audit.py.`,

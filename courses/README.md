@@ -184,6 +184,18 @@ model:
 
 The first time a learner runs the command, the runner fetches the model and the build of llama.cpp's server for their system, which `sulba.py` pins, into `sulba` in their cache folder, where every lab finds them. The server reads a conversation of up to 4,096 tokens, with reasoning off. A lab's tests never call the model: they call the `model` fixture's scripted model (decision record 31), so no figure comes from the real model. The lab's page credits the model and says how much the command downloads and from where, so the project's `README.md` says so too. `pnpm check:machine --model`, which CI's Models jobs run on Windows, macOS and Linux, asks each model a question from a lab's download.
 
+### A lab's database
+
+A lab that runs on the learner's machine can keep data in Postgres, with pgvector (decision record 33). Its project locks `embedded-postgres`, whose wheel brings Postgres 18 and pgvector for each system, and `psycopg` to reach it, and a stage that imports psycopg lists it under `packages`. On Linux, the runner uses the PostgreSQL project's own pgvector instead, which `sulba_fixtures.py` pins, fetched the first time into `sulba` in the learner's cache folder: the wheel's build there runs only on processors like the one that built it. A test asks for the `database` fixture and gets the address of a new, empty database with pgvector installed, as a `postgresql://` URL that psycopg connects to:
+
+```python
+def test_nearest(database):
+    with psycopg.connect(database) as conn:
+        ...
+```
+
+The run starts one server for its tests, on 127.0.0.1 at a free port, with a password it makes, and stops it and deletes its files when they're done. Postgres doesn't run as root, so neither does a run that asks for a database. On Windows, pgvector needs a processor with AVX2, and Postgres needs the lab's folder to have a name the system's code page can write. `uv run sulba.py db` starts the lab's database for the learner's own code, at `postgresql://postgres:<password>@127.0.0.1:5432/postgres`, until Ctrl+C, and keeps what's in it in the download's `.sulba/database`. A test never uses that database, so a run gives the same result whatever the learner has put there.
+
 ## Review cards
 
 Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:

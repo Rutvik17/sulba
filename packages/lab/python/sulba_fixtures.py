@@ -1,6 +1,7 @@
 """The fixtures a session's tests can ask for: `loop`, an event loop on a virtual clock (decision
-record 21), `typecheck`, mypy's errors in the session's files (decision record 22), and `model`, a
-model server that answers with the replies the test scripts (decision record 31).
+record 21), `typecheck`, mypy's errors in the session's files (decision record 22), `model`, a
+model server that answers with the replies the test scripts (decision record 31), and on the
+learner's machine `database`, a new Postgres database with pgvector (decision record 33).
 
 The runner loads this module as a pytest plugin. A test that runs the learner's own tests with
 pytest's pytester loads it in that run too, so their tests can ask for the same fixtures:
@@ -14,12 +15,16 @@ import functools
 import gc
 import json
 import math
+import os
+import secrets
+import shutil
 import sys
 import tempfile
 from collections import deque
 from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pytest
@@ -472,3 +477,360 @@ def compact(value: Any) -> str:
 def model() -> ScriptedModel:
     """A ScriptedModel for the test, with no reply scripted yet."""
     return ScriptedModel()
+
+
+# pgvector for Linux comes from the PostgreSQL project's packages for Debian 12, which run on any
+# processor of their kind: the pgvector embedded-postgres builds for Linux runs only on processors
+# like the one that built it (decision record 33). Each package is pinned by its name, size and
+# sha256, under the name Python gives the machine.
+PGVECTOR_PACKAGES = "https://apt.postgresql.org/pub/repos/apt/pool/main/p/pgvector"
+PGVECTOR_BUILDS = {
+    "x86_64": (
+        "postgresql-18-pgvector_0.8.7-1.pgdg12+1_amd64.deb",
+        273916,
+        "a47bf74b1b074ec9a2fad8acde8f7b1fe2b3e4c23028e866f7655965a41f4f25",
+    ),
+    "aarch64": (
+        "postgresql-18-pgvector_0.8.7-1.pgdg12+1_arm64.deb",
+        243408,
+        "5eda70cc45cec0d5a09961b1bba918512b7300fc6bcd104124c2417e60867d40",
+    ),
+}
+# Windows tells whether its processor has AVX2 by this feature's number.
+PF_AVX2_INSTRUCTIONS_AVAILABLE = 40
+
+
+class Postgres:
+    """A Postgres server with pgvector for a run's tests, from the binaries the lab's project
+    installs with embedded-postgres (decision record 33). It listens only on 127.0.0.1, at a port
+    no other program uses, for the password it makes, and keeps its data in a folder of its own
+    until it stops."""
+
+    def __init__(self) -> None:
+        self.bin = postgres_binaries()
+        # Not in a folder from tempfile.mkdtemp: on Windows, Postgres drops its administrator's
+        # rights as it starts, and can't then open a folder made for the administrator alone.
+        self.folder = Path(tempfile.gettempdir(), f"sulba-postgres-{secrets.token_hex(8)}")
+        self.folder.mkdir()
+        self.port = free_port()
+        self.password = secrets.token_urlsafe(16)
+        self.databases = 0
+        try:
+            start_postgres(self.bin, self.folder / "data", self.port, self.password)
+            self.sql("postgres", "CREATE DATABASE sulba_template")
+            self.sql("sulba_template", "CREATE EXTENSION vector")
+        except BaseException:
+            self.stop()
+            raise
+
+    def url(self, database: str) -> str:
+        return f"postgresql://postgres:{self.password}@127.0.0.1:{self.port}/{database}"
+
+    def sql(self, database: str, command: str) -> None:
+        run_postgres(
+            [
+                self.bin / executable("psql"),
+                "--no-psqlrc",
+                "-v",
+                "ON_ERROR_STOP=1",
+                "-c",
+                command,
+                self.url(database),
+            ]
+        )
+
+    def new_database(self) -> str:
+        """The address of a new database, with pgvector installed."""
+        self.databases += 1
+        name = f"test_{self.databases}"
+        self.sql("postgres", f"CREATE DATABASE {name} TEMPLATE sulba_template")
+        return name
+
+    def stop(self) -> None:
+        data = self.folder / "data"
+        if (data / "postmaster.pid").exists():
+            run_postgres(
+                [self.bin / executable("pg_ctl"), "stop", "-D", data, "-m", "immediate", "-w"],
+                check=False,
+            )
+        shutil.rmtree(self.folder, ignore_errors=True)
+
+
+def postgres_binaries() -> Path:
+    """Where embedded-postgres keeps its Postgres 18 programs."""
+    import importlib.util
+
+    spec = importlib.util.find_spec("embedded_postgres")
+    if spec is None or spec.origin is None:
+        raise RuntimeError(
+            "The database comes with embedded-postgres, which the lab's project lacks."
+        )
+    return Path(spec.origin).parent / "pginstall" / "bin"
+
+
+def executable(name: str) -> str:
+    return f"{name}.exe" if os.name == "nt" else name
+
+
+def cache_folder() -> Path:
+    """sulba in the cache folder, as Hugging Face's cache is placed: $XDG_CACHE_HOME where it's set,
+    and ~/.cache otherwise, on every system."""
+    base = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
+    return Path(base) / "sulba"
+
+
+def pgvector_folder() -> Path | None:
+    """On Linux, the folder that holds the PostgreSQL project's pgvector for this machine, fetched
+    into the cache folder the first time: its library in lib, and its control and script files in
+    share/extension. Elsewhere None, for the pgvector that comes with embedded-postgres."""
+    import platform
+
+    if platform.system() != "Linux":
+        return None
+    machine = platform.machine()
+    if machine not in PGVECTOR_BUILDS:
+        raise RuntimeError(f"pgvector has no build for Linux on {machine}.")
+    name, size, sha256 = PGVECTOR_BUILDS[machine]
+    folder = cache_folder() / "pgvector" / sha256
+    if (folder / "lib" / "vector.so").is_file():
+        return folder
+    package = fetched_package(f"{PGVECTOR_PACKAGES}/{name}", size, sha256)
+    folder.parent.mkdir(parents=True, exist_ok=True)
+    # Unpacked beside its place first, so a run stopped halfway leaves no pgvector to find.
+    unpacking = Path(tempfile.mkdtemp(dir=folder.parent))
+    try:
+        unpack_pgvector(package, unpacking)
+        try:
+            os.replace(unpacking, folder)
+        except OSError:
+            # Another run put it there first.
+            if not (folder / "lib" / "vector.so").is_file():
+                raise
+    finally:
+        shutil.rmtree(unpacking, ignore_errors=True)
+    return folder
+
+
+def fetched_package(url: str, size: int, sha256: str) -> bytes:
+    """The package at url, once it's the one its size and sha256 name."""
+    import hashlib
+    import http.client
+    import urllib.request
+    from urllib.parse import urlsplit
+
+    host = urlsplit(url).hostname
+    request = urllib.request.Request(url, headers={"User-Agent": "sulba"})
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            package: bytes = response.read(size + 1)
+    except (OSError, http.client.HTTPException) as error:
+        raise RuntimeError(
+            f"pgvector for Linux comes from {host}, which didn't send it: {error}"
+        ) from error
+    if len(package) != size or hashlib.sha256(package).hexdigest() != sha256:
+        raise RuntimeError(f"{host} sent a different pgvector from the one the lab was made with.")
+    return package
+
+
+def unpack_pgvector(package: bytes, folder: Path) -> None:
+    """Puts pgvector's library from a Debian package into folder/lib, and its control and script
+    files into folder/share/extension, with the control file naming the library without a folder,
+    so the server finds it in its dynamic_library_path."""
+    import io
+    import re
+    import tarfile
+
+    data = next(
+        (contents for name, contents in ar_members(package) if name.startswith("data.tar")),
+        None,
+    )
+    if data is None:
+        raise RuntimeError("The pgvector package has no data.tar.")
+    library = folder / "lib"
+    extension = folder / "share" / "extension"
+    library.mkdir(parents=True)
+    extension.mkdir(parents=True)
+    with tarfile.open(fileobj=io.BytesIO(data)) as files:
+        for member in files.getmembers():
+            path = Path(member.name)
+            if not member.isfile():
+                continue
+            if path.parent.name == "lib" and path.name == "vector.so":
+                target = library / path.name
+            elif path.parent.name == "extension" and path.name.startswith("vector"):
+                target = extension / path.name
+            else:
+                continue
+            source = files.extractfile(member)
+            assert source is not None
+            target.write_bytes(source.read())
+    control = extension / "vector.control"
+    if not (library / "vector.so").is_file() or not control.is_file():
+        raise RuntimeError("The pgvector package lacks vector.so or vector.control.")
+    text = control.read_text(encoding="utf-8")
+    control.write_text(
+        re.sub(r"(?m)^module_pathname = .*$", "module_pathname = 'vector'", text),
+        encoding="utf-8",
+    )
+
+
+def ar_members(archive: bytes) -> Iterator[tuple[str, bytes]]:
+    """Each file's name and contents in an ar archive, the format of a Debian package."""
+    if not archive.startswith(b"!<arch>\n"):
+        raise RuntimeError("The pgvector package isn't an ar archive.")
+    offset = 8
+    while offset + 60 <= len(archive):
+        header = archive[offset : offset + 60]
+        name = header[:16].decode("ascii").strip().rstrip("/")
+        size = int(header[48:58].decode("ascii"))
+        start = offset + 60
+        yield name, archive[start : start + size]
+        # Each file starts on an even byte.
+        offset = start + size + size % 2
+
+
+def check_system(*paths: Path) -> None:
+    """Raises when Postgres can't run here: as root, which it refuses, or on Windows without AVX2,
+    which pgvector's build there needs, or with a path the system's code page lacks a character
+    of, since Postgres's programs take each path in that code page there."""
+    if sys.platform != "win32":
+        if os.geteuid() == 0:
+            raise RuntimeError("Postgres doesn't run as root: run the lab as your own user.")
+        return
+    import ctypes
+    import locale
+
+    if not ctypes.windll.kernel32.IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE):
+        raise RuntimeError("pgvector's build for Windows needs a processor with AVX2.")
+    encoding = locale.getencoding()
+    for path in paths:
+        try:
+            str(path).encode(encoding)
+        except UnicodeEncodeError:
+            raise RuntimeError(
+                f"Postgres can't use {path}: its name has a character that this computer's code "
+                f"page, {encoding}, lacks. Move the lab to a folder whose name has none."
+            ) from None
+
+
+def free_port() -> int:
+    """A TCP port on 127.0.0.1 that no program listens on now."""
+    import socket
+
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        return int(probe.getsockname()[1])
+
+
+def run_postgres(command: list[Any], *, check: bool = True, output: Path | None = None) -> int:
+    """Runs one of Postgres's programs, and gives its exit code, or raises with what it wrote
+    if it fails and check is on. With output, what it writes goes to that file."""
+    import subprocess
+
+    arguments = [str(part) for part in command]
+    environment = {**os.environ, "PGCLIENTENCODING": "UTF8"}
+    if output is not None:
+        with output.open("w", encoding="utf-8") as file:
+            return subprocess.run(
+                arguments, stdout=file, stderr=subprocess.STDOUT, env=environment
+            ).returncode
+    done = subprocess.run(
+        arguments,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        env=environment,
+    )
+    if check and done.returncode != 0:
+        raise RuntimeError(
+            f"{Path(command[0]).stem} failed: {(done.stderr or done.stdout).strip()}"
+        )
+    return done.returncode
+
+
+def start_postgres(bin: Path, data: Path, port: int, password: str) -> None:
+    """Starts a Postgres server on 127.0.0.1 at port, for the cluster in data, which it makes the
+    first time: with the password for user postgres, and UTF-8 in the C.UTF-8 locale whatever
+    the system's own."""
+    import shlex
+
+    check_system(bin, data)
+    if not (data / "PG_VERSION").is_file():
+        secret = data.with_name(f"{data.name}-password-file")
+        secret.write_text(password, encoding="utf-8")
+        try:
+            run_postgres(
+                [
+                    bin / executable("initdb"),
+                    "-D",
+                    data,
+                    "-U",
+                    "postgres",
+                    "--auth=scram-sha-256",
+                    f"--pwfile={secret}",
+                    "--encoding=UTF8",
+                    "--locale=C",
+                    "--locale-provider=builtin",
+                    "--builtin-locale=C.UTF-8",
+                    "--no-instructions",
+                ]
+            )
+        finally:
+            secret.unlink()
+    options = f"-p {port} -c listen_addresses=127.0.0.1"
+    if os.name != "nt":
+        options += " -c unix_socket_directories="
+    pgvector = pgvector_folder()
+    if pgvector is not None:
+        # pg_ctl starts the server through the shell, which would read $system and $libdir.
+        for setting in (
+            f"extension_control_path={pgvector / 'share'}:$system",
+            f"dynamic_library_path={pgvector / 'lib'}:$libdir",
+        ):
+            options += f" -c {shlex.quote(setting)}"
+    log = data.with_name(f"{data.name}.log")
+    started = data.with_name(f"{data.name}-start.log")
+    # pg_ctl's own output goes to a file too: the server it starts keeps whatever pg_ctl writes
+    # to, and on Windows a pipe kept open would leave this waiting as long as the server runs.
+    code = run_postgres(
+        [
+            bin / executable("pg_ctl"),
+            "start",
+            "-D",
+            data,
+            "-l",
+            log,
+            "-w",
+            "-t",
+            "60",
+            "-o",
+            options,
+        ],
+        check=False,
+        output=started,
+    )
+    if code != 0:
+        written = [
+            path.read_text(encoding="utf-8", errors="replace")
+            for path in (started, log)
+            if path.exists()
+        ]
+        raise RuntimeError(f"pg_ctl failed: {chr(10).join(written)[-2000:]}")
+
+
+@pytest.fixture(scope="session")
+def postgres() -> Iterator[Postgres]:
+    """The Postgres server for the run's tests, started when a test first asks for a database."""
+    server = Postgres()
+    try:
+        yield server
+    finally:
+        server.stop()
+
+
+@pytest.fixture
+def database(postgres: Postgres) -> str:
+    """The address of a new, empty Postgres database for the test, with pgvector installed, as a
+    postgresql:// URL that psycopg connects to."""
+    return postgres.url(postgres.new_database())

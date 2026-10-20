@@ -21,8 +21,8 @@ jobs:
   checks:
     name: Lint, types, unit tests and build
     runs-on: ubuntu-26.04
-    # A change to the runner computes every stage's figures again, which takes about 5 minutes.
-    timeout-minutes: 20
+    # A change to the runner computes every stage's figures again, which takes about 14 minutes.
+    timeout-minutes: 35
     env:
       # uv fails instead of updating uv.lock when it no longer matches pyproject.toml.
       UV_LOCKED: 1

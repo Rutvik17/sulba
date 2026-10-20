@@ -155,7 +155,7 @@ export type PythonPackage = (typeof pythonPackages)[number];
  * Packages Pyodide has no build of, which only the learner's machine runs: a lab whose stages load
  * one runs there, from its download (decision record 28).
  */
-export const machinePackages = ['torch', 'tokenizers', 'ada-url'] as const;
+export const machinePackages = ['torch', 'tokenizers', 'ada-url', 'psycopg', 'pgvector'] as const;
 export type MachinePackage = (typeof machinePackages)[number];
 
 /** A package a stage loads, in the browser or on the learner's machine. */
@@ -181,6 +181,8 @@ export const importNames: Readonly<Record<Package, string>> = {
   torch: 'torch',
   tokenizers: 'tokenizers',
   'ada-url': 'ada_url',
+  psycopg: 'psycopg',
+  pgvector: 'pgvector',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */
