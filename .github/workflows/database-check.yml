@@ -14,7 +14,7 @@ permissions: {}
 jobs:
   check:
     name: Learner tables refuse visitors who aren't signed in
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     env:
       # The public address and key the site's build uses (apps/web/astro.config.ts).
