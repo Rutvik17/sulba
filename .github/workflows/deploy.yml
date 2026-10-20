@@ -14,7 +14,7 @@ permissions:
 jobs:
   deploy:
     name: Deploy to Cloudflare
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     # The build computes every stage's figures afresh, which takes longer as the courses grow.
     timeout-minutes: 45
     environment:
