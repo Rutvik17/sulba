@@ -1,5 +1,5 @@
 """Two rankings of the help desk's passages, by BM25 and by the vectors, fused into one by
-reciprocal rank fusion, and each ranking's recall."""
+reciprocal rank fusion, and each ranking's hit rate."""
 
 import numpy as np
 
@@ -19,7 +19,7 @@ def fused(rankings: list[np.ndarray], k: int = 60) -> np.ndarray:
     return np.argsort(-total, kind="stable")
 
 
-def recall(rankings: list[np.ndarray], relevant: list[set[int]], k: int) -> float:
+def hit_rate(rankings: list[np.ndarray], relevant: list[set[int]], k: int) -> float:
     """The share of the questions, each with its ranking and its relevant rows, that have a
     relevant row among the first k."""
     found = [

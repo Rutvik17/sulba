@@ -58,7 +58,7 @@ def figures():
                 relevant[row["question"]].add(row["passage"])
     answers = [relevant[id_] for id_ in validation]
 
-    def recall(rows, ids=passage_ids):
+    def hit_rate(rows, ids=passage_ids):
         found = [
             bool({ids[index] for index in row} & want)
             for row, want in zip(rows, answers)
@@ -83,12 +83,12 @@ def figures():
         "questions": str(len(validation)),
         "k": str(K),
         "passages": f"{len(passage_ids):,}",
-        "right": f"{recall(right):.3f}",
-        "as_passages": f"{recall(first(misread @ restored.T)):.3f}",
+        "right": f"{hit_rate(right):.3f}",
+        "as_passages": f"{hit_rate(first(misread @ restored.T)):.3f}",
         "shortest": f"{lengths.min():.3f}",
         "longest": f"{lengths.max():.3f}",
-        "sliced": f"{recall(first(by_slice)):.3f}",
-        "ids": f"{recall(right, by_text):.3f}",
+        "sliced": f"{hit_rate(first(by_slice)):.3f}",
+        "ids": f"{hit_rate(right, by_text):.3f}",
         "moved": f"{sum(a != b for a, b in zip(by_text, passage_ids)):,}",
         "first_best": str(answered(0)),
         "first_last": str(answered(K - 1)),

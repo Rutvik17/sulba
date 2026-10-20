@@ -9,9 +9,9 @@ checks:
   - check: tst_s19j01
     title: "Finds more among the first {% $fig.k %}"
     requires: >-
-      On the {% $fig.test %} test questions, with the scores the reranker gave them, recall at
-      {% $fig.k %} is at least {% $fig.floor %}, where the fused ranking's first
-      {% $fig.k %} passages, each text once, find {% $fig.test_once %}.
+      On the {% $fig.test %} test questions, with the scores the reranker gave them, the
+      hit rate at {% $fig.k %} is at least {% $fig.floor %}, where the fused ranking's
+      first {% $fig.k %} passages, each text once, find {% $fig.test_once %}.
     failure: >-
       Send the reranker the fused ranking's first {% $fig.depth %} texts, and give the
       passages in the order of the scores its results give, each found by its `index`.

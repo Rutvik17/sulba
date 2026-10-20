@@ -4,7 +4,7 @@ In `fuse.py`, write:
 
 - `nearest(question, vectors)`: the rows of `vectors`, the most similar to `question` first, by the dot product of their whole numbers, a tie going to the earlier row.
 - `fused(rankings, k)`: the rows the rankings rank, each ranking an array of every row in its order, by the sum over the rankings of `$1 / (k + r)$`, a tie going to the earlier row.
-- `recall(rankings, relevant, k)`: the share of the questions, each with its ranking and its set of relevant rows, that have a relevant row among the first `k`.
+- `hit_rate(rankings, relevant, k)`: the share of the questions, each with its ranking and its set of relevant rows, that have a relevant row among the first `k`.
 
 ```math
 \text{RRF}(p) = \sum_{\text{rankings}} \frac{1}{k + r(p)}
@@ -13,5 +13,5 @@ In `fuse.py`, write:
 ```
 nearest(question, vectors) -> np.ndarray of rows
 fused(rankings, k) -> np.ndarray of rows
-recall(rankings, relevant, k) -> float
+hit_rate(rankings, relevant, k) -> float
 ```

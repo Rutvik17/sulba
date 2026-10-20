@@ -16,8 +16,8 @@ checks:
   - check: tst_k0z6ne
     title: Finds the answers the full vectors find
     requires: >-
-      On the {% $fig.test %} test questions, recall at {% $fig.k %} is at least {% $fig.kept %}%
-      of the full vectors' {% $fig.full %}.
+      On the {% $fig.test %} test questions, the hit rate at {% $fig.k %} is at least
+      {% $fig.kept %}% of the full vectors' {% $fig.full %}.
     failure: >-
       Embed the questions after `QUERY`, shorten them as the passages are, and score the
       numbers the codes stand for. The validation questions show which vectors keep the most.

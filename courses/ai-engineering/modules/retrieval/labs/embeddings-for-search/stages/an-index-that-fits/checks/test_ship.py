@@ -27,7 +27,7 @@ def vectors(path):
 def desk():
     """The help desk's passages and test questions, with the vectors
     nomic-embed-text-v1.5 gave them, the passages that answer each question, and the
-    full vectors' recall at K."""
+    full vectors' hit rate at K."""
     with open("data/passages.csv", encoding="utf-8", newline="") as file:
         passages = {row["passage"]: row["text"] for row in csv.DictReader(file)}
     with open("data/questions.csv", encoding="utf-8", newline="") as file:
@@ -83,9 +83,11 @@ def test_answers(model, tmp_path, desk, record_property):
     answered = [
         bool(set(ids) & answers) for ids, answers in zip(found, relevant.values())
     ]
-    recall = sum(answered) / len(answered)
-    record_property("note", f"recall at {K}: {recall:.3f}, against {full:.3f} in full")
-    assert recall >= KEPT * full
+    hit_rate = sum(answered) / len(answered)
+    record_property(
+        "note", f"hit rate at {K}: {hit_rate:.3f}, against {full:.3f} in full"
+    )
+    assert hit_rate >= KEPT * full
 
 
 @pytest.mark.id("tst_r1j4wq")

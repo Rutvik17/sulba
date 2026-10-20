@@ -23,7 +23,7 @@ cards:
   - id: crd_u5me63
     front: >-
       On the help desk's validation questions, what did reranking the fused ranking's first
-      {% $fig.depth %} texts do to recall at {% $fig.k %}?
+      {% $fig.depth %} texts do to the hit rate at {% $fig.k %}?
     back: >-
       It rose from {% $fig.once %}, the fused ranking's with each text once, to
       {% $fig.reranked %}.

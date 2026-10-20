@@ -2,7 +2,7 @@
 
 ---
 
-A vector's bytes are its numbers times the bytes of each: 256 numbers of a byte each take 256, and 64 float32 numbers take 256 too. Shorter vectors gives the recall of each on the validation questions.
+A vector's bytes are its numbers times the bytes of each: 256 numbers of a byte each take 256, and 64 float32 numbers take 256 too. Shorter vectors gives the hit rate of each on the validation questions.
 
 ---
 

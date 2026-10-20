@@ -2,7 +2,7 @@ Cormack, Clarke and Büttcher chose `$1 / (k + r)$` because "while highly-ranked
 
 On the {% $fig.questions %} validation questions:
 
-| Search | Recall at {% $fig.k %} | Recall at {% $fig.more %} |
+| Search | Hit rate at {% $fig.k %} | Hit rate at {% $fig.more %} |
 | --- | --- | --- |
 | BM25 | {% $fig.bm25 %} | {% $fig.bm25_more %} |
 | The vectors | {% $fig.vectors %} | {% $fig.vectors_more %} |

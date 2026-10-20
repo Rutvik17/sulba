@@ -4,7 +4,7 @@ The help desk's search will keep its index in memory on a small server, with roo
 - `index.find(client, cache, questions, k)` gives the ids of each question's `k` best passages, best first, and of two that tie, the one that comes first in `passages`.
 - `index.save(path)` writes the index to one file, and `Index.load(path)` reads it back.
 
-How the index keeps each vector is yours to choose: how many of its numbers, and in how many bytes each. Shorter vectors measured what each choice costs on the validation questions. The checks use the {% $fig.test %} test questions, with the vectors nomic-embed-text-v1.5 gave them and the passages: the index's recall at {% $fig.k %} must be at least {% $fig.kept %}% of the full vectors' {% $fig.full %}.
+How the index keeps each vector is yours to choose: how many of its numbers, and in how many bytes each. Shorter vectors measured what each choice costs on the validation questions. The checks use the {% $fig.test %} test questions, with the vectors nomic-embed-text-v1.5 gave them and the passages: the index's hit rate at {% $fig.k %} must be at least {% $fig.kept %}% of the full vectors' {% $fig.full %}.
 
 ```
 Index.build(client, cache, passages) -> Index
