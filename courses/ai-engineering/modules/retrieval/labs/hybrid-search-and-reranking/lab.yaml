@@ -72,8 +72,9 @@ data:
       For each question, the score Qwen3-Reranker-0.6B at 8 bits gave each of its candidate
       passages, one passage a request, through llama.cpp's server, release b11734, on 20
       October 2026. A question's candidates are the first 40 passages of a reciprocal rank
-      fusion, with k = 60, of their BM25 ranking and their vectors' ranking, and the first 30
-      of each ranking.
+      fusion, with k = 60, of their BM25 ranking and their vectors' ranking, the first 30 of
+      each ranking, and in each of the three, the first passage of each of its first 20
+      texts.
 models:
   - title: Qwen3-Reranker-0.6B
     kind: reranking
