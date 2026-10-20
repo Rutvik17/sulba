@@ -502,6 +502,7 @@ def pglite(root):
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")
     root = Path(sys.argv[1]).resolve()
     root.mkdir(parents=True, exist_ok=True)
     found = {

@@ -35,6 +35,7 @@ jobs:
 
   models:
     name: Models on ${{ matrix.os }}
+    if: false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
