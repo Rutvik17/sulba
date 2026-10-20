@@ -7,7 +7,8 @@ files `multidoc2dial.py` builds: `passages.csv`, `questions.csv`, `passage-vecto
 `question-vectors.csv`.
 
 For each question, the passages scored are the first 40 of a reciprocal rank fusion, with k = 60,
-of two rankings of every passage, and the first 30 of each ranking: BM25 over their words, and the
+of two rankings of every passage, the first 30 of each ranking, and in each of the three, the
+first passage of each of its first 20 texts. The two rankings are BM25 over their words, and the
 dot product of their vectors with the question's. A word is a run of letters, digits and
 underscores, lowercased, and BM25 is bm25s's default, Lucene's, with k1 = 1.5 and b = 0.75, worked
 out in float64. A tie goes to the passage that comes first.
@@ -53,9 +54,10 @@ MODEL = (
 MODEL_SHA256 = "22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48"
 LLAMA = "11734"
 WORD = re.compile(r"\w+")
-# Reciprocal rank fusion's constant, and how many of each ranking's first passages are scored.
+# Reciprocal rank fusion's constant, how many of the fused ranking's first passages and of each
+# ranking's are scored, and of how many of each one's first texts the first passage is.
 K = 60
-FUSED, EACH = 40, 30
+FUSED, EACH, TEXTS = 40, 30, 20
 
 
 def download(url: str, sha256: str, path: Path) -> Path:
@@ -91,6 +93,16 @@ def words(text: str) -> list[str]:
     return WORD.findall(text.lower())
 
 
+def first_texts(order: np.ndarray, texts: list[str], count: int) -> list[int]:
+    """The first row of each of the first count texts the rows in order hold."""
+    seen: dict[str, int] = {}
+    for row in order.tolist():
+        if len(seen) == count:
+            break
+        seen.setdefault(texts[row], row)
+    return list(seen.values())
+
+
 def candidates(folder: Path) -> Iterator[tuple[str, str, list[int]]]:
     """Each question's id and text, and the passages to score for it, as rows of
     `passages.csv`."""
@@ -98,16 +110,20 @@ def candidates(folder: Path) -> Iterator[tuple[str, str, list[int]]]:
     questions = read(folder / "questions.csv")
     passage_vectors = read_vectors(folder / "passage-vectors.csv")
     question_vectors = read_vectors(folder / "question-vectors.csv")
+    texts = [passage["text"] for passage in passages]
     retriever = bm25s.BM25(k1=1.5, b=0.75, method="lucene", dtype="float64")
-    retriever.index([words(passage["text"]) for passage in passages], show_progress=False)
+    retriever.index([words(text) for text in texts], show_progress=False)
     ranks = 1 / (K + np.arange(1, len(passages) + 1))
     for question, vector in zip(questions, question_vectors, strict=True):
         bm25 = np.argsort(-retriever.get_scores(words(question["text"])), kind="stable")
         nearest = np.argsort(-(passage_vectors @ vector), kind="stable")
-        fused = np.zeros(len(passages))
+        total = np.zeros(len(passages))
         for order in (bm25, nearest):
-            fused[order] += ranks
-        chosen = [*np.argsort(-fused, kind="stable")[:FUSED], *bm25[:EACH], *nearest[:EACH]]
+            total[order] += ranks
+        fused = np.argsort(-total, kind="stable")
+        chosen = [*fused[:FUSED], *bm25[:EACH], *nearest[:EACH]]
+        for order in (fused, bm25, nearest):
+            chosen += first_texts(order, texts, TEXTS)
         yield question["question"], question["text"], list(dict.fromkeys(map(int, chosen)))
 
 
