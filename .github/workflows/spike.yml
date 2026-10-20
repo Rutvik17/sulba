@@ -13,6 +13,7 @@ permissions:
 jobs:
   database:
     name: Database tests on ${{ matrix.os }}
+    if: false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -30,8 +31,7 @@ jobs:
         run: uv run --directory packages/lab/python pytest -v -p no:cacheprovider tests/test_database.py
 
   models:
-    name: Models on ${{ matrix.os }}
-    if: false
+    name: Router on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
@@ -46,7 +46,7 @@ jobs:
         with:
           version-file: packages/lab/python/pyproject.toml
       - shell: bash
-        run: uv run --no-project --python 3.14 tools/spike/models.py "$RUNNER_TEMP/spike"
+        run: uv run --no-project --python 3.14 tools/spike/router.py "$RUNNER_TEMP/spike"
       - if: always()
         shell: bash
         run: tail -n 40 "$RUNNER_TEMP"/spike/*.log || true
