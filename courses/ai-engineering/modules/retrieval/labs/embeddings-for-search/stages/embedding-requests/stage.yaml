@@ -1,0 +1,7 @@
+id: stg_woul9w
+kind: build
+title: Embedding requests
+builds: A new `embed.py`.
+file: embed.py
+packages: [httpx, numpy]
+minutes: 30

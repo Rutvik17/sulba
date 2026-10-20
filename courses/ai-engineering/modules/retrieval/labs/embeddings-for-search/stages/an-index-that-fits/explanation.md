@@ -1,0 +1,5 @@
+The solution keeps the first 256 numbers of each vector, a byte each: {% $fig.bytes %} bytes, where the full vector takes {% $fig.bytes_full %}. On the test questions, its recall at {% $fig.k %} is {% $fig.recall_bytes %}, against the full vectors' {% $fig.full %}. The first 64 numbers in four bytes each take the same {% $fig.bytes %} bytes and reach {% $fig.recall_64 %}: rounding each number to a byte loses less than keeping fewer numbers.
+
+The index restores the codes once, when it's built or loaded, and keeps the restored vectors for scoring: memory then holds them as float32, four times the codes. An index that must keep its memory to the codes too scores against them in blocks of passages, restoring each block as it goes, or works out each question's scores from the codes and each number's low and step.
+
+`np.savez` keeps each array with its type and shape, so the index loads back exactly as it was saved, and the cache beside it means a new build after the pages change embeds only what changed.

@@ -1,0 +1,43 @@
+id: stg_n7f4dk
+kind: ship
+title: An index that fits
+builds: A new `index.py`, which uses your `cache.py` and `shorten.py`.
+file: index.py
+packages: [httpx, numpy]
+minutes: 45
+checks:
+  - check: tst_t8b2ma
+    title: "At most {% $fig.budget %} bytes a passage"
+    requires: >-
+      The file `save` writes for the help desk's {% $fig.passages %} passages takes at most
+      {% $fig.budget %} bytes for each, ids included.
+    failure: >-
+      Keep fewer numbers of each vector, or fewer bytes for each number.
+  - check: tst_k0z6ne
+    title: Finds the answers the full vectors find
+    requires: >-
+      On the {% $fig.test %} test questions, recall at {% $fig.k %} is at least {% $fig.kept %}%
+      of the full vectors' {% $fig.full %}.
+    failure: >-
+      Embed the questions after `QUERY`, shorten them as the passages are, and score the
+      numbers the codes stand for. The validation questions show which vectors keep the most.
+  - check: tst_r1j4wq
+    title: Embeds each text once
+    requires: >-
+      Each passage's text goes to the model once, a second build with the same cache sends
+      nothing, and a build after a passage changes sends only its new text.
+    failure: >-
+      Embed every passage through `cache.vectors`, in one call.
+  - check: tst_e5n9cr
+    title: The best passage first
+    requires: >-
+      `find` gives the best passage first, and of two that tie, the one that comes first in
+      `passages`.
+    failure: >-
+      Sort the scores from the highest, with `kind="stable"`.
+  - check: tst_h6u0yt
+    title: Finds the same after loading
+    requires: >-
+      An index that `load` reads from the file `save` wrote finds what the index did.
+    failure: >-
+      Save every array `find` uses, and load them back as they were.

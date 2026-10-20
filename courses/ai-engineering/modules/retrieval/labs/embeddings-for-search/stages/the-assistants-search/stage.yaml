@@ -1,0 +1,59 @@
+id: stg_r2m9wa
+kind: catch
+title: The assistant's search
+builds: A new `search.py`.
+file: search.py
+packages: [httpx, numpy]
+minutes: 35
+problems:
+  - check: tst_a8u3mf
+    title: It asked for the questions as passages
+    cost: >-
+      `find` embedded each question after `search_document: `, the passages' prefix, so the
+      model read every question as a passage to be searched. On the {% $fig.questions %}
+      validation questions, recall at {% $fig.k %} fell from {% $fig.right %} to
+      {% $fig.as_passages %}, and no error said so.
+    fix: >-
+      The fix: `QUERY`, the prefix the model's card gives questions.
+    edit:
+      replace: "questions, DOCUMENT)"
+      with: "questions, QUERY)"
+  - check: tst_v6g0ws
+    title: It cut the vectors with a slice
+    cost: >-
+      `vectors[:, :NUMBERS]` kept each vector's first numbers without the card's other
+      steps, so each passage's first numbers kept the length they had, from
+      {% $fig.shortest %} to {% $fig.longest %}, and of two passages at the same angle to a
+      question, the longer scored higher. Recall at {% $fig.k %} fell from {% $fig.right %}
+      to {% $fig.sliced %}.
+    fix: >-
+      The fix: `shorten(vectors, NUMBERS)`, which cuts each vector as the model's card does
+      and brings it back to a length of 1.
+    edit:
+      replace: "    return vectors[:, :NUMBERS]\n"
+      with: "    return shorten(vectors, NUMBERS)\n"
+  - check: tst_q2e7kz
+    title: It gave the passages other passages' ids
+    cost: >-
+      `sorted(passages)` sorted the ids as text, `p1`, `p10`, `p100`, `p1000`, while the
+      vectors stayed in the passages' order, so {% $fig.moved %} of the {% $fig.passages %}
+      passages were found under another passage's id. Recall at {% $fig.k %} fell from
+      {% $fig.right %} to {% $fig.ids %}.
+    fix: >-
+      The fix: `list(passages)`, the ids in the order the vectors were made.
+    edit:
+      replace: "self.ids = sorted(passages)"
+      with: "self.ids = list(passages)"
+  - check: tst_l5r9bj
+    title: It put the best passage last
+    cost: >-
+      `np.argsort` sorts from the lowest score, so `[:, -k:]` kept the best {% $fig.k %} with
+      the best last, and the assistant would read the {% $fig.k %}th-best passage first. The
+      first passage answered {% $fig.first_last %} of the {% $fig.questions %} validation
+      questions, where the best answered {% $fig.first_best %}.
+    fix: >-
+      The fix: `np.argsort(-scores, axis=1, kind="stable")[:, :k]`, which sorts from the
+      highest score, and keeps the passage that comes first in front where two tie.
+    edit:
+      replace: "np.argsort(scores, axis=1)[:, -k:]"
+      with: "np.argsort(-scores, axis=1, kind=\"stable\")[:, :k]"

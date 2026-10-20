@@ -1,0 +1,7 @@
+id: stg_h3e6ty
+kind: build
+title: Shorter vectors
+builds: A new `shorten.py`.
+file: shorten.py
+packages: [numpy]
+minutes: 40

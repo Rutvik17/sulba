@@ -1,0 +1,7 @@
+id: stg_x5c8pq
+kind: build
+title: A cache of embeddings
+builds: A new `cache.py`, which uses your `embed.py`.
+file: cache.py
+packages: [httpx, numpy]
+minutes: 35

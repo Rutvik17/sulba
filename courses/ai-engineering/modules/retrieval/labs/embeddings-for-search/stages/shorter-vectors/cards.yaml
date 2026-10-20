@@ -1,0 +1,18 @@
+cards:
+  - id: crd_a5y8wk
+    front: >-
+      How does nomic-embed-text-v1.5's card cut a vector to fewer numbers?
+    back: >-
+      Layer normalization across all its numbers, then the first numbers kept, then scaled to
+      a length of 1.
+  - id: crd_q6c3tr
+    front: >-
+      What does quantizing each number to a byte need from the passages?
+    back: >-
+      Each number's low and high across them: the byte is one of 256 steps between the two.
+  - id: crd_x0n7vf
+    front: >-
+      Why clip before `astype(np.uint8)` when quantizing?
+    back: >-
+      Cast to uint8, a value past 255 has no defined result, and machines differ in what
+      they give.

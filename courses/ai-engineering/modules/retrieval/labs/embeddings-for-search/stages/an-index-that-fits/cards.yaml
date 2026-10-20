@@ -1,0 +1,14 @@
+cards:
+  - id: crd_p3d6sx
+    front: >-
+      Why can an index keep 256 numbers of a byte each and still find nearly every answer the
+      full vectors find?
+    back: >-
+      The model was trained so that its vectors' first numbers work as a vector of their
+      own, and 256 steps for each number lose little of what a float32 keeps.
+  - id: crd_f8k1gu
+    front: >-
+      What does an index that quantizes its vectors need to keep beside the codes?
+    back: >-
+      Each number's low and high, without which the codes can't be turned back into the
+      numbers they stand for.
