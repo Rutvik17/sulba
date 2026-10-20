@@ -1,0 +1,17 @@
+cards:
+  - id: crd_m4v8rq
+    front: >-
+      What must an embedding cache's key hold?
+    back: >-
+      Everything the vector comes from: the model's name, the prefix and the text.
+  - id: crd_z6t1kw
+    front: >-
+      Why does the cache commit each batch as soon as it's embedded?
+    back: >-
+      So that a failed request or a Ctrl+C keeps every batch before it, and the next run
+      embeds only the rest.
+  - id: crd_e9s2yd
+    front: >-
+      How many times does the cache embed a text that comes twice in one call?
+    back: >-
+      Once: both places get the vector of its one key.

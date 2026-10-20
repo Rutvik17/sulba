@@ -1,0 +1,93 @@
+id: lab_d1jdbs
+title: Embeddings for search
+summary: >-
+  Search a help desk's pages with an embedding model on your machine: embedding requests in
+  batches with the model's prefixes, a cache that embeds each text once, vectors cut short and
+  kept in a byte a number, a review of an assistant's search, and an index that fits in a few
+  hundred bytes a passage.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue whose next turn answers it from the same page: 500
+      of the dataset's training dialogues, chosen at random, for validation, and 362 of its
+      validation dialogues, for testing.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: question-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_query: `, one text a request, by llama.cpp's server, release b11734, each number
+      times 32,767, rounded.
+  - file: question-vectors-as-passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each validation question's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+models:
+  - title: nomic-embed-text-v1.5
+    kind: embedding
+    creators: [Nomic AI]
+    url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf
+      bytes: 146146432
+      sha256: 3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7
+runs: machine
+stages:
+  - embedding-requests
+  - a-cache-of-embeddings
+  - shorter-vectors
+  - the-assistants-search
+  - an-index-that-fits

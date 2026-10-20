@@ -1,0 +1,19 @@
+cards:
+  - id: crd_u7x2jb
+    front: >-
+      What happens when an embedding search sends its questions with the documents' prefix?
+    back: >-
+      Nothing fails: the search still finds passages, just fewer that answer the questions.
+  - id: crd_o4w9tm
+    front: >-
+      Why scale an embedding cut to its first numbers back to a length of 1 before scoring?
+    back: >-
+      The first numbers' length differs from one vector to the next, and a dot product grows
+      with it, so of two vectors at the same angle to a question, the longer would score
+      higher.
+  - id: crd_d1z5he
+    front: >-
+      What does `np.argsort(scores)[-k:]` give?
+    back: >-
+      The k highest scores' places, with the highest last: `np.argsort` sorts from the
+      lowest.

@@ -1,0 +1,18 @@
+cards:
+  - id: crd_t7wq2e
+    front: >-
+      What does nomic-embed-text-v1.5 need at the start of each text it embeds for a search?
+    back: >-
+      What the text is for: `search_document: ` before a passage to search, and
+      `search_query: ` before a question.
+  - id: crd_9bx4lm
+    front: >-
+      Why does an embedding client send its texts in batches, not all in one request?
+    back: >-
+      A text the server can't embed fails its whole request, so batches keep a failure to a
+      few texts, and each request and reply small.
+  - id: crd_c2h8vn
+    front: >-
+      How does an embeddings reply say which vector belongs to which text?
+    back: >-
+      Each item in `data` has an `index`: the place of its text in the request's `input`.
