@@ -201,6 +201,7 @@ class Scripted:
     after: float
     id: str = ""
     pieces: tuple[str, ...] = ()
+    probabilities: tuple[tuple[tuple[str, float], ...], ...] = ()
     calls: tuple[tuple[str, str, tuple[str, ...]], ...] = ()
     finish_reason: str = "stop"
     usage: tuple[int, int] = (0, 0)
@@ -230,6 +231,12 @@ class ScriptedModel:
     client waits for nothing, but raises httpx.ReadTimeout all the same for a reply slower than
     its read timeout.
 
+    It answers a completion request, a prompt to go on from, with the next reply too, and gives
+    a request that asks for logprobs each token's probability and the likeliest tokens for its
+    place, from the probabilities the test scripted:
+
+        model.says("No", probabilities=[{"No": 0.9, "Yes": 0.1}])
+
     It embeds text and reranks documents too, as an embedding or reranking model does, with the
     vectors and scores the test gives it:
 
@@ -249,6 +256,7 @@ class ScriptedModel:
         self._vectors: Callable[[str], Sequence[float]] | None = None
         self._scores: Callable[[str, str], float] | None = None
         self._tokens: Callable[[str], int] = no_tokens
+        self._vocabulary: dict[str, int] = {}
         self._replies = 0
         self._calls = 0
         self._used = 0
@@ -260,12 +268,24 @@ class ScriptedModel:
         finish_reason: str | None = None,
         usage: tuple[int, int] = (0, 0),
         after: float = 0,
+        probabilities: Sequence[Mapping[str, float]] = (),
     ) -> None:
         """Script the next reply: its text, in the pieces a stream sends it in, and the tools it
         calls, each a name with its arguments as a dict, as the JSON text to send, or as that
         text's pieces. It finishes for "tool_calls" when it calls a tool and for "stop" when it
         doesn't, unless finish_reason says otherwise, such as "length". usage is the number of
-        tokens in the prompt and in the reply, and after is how many seconds the reply takes."""
+        tokens in the prompt and in the reply, and after is how many seconds the reply takes.
+        probabilities gives each piece, as a token, the tokens the model weighed for its place
+        and their probabilities, the piece among them, for a request that asks for logprobs."""
+        if probabilities and len(probabilities) != len(pieces):
+            raise ValueError("probabilities gives one mapping of tokens for each piece.")
+        for piece, weighed in zip(pieces, probabilities, strict=bool(probabilities)):
+            if piece not in weighed:
+                raise ValueError(f"The tokens weighed for {piece!r} leave it out.")
+            if not all(0 < probability <= 1 for probability in weighed.values()):
+                raise ValueError("Each probability is above 0 and at most 1.")
+            for token in weighed:
+                self._vocabulary.setdefault(token, len(self._vocabulary))
         calls = []
         for name, arguments in tool_calls:
             self._calls += 1
@@ -283,6 +303,7 @@ class ScriptedModel:
                 after=after,
                 id=f"chatcmpl-{self._replies}",
                 pieces=pieces,
+                probabilities=tuple(tuple(weighed.items()) for weighed in probabilities),
                 calls=tuple(calls),
                 finish_reason=finish_reason or default,
                 usage=usage,
@@ -309,8 +330,8 @@ class ScriptedModel:
         self._script.append(Scripted(after=0, drops=True))
 
     def answers(self, function: Callable[[Received], None]) -> None:
-        """Have function script the answer to each chat request the test scripted none for.
-        It's given the request, and scripts with says, fails, hangs or disconnects."""
+        """Have function script the answer to each chat or completion request the test scripted
+        none for. It's given the request, and scripts with says, fails, hangs or disconnects."""
         self._answer = function
 
     def embeds(
@@ -413,7 +434,7 @@ class ScriptedModel:
             return error_response(404, "File Not Found")
         if refused:
             return error_response(400, refused)
-        if endpoint != "chat":
+        if endpoint not in ("chat", "completions"):
             if self._script and self._script[0].failure:
                 self._used += 1
                 return self._script.popleft()
@@ -496,6 +517,37 @@ class ScriptedModel:
             },
         )
 
+    def _logprobs(self, found: Scripted, weighed: Any, after_sampling: bool) -> Any:
+        """Each token of the reply with its probability and those of the most likely tokens for
+        its place, at most weighed of them, as llama-server gives them (b11734,
+        tools/server/server-task.cpp, probs_vector_to_json): as logarithms, or as probabilities
+        when the request asks for them after sampling. None when the request asks for none."""
+        if isinstance(weighed, bool) or not isinstance(weighed, int) or weighed <= 0:
+            return None
+        if not found.probabilities:
+            raise NoReplyLeft(
+                "The request asks for logprobs, and the test scripted no probabilities: "
+                "give says probabilities."
+            )
+        field, top = ("prob", "top_probs") if after_sampling else ("logprob", "top_logprobs")
+
+        def token(text: str, probability: float) -> dict[str, Any]:
+            value = probability if after_sampling else math.log(probability)
+            return {
+                "id": self._vocabulary[text],
+                "token": text,
+                "bytes": list(text.encode()),
+                field: value,
+            }
+
+        content = []
+        for piece, tokens in zip(found.pieces, found.probabilities, strict=True):
+            likeliest = sorted(tokens, key=lambda item: -item[1])[:weighed]
+            content.append(
+                {**token(piece, dict(tokens)[piece]), top: [token(*item) for item in likeliest]}
+            )
+        return {"content": content}
+
     def _respond(self, found: Scripted, request: httpx.Request) -> httpx.Response:
         import httpx
 
@@ -512,6 +564,32 @@ class ScriptedModel:
             "completion_tokens": completion,
             "total_tokens": prompt + completion,
         }
+        completing = ENDPOINTS[request.method, request.url.path] == "completions"
+        if completing:
+            weighed = body.get("n_probs", body.get("logprobs", 0))
+        elif body.get("logprobs") is True:
+            weighed = 20 if body.get("top_logprobs") is None else body["top_logprobs"]
+        else:
+            weighed = 0
+        logprobs = self._logprobs(found, weighed, body.get("post_sampling_probs") is True)
+        if completing:
+            if found.calls:
+                raise ValueError("A completion calls no tools: script tool calls for chat.")
+            text = {
+                "text": "".join(found.pieces),
+                "index": 0,
+                "logprobs": logprobs,
+                "finish_reason": found.finish_reason,
+            }
+            reply = {
+                "choices": [text],
+                "created": 0,
+                "model": name,
+                "object": "text_completion",
+                "usage": usage,
+                "id": found.id,
+            }
+            return httpx.Response(200, json=reply)
         if body.get("stream") is not True:
             message: dict[str, Any] = {
                 "role": "assistant",
@@ -527,6 +605,8 @@ class ScriptedModel:
                     for call_id, tool, parts in found.calls
                 ]
             choice = {"index": 0, "message": message, "finish_reason": found.finish_reason}
+            if logprobs is not None:
+                choice["logprobs"] = logprobs
             reply = {
                 "id": found.id,
                 "object": "chat.completion",
@@ -564,6 +644,25 @@ def refusal(body: Any) -> str | None:
             return "All non-assistant messages must contain 'content'"
         if fields.get("role") == "assistant" and not {"content", "tool_calls"} & fields.keys():
             return "Assistant message must contain either 'content' or 'tool_calls'!"
+    if body.get("logprobs") is True and body.get("stream") is True:
+        if body.get("tools"):
+            return "logprobs is not supported with tools + stream"
+        return "The scripted model gives logprobs only with replies that aren't streamed."
+    if body.get("logprobs") is not True and body.get("top_logprobs") is not None:
+        return "top_logprobs requires logprobs to be set to true"
+    return None
+
+
+def completions_refusal(body: Any) -> str | None:
+    """Why llama-server would refuse a completion request with this body, in its words (b11734,
+    tools/server/server-context.cpp, handle_completions_impl), or None. The scripted model
+    completes one prompt, given as text, and doesn't stream."""
+    if not isinstance(body, dict) or "prompt" not in body:
+        return "[json.exception.out_of_range.403] key 'prompt' not found"
+    if not isinstance(body["prompt"], str):
+        return "The scripted model completes one prompt, given as a string."
+    if body.get("stream") is True:
+        return "The scripted model streams only chat replies."
     return None
 
 
@@ -612,12 +711,14 @@ def documents_of(body: dict[str, Any]) -> list[str]:
 # each one's requests.
 ENDPOINTS = {
     ("POST", "/v1/chat/completions"): "chat",
+    ("POST", "/v1/completions"): "completions",
     ("POST", "/v1/embeddings"): "embeddings",
     ("POST", "/v1/rerank"): "rerank",
     ("POST", "/v1/reranking"): "rerank",
 }
 REFUSALS: dict[str, Callable[[Any], str | None]] = {
     "chat": refusal,
+    "completions": completions_refusal,
     "embeddings": embeddings_refusal,
     "rerank": rerank_refusal,
 }
