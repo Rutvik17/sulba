@@ -325,19 +325,20 @@ def write_vectors(path: Path, name: str, ids: list[str], vectors: np.ndarray) ->
     write(path, header, [[id_, *row] for id_, row in zip(ids, numbers.tolist(), strict=True)])
 
 
-def build(out: Path, server: Path, downloads: Path) -> None:
-    archive = download(DATASET, DATASET_SHA256, downloads / "multidoc2dial.zip")
-    model = download(MODEL, MODEL_SHA256, downloads / "nomic-embed-text-v1.5.Q8_0.gguf")
-    with zipfile.ZipFile(archive) as packed:
+def write_passages(path: Path, passages: list[dict], pages: dict[str, dict]) -> None:
+    """Each passage with its page, the page's domain and title, and its text."""
+    rows: list[list[object]] = []
+    for passage in passages:
+        page = pages[passage["doc"]]
+        rows.append(
+            [passage["passage"], page["page"], page["domain"], page["title"], passage["text"]]
+        )
+    write(path, ["passage", "page", "domain", "title", "text"], rows)
 
-        def read(name: str) -> dict:
-            return json.loads(packed.read(f"multidoc2dial/{name}").decode("utf-8"))
 
-        docs = read("multidoc2dial_doc.json")["doc_data"]
-        splits = ("train", "validation")
-        dialogues = {
-            split: read(f"multidoc2dial_dial_{split}.json")["dial_data"] for split in splits
-        }
+def pages_of(docs: dict) -> dict[str, dict]:
+    """Each page, by the dataset's id for it: its name, domain, title and text, a function that
+    moves a part of the dataset's text onto the page's, and the dataset's spans."""
     pages: dict[str, dict] = {}
     for domain in DOMAINS:
         for number, (doc_id, doc) in enumerate(docs[domain].items(), start=1):
@@ -350,6 +351,12 @@ def build(out: Path, server: Path, downloads: Path) -> None:
                 "move": mover(doc["doc_text"], text),
                 "spans": doc["spans"],
             }
+    return pages
+
+
+def passages_of(pages: dict[str, dict]) -> list[dict]:
+    """The pages' passages, in order: each page's blocks joined until another would take a
+    passage past WORDS words."""
     passages: list[dict] = []
     for doc_id, page in pages.items():
         for start, end in blocks_of(page["text"], WORDS):
@@ -358,55 +365,92 @@ def build(out: Path, server: Path, downloads: Path) -> None:
             passages.append(
                 {"passage": f"p{number}", "doc": doc_id, "start": start, "end": end, "text": text}
             )
-    found: dict[str, list[dict]] = {"train": [], "validation": []}
-    for split, by_domain in dialogues.items():
-        for domain in DOMAINS:
-            for dialogue in by_domain.get(domain, []):
-                turns = dialogue["turns"]
-                if len(turns) < 2 or (turns[0]["role"], turns[1]["role"]) != ("user", "agent"):
+    return passages
+
+
+def opening_questions(by_domain: dict, pages: dict[str, dict]) -> list[dict]:
+    """The opening question of each of a split's dialogues whose next turn is the agent's answer,
+    given from parts of the same page, each part moved onto the page's text: with the dialogue,
+    the page, the parts and the agent's reply."""
+    found = []
+    for domain in DOMAINS:
+        for dialogue in by_domain.get(domain, []):
+            turns = dialogue["turns"]
+            if len(turns) < 2 or (turns[0]["role"], turns[1]["role"]) != ("user", "agent"):
+                continue
+            doc_id = turns[0]["references"][0]["doc_id"]
+            page = pages[doc_id]
+            parts = set()
+            for reference in turns[1]["references"]:
+                if reference["label"] != "solution" or reference["doc_id"] != doc_id:
                     continue
-                doc_id = turns[0]["references"][0]["doc_id"]
-                page = pages[doc_id]
-                parts = set()
-                for reference in turns[1]["references"]:
-                    if reference["label"] != "solution" or reference["doc_id"] != doc_id:
-                        continue
-                    span = page["spans"][reference["id_sp"]]
-                    start, end, share = page["move"](span["start_sp"], span["end_sp"])
-                    if share >= MOVED:
-                        parts.add((start, end))
-                if parts:
-                    question = " ".join(turns[0]["utterance"].split())
-                    found[split].append({"doc": doc_id, "text": question, "parts": parts})
+                span = page["spans"][reference["id_sp"]]
+                start, end, share = page["move"](span["start_sp"], span["end_sp"])
+                if share >= MOVED:
+                    parts.add((start, end))
+            if parts:
+                found.append(
+                    {
+                        "dialogue": dialogue["dial_id"],
+                        "doc": doc_id,
+                        "text": " ".join(turns[0]["utterance"].split()),
+                        "parts": parts,
+                        "reply": " ".join(turns[1]["utterance"].split()),
+                    }
+                )
+    return found
+
+
+def drawn_for_validation(found: dict[str, list[dict]]) -> list[int]:
+    """Which of the training dialogues' questions are drawn for validation, in order."""
     rng = np.random.default_rng(0)
-    drawn = sorted(rng.choice(len(found["train"]), VALIDATION, replace=False).tolist())
-    questions = [{**found["train"][i], "set": "validation"} for i in drawn]
+    return sorted(rng.choice(len(found["train"]), VALIDATION, replace=False).tolist())
+
+
+def holding(question: dict, passages: list[dict]) -> list[str]:
+    """The passages that hold at least HELD of a part of the question's answer, and every
+    passage with the same text as one of them, in order."""
+    texts = {
+        passage["text"]
+        for passage in passages
+        if passage["doc"] == question["doc"]
+        and any(
+            min(e, passage["end"]) - max(s, passage["start"]) >= HELD * (e - s)
+            for s, e in question["parts"]
+        )
+    }
+    return [passage["passage"] for passage in passages if passage["text"] in texts]
+
+
+def contents(archive: Path, splits: tuple[str, ...]) -> tuple[dict, dict[str, dict]]:
+    """The dataset's pages, and the dialogues of each split named, by domain."""
+    with zipfile.ZipFile(archive) as packed:
+
+        def read(name: str) -> dict:
+            return json.loads(packed.read(f"multidoc2dial/{name}").decode("utf-8"))
+
+        docs = read("multidoc2dial_doc.json")["doc_data"]
+        dialogues = {
+            split: read(f"multidoc2dial_dial_{split}.json")["dial_data"] for split in splits
+        }
+    return docs, dialogues
+
+
+def build(out: Path, server: Path, downloads: Path) -> None:
+    archive = download(DATASET, DATASET_SHA256, downloads / "multidoc2dial.zip")
+    model = download(MODEL, MODEL_SHA256, downloads / "nomic-embed-text-v1.5.Q8_0.gguf")
+    docs, dialogues = contents(archive, ("train", "validation"))
+    pages = pages_of(docs)
+    passages = passages_of(pages)
+    found = {split: opening_questions(by_domain, pages) for split, by_domain in dialogues.items()}
+    questions = [{**found["train"][i], "set": "validation"} for i in drawn_for_validation(found)]
     questions += [{**question, "set": "test"} for question in found["validation"]]
-    by_text: dict[str, list[int]] = {}
-    for index, passage in enumerate(passages):
-        by_text.setdefault(passage["text"], []).append(index)
     relevant: list[list[object]] = []
     for number, question in enumerate(questions, start=1):
         question["question"] = f"q{number}"
-        holding = {
-            passage["text"]
-            for passage in passages
-            if passage["doc"] == question["doc"]
-            and any(
-                min(e, passage["end"]) - max(s, passage["start"]) >= HELD * (e - s)
-                for s, e in question["parts"]
-            )
-        }
-        same = sorted(index for text in holding for index in by_text[text])
-        relevant += [[question["question"], passages[index]["passage"]] for index in same]
+        relevant += [[question["question"], passage] for passage in holding(question, passages)]
+    write_passages(out / "passages.csv", passages, pages)
     rows: list[list[object]] = []
-    for passage in passages:
-        page = pages[passage["doc"]]
-        rows.append(
-            [passage["passage"], page["page"], page["domain"], page["title"], passage["text"]]
-        )
-    write(out / "passages.csv", ["passage", "page", "domain", "title", "text"], rows)
-    rows = []
     for question in questions:
         page = pages[question["doc"]]
         rows.append(

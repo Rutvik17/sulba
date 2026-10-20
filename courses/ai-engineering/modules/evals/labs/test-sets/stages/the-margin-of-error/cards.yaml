@@ -1,0 +1,15 @@
+cards:
+  - id: crd_umv3zt
+    front: >-
+      Why does a test set whose pages hold several questions each need a clustered standard
+      error?
+    back: >-
+      A page's questions pass and fail together, so they aren't independent. Treating each
+      alone makes the margin too narrow.
+  - id: crd_b41p51
+    front: >-
+      What does a design effect of {% $fig.all_effect %} say about the help desk's
+      {% $fig.test %} test questions?
+    back: >-
+      Its clustered variance is {% $fig.all_effect %} times the independent one, so the set
+      tells as much as {% $fig.all_worth %} independent questions.

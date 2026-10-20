@@ -1,0 +1,65 @@
+id: stg_iy89tl
+kind: catch
+title: The assistant's test set
+builds: A new `evalset.py`, which uses your `testset.py` and `margin.py`.
+file: evalset.py
+packages: [numpy]
+minutes: 30
+problems:
+  - check: tst_fkp7tp
+    title: It cut a page in two
+    cost: >-
+      The test set stopped at exactly its share, partway through a page, and left the page's
+      other questions in the development set. With a share of {% $fig.share %}, it cut
+      {% $fig.cut_pages %} of the {% $fig.test_pages %} pages it drew in two, and what is
+      tuned on that page's questions passes for a gain on the test set.
+    fix: >-
+      Check the count before each page, and move the page whole.
+    edit:
+      replace: |2-
+                for index in rng.permutation(len(pages)):
+                    for question in theirs:
+                        if question["page"] == pages[index] and held < share * len(kept):
+                            chosen.add(question["question"])
+                            held += 1
+      with: |2-
+                for index in rng.permutation(len(pages)):
+                    if held >= share * len(kept):
+                        break
+                    moved = [q["question"] for q in theirs if q["page"] == pages[index]]
+                    chosen.update(moved)
+                    held += len(moved)
+  - check: tst_xgq9ct
+    title: Its first services took everything
+    cost: >-
+      Each service stopped at a share of every service's questions together, more than any
+      one service holds, so the test set took all {% $fig.everything %} of the
+      {% $fig.unique %} questions and the development set none.
+    fix: >-
+      Stop at a share of the service's own questions, `len(theirs)`.
+    edit:
+      replace: "share * len(kept)"
+      with: "share * len(theirs)"
+  - check: tst_zcipf3
+    title: Its test set changes from run to run
+    cost: >-
+      A set of strings comes out in an order that changes with each Python process, so the
+      same seed draws other pages in the next run, and two releases measured on two runs
+      are measured on different questions.
+    fix: >-
+      List the pages in the order their first questions come, with `dict.fromkeys`.
+    edit:
+      replace: 'pages = list({question["page"] for question in theirs})'
+      with: 'pages = list(dict.fromkeys(question["page"] for question in theirs))'
+  - check: tst_9qibnm
+    title: Its margin counted each question alone
+    cost: >-
+      With each question as its own cluster, the clustered standard error is the one for
+      independent questions. On the help desk's test set, the margin of the share of replies
+      that cite a passage holding the answer came out at ±{% $fig.alone %} where it is
+      ±{% $fig.together %}.
+    fix: >-
+      Give `clustered_standard_error` each question's page.
+    edit:
+      replace: "clustered_standard_error(scores, names)"
+      with: "clustered_standard_error(scores, [pages[name] for name in names])"

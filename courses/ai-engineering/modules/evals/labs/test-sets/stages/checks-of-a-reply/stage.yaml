@@ -1,0 +1,6 @@
+id: stg_ax8f6h
+kind: build
+title: Checks of a reply
+builds: A new `checks.py`.
+file: checks.py
+minutes: 30

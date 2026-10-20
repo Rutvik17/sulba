@@ -1,0 +1,59 @@
+id: lab_utvm9p
+title: Test sets
+summary: >-
+  Measure the help desk's replies on questions it never tuned on: a test set split by page
+  and service, checks of each reply written in code, the margin of error the set gives with
+  each page's questions counted together, a review of an assistant's test set, and a release
+  report that says how many questions a margin needs.
+data:
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each of the dataset's test dialogues whose next turn answers
+      it from the same page: 340 questions, each with its page and the page's domain.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: shown.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the first 5 passages of the help desk's reranked search: the first 20
+      texts of a reciprocal rank fusion, with k = 60, of the passages' BM25 ranking and their
+      vectors' ranking, in the order of the scores Qwen3-Reranker-0.6B at 8 bits gave them,
+      through llama.cpp's server, release b11734, on 20 October 2026.
+  - file: replies.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the reply Qwen3.5-2B at 8 bits wrote from its 5 passages, through
+      llama.cpp's server, release b11734, on 20 October 2026, at the sampling settings its
+      model card gives for text, with the reason it stopped and the tokens it wrote.
+references: [errors.json]
+runs: machine
+stages:
+  - a-test-set
+  - checks-of-a-reply
+  - the-margin-of-error
+  - the-assistants-test-set
+  - a-release-report

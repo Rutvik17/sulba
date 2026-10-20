@@ -1,0 +1,13 @@
+cards:
+  - id: crd_5nsnqp
+    front: >-
+      How many more questions does a test set need to halve its margin of error?
+    back: >-
+      Four times as many: the margin falls as one over the square root of the questions.
+  - id: crd_fkvvzi
+    front: >-
+      Why does the help desk decide on the share over every question, not each service's?
+    back: >-
+      Each service's margin is too wide: it would need {% $fig.fewest_needed %} to
+      {% $fig.most_needed %} questions for ±{% $fig.target %}, where it has
+      {% $fig.dmv_questions %} to {% $fig.va_questions %}.
