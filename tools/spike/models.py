@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tarfile
 import time
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -235,8 +236,9 @@ def reranking(name, model):
 def serve(server, model_path, args, log_path):
     log = open(log_path, "w", encoding="utf-8")
     started = time.time()
+    model = [] if model_path is None else ["-m", str(model_path)]
     process = subprocess.Popen(
-        [str(server), "-m", str(model_path), "--host", "127.0.0.1", "--port", str(PORT), *args],
+        [str(server), *model, "--host", "127.0.0.1", "--port", str(PORT), *args],
         stdout=log,
         stderr=subprocess.STDOUT,
     )
@@ -250,6 +252,47 @@ def serve(server, model_path, args, log_path):
             pass
         time.sleep(0.5)
     return process, round(time.time() - started, 1)
+
+
+def router(server, folder):
+    """One llama-server in router mode, serving both Qwen3 models by name from a preset file."""
+    found = {}
+    preset = folder / "models.ini"
+    embed = (folder / "Qwen3-Embedding-0.6B.gguf").resolve().as_posix()
+    rerank = (folder / "Qwen3-Reranker-0.6B.gguf").resolve().as_posix()
+    preset.write_text(
+        "version = 1\n\n[*]\nc = 8192\n\n"
+        f"[embeddings]\nmodel = {embed}\nembeddings = true\npooling = last\n"
+        "batch-size = 8192\nubatch-size = 8192\n\n"
+        f"[reranker]\nmodel = {rerank}\nrerank = true\nbatch-size = 8192\nubatch-size = 8192\n",
+        encoding="utf-8",
+    )
+    process, found["ready_s"] = serve(
+        server, None, ["--models-preset", str(preset)], folder / "router.log"
+    )
+    try:
+        found["models"] = [m["id"] for m in call("/v1/models")["data"]]
+        reply, found["first_embedding_s"] = timed(
+            "/v1/embeddings", {"model": "embeddings", "input": PASSAGES[:2]}
+        )
+        found["first_numbers"] = [round(x, 6) for x in reply["data"][0]["embedding"][:6]]
+        reply, found["second_embedding_s"] = timed(
+            "/v1/embeddings", {"model": "embeddings", "input": PASSAGES[:2]}
+        )
+        reply, found["first_rerank_s"] = timed(
+            "/v1/rerank",
+            {"model": "reranker", "query": QUESTIONS[0][0], "documents": PASSAGES},
+        )
+        found["rerank_top"] = max(reply["results"], key=lambda r: r["relevance_score"])["index"]
+        try:
+            call("/v1/embeddings", {"model": "missing", "input": ["x"]})
+            found["unknown_model"] = "accepted"
+        except urllib.error.HTTPError as error:
+            found["unknown_model"] = f"{error.code} {error.read()[:200]!r}"
+    finally:
+        process.terminate()
+        process.wait(timeout=60)
+    return found
 
 
 def main(folder):
@@ -278,6 +321,11 @@ def main(folder):
             result["error"] = f"{type(error).__name__}: {error}"[-3000:]
         found[name] = result
         print(json.dumps({name: result}, indent=1), flush=True)
+    try:
+        found["router"] = router(server, folder)
+    except Exception as error:
+        found["router"] = {"error": f"{type(error).__name__}: {error}"[-3000:]}
+    print(json.dumps({"router": found["router"]}, indent=1), flush=True)
     report = json.dumps(found, indent=1, ensure_ascii=False)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
