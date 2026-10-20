@@ -1,0 +1,6 @@
+id: stg_49z39q
+kind: build
+title: Each text once
+builds: A new `texts.py`, which uses your `measures.py`.
+file: texts.py
+minutes: 25

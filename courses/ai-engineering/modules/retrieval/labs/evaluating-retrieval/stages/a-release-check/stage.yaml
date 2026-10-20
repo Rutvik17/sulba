@@ -1,0 +1,54 @@
+id: stg_ejep9v
+kind: ship
+title: A release check
+builds: A new `release.py`, which uses your `measures.py`, `texts.py` and `compare.py`.
+file: release.py
+packages: [numpy]
+minutes: 40
+checks:
+  - check: tst_agscc1
+    title: Ships the reranked search
+    requires: >-
+      Checked with `fused-once` as the current search and `reranked` as the candidate, the
+      release gives each search's hit rate at {% $fig.k %} over every test question, and
+      ships.
+    failure: >-
+      Judge each question by its passages as a reader sees them, average over every question
+      in `judgments`, and ship when the gain is clear and no service falls too far.
+  - check: tst_f5srw2
+    title: Counts every question
+    requires: >-
+      A question the candidate shows nothing for counts, as 0: `confident`, which shows
+      nothing for some test questions, gets its true hit rate, and doesn't ship.
+    failure: >-
+      Go through every question in `judgments`, with no passages for one the run lacks.
+  - check: tst_zyg58x
+    title: Holds a gain chance could give
+    requires: >-
+      `reranked` doesn't ship over `reranked-copies`: its gain in hit rate is one the
+      randomization test gives a p-value above {% $fig.level %}.
+    failure: >-
+      Ship only when the p-value is below {% $fig.level %}.
+  - check: tst_5mhgrs
+    title: Holds a search worse for one service
+    requires: >-
+      A candidate that gains clearly over every question but loses more than
+      {% $fig.fall %} of one service's hit rate doesn't ship, and `held` names that service.
+    failure: >-
+      Find each service's two hit rates over its own questions, and hold the release if any
+      falls by more than {% $fig.fall %}.
+  - check: tst_gtkkxc
+    title: Judges nDCG by text
+    requires: >-
+      Each search's nDCG at {% $fig.depth %} is judged as a reader sees its passages: a text
+      shown before gains nothing, and the best ranking holds each answer once.
+    failure: >-
+      Give `ndcg` the passages through `as_seen` and the answers through `relevant_texts`.
+  - check: tst_l6xnsr
+    title: Tests the gain question by question
+    requires: >-
+      The p-value is the randomization test's on each question's two hit rates, with
+      {% $fig.repeats %} resamples drawn from `rng` in one call, and each service's hit
+      rates are over its own questions.
+    failure: >-
+      Call `randomization_test` once, with the questions in the order of `judgments`.

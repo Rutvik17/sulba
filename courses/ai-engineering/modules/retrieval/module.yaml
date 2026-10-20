@@ -5,3 +5,4 @@ labs:
   - vector-search-in-postgres
   - chunking
   - hybrid-search-and-reranking
+  - evaluating-retrieval

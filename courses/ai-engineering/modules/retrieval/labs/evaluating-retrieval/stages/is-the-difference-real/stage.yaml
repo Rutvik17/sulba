@@ -1,0 +1,7 @@
+id: stg_0oqs1x
+kind: build
+title: Is the difference real?
+builds: A new `compare.py`, which uses your `measures.py` and `texts.py`.
+file: compare.py
+packages: [numpy]
+minutes: 35

@@ -1,0 +1,22 @@
+cards:
+  - id: crd_53vnmj
+    front: >-
+      What must a new search show before the help desk's release check ships it?
+    back: >-
+      A higher hit rate at {% $fig.k %} over every test question, a randomization test's
+      p-value below {% $fig.level %}, and no service whose hit rate falls by more than
+      {% $fig.fall %}.
+  - id: crd_877swq
+    front: >-
+      Run a step at a time on the help desk's test questions, which of its changes did the
+      release check ship?
+    back: >-
+      The vectors over BM25, and the reranked search over the fused ranking. It held fusion
+      over the vectors, and each text once over the fused ranking: chance could give their
+      gains at {% $fig.k %}.
+  - id: crd_xgpbj8
+    front: >-
+      Why weigh a search against the one it replaces rather than a step at a time?
+    back: >-
+      A change whose gain comes with a later step is held a step at a time: the reranked
+      search ships over the vectors alone, where fusion on its own doesn't.

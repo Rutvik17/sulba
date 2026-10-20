@@ -1,0 +1,24 @@
+cards:
+  - id: crd_u1dlrw
+    front: >-
+      Tested as if each search had questions of its own, what p-value did the gain of
+      `reranked` over `fused-once` get?
+    back: >-
+      {% $fig.unpaired %}, above {% $fig.level %}, where swapping each question's own two
+      values gives {% $fig.paired %}: the questions both answer or both miss widen what
+      chance could give.
+  - id: crd_3y3q2n
+    front: >-
+      Why does dropping a repeated text from the passages shown lift a search's hit rate?
+    back: >-
+      The passages after it move up, so one the reader would find below the first
+      {% $fig.k %} counts among them: the hit rate of `fused` came out at
+      {% $fig.fused_squeezed %} where it is {% $fig.fused %}.
+  - id: crd_s3ihve
+    front: >-
+      What does judging nDCG by every copy of an answer do to a search that shows the answer
+      first?
+    back: >-
+      Holds it below 1, since the best ranking would show every copy: the nDCG at
+      {% $fig.depth %} of `reranked` came out at {% $fig.every_copy %} where it is
+      {% $fig.reranked_ndcg %}.

@@ -1,0 +1,22 @@
+cards:
+  - id: crd_fcymdh
+    front: >-
+      Why compare two searches question by question?
+    back: >-
+      They answer the same questions, and a question both answer or both miss says nothing
+      about which is better. A paired test keeps each question's two results together.
+  - id: crd_2lwlcx
+    front: >-
+      What does a randomization test swap, and what is its p-value?
+    back: >-
+      Each question's two values, at random, since the same two searches could as well have
+      given them the other way round. The p-value is the share of the resamples whose
+      difference is as far from 0 as the observed one, or further.
+  - id: crd_ksyuqi
+    front: >-
+      On the help desk's test questions, which services' intervals show the reranker's gain
+      in hit rate?
+    back: >-
+      Only `dmv`'s. With {% $fig.fewest %} to {% $fig.most %} questions a service, the other
+      three take in 0, and of the {% $fig.gained %} questions the reranker gains on balance,
+      {% $fig.dmv_gained %} are in `dmv`.

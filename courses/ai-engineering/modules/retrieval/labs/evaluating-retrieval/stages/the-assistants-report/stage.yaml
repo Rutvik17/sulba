@@ -1,0 +1,62 @@
+id: stg_o07uyv
+kind: catch
+title: The assistant's report
+builds: A new `report.py`, which the help desk will choose its searches by.
+file: report.py
+packages: [numpy]
+minutes: 40
+problems:
+  - check: tst_xig95w
+    title: It left out the questions a search showed nothing for
+    cost: >-
+      `scores` went through the questions in the run, so a question the search showed
+      nothing for wasn't counted. `confident` shows nothing for {% $fig.empty %} of the
+      {% $fig.test %} test questions, and its hit rate at {% $fig.k %} came out at
+      {% $fig.confident_shown %} where it is {% $fig.confident %}, close to the
+      {% $fig.reranked %} of `reranked`, whose passages it keeps a part of.
+    fix: >-
+      The fix: go through every question in `judgments`, with `run.get(question, [])` for
+      the passages shown.
+    edit:
+      replace: "    for question, shown in run.items():\n        seen = as_seen(shown, first)\n"
+      with: "    for question in judgments:\n        seen = as_seen(run.get(question, []), first)\n"
+  - check: tst_3uuz91
+    title: It judged nDCG by every copy of the answer
+    cost: >-
+      `ndcg` was given the relevant passages, not their texts, so the best ranking held
+      every copy of an answer, and an answer shown first scored below 1. {% $fig.copies %}
+      of the test questions have an answer more than one passage holds, and the nDCG at
+      {% $fig.depth %} of `reranked` came out at {% $fig.every_copy %} where it is
+      {% $fig.reranked_ndcg %}.
+    fix: >-
+      The fix: `ndcg(seen, answers, DEPTH)`, with the answers' texts.
+    edit:
+      replace: "            ndcg(seen, judgments[question], DEPTH),\n"
+      with: "            ndcg(seen, answers, DEPTH),\n"
+  - check: tst_o381oc
+    title: It moved passages up past a repeated text
+    cost: >-
+      `as_seen` dropped each repeated text, so the passages after it moved up, and a passage
+      the reader would find below the first {% $fig.k %} counted among them. The hit rate at
+      {% $fig.k %} of `fused`, which repeats texts, came out at {% $fig.fused_squeezed %}
+      where it is {% $fig.fused %}, and what its copies cost the reader was hidden:
+      `fused-once`, which shows each text once, finds {% $fig.fused_once %}.
+    fix: >-
+      The fix: keep each passage at its rank, with `None` for a text shown before.
+    edit:
+      replace: "    return list(dict.fromkeys(first[passage] for passage in shown))\n"
+      with: "    seen: set[str] = set()\n    texts: list[str | None] = []\n    for passage in shown:\n        text = first[passage]\n        texts.append(None if text in seen else text)\n        seen.add(text)\n    return texts\n"
+  - check: tst_pmouf7
+    title: It tested the gain as if each search had questions of its own
+    cost: >-
+      `randomization_test` shuffled the two searches' values together, as if each search had
+      been measured on questions of its own, and the questions both answer or both miss
+      widened what chance could give. The gain of `reranked` over `fused-once` came out with
+      a p-value of {% $fig.unpaired %}, above {% $fig.level %}, where swapping each
+      question's own two values gives {% $fig.paired %}.
+    fix: >-
+      The fix: swap each question's two values where
+      `rng.integers(0, 2, size=(REPEATS, len(a)))` gives 1.
+    edit:
+      replace: "    observed = abs(a.mean() - b.mean())\n    pooled = np.concatenate([a, b])\n    count = 0\n    for _ in range(REPEATS):\n        shuffled = rng.permutation(pooled)\n        count += abs(shuffled[: len(a)].mean() - shuffled[len(a) :].mean()) >= observed\n    return (1 + count) / (1 + REPEATS)\n"
+      with: "    differences = a - b\n    observed = abs(differences.mean())\n    signs = 1 - 2 * rng.integers(0, 2, size=(REPEATS, len(a)))\n    count = np.count_nonzero(np.abs((signs * differences).mean(axis=1)) >= observed)\n    return float((1 + count) / (1 + REPEATS))\n"
