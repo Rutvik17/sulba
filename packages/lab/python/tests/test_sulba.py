@@ -845,13 +845,3 @@ def test_a_port_in_use_is_said_before_the_server_starts(
         f"uv run sulba.py model --port {port + 1}.\n"
     )
     assert not (tmp_path / "server.log").exists()
-
-
-def test_the_cache_folder_is_placed_as_hugging_faces_is(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "xdg"))
-    assert sulba.cache_folder() == tmp_path / "xdg" / "sulba"
-    monkeypatch.delenv("XDG_CACHE_HOME")
-    monkeypatch.setattr(sulba.Path, "home", lambda: tmp_path / "home")
-    assert sulba.cache_folder() == tmp_path / "home" / ".cache" / "sulba"

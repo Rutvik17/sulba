@@ -24,7 +24,9 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff==0.17.1"]
+# Postgres with pgvector, and psycopg to reach it, for the tests of the database fixture (decision
+# record 33): machine labs' projects have them, and the browser never does.
+dev = ["embedded-postgres==18.6.3", "pgvector==0.5.1", "psycopg[binary]==3.3.5", "ruff==0.17.1"]
 
 [tool.uv]
 package = false
@@ -55,6 +57,7 @@ constraint-dependencies = [
   "librt==0.8.1",
   "mypy-extensions==1.1.0",
   "pathspec==1.1.1",
+  "platformdirs==4.9.4",
   "pluggy==1.6.0",
   "pydantic==2.12.5",
   "pydantic-core==2.41.5",
