@@ -1,0 +1,3 @@
+The four checks hold the search to the help desk's passages and questions: each question read into words as its passages are, BM25's scores as bm25s gives them, each cosine exact, and the two rankings fused by rank. None of the problems showed in the assistant's tests. Their question was lowercase, its words held by one passage of three, and their vectors' numbers were too small to overflow, while a search that adds its scores still puts the passage that matches on both first.
+
+Each problem left the search giving passages, best first, that look like answers. Only its recall on labelled questions shows what each one costs, and a search that fuses two rankings needs it for each ranking alone as well as for the two together.

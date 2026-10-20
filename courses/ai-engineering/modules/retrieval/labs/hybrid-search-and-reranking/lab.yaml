@@ -1,0 +1,96 @@
+id: lab_edmvox
+title: Hybrid search and reranking
+summary: >-
+  Search the help desk's passages by their words as well as their vectors, and have a second
+  model put what the two find in order: full-text search in Postgres, BM25 by hand, two
+  rankings fused by their ranks, a review of an assistant's hybrid search, and a search
+  reranked by Qwen3-Reranker-0.6B on your machine.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue whose next turn answers it from the same page: 500
+      of the dataset's training dialogues, chosen at random, for validation, and 362 of its
+      validation dialogues, for testing.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: question-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_query: `, one text a request, by llama.cpp's server, release b11734, each number
+      times 32,767, rounded.
+  - file: rerank-scores.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the score Qwen3-Reranker-0.6B at 8 bits gave each of its candidate
+      passages, one passage a request, through llama.cpp's server, release b11734, on 20
+      October 2026. A question's candidates are the first 40 passages of a reciprocal rank
+      fusion, with k = 60, of their BM25 ranking and their vectors' ranking, and the first 30
+      of each ranking.
+models:
+  - title: Qwen3-Reranker-0.6B
+    kind: reranking
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3-Reranker-0.6B
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/resolve/a02f48bb4f057028298c21fa033da2b30d7742d5/qwen3-reranker-0.6b-q8_0.gguf
+      bytes: 639153184
+      sha256: 22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48
+references: [bm25.json]
+runs: machine
+stages:
+  - full-text-search
+  - ranking-by-bm25
+  - two-rankings-fused
+  - the-assistants-hybrid-search
+  - a-reranked-search

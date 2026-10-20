@@ -1,0 +1,76 @@
+id: stg_qep0zy
+kind: catch
+title: The assistant's hybrid search
+builds: A new `hybrid.py`, which the help desk will search its passages with.
+file: hybrid.py
+packages: [numpy]
+minutes: 35
+problems:
+  - check: tst_7b4g4w
+    title: It read the question with its capitals
+    cost: >-
+      `WORD.findall(question)` kept the question's capitals, while every passage's words are
+      lowercased, so each capitalised word of a question, its first among them, matched
+      nothing: {% $fig.lost %} of the {% $fig.question_words %} words of the
+      {% $fig.questions %} validation questions. Recall at {% $fig.k %} fell from
+      {% $fig.right %} to {% $fig.capitals %}.
+    fix: >-
+      The fix: `words(question)`, which reads a question into words as it reads a passage.
+    edit:
+      replace: "WORD.findall(question)"
+      with: "words(question)"
+  - check: tst_0ls0lt
+    title: It weighed common words below zero
+    cost: >-
+      `math.log((count - n + 0.5) / (n + 0.5))` is below zero for a word that more than half
+      the passages hold, as {% $fig.below_zero %} of the help desk's words are, the
+      commonest, “{% $fig.common %}”, at {% $fig.common_weight %}. Each lowered the score of
+      every passage that holds it. BM25's own recall at {% $fig.k %} fell from
+      {% $fig.bm25 %} to {% $fig.negative_bm25 %}, and the search's from {% $fig.right %} to
+      {% $fig.negative %}.
+    fix: >-
+      The fix: `math.log(1 + (count - n + 0.5) / (n + 0.5))`, Lucene's weight, which is above
+      zero for every word.
+    edit:
+      replace: "math.log((count - n + 0.5) / (n + 0.5))"
+      with: "math.log(1 + (count - n + 0.5) / (n + 0.5))"
+  - check: tst_tekzxd
+    title: It multiplied the vectors in 16 bits
+    cost: >-
+      Each stored number fits in 16 bits, but their products don't, and NumPy wraps a 16-bit
+      whole number past {% $fig.int16_max %} around without a word. The first validation
+      question's nearest passage, at a dot product of {% $fig.dot %}, came out at
+      {% $fig.wrapped_dot %}. The vectors' own recall at {% $fig.k %} fell from
+      {% $fig.vectors %} to {% $fig.wrapped_vectors %}, and the search's from
+      {% $fig.right %} to {% $fig.wrapped %}.
+    fix: >-
+      The fix: keep the vectors as `int64`, which holds every dot product of two of them.
+    edit:
+      replace: "        # Each number fits in 16 bits, a quarter of the memory.\n        self.vectors = vectors.astype(np.int16)\n"
+      with: "        self.vectors = vectors.astype(np.int64)\n"
+  - check: tst_0jurhd
+    title: It added the scores
+    cost: >-
+      At the median, a question's best passage scores {% $fig.bm25_best %} by BM25, and a
+      cosine is at most 1, so BM25 decided the sum, and the vectors counted only between
+      passages whose BM25 scores were close. Recall at {% $fig.k %} fell from
+      {% $fig.right %} to {% $fig.added %}, and at {% $fig.more %} from {% $fig.right_more %}
+      to {% $fig.added_more %}, close to BM25's own {% $fig.bm25 %} and
+      {% $fig.bm25_more %}.
+    fix: >-
+      The fix: fuse the two rankings by rank, as reciprocal rank fusion does, with `$k$` =
+      {% $fig.rrf %}.
+    edit:
+      replace: |-
+        def fused(bm25: np.ndarray, similarity: np.ndarray) -> np.ndarray:
+            """Each passage's score: its BM25 score and its cosine, added."""
+            return bm25 + similarity
+      with: |-
+        def fused(bm25: np.ndarray, similarity: np.ndarray, k: int = 60) -> np.ndarray:
+            """Each passage's score: the sum over the two rankings, by BM25 and by cosine, of
+            1 / (k + its rank), the first rank being 1 and a tie going to the earlier row."""
+            total = np.zeros(len(bm25))
+            for scores in (bm25, similarity):
+                ranking = np.argsort(-scores, kind="stable")
+                total[ranking] += 1 / (k + np.arange(1, len(ranking) + 1))
+            return total

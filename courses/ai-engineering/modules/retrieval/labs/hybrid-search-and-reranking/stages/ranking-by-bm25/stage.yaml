@@ -1,0 +1,7 @@
+id: stg_ixfl8w
+kind: build
+title: Ranking by BM25
+builds: A new `bm25.py`.
+file: bm25.py
+packages: [numpy]
+minutes: 40

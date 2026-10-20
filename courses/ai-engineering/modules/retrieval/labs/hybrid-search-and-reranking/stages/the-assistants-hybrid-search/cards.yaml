@@ -1,0 +1,21 @@
+cards:
+  - id: crd_x6kzwg
+    front: >-
+      Why must a search read a question into words exactly as it read its passages?
+    back: >-
+      A word matches only the same word: a question's capitalised words find nothing among
+      passages whose words were lowercased. The assistant's search lost {% $fig.lost %} of
+      the {% $fig.question_words %} words of the validation questions that way.
+  - id: crd_7t8zqe
+    front: >-
+      Why can't a hybrid search add a passage's BM25 score to its cosine?
+    back: >-
+      The scores are on scales of their own: a question's best passage scores
+      {% $fig.bm25_best %} by BM25 at the median, and a cosine is at most 1, so BM25 decides
+      the sum. Fuse their rankings by rank instead.
+  - id: crd_5soxmr
+    front: >-
+      Why multiply vectors stored as 16-bit whole numbers in 64 bits?
+    back: >-
+      Their products overflow 16 bits, and NumPy wraps a 16-bit result around without a word:
+      a dot product of {% $fig.dot %} came out at {% $fig.wrapped_dot %}.

@@ -1,0 +1,7 @@
+id: stg_tshd1n
+kind: build
+title: Full-text search
+builds: A new `fts.py`.
+file: fts.py
+packages: [psycopg]
+minutes: 35
