@@ -355,12 +355,22 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
               {fetched.size}, from {fetched.hosts}.
             </p>
           )}
-          {served && (
+          {served && served.count === 1 && (
             <p>
-              <code>uv run sulba.py model</code> starts the lab’s model, {served.title}, on your
-              machine, where your code can call it at <code>http://127.0.0.1:9931/v1</code>. The
-              first time, it downloads the model, {served.size}, from {served.host}, and llama.cpp’s
-              server for your system, from github.com.
+              <code>uv run sulba.py model</code> starts the lab’s model, {served.titles}, on your
+              machine, where your code can call it by that name at{' '}
+              <code>http://127.0.0.1:9931/v1</code>. The first time, it downloads the model,{' '}
+              {served.size}, from {served.hosts}, and llama.cpp’s server for your system, from
+              github.com.
+            </p>
+          )}
+          {served && served.count > 1 && (
+            <p>
+              <code>uv run sulba.py model</code> starts the lab’s models, {served.titles}, on your
+              machine, where your code can call each by its name at{' '}
+              <code>http://127.0.0.1:9931/v1</code>. The first time, it downloads the models,{' '}
+              {served.size}, from {served.hosts}, and llama.cpp’s server for your system, from
+              github.com.
             </p>
           )}
           {isCatch && (

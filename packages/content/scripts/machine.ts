@@ -9,9 +9,9 @@
 // `ai-engineering/modules/pytorch/labs/transfer-learning`, so that CI can run each lab in a job of
 // its own. With `--every-file`, it then fetches each file a machine lab pins that isn't kept yet,
 // so that one job's folder holds them all for CI to keep. With `--model`, it runs no stages: from a
-// download of the first lab that names each model, `uv run sulba.py model --check` fetches
-// llama.cpp's server for this system and the model, starts it and asks it one question (decision
-// record 32).
+// download of each lab that serves a model no lab before it serves, `uv run sulba.py model --check`
+// fetches llama.cpp's server for this system and the lab's models, starts them and asks each one
+// thing (decision record 34).
 //
 //   node scripts/machine.ts <folder of courses>... [--lab <path>] [--every-file] [--figures <file>]
 //   node scripts/machine.ts <folder of courses>... --model
@@ -49,7 +49,7 @@ const problems: Problem[] = [];
 const figures: Record<string, Record<string, string> | null> = {};
 /** Each file a machine lab pins, with the lab's path. */
 const pinned: { path: string; file: FetchedFile }[] = [];
-/** The sha256 of each model checked, so a model several labs name is checked once. */
+/** The sha256 of each model checked, so a model several labs serve is checked once. */
 const served = new Set<string>();
 let ran = 0;
 
@@ -69,7 +69,7 @@ for (const root of positionals.map((each) => resolve(each))) {
   for (const { lab, path } of machineLabs(root, courses)) {
     pinned.push(...Object.values(fetchedFiles(lab)).map((file) => ({ path, file })));
     if (values.lab !== undefined && path !== values.lab) continue;
-    if (values.model && (!lab.model || served.has(lab.model.file.sha256))) continue;
+    if (values.model && lab.models.every((model) => served.has(model.file.sha256))) continue;
     ran += 1;
     const problem = (message: string) => problems.push({ path, message });
     const folder = join(await mkdtemp(join(tmpdir(), 'sulba-machine-')), lab.slug);
@@ -85,11 +85,12 @@ for (const root of positionals.map((each) => resolve(each))) {
       await mkdir(dirname(join(folder, name)), { recursive: true });
       await writeFile(join(folder, name), text);
     }
-    if (values.model && lab.model) {
-      served.add(lab.model.file.sha256);
+    if (values.model) {
+      for (const model of lab.models) served.add(model.file.sha256);
       const asked = sulba(folder, 'model', '--check');
-      if (asked.code !== 0) problem(`its model should answer.\n${asked.output}`);
-      else console.log(`${path}: ${lab.model.title} answered from the download.`);
+      const titles = lab.models.map((model) => model.title).join(', ');
+      if (asked.code !== 0) problem(`its models should answer.\n${asked.output}`);
+      else console.log(`${path}: ${titles} answered from the download.`);
       await rm(dirname(folder), { recursive: true, force: true, maxRetries: 3 });
       continue;
     }

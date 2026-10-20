@@ -3,15 +3,16 @@
     uv run sulba.py          run the tests of the stage you're on
     uv run sulba.py finish   finish a Catch stage's review
     uv run sulba.py next     start the next stage, once this one is done
-    uv run sulba.py model    start the lab's model, for your code to call
+    uv run sulba.py model    start the lab's models, for your code to call
     uv run sulba.py db       start the lab's database, for your code to use
 
 When a stage is done, it gives you a link to the lab's page, which marks the stage done there.
 Before the first run, it fetches into data/ any files the lab needs that are too large for the
 download, such as a dataset, from their publishers.
 
-A lab with a model serves it with llama.cpp's server until you press Ctrl+C. The first time, it
-fetches both into sulba in your cache folder, where every lab finds them.
+A lab with models serves them with llama.cpp's server until you press Ctrl+C, each by its name.
+The first time, it fetches them and the server into sulba in your cache folder, where every lab
+finds them.
 
 A lab with a database runs Postgres, with pgvector, until you press Ctrl+C. It keeps what you
 put in it in .sulba/database, and answers only programs on this computer. On Linux, the first
@@ -22,8 +23,8 @@ time, it fetches pgvector into sulba in your cache folder.
 # .sulba/lab.json (decision record 28). The link's fragment carries the stage's attempts as the
 # attempts table takes them (decision record 18), so the page records them as its own; a fragment
 # never reaches the server. It holds them as JSON compressed with DEFLATE, in base64url. The files
-# a lab fetches are each pinned by its size and sha256 (decision record 29), as are a lab's model
-# and the build of llama.cpp's server that serves it (decision record 32).
+# a lab fetches are each pinned by its size and sha256 (decision record 29), as are a lab's models
+# and the build of llama.cpp's server that serves them (decision record 34).
 
 from __future__ import annotations
 
@@ -70,7 +71,7 @@ MAX_LINK = 2000
 CHUNK = 1 << 20
 # How long a fetch waits on its publisher to connect or send more, in seconds.
 TIMEOUT = 60
-# The release of llama.cpp whose server serves a lab's model, where its releases are, and its CPU
+# The release of llama.cpp whose server serves a lab's models, where its releases are, and its CPU
 # build for each system, by the names Python gives the system and the machine: the build's archive,
 # its size and its sha256.
 LLAMA = "b11734"
@@ -107,9 +108,27 @@ LLAMA_BUILDS = {
         "29f2c5bb869e60ff25848d8f8b3b34dbe1b924c2266d4f54ee84c1106f148b23",
     ),
 }
-# Where the model answers, at llama.cpp's own port, and how many tokens a conversation can take.
+# Where the models answer, at llama.cpp's own port.
 PORT = 9931
-CONTEXT = 4096
+# How the server runs each kind of model, in its preset file's options: a chat model reads a
+# conversation of up to 4,096 tokens with reasoning off, an embedding model embeds a text of up to
+# 2,048 tokens in one pass, and a reranker scores a query and a document of up to 2,048 tokens
+# together, in a context of 4,096 (decision record 34).
+KINDS = {
+    "chat": {"ctx-size": "4096", "reasoning": "off"},
+    "embedding": {
+        "embeddings": "true",
+        "ctx-size": "2048",
+        "batch-size": "2048",
+        "ubatch-size": "2048",
+    },
+    "reranking": {
+        "reranking": "true",
+        "ctx-size": "4096",
+        "batch-size": "2048",
+        "ubatch-size": "2048",
+    },
+}
 # The Visual C++ runtime's DLLs llama.cpp's Windows builds need, by machine, and the address of
 # Microsoft's installer of them.
 VC_RUNTIME = {
@@ -119,7 +138,8 @@ VC_RUNTIME = {
     ),
     "ARM64": (["msvcp140.dll", "vcruntime140.dll"], "https://aka.ms/vc14/vc_redist.arm64.exe"),
 }
-# How long the model's server may take to load the model before the runner gives up, in seconds.
+# How long the server may take to start and load the lab's models, or to answer the check's request
+# to one, before the runner gives up, in seconds.
 LOADING = 600
 # Where the lab's database answers, at Postgres's own port.
 DATABASE_PORT = 5432
@@ -137,12 +157,12 @@ def main(argv: list[str]) -> int:
     parser.add_argument(
         "--port",
         type=int,
-        help=f"the port the model or database answers at ({PORT} and {DATABASE_PORT} by default)",
+        help=f"the port the models or database answer at ({PORT} and {DATABASE_PORT} by default)",
     )
     parser.add_argument(
         "--check",
         action="store_true",
-        help="ask the model one question, show its reply and stop (model only)",
+        help="ask each model one question, show its answer and stop (model only)",
     )
     args = parser.parse_args(argv)
     command = args.command
@@ -347,11 +367,11 @@ def receive(file: dict[str, Any], partial: Path, about: str) -> None:
 
 
 def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
-    """Starts the lab's model in llama.cpp's server, fetching both into the cache folder the first
-    time, and keeps it answering until Ctrl+C. With check, it asks the model one question instead,
-    shows the reply and stops."""
-    model = lab.get("model")
-    if model is None:
+    """Starts the lab's models in llama.cpp's server, fetching them and the server into the cache
+    folder the first time, and keeps them answering, each by its name, until Ctrl+C. With check, it
+    asks each model one thing instead, shows its answer and stops."""
+    models = lab.get("models", [])
+    if not models:
         print("This lab has no model to run.")
         return 1
     system, machine = platform.system(), platform.machine()
@@ -363,7 +383,7 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
         names, installer = VC_RUNTIME[machine]
         system32 = Path(os.environ.get("SYSTEMROOT", r"C:\Windows")) / "System32"
         if not all((system32 / each).exists() for each in names):
-            print("The model's server needs Microsoft's Visual C++ runtime, which this computer")
+            print("llama.cpp's server needs Microsoft's Visual C++ runtime, which this computer")
             print(f"doesn't have yet. Install it from {installer}, then run this again.")
             return 1
     import sulba_fixtures
@@ -373,17 +393,41 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
     archive = {"url": url, "bytes": bytes_, "sha256": sha256}
     folder = sulba_fixtures.cache_folder()
     archive_path = folder / "llama.cpp" / LLAMA / name
-    weights_path = folder / "models" / model["sha256"] / urlsplit(model["url"]).path.split("/")[-1]
-    files = [
-        (archive, archive_path, f"llama.cpp's server {LLAMA}"),
-        (model, weights_path, model["title"]),
+    # Each model's weights, from the cache folder, where the server runs.
+    weights = [
+        Path("models", model["sha256"], urlsplit(model["url"]).path.split("/")[-1])
+        for model in models
     ]
-    if not fetched_each(f"Fetching the model and its server into {folder}:", files):
+    files = [(archive, archive_path, f"llama.cpp's server {LLAMA}")]
+    files += [
+        (model, folder / path, model["title"]) for model, path in zip(models, weights, strict=True)
+    ]
+    which = "model and its server" if len(models) == 1 else "models and their server"
+    if not fetched_each(f"Fetching the {which} into {folder}:", files):
         return 1
     server = unpacked(archive_path)
-    command = [str(server), "--model", str(weights_path), "--host", "127.0.0.1"]
-    command += ["--port", str(port), "--ctx-size", str(CONTEXT), "--reasoning", "off"]
-    return serve(command, port, folder / f"server-{port}.log", check=check)
+    preset = f"models-{port}.ini"
+    (folder / preset).write_text(preset_of(models, weights, system), encoding="utf-8")
+    command = [str(server), "--models-preset", preset, "--models-max", str(len(models))]
+    command += ["--host", "127.0.0.1", "--port", str(port)]
+    return serve(command, folder, models, port, check=check)
+
+
+def preset_of(models: list[dict[str, Any]], weights: list[Path], system: str) -> str:
+    """The server's preset file: a section for each model, named by its title, with its weights,
+    loaded as the server starts, and the options of its kind. On macOS a chat model runs on the
+    GPU, through Metal, and the others on the CPU (decision record 34)."""
+    lines = ["version = 1"]
+    for model, path in zip(models, weights, strict=True):
+        options = {"model": path.as_posix(), "load-on-startup": "true", **KINDS[model["kind"]]}
+        if system == "Darwin" and model["kind"] != "chat":
+            options["device"] = "none"
+        lines += [
+            "",
+            f"[{model['title']}]",
+            *(f"{key} = {value}" for key, value in options.items()),
+        ]
+    return "\n".join(lines) + "\n"
 
 
 def serve_database(port: int) -> int:
@@ -470,31 +514,42 @@ def unpacked(archive: Path) -> Path:
     return next(folder.rglob(program))
 
 
-def serve(command: list[str], port: int, log: Path, *, check: bool) -> int:
-    """Runs the model's server with its output in log, says where it answers once it's ready, and
-    keeps it running until Ctrl+C. With check, it asks one question instead and stops."""
+def serve(
+    command: list[str], folder: Path, models: list[dict[str, Any]], port: int, *, check: bool
+) -> int:
+    """Runs the server in folder, with its output in a log there, says where the models answer once
+    it has loaded them all, and keeps it running until Ctrl+C. With check, it asks each model one
+    thing instead and stops."""
     address = f"http://127.0.0.1:{port}"
+    titles = listed([model["title"] for model in models])
     if in_use(port):
         print(port_in_use(port))
         return 1
+    log = folder / f"server-{port}.log"
     with log.open("wb") as output:
         try:
-            process = subprocess.Popen(command, stdout=output, stderr=subprocess.STDOUT)
+            process = subprocess.Popen(command, cwd=folder, stdout=output, stderr=subprocess.STDOUT)
         except OSError as error:
-            print(f"The model's server couldn't start: {error}")
+            print(f"llama.cpp's server couldn't start: {error}")
             return 1
         try:
-            print("Loading the model...", flush=True)
-            if not ready(process, address):
-                print(stopped(log, port))
+            print(f"Loading {titles}...", flush=True)
+            unloaded = loading(process, address, models)
+            if unloaded:
+                print(stopped(log, port) if process.poll() is not None else failed(log, unloaded))
                 return 1
             if check:
-                return asked(address)
-            print(f"The model answers at {address}/v1. Press Ctrl+C to stop it.", flush=True)
+                return asked(address, models)
+            if len(models) == 1:
+                print(f"{titles} answers at {address}/v1, by that name.", end=" ")
+                print("Press Ctrl+C to stop it.", flush=True)
+            else:
+                print(f"{titles} answer at {address}/v1, each by its name.", end=" ")
+                print("Press Ctrl+C to stop them.", flush=True)
             try:
                 process.wait()
             except KeyboardInterrupt:
-                print("Stopped the model.")
+                print(f"Stopped {titles}.")
                 return 0
             print(stopped(log, port))
             return 1
@@ -518,7 +573,7 @@ def in_use(port: int) -> bool:
 
 def port_in_use(port: int) -> str:
     return (
-        f"Port {port} is in use, perhaps by the model already running. Stop that, or run "
+        f"Port {port} is in use, perhaps by llama.cpp's server already running. Stop that, or run "
         f"uv run sulba.py model --port {port + 1}."
     )
 
@@ -528,35 +583,65 @@ def local() -> urllib.request.OpenerDirector:
     return urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 
-def ready(process: subprocess.Popen[bytes], address: str) -> bool:
-    """Whether the server says it's ready before it stops or LOADING seconds pass."""
+def loading(
+    process: subprocess.Popen[bytes], address: str, models: list[dict[str, Any]]
+) -> list[str]:
+    """Waits while the server loads the models, and returns the titles of those it hasn't loaded
+    when it stops, fails to load one, or LOADING seconds pass: none once it has loaded them all."""
+    titles = [model["title"] for model in models]
     deadline = time.monotonic() + LOADING
+    statuses: dict[str, dict[str, Any]] = {}
     while time.monotonic() < deadline and process.poll() is None:
         try:
-            with local().open(f"{address}/health", timeout=2) as response:
-                if response.status == 200:
-                    return True
+            with local().open(f"{address}/models", timeout=2) as response:
+                statuses = {each["id"]: each["status"] for each in json.load(response)["data"]}
         except OSError, http.client.HTTPException:
-            # The server answers 503 while it loads the model, and nothing before it listens.
+            # Nothing listens at the address before the server starts.
             pass
+        unloaded = [title for title in titles if statuses.get(title, {}).get("value") != "loaded"]
+        if not unloaded or any(statuses.get(title, {}).get("failed") for title in unloaded):
+            return unloaded
         time.sleep(0.25)
-    return False
+    return [title for title in titles if statuses.get(title, {}).get("value") != "loaded"]
 
 
-def asked(address: str) -> int:
-    """Asks the model one question, and shows its reply and the tokens it took."""
-    body = {"messages": [{"role": "user", "content": "Say hello."}], "max_tokens": 32}
+def asked(address: str, models: list[dict[str, Any]]) -> int:
+    """Asks each model one thing, by its kind, and shows what it answered: a chat model a question,
+    an embedding model to embed a sentence, and a reranker to score two passages for a query."""
+    for model in models:
+        title, kind = model["title"], model["kind"]
+        if kind == "chat":
+            messages = [{"role": "user", "content": "Say hello."}]
+            reply = posted(address, "chat/completions", title, messages=messages, max_tokens=32)
+            usage = reply["usage"]
+            print(f"{title} said: {reply['choices'][0]['message']['content']!r}")
+            print(
+                f"It read {usage['prompt_tokens']} tokens and wrote {usage['completion_tokens']}."
+            )
+        elif kind == "embedding":
+            sentence = "The brakes stop the wheels."
+            reply = posted(address, "embeddings", title, input=sentence)
+            numbers = len(reply["data"][0]["embedding"])
+            print(f"{title} embedded {sentence!r} as {numbers} numbers.")
+        else:
+            query = "Which part of a bicycle stops it?"
+            passages = ["The brakes stop the wheels.", "The saddle is where the rider sits."]
+            reply = posted(address, "rerank", title, query=query, documents=passages)
+            print(f"{title} scored two passages for {query!r}:")
+            for result in sorted(reply["results"], key=lambda result: -result["relevance_score"]):
+                print(f"  {result['relevance_score']:.4f}  {passages[result['index']]}")
+    return 0
+
+
+def posted(address: str, path: str, model: str, **body: Any) -> dict[str, Any]:
+    """The server's answer to a request for the model at its OpenAI-style path."""
     request = urllib.request.Request(
-        f"{address}/v1/chat/completions",
-        data=json.dumps(body).encode(),
+        f"{address}/v1/{path}",
+        data=json.dumps({"model": model, **body}).encode(),
         headers={"Content-Type": "application/json"},
     )
     with local().open(request, timeout=LOADING) as response:
-        reply = json.load(response)
-    usage = reply["usage"]
-    print(f"The model said: {reply['choices'][0]['message']['content']!r}")
-    print(f"It read {usage['prompt_tokens']} tokens and wrote {usage['completion_tokens']}.")
-    return 0
+        return json.load(response)
 
 
 def stopped(log: Path, port: int) -> str:
@@ -564,8 +649,24 @@ def stopped(log: Path, port: int) -> str:
     lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
     if any("couldn't bind" in line for line in lines):
         return port_in_use(port)
-    shown = "\n".join(f"  {line}" for line in lines[-10:])
-    return f"The model's server stopped. The last of what it wrote:\n{shown}"
+    return f"llama.cpp's server stopped. The last of what it wrote:\n{tail(lines)}"
+
+
+def failed(log: Path, titles: list[str]) -> str:
+    """Why the server didn't load the models, from the end of what it wrote."""
+    lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
+    return (
+        f"{listed(titles)} didn't load. The last of what llama.cpp's server wrote:\n{tail(lines)}"
+    )
+
+
+def tail(lines: list[str]) -> str:
+    return "\n".join(f"  {line}" for line in lines[-10:])
+
+
+def listed(names: list[str]) -> str:
+    """Names as a sentence lists them, such as "A, B and C"."""
+    return names[0] if len(names) == 1 else f"{', '.join(names[:-1])} and {names[-1]}"
 
 
 def declared(response: http.client.HTTPResponse, start: int) -> int | None:

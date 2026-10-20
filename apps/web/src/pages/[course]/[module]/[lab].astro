@@ -56,7 +56,7 @@ const [course, module] = lab.path.split('/');
     <p slot="fallback" class="loading">Loading the workspace…</p>
   </Workspace>
 
-  {(lab.data.length > 0 || lab.fetch.length > 0 || lab.model || code.length > 0) && (
+  {(lab.data.length > 0 || lab.fetch.length > 0 || lab.models.length > 0 || code.length > 0) && (
     <footer class="credit">
       {lab.data.map((set) => (
         <p>
@@ -70,12 +70,12 @@ const [course, module] = lab.path.split('/');
           {source.creators.join(', ')}, <a href={source.licence.url}>{source.licence.name}</a>.
         </p>
       ))}
-      {lab.model && (
+      {lab.models.map((model) => (
         <p>
-          Model: <a href={lab.model.url}>{lab.model.title}</a>, by {lab.model.creators.join(', ')},{' '}
-          <a href={lab.model.licence.url}>{lab.model.licence.name}</a>.
+          Model: <a href={model.url}>{model.title}</a>, by {model.creators.join(', ')},{' '}
+          <a href={model.licence.url}>{model.licence.name}</a>.
         </p>
-      )}
+      ))}
       {code.map((port) => (
         <div class="port">
           <p>

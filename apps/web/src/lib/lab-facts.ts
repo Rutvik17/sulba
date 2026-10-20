@@ -77,15 +77,22 @@ export function fetchedOf(lab: Pick<LabView, 'fetch'>): { size: string; hosts: s
 }
 
 /**
- * What a machine lab's `uv run sulba.py model` downloads the first time (decision record 32): its
- * model's name, the size of the model's file and the host it comes from. Null when it has none.
+ * What a machine lab's `uv run sulba.py model` serves and downloads the first time (decision record
+ * 34): how many models, their names, the size of their files and the hosts they come from, in the
+ * order the lab lists them. Null when it has none.
  */
 export function servedOf(
-  lab: Pick<LabView, 'model'>,
-): { title: string; size: string; host: string } | null {
-  if (!lab.model) return null;
-  const { title, file } = lab.model;
-  return { title, size: sizeOf(file.bytes), host: new URL(file.url).hostname };
+  lab: Pick<LabView, 'models'>,
+): { count: number; titles: string; size: string; hosts: string } | null {
+  if (lab.models.length === 0) return null;
+  const bytes = lab.models.reduce((sum, model) => sum + model.file.bytes, 0);
+  const hosts = [...new Set(lab.models.map((model) => new URL(model.file.url).hostname))];
+  return {
+    count: lab.models.length,
+    titles: inWords(lab.models.map((model) => model.title)),
+    size: sizeOf(bytes),
+    hosts: inWords(hosts),
+  };
 }
 
 /** What a module's row says under its title: how many labs it has, and their time. */

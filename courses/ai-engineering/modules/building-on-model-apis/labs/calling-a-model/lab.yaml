@@ -22,17 +22,18 @@ fetch:
         url: https://huggingface.co/Qwen/Qwen3.5-0.8B/resolve/2fc06364715b967f1860aea9cf38778875588b17/chat_template.jinja
         bytes: 7755
         sha256: 273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80
-model:
-  title: Qwen3.5-0.8B
-  creators: [Qwen]
-  url: https://huggingface.co/Qwen/Qwen3.5-0.8B
-  licence:
-    name: Apache License 2.0
-    url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
-  file:
-    url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
-    bytes: 833592096
-    sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
+models:
+  - title: Qwen3.5-0.8B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+    file:
+      url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
+      bytes: 833592096
+      sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
 references: [tokens.json]
 runs: machine
 stages:

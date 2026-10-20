@@ -249,9 +249,9 @@ jobs:
             done
           done
 
-  # Each model a lab serves on the learner's machine, from a download of the first lab that names
-  # it, on each system it supports (decision record 32): `uv run sulba.py model --check` fetches
-  # llama.cpp's server for the system and the model, starts it and asks it one question.
+  # Each model a lab serves on the learner's machine, from a download of the first lab that serves
+  # it, on each system it supports (decision record 34): `uv run sulba.py model --check` fetches
+  # llama.cpp's server for the system and the lab's models, starts them and asks each one thing.
   model:
     name: Models on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
