@@ -11,6 +11,7 @@ pytest's pytester loads it in that run too, so their tests can ask for the same 
 from __future__ import annotations
 
 import asyncio
+import base64
 import functools
 import gc
 import json
@@ -18,10 +19,11 @@ import math
 import os
 import secrets
 import shutil
+import struct
 import sys
 import tempfile
 from collections import deque
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -207,6 +209,11 @@ class Scripted:
     retry_after: int | None = None
     drops: bool = False
 
+    @property
+    def failure(self) -> bool:
+        """Whether it fails, hangs or drops the connection rather than reply."""
+        return self.status != 200 or self.drops or math.isinf(self.after)
+
 
 class ScriptedModel:
     """A model server that answers each chat request with the next reply the test scripted, in
@@ -222,6 +229,15 @@ class ScriptedModel:
     a client whose read timeout is shorter raises httpx.ReadTimeout when the timeout ends. A sync
     client waits for nothing, but raises httpx.ReadTimeout all the same for a reply slower than
     its read timeout.
+
+    It embeds text and reranks documents too, as an embedding or reranking model does, with the
+    vectors and scores the test gives it:
+
+        model.embeds({"When do you open?": [0.6, 0.8]})
+        model.ranks(lambda query, document: 1.0 if "open" in document else 0.0)
+
+    A failure the test scripts with fails, hangs or disconnects answers the next request,
+    whatever it asks for.
     """
 
     url = "http://model.test/v1"
@@ -230,6 +246,9 @@ class ScriptedModel:
         self.requests: list[Received] = []
         self._script: deque[Scripted] = deque()
         self._answer: Callable[[Received], None] | None = None
+        self._vectors: Callable[[str], Sequence[float]] | None = None
+        self._scores: Callable[[str, str], float] | None = None
+        self._tokens: Callable[[str], int] = no_tokens
         self._replies = 0
         self._calls = 0
         self._used = 0
@@ -290,9 +309,48 @@ class ScriptedModel:
         self._script.append(Scripted(after=0, drops=True))
 
     def answers(self, function: Callable[[Received], None]) -> None:
-        """Have function script the answer to each request the test scripted none for. It's
-        given the request, and scripts with says, fails, hangs or disconnects."""
+        """Have function script the answer to each chat request the test scripted none for.
+        It's given the request, and scripts with says, fails, hangs or disconnects."""
         self._answer = function
+
+    def embeds(
+        self,
+        vectors: Mapping[str, Sequence[float]] | Callable[[str], Sequence[float]],
+        *,
+        tokens: Callable[[str], int] | None = None,
+    ) -> None:
+        """Have the model embed each text with the vector vectors gives it, from a mapping of
+        texts or a function of one, in every embeddings request from now on. A text a mapping has
+        no vector for raises NoReplyLeft. tokens counts a text's tokens for the reply's usage,
+        which is 0 without it."""
+        if isinstance(vectors, Mapping):
+            known = vectors
+
+            def vector(text: str) -> Sequence[float]:
+                if text not in known:
+                    raise NoReplyLeft(f"The test scripted no vector for {text!r}.")
+                return known[text]
+
+            self._vectors = vector
+        else:
+            self._vectors = vectors
+        self._tokens = tokens or no_tokens
+
+    def ranks(self, scores: Mapping[tuple[str, str], float] | Callable[[str, str], float]) -> None:
+        """Have the model score each document for a query with scores, from a mapping of
+        (query, document) pairs or a function of them, in every rerank request from now on. A
+        pair a mapping has no score for raises NoReplyLeft."""
+        if isinstance(scores, Mapping):
+            known = scores
+
+            def score(query: str, document: str) -> float:
+                if (query, document) not in known:
+                    raise NoReplyLeft(f"The test scripted no score for {document!r}.")
+                return known[query, document]
+
+            self._scores = score
+        else:
+            self._scores = scores
 
     def client(self, **options: Any) -> httpx.Client:
         """An httpx.Client whose base_url is the model's API. options go to httpx.Client."""
@@ -339,26 +397,104 @@ class ScriptedModel:
 
     def _receive(self, request: httpx.Request) -> Scripted | httpx.Response:
         """Keep the request, and find what the model does with it: an error for a request the
-        API doesn't serve or a body llama-server would refuse, and the next answer otherwise."""
+        API doesn't serve or a body llama-server would refuse, a failure the test scripted, and
+        the answer otherwise."""
         text = request.content.decode(errors="replace")
+        headers = {name.lower(): value for name, value in request.headers.items()}
+        endpoint = ENDPOINTS.get((request.method, request.url.path))
         try:
             body: Any = json.loads(text)
-            refused = refusal(body)
+            refused = REFUSALS[endpoint](body) if endpoint else None
         except json.JSONDecodeError as error:
             body, refused = text, f"The request's body isn't JSON: {error}"
-        headers = {name.lower(): value for name, value in request.headers.items()}
         received = Received(request.method, request.url.path, headers, body)
         self.requests.append(received)
-        if (request.method, request.url.path) != ("POST", "/v1/chat/completions"):
+        if endpoint is None:
             return error_response(404, "File Not Found")
         if refused:
             return error_response(400, refused)
+        if endpoint != "chat":
+            if self._script and self._script[0].failure:
+                self._used += 1
+                return self._script.popleft()
+            return self._embedded(body) if endpoint == "embeddings" else self._ranked(body)
         if not self._script and self._answer is not None:
             self._answer(received)
         if not self._script:
             raise NoReplyLeft(f"The test scripted no reply for request {self._used + 1}.")
         self._used += 1
         return self._script.popleft()
+
+    def _embedded(self, body: dict[str, Any]) -> httpx.Response:
+        """The embeddings of the request's texts, as llama-server gives them (b11734,
+        tools/server/server-common.cpp, format_embeddings_response_oaicompat)."""
+        import httpx
+
+        if self._vectors is None:
+            raise NoReplyLeft("The test scripted no embeddings: call model.embeds first.")
+        texts = body["input"] if isinstance(body["input"], list) else [body["input"]]
+        base64_wanted = body.get("encoding_format") == "base64"
+        data = []
+        for index, text in enumerate(texts):
+            vector = [float(value) for value in self._vectors(text)]
+            if base64_wanted:
+                packed = struct.pack(f"<{len(vector)}f", *vector)
+                item: dict[str, Any] = {
+                    "embedding": base64.b64encode(packed).decode(),
+                    "index": index,
+                    "object": "embedding",
+                    "encoding_format": "base64",
+                }
+            else:
+                item = {"embedding": vector, "index": index, "object": "embedding"}
+            data.append(item)
+        used = sum(self._tokens(text) for text in texts)
+        return httpx.Response(
+            200,
+            json={
+                "model": body["model"] if isinstance(body.get("model"), str) else "scripted",
+                "object": "list",
+                "usage": {"prompt_tokens": used, "total_tokens": used},
+                "data": data,
+            },
+        )
+
+    def _ranked(self, body: dict[str, Any]) -> httpx.Response:
+        """The documents' scores for the query, highest first and at most top_n of them, as
+        llama-server gives them (b11734, tools/server/server-common.cpp,
+        format_response_rerank): in Jina's form, or in TEI's when the request names them
+        texts."""
+        import httpx
+
+        if self._scores is None:
+            raise NoReplyLeft("The test scripted no scores: call model.ranks first.")
+        tei = "texts" in body
+        documents = documents_of(body)
+        label = "score" if tei else "relevance_score"
+        ranked = sorted(
+            (
+                {"index": index, label: float(self._scores(body["query"], document))}
+                for index, document in enumerate(documents)
+            ),
+            key=lambda result: -result[label],
+        )
+        # llama-server reads top_n as an integer, truncating a number and taking a boolean as 1 or
+        # 0, and keeps every document for anything else. It keeps none for a negative top_n.
+        top_n = body.get("top_n")
+        if not isinstance(top_n, int | float):
+            top_n = len(documents)
+        ranked = ranked[: max(0, int(top_n))]
+        if tei:
+            return httpx.Response(200, json=ranked)
+        return httpx.Response(
+            200,
+            json={
+                "model": body["model"] if isinstance(body.get("model"), str) else "scripted",
+                "object": "list",
+                "usage": {"prompt_tokens": 0, "total_tokens": 0},
+                "results": ranked,
+            },
+        )
 
     def _respond(self, found: Scripted, request: httpx.Request) -> httpx.Response:
         import httpx
@@ -411,6 +547,10 @@ class ScriptedModel:
         )
 
 
+def no_tokens(text: str) -> int:
+    return 0
+
+
 def refusal(body: Any) -> str | None:
     """Why llama-server would refuse a chat request with this body, in its words (b11734,
     tools/server/server-common.cpp), or None."""
@@ -425,6 +565,62 @@ def refusal(body: Any) -> str | None:
         if fields.get("role") == "assistant" and not {"content", "tool_calls"} & fields.keys():
             return "Assistant message must contain either 'content' or 'tool_calls'!"
     return None
+
+
+def embeddings_refusal(body: Any) -> str | None:
+    """Why llama-server would refuse an embeddings request with this body, in its words
+    (b11734, tools/server/server-context.cpp, handle_embeddings_impl), or None. The scripted
+    model embeds only text, given as OpenAI's API gives it, not token ids or llama-server's own
+    content form."""
+    if isinstance(body, dict) and "input" not in body and "content" in body:
+        return 'The scripted model embeds text given as "input", as OpenAI\'s API gives it.'
+    if not isinstance(body, dict) or "input" not in body:
+        return '"input" or "content" must be provided'
+    if body.get("encoding_format", "float") not in ("float", "base64"):
+        return "The format to return the embeddings in. Can be either float or base64"
+    texts = body["input"] if isinstance(body["input"], list) else [body["input"]]
+    if not texts:
+        return '"input" must not be empty'
+    if not all(isinstance(text, str) for text in texts):
+        return "The scripted model embeds text, given as a string or a list of strings."
+    return None
+
+
+def rerank_refusal(body: Any) -> str | None:
+    """Why llama-server would refuse a rerank request with this body, in its words (b11734,
+    tools/server/server-context.cpp), or None."""
+    if not isinstance(body, dict) or "query" not in body:
+        return '"query" must be provided'
+    if not isinstance(body["query"], str):
+        return '"query" must be a string'
+    if not documents_of(body):
+        return '"documents" must be a non-empty string array'
+    return None
+
+
+def documents_of(body: dict[str, Any]) -> list[str]:
+    """A rerank request's documents as llama-server reads them: its documents, unless they are
+    missing or not a list of strings, then its texts on the same terms, and none otherwise."""
+    for key in ("documents", "texts"):
+        value = body.get(key)
+        if isinstance(value, list) and all(isinstance(document, str) for document in value):
+            return value
+    return []
+
+
+# The paths the scripted model serves, as llama-server serves them under /v1, and how it checks
+# each one's requests.
+ENDPOINTS = {
+    ("POST", "/v1/chat/completions"): "chat",
+    ("POST", "/v1/embeddings"): "embeddings",
+    ("POST", "/v1/rerank"): "rerank",
+    ("POST", "/v1/reranking"): "rerank",
+}
+REFUSALS: dict[str, Callable[[Any], str | None]] = {
+    "chat": refusal,
+    "embeddings": embeddings_refusal,
+    "rerank": rerank_refusal,
+}
 
 
 def error_response(status: int, message: str, retry_after: int | None = None) -> httpx.Response:

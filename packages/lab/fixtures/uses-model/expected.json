@@ -34,6 +34,108 @@
       "note": null
     },
     {
+      "id": "tst_mdl016",
+      "name": "Embeds each text with the vector the test scripted, in llama-server's form",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl017",
+      "name": "Embeds a text given alone, from a function, and counts its tokens when told how",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl018",
+      "name": "Sends each embedding as float32 in base64 when the request asks for it",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl019",
+      "name": "Gives the openai package embeddings it reads",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl020",
+      "name": "Ranks documents by the scores the test scripted, highest first and at most top_n",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl024",
+      "name": "Reads top_n as llama-server does: a number cut to an integer, a boolean as 1 or 0",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl021",
+      "name": "Refuses the embeddings and rerank requests llama-server refuses, in its words",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl022",
+      "name": "Answers the next request with the failure the test scripted, whatever it asks",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl023",
+      "name": "Stops code that embeds a text the test scripted no vector for",
+      "status": "error",
+      "message": "NoReplyLeft: The test scripted no vector for 'Do you sell bells?'.",
+      "expected": null,
+      "actual": null,
+      "location": {
+        "file": "search.py",
+        "line": 5
+      },
+      "output": "",
+      "note": null
+    },
+    {
       "id": "tst_mdl001",
       "name": "Answers with the reply the test scripted, and keeps the request",
       "status": "pass",
