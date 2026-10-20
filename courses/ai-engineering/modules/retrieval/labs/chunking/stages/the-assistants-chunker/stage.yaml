@@ -1,0 +1,56 @@
+id: stg_vkb64u
+kind: catch
+title: The assistant's chunker
+builds: A new `splitter.py`, which the help desk will run on its new pages.
+file: splitter.py
+minutes: 30
+problems:
+  - check: tst_2c4lhj
+    title: It dropped the last chunk of each page
+    cost: >-
+      `split` added a chunk when the next block wouldn't fit in it, so the chunk still being
+      joined when the page ran out was never added: {% $fig.lost_pages %} of the
+      {% $fig.pages %} pages lost their last chunk, {% $fig.lost_words %} words in all, and
+      with them part of the answers to {% $fig.lost_questions %} of the
+      {% $fig.questions %} questions. The page in its tests ended with a block cut into
+      windows, which leaves nothing being joined.
+    fix: >-
+      The fix: after the loop, add the chunk being joined, if there is one.
+    edit:
+      replace: "    return chunks\n"
+      with: "    if current:\n        chunks.append(current)\n    return chunks\n"
+  - check: tst_muyr17
+    title: It never counted the words of the blocks it joined
+    cost: >-
+      `count` kept the words of a chunk's first block, so the chunk took every block that
+      would fit beside that one: {% $fig.over %} of the {% $fig.uncounted %} chunks it made of
+      the pages had more than 100 words, and the longest had {% $fig.longest %}.
+    fix: >-
+      The fix: `count += size` when a block joins the chunk.
+    edit:
+      replace: "        else:\n"
+      with: "            count += size\n        else:\n"
+  - check: tst_8vmt7l
+    title: It joined blocks with one newline
+    cost: >-
+      A page puts a blank line between its blocks, and `split` joined them with a single
+      newline, so {% $fig.joined %} of the {% $fig.chunks %} chunks, every one of two or more
+      blocks, were text the page doesn't hold: `places` couldn't find them, and the help desk
+      couldn't show them in their page.
+    fix: >-
+      The fix: join the blocks with `"\n\n"`, as the page does.
+    edit:
+      replace: "            current += \"\\n\" + block\n"
+      with: "            current += \"\\n\\n\" + block\n"
+  - check: tst_0182mi
+    title: It placed a repeated chunk at its first copy
+    cost: >-
+      `text.find(chunk)` searched from the start of the page, so a chunk whose text the page
+      holds earlier took that earlier place: {% $fig.moved %} chunks on
+      {% $fig.moved_pages %} of the {% $fig.pages %} pages, which the help desk would show in
+      the wrong part of their page.
+    fix: >-
+      The fix: `text.find(chunk, end)`, from where the chunk before ended.
+    edit:
+      replace: "        start = text.find(chunk)\n"
+      with: "        start = text.find(chunk, end)\n"

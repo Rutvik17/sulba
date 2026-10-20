@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xiub2y
+    front: >-
+      Why keep each chunk as its place in its page, not just its text?
+    back: >-
+      Its place shows where it sits in the page and which characters of an answer it holds;
+      two chunks with the same text can come from different places.
+  - id: crd_iriy88
+    front: >-
+      What do windows that share words buy, and what do they cost?
+    back: >-
+      A passage cut by one window's edge can be whole in the next; every shared word is
+      embedded and stored twice.
+  - id: crd_1wr10x
+    front: >-
+      How do blocks joined to a size differ from windows of that size?
+    back: >-
+      Joined blocks cut only between headings, paragraphs and list items, so their sizes vary;
+      windows cut wherever the count of words falls.

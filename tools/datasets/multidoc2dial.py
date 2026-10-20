@@ -29,6 +29,19 @@ a request, into `passage-vectors.csv` and `question-vectors.csv`, and each valid
 after `search_document: ` too, into `question-vectors-as-passages.csv`. The server gives each
 vector normalized; each number is written times 32,767, rounded to a whole number.
 
+`pages.csv` holds each page's text, with its domain and title, and `answers.csv` each part of
+each question's answer, as its first character and the one after its last on its page's text.
+`chunks.csv` cuts the pages into chunks six ways, each chunk as its page, its first character and
+the one after its last: `blocks-200`, the passages, and `blocks-100`, the blocks joined the same
+way until another would take a chunk past 100 words; and windows of words, `words-100`,
+`words-200` and `words-400`, each window starting where the one before ended, and
+`words-200-50`, windows of 200 words, each starting 150 words after the one before. A window
+runs from its first word's first character to its last word's last, and a page's last window
+ends at its last word. The server embeds each chunk as it embeds a passage, and
+`vectors-<chunking>.csv` holds each chunk's vector, shortened as the model's card shortens them:
+the mean taken from each number, the first 256 numbers kept, and scaled to a length of 1.
+`question-vectors-256.csv` holds the questions' vectors, shortened the same way.
+
     uv run tools/datasets/multidoc2dial.py <folder to write in> <llama-server> [<downloads>]
 
 <llama-server> is llama.cpp's server, release b11734, such as the one `uv run sulba.py model`
@@ -76,6 +89,17 @@ DOMAINS = ["ssa", "va", "studentaid", "dmv"]
 # hold to answer.
 VALIDATION, WORDS, MOVED, HELD = 500, 200, 0.9, 0.5
 SCALE = 32767
+# The chunkings the pages are cut into besides the passages, by name: blocks joined until
+# another would take a chunk past the words given, or windows of the words given, each sharing
+# the words given with the one before; and the numbers a shortened vector keeps.
+CHUNKINGS = {
+    "blocks-100": ("blocks", 100, 0),
+    "words-100": ("words", 100, 0),
+    "words-200": ("words", 200, 0),
+    "words-400": ("words", 400, 0),
+    "words-200-50": ("words", 200, 50),
+}
+SHORT = 256
 
 # Tags that end a block of text, and the level of each heading.
 BLOCKS = {
@@ -203,15 +227,15 @@ def mover(old: str, new: str) -> Callable[[int, int], tuple[int, int, float]]:
     return move
 
 
-def passages_of(text: str) -> list[tuple[int, int]]:
-    """A page's passages: its blocks joined in order until another would take a passage past
-    WORDS words, each as its first character and the one after its last."""
+def blocks_of(text: str, most: int) -> list[tuple[int, int]]:
+    """A page's blocks joined in order until another would take a chunk past most words, each as
+    its first character and the one after its last."""
     found: list[tuple[int, int]] = []
     start = end = words = 0
     first = True
     for match in re.finditer(r"[^\n]+(?:\n(?!\n)[^\n]+)*", text):
         size = len(match.group().split())
-        if not first and words + size > WORDS:
+        if not first and words + size > most:
             found.append((start, end))
             first = True
         if first:
@@ -221,6 +245,27 @@ def passages_of(text: str) -> list[tuple[int, int]]:
     if not first:
         found.append((start, end))
     return found
+
+
+def windows_of(text: str, size: int, overlap: int) -> list[tuple[int, int]]:
+    """A page's windows of size words, each starting size - overlap words after the one before
+    and the last ending at the page's last word, each as its first character and the one after
+    its last."""
+    words = [match.span() for match in re.finditer(r"\S+", text)]
+    found: list[tuple[int, int]] = []
+    for first in range(0, len(words), size - overlap):
+        last = min(first + size, len(words)) - 1
+        found.append((words[first][0], words[last][1]))
+        if last == len(words) - 1:
+            break
+    return found
+
+
+def shortened(vectors: np.ndarray) -> np.ndarray:
+    """Vectors shortened as the model's card shortens them: the mean taken from each number, the
+    first SHORT kept, and scaled to a length of 1."""
+    kept = (vectors - vectors.mean(axis=1, keepdims=True))[:, :SHORT]
+    return kept / np.linalg.norm(kept, axis=1, keepdims=True)
 
 
 @contextmanager
@@ -307,7 +352,7 @@ def build(out: Path, server: Path, downloads: Path) -> None:
             }
     passages: list[dict] = []
     for doc_id, page in pages.items():
-        for start, end in passages_of(page["text"]):
+        for start, end in blocks_of(page["text"], WORDS):
             number = len(passages) + 1
             text = page["text"][start:end]
             passages.append(
@@ -369,17 +414,58 @@ def build(out: Path, server: Path, downloads: Path) -> None:
         )
     write(out / "questions.csv", ["question", "set", "page", "domain", "text"], rows)
     write(out / "relevant.csv", ["question", "passage"], relevant)
+    rows = [[page["page"], page["domain"], page["title"], page["text"]] for page in pages.values()]
+    write(out / "pages.csv", ["page", "domain", "title", "text"], rows)
+    rows = [
+        [question["question"], start, end]
+        for question in questions
+        for start, end in sorted(question["parts"])
+    ]
+    write(out / "answers.csv", ["question", "start", "end"], rows)
+    chunks = [
+        {"chunk": passage["passage"], "chunking": "blocks-200", **passage} for passage in passages
+    ]
+    for name, (kind, size, overlap) in CHUNKINGS.items():
+        number = 0
+        for doc_id, page in pages.items():
+            if kind == "blocks":
+                places = blocks_of(page["text"], size)
+            else:
+                places = windows_of(page["text"], size, overlap)
+            for start, end in places:
+                number += 1
+                chunk = {"chunk": f"{name}-{number}", "chunking": name, "doc": doc_id}
+                chunks.append({**chunk, "start": start, "end": end})
+    rows = []
+    for chunk in chunks:
+        page = pages[chunk["doc"]]["page"]
+        rows.append([chunk["chunk"], chunk["chunking"], page, chunk["start"], chunk["end"]])
+    write(out / "chunks.csv", ["chunk", "chunking", "page", "start", "end"], rows)
+    others = chunks[len(passages) :]
     validation = [question for question in questions if question["set"] == "validation"]
     with served(server, model, downloads / "llama-server.log") as embed:
         passage_vectors = np.array([embed(DOCUMENT + passage["text"]) for passage in passages])
         question_vectors = np.array([embed(QUERY + question["text"]) for question in questions])
         as_passages = np.array([embed(DOCUMENT + question["text"]) for question in validation])
+        other_vectors = np.array(
+            [
+                embed(DOCUMENT + pages[chunk["doc"]]["text"][chunk["start"] : chunk["end"]])
+                for chunk in others
+            ]
+        )
     ids = [passage["passage"] for passage in passages]
     write_vectors(out / "passage-vectors.csv", "passage", ids, passage_vectors)
-    ids = [question["question"] for question in questions]
-    write_vectors(out / "question-vectors.csv", "question", ids, question_vectors)
-    ids = [question["question"] for question in validation]
-    write_vectors(out / "question-vectors-as-passages.csv", "question", ids, as_passages)
+    question_ids = [question["question"] for question in questions]
+    write_vectors(out / "question-vectors.csv", "question", question_ids, question_vectors)
+    validation_ids = [question["question"] for question in validation]
+    write_vectors(out / "question-vectors-as-passages.csv", "question", validation_ids, as_passages)
+    short = shortened(np.concatenate([passage_vectors, other_vectors]))
+    for name in ["blocks-200", *CHUNKINGS]:
+        kept = [index for index, chunk in enumerate(chunks) if chunk["chunking"] == name]
+        ids = [chunks[index]["chunk"] for index in kept]
+        write_vectors(out / f"vectors-{name}.csv", "chunk", ids, short[kept])
+    short = shortened(question_vectors)
+    write_vectors(out / "question-vectors-256.csv", "question", question_ids, short)
 
 
 if __name__ == "__main__":

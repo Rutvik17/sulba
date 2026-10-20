@@ -1,0 +1,144 @@
+id: lab_2ypga1
+title: Chunking
+summary: >-
+  Cut the help desk's pages into chunks and compare the ways of cutting them by the answers
+  they hold: windows of words and joined blocks, recall and precision by an answer's
+  characters, chunkings compared at one budget of words, a review of an assistant's chunker,
+  and a chunker whose chunks last when a page changes.
+data:
+  - file: pages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages, each page's text taken from its HTML, with its headings
+      marked by #s, its list items by -, and its blocks a blank line apart. Each page has
+      its domain, and its title without the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue whose next turn answers it from the same page:
+      500 of the dataset's training dialogues, chosen at random, for validation, and 362 of
+      its validation dialogues, for testing.
+  - file: answers.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each part of the page a question's answer was given from, as its first character in
+      the page's text and the one after its last, moved onto the page's text from the
+      dataset's by the characters other than space they share.
+  - file: chunks.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The pages cut into chunks six ways, each chunk as its page, its first character and
+      the one after its last: the blocks joined in order until another would take a chunk
+      past 100 or 200 words, windows of 100, 200 and 400 words, and windows of 200 words
+      each starting 150 words after the one before.
+  - file: vectors-blocks-100.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of the blocks joined to 100 words, from nomic-embed-text-v1.5
+      at 8 bits, embedded after `search_document: `, one text a request, by llama.cpp's
+      server, release b11734, and shortened to 256 numbers as the model's card shortens
+      them, each number times 32,767, rounded.
+  - file: vectors-blocks-200.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of the blocks joined to 200 words, from nomic-embed-text-v1.5
+      at 8 bits, embedded after `search_document: `, one text a request, by llama.cpp's
+      server, release b11734, and shortened to 256 numbers as the model's card shortens
+      them, each number times 32,767, rounded.
+  - file: vectors-words-100.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of windows of 100 words, from nomic-embed-text-v1.5 at 8
+      bits, embedded after `search_document: `, one text a request, by llama.cpp's server,
+      release b11734, and shortened to 256 numbers as the model's card shortens them, each
+      number times 32,767, rounded.
+  - file: vectors-words-200.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of windows of 200 words, from nomic-embed-text-v1.5 at 8
+      bits, embedded after `search_document: `, one text a request, by llama.cpp's server,
+      release b11734, and shortened to 256 numbers as the model's card shortens them, each
+      number times 32,767, rounded.
+  - file: vectors-words-400.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of windows of 400 words, from nomic-embed-text-v1.5 at 8
+      bits, embedded after `search_document: `, one text a request, by llama.cpp's server,
+      release b11734, and shortened to 256 numbers as the model's card shortens them, each
+      number times 32,767, rounded.
+  - file: vectors-words-200-50.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The vector of each chunk of windows of 200 words sharing 50, from
+      nomic-embed-text-v1.5 at 8 bits, embedded after `search_document: `, one text a
+      request, by llama.cpp's server, release b11734, and shortened to 256 numbers as the
+      model's card shortens them, each number times 32,767, rounded.
+  - file: question-vectors-256.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_query: `, one text a request, by llama.cpp's server, release b11734, and
+      shortened to 256 numbers as the model's card shortens them, each number times 32,767,
+      rounded.
+runs: machine
+stages:
+  - chunks-of-a-page
+  - scoring-by-the-answer
+  - chunkings-at-one-budget
+  - the-assistants-chunker
+  - pages-that-change

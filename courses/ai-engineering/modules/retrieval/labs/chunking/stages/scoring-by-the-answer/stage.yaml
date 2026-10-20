@@ -1,0 +1,6 @@
+id: stg_ongg96
+kind: build
+title: Scoring by the answer
+builds: A new `score.py`.
+file: score.py
+minutes: 35

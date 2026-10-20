@@ -3,3 +3,4 @@ title: Retrieval
 labs:
   - embeddings-for-search
   - vector-search-in-postgres
+  - chunking

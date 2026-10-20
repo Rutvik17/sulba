@@ -1,0 +1,6 @@
+id: stg_8nlyk4
+kind: build
+title: Chunks of a page
+builds: A new `chunk.py`.
+file: chunk.py
+minutes: 35
