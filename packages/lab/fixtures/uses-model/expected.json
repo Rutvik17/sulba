@@ -1,6 +1,61 @@
 {
   "tests": [
     {
+      "id": "tst_mdl025",
+      "name": "Completes a prompt with the reply the test scripted, in the completions API's form",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl026",
+      "name": "Gives each token's logprob and the likeliest tokens for its place, as many as asked",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl027",
+      "name": "Gives code the probabilities it reads a verdict from",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl028",
+      "name": "Gives a chat reply's probabilities when asked, after sampling when asked that",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_mdl029",
+      "name": "Refuses requests llama-server refuses, in its words",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
       "id": "tst_mdl013",
       "name": "Gives the openai package the reply it expects",
       "status": "pass",
