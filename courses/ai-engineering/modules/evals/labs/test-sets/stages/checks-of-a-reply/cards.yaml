@@ -1,0 +1,14 @@
+cards:
+  - id: crd_bbebar
+    front: >-
+      What can a check written in code tell about a help desk's reply, and what can't it?
+    back: >-
+      Whether it cites passages, which ones, whether it ended by itself and how long it is.
+      Not whether what it says is in the passages it cites.
+  - id: crd_lt51g3
+    front: >-
+      Of the help desk's test replies, what share cite a passage that holds the answer, and
+      why are the rest not all the model's fault?
+    back: >-
+      {% $fig.cites_answer %}. The search showed an answer for {% $fig.held_share %} of the
+      questions, and no reply can cite an answer it wasn't shown.

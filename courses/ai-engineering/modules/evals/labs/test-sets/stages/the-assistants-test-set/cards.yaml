@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ml8bj4
+    front: >-
+      Why can a test set drawn with a fixed seed still change from one run to the next?
+    back: >-
+      A set of strings comes out in an order that changes with each Python process, so pages
+      listed from a set are drawn in another order. List them in a fixed order first.
+  - id: crd_89hsek
+    front: >-
+      What goes wrong when a test set stops at exactly its share, partway through a page?
+    back: >-
+      The page's other questions stay in the development set, so what is tuned on them
+      passes for a gain on the test set.

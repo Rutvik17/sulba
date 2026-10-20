@@ -1,0 +1,19 @@
+cards:
+  - id: crd_40llsr
+    front: >-
+      Why does a split of the help desk's questions keep each page's questions on one side?
+    back: >-
+      Questions about one page are answered from the same text, so a page on both sides lets
+      what was tuned on the development set pass for a gain on the test set.
+  - id: crd_q7mxhs
+    front: >-
+      Why are questions with the same words dropped before the split, not after?
+    back: >-
+      One on each side would score the test set on a question the development set tuned for,
+      and one counted twice weighs twice.
+  - id: crd_fi16p6
+    front: >-
+      Why split each service's questions by the same share?
+    back: >-
+      So that each service keeps its share on both sides, and a change that helps one service
+      and hurts another is measured on each.

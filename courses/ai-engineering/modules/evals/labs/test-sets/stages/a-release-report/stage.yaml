@@ -1,0 +1,36 @@
+id: stg_p3nz49
+kind: ship
+title: A release report
+builds: A new `release.py`, which uses your `checks.py` and `margin.py`.
+file: release.py
+packages: [numpy]
+minutes: 30
+checks:
+  - check: tst_hgqcf9
+    title: Every check passed
+    requires: >-
+      A reply counts toward the rate only when it passes every one of its checks.
+    failure: >-
+      The rate counts the replies that pass every check, not those that pass any one.
+  - check: tst_sshiza
+    title: Each page's questions together
+    requires: >-
+      Each margin counts each page's questions together, as `clustered_standard_error`
+      does.
+    failure: >-
+      A margin that counts each question alone is too narrow for a test set whose pages
+      hold several questions.
+  - check: tst_e8a81a
+    title: Each service on its own questions
+    requires: >-
+      Each service's line comes from its own questions and their pages alone.
+    failure: >-
+      A service's rate, margin and count come from that service's questions only.
+  - check: tst_xwc75g
+    title: Enough questions for the margin
+    requires: >-
+      `needed` is the fewest questions whose margin, with the same spread, would be within
+      the target.
+    failure: >-
+      The margin falls as one over the square root of the questions. Round up, so that one
+      question fewer than `needed` would miss the target.

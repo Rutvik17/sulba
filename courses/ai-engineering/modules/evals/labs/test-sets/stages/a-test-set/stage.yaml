@@ -1,0 +1,7 @@
+id: stg_4zyu4i
+kind: build
+title: A test set
+builds: A new `testset.py`.
+file: testset.py
+packages: [numpy]
+minutes: 30

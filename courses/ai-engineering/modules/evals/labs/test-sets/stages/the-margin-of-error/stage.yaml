@@ -1,0 +1,7 @@
+id: stg_rc9wdp
+kind: build
+title: The margin of error
+builds: A new `margin.py`.
+file: margin.py
+packages: [numpy]
+minutes: 30
