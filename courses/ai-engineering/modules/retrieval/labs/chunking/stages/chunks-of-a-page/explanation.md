@@ -1,0 +1,5 @@
+A window of words cuts wherever its count falls: in the middle of a sentence, between a heading and the text under it, or through a list that answers a question. Of the {% $fig.parts %} parts of the validation questions' answers, windows of 100 words split {% $fig.split_words %} between two chunks, and blocks joined to 100 words split {% $fig.split_blocks %}.
+
+Joined blocks keep each heading, paragraph and list item whole, so their size varies: a block longer than `most` words is a chunk of its own, and the longest of the pages' blocks has {% $fig.longest_block %} words. Windows that share words keep a part whole when either window holds it, but the shared words are embedded and stored twice: windows of 200 words sharing 50 hold {% $fig.extra %} more words than the pages do.
+
+Each chunk is kept as its place, its first character and the one after its last, not as its text: the help desk can show a chunk within its page, and a search can be scored by the characters of an answer its chunks hold.

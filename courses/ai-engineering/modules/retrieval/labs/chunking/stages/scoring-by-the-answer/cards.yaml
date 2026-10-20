@@ -1,0 +1,20 @@
+cards:
+  - id: crd_2oo9tr
+    front: >-
+      Why score a search by the characters of the answer it finds, not by passages marked
+      relevant?
+    back: >-
+      Characters score any way of cutting the pages on the same questions; passages marked
+      relevant score only searches through those passages.
+  - id: crd_93yjuh
+    front: >-
+      Scored by an answer's characters, what do a search's recall and precision measure?
+    back: >-
+      Recall: the share of the answer's characters its chunks hold. Precision: the share of its
+      chunks' characters that are the answer's.
+  - id: crd_72ha9l
+    front: >-
+      Why is precision low even for a search that finds exactly the chunks holding the answer?
+    back: >-
+      An answer is a sentence or two, and each chunk brings the rest of its text with it: the
+      larger the chunks, the lower the precision.

@@ -1,0 +1,21 @@
+cards:
+  - id: crd_395dxu
+    front: >-
+      Why compare chunkings at one budget of words, rather than at one number of chunks?
+    back: >-
+      The model reads every word a search hands it. At one number of chunks, larger chunks
+      hand it more text, and find more for that alone.
+  - id: crd_3mcjx8
+    front: >-
+      At {% $fig.budget %} words, which chunkings of the help desk's pages found the most of
+      each answer?
+    back: >-
+      Those of 100 words: windows of 100 words found {% $fig.words_100_recall %} of an answer
+      on average, and the passages of 200 words {% $fig.blocks_200_recall %}.
+  - id: crd_sj42db
+    front: >-
+      At {% $fig.budget %} words, did windows that share words find more than windows that
+      don't?
+    back: >-
+      Hardly: windows of 200 words sharing 50 found {% $fig.words_200_50_recall %} of an answer
+      on average, and those sharing none {% $fig.words_200_recall %}.

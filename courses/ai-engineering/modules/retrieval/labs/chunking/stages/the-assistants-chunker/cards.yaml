@@ -1,0 +1,19 @@
+cards:
+  - id: crd_ilbr0t
+    front: >-
+      Why search for each chunk's place from where the chunk before it ended?
+    back: >-
+      A page can hold the same text twice; searching from its start finds the first copy, so
+      a later chunk takes an earlier one's place.
+  - id: crd_aziz5s
+    front: >-
+      Which chunk does a chunker that joins blocks most easily lose?
+    back: >-
+      The last one: the chunk still being joined when the page runs out, unless the code adds
+      it after the loop.
+  - id: crd_wvdvvb
+    front: >-
+      What can be checked of a chunker on every page, whatever the page holds?
+    back: >-
+      That it keeps every word, in order; that no chunk passes its size; that every chunk is
+      the page's own text; and that each is at its own place.

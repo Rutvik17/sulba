@@ -1,0 +1,6 @@
+id: stg_ofbdex
+kind: build
+title: Chunkings at one budget
+builds: A new `compare.py`, which uses your `score.py`.
+file: compare.py
+minutes: 40

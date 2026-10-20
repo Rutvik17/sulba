@@ -1,0 +1,54 @@
+id: stg_2kkjda
+kind: ship
+title: Pages that change
+builds: A new `chunker.py`.
+file: chunker.py
+minutes: 45
+checks:
+  - check: tst_ktwfs5
+    title: Every word, in order
+    requires: >-
+      On each of the help desk's {% $fig.pages %} pages, the chunks hold every word of the
+      page once, in order.
+    failure: >-
+      Give each block to the chunk being joined or to a new one after it, and add the chunk
+      being joined when the page runs out.
+  - check: tst_i7tzvm
+    title: "At most {% $fig.most %} words a chunk"
+    requires: >-
+      No chunk of any page has more than {% $fig.most %} words.
+    failure: >-
+      Count a chunk's words as blocks join it, and cut a block of more than
+      {% $fig.most %} words into windows.
+  - check: tst_nyxzr7
+    title: Cut between blocks
+    requires: >-
+      Each chunk starts at a block, or within a block of more than {% $fig.most %} words,
+      and runs from a word's first character to a word's last.
+    failure: >-
+      Join whole blocks, and cut only a block too long to be a chunk of its own.
+  - check: tst_j0le40
+    title: Answers kept whole
+    requires: >-
+      At least {% $fig.whole %} of the {% $fig.parts %} parts of the {% $fig.questions %}
+      test questions' answers lie within one chunk.
+    failure: >-
+      A part of an answer is a sentence or two of one block, or of a few in a row: keep
+      blocks whole.
+  - check: tst_xzitvl
+    title: Few chunks to embed again after an edit
+    requires: >-
+      When a sentence is added to one block of each page, at most {% $fig.limit %} chunks a
+      page, on average, hold text the page's chunks didn't hold before.
+    failure: >-
+      An edit moves every chunk boundary after it until one falls where it fell before. Start
+      a new chunk at each heading, unless the chunk so far holds only headings, so that a
+      change stops at the end of its section.
+  - check: tst_b153ui
+    title: Pages saved on Windows
+    requires: >-
+      A page whose lines end in `\r\n`, or whose blank lines hold spaces, is cut into the same
+      chunks as the page itself.
+    failure: >-
+      A blank line can hold spaces, tabs or a carriage return: look for blocks between lines
+      that hold nothing else.

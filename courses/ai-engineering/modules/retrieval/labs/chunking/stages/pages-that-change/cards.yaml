@@ -1,0 +1,19 @@
+cards:
+  - id: crd_qlblm2
+    front: >-
+      Why does a sentence added early in a page change every window of words after it?
+    back: >-
+      Each window starts a set number of words after the one before, so every boundary after
+      the edit moves, and every window there holds new text.
+  - id: crd_o01sw0
+    front: >-
+      How does starting a new chunk at each heading keep an edit's cost down?
+    back: >-
+      No chunk holds text from two sections, so an edit changes only the chunks of its own
+      section, and the rest keep their vectors.
+  - id: crd_qjmbnc
+    front: >-
+      What does a cache of vectors keyed by each chunk's text save when a page changes?
+    back: >-
+      Every chunk that comes back with the same text keeps its vector; only chunks with new
+      text are embedded again.
