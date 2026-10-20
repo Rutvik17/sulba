@@ -1,0 +1,7 @@
+id: stg_8j9iq5
+kind: build
+title: An approximate index
+builds: A new `index.py`, which uses your `store.py`.
+file: index.py
+packages: [numpy, psycopg, pgvector]
+minutes: 35

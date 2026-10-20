@@ -1,0 +1,863 @@
+question,set,page,domain,text
+q1,validation,ssa-4,ssa,What can I do if my disability benefits application is denied?
+q2,validation,ssa-10,ssa,What documents will I need to get a corrected card for my son?
+q3,validation,ssa-3,ssa,Please help me get information about social security's disability benefits.
+q4,validation,ssa-3,ssa,how do I apply for disability benefits?
+q5,validation,ssa-3,ssa,How soon do someone need to apply for disability benefits?
+q6,validation,ssa-2,ssa,"please, give me information about benefits planning for widows."
+q7,validation,ssa-2,ssa,I am looking for information regarding benefits for my widow when I pass on
+q8,validation,ssa-7,ssa,What do I need to show to get a Social Security Card?
+q9,validation,ssa-17,ssa,"I would like to apply for a Social Security Card for my child, what documents do I need to submit?"
+q10,validation,ssa-17,ssa,How do I obtain an original social security card for a child born in the U.S.?
+q11,validation,ssa-17,ssa,"Hi, i was told to use this. I'm looking for information for getting a SSN for a U.S bron child, please."
+q12,validation,ssa-17,ssa,I need a Social Security card for my kid that was born here in the states.
+q13,validation,ssa-18,ssa,I've lost my Social Security Card can you help me?
+q14,validation,ssa-18,ssa,I need a card for a foregn born u.s. citizen adult
+q15,validation,ssa-14,ssa,"Hello, I want to know about Social Security cards for foreign-born U.S. citizens adopted children."
+q16,validation,ssa-14,ssa,What original documents do I need to produce when looking for an original Social Security card for a foreign born US citizen adopted child?
+q17,validation,ssa-14,ssa,"Yeah, hi. i need some info about an SSN card for an Adopted Child, please?"
+q18,validation,ssa-13,ssa,I need to get my social security card for the first time. I'm an adult born in the US.
+q19,validation,ssa-13,ssa,What documents do I need to apply for a social security card
+q20,validation,ssa-13,ssa,What documents do I need?
+q21,validation,ssa-13,ssa,How do I apply for an original ss card?
+q22,validation,ssa-16,ssa,What documents do I need to get a Social Security Card?
+q23,validation,ssa-16,ssa,I need a social security card for my child
+q24,validation,ssa-12,ssa,"Hello I'm an immigrant hoping to get a Social Security Card, what is the procedure?"
+q25,validation,ssa-15,ssa,What documents do I need to get a Social Security card for a kid born out of the U.S.?
+q26,validation,ssa-15,ssa,What original documents do I need to get a social security card if any?
+q27,validation,ssa-20,ssa,"In order to obtain a social security card, what original documents do I need?"
+q28,validation,ssa-20,ssa,I need a replacement Social Security Card and want to know what I need to bring with me?
+q29,validation,ssa-20,ssa,What do my documents need to reflect in order to get a replacement social security card?
+q30,validation,ssa-20,ssa,What kind of documents will I need to get a card?
+q31,validation,ssa-34,ssa,I need help with Survivors Benefits
+q32,validation,ssa-42,ssa,How will I know if I should apply for Medicare?
+q33,validation,ssa-22,ssa,Hi. I want to know what kind of documents i need for a replacement card?
+q34,validation,ssa-22,ssa,How do i get replacement card for a noncitizen child?
+q35,validation,ssa-22,ssa,I need to know what original documents that I need.
+q36,validation,ssa-22,ssa,What original documents are needed?
+q37,validation,ssa-40,ssa,Can anyone apply for retirement benefits online?
+q38,validation,ssa-40,ssa,How do I start the online application?
+q39,validation,ssa-40,ssa,You can help me with the online retirement benefits application
+q40,validation,ssa-33,ssa,Am I in the right place to access a benefits planner?
+q41,validation,ssa-33,ssa,"I would like to know more about benefits, please."
+q42,validation,ssa-33,ssa,"Hello, can you help me with the Benefits Planner, please?"
+q43,validation,ssa-33,ssa,I want to see about the Benefits Planner and my Social Security
+q44,validation,ssa-33,ssa,"Good afternoon, I'm looking for some information about the Benefits planner."
+q45,validation,ssa-23,ssa,"Good morning. I'm looking to get a replacement SSN card for a U.S born child. I'm being told that i need some documentation. Could you help me out with that, please?"
+q46,validation,ssa-25,ssa,I'm trying to work on some disability benefits
+q47,validation,ssa-25,ssa,Can you tell me about Social Security disability benefits?
+q48,validation,ssa-25,ssa,Hi. I would like to learn about disability benefits.
+q49,validation,ssa-38,ssa,can you help me apply for retirement benefits?
+q50,validation,ssa-37,ssa,I'd like to know which steps to do next.
+q51,validation,ssa-37,ssa,Can my family qualify for benefits on my record even if I didn't qualify for benefits on someone else's record?
+q52,validation,ssa-37,ssa,I need help applying for my retirement benefits.
+q53,validation,ssa-37,ssa,I need help with applying for my retirement benefits.
+q54,validation,ssa-21,ssa,"Hello, i was directed here for information about replacing a SS card for a child."
+q55,validation,ssa-21,ssa,"Hey, could you maybe tell me what documents I need? I'm a bit confused and lost."
+q56,validation,ssa-50,ssa,"Hello, I would like to know how to get started to verify?"
+q57,validation,ssa-52,ssa,How can I plan for disablity benefits
+q58,validation,ssa-52,ssa,"you may help me with my disability benefits, will I ever need them"
+q59,validation,ssa-52,ssa,I need help with disability.
+q60,validation,ssa-47,ssa,What if my spouse dies and they were on Socoal security
+q61,validation,ssa-53,ssa,"Hello, I want to know some things about disability and supplemental security income. Can you help me out?"
+q62,validation,ssa-63,ssa,"Hi There! I'm searching for information, I want to know if I can file an appeal if my SSI application was denied."
+q63,validation,ssa-63,ssa,"HEllo, my SSI was denied, and I am upset about it, can I file an appeal or something?"
+q64,validation,ssa-63,ssa,Can I file an appeal my SSI application was denied?
+q65,validation,ssa-63,ssa,I would like to know how to apply for SSI Benefits online.
+q66,validation,ssa-63,ssa,"I was told a disabled person can do their SSI application online, is that true?"
+q67,validation,ssa-62,ssa,I need to apply for supplemental security income benefits
+q68,validation,ssa-62,ssa,I need information about SSI
+q69,validation,ssa-62,ssa,Do I qualify for SSI?
+q70,validation,ssa-62,ssa,what is SSI
+q71,validation,ssa-62,ssa,where do i start?
+q72,validation,ssa-62,ssa,I would like information on whether I can qualify for Supplemental Security Income.
+q73,validation,ssa-71,ssa,"Hi, I just lost my husband and would like to know if Social Security pays out any form of death benefit?"
+q74,validation,ssa-71,ssa,How can my spouse earn social security survivors benefits?
+q75,validation,ssa-67,ssa,can you help me with knowing about if they can take my benefits away and when they review my case?
+q76,validation,ssa-67,ssa,What could make my disability benefits stop?
+q77,validation,ssa-70,ssa,Can you tell me how many Social Security credits my wife can earn every year?
+q78,validation,ssa-70,ssa,How would my wife earn social security survivor's benefits?
+q79,validation,ssa-70,ssa,"if a spouse passes, how do they earn benefits?"
+q80,validation,ssa-70,ssa,I was wondering if social security also pays death benefits? Does it?
+q81,validation,ssa-79,ssa,Where do i begin
+q82,validation,ssa-29,ssa,Hello I need information about the Disability Determination Process
+q83,validation,ssa-95,ssa,I could use some help regarding social security credits. How do they work?
+q84,validation,ssa-95,ssa,what can you tell me about Social Security Credits
+q85,validation,ssa-91,ssa,"Hello, can you please tell me how I can keep my personal information secure?"
+q86,validation,ssa-91,ssa,"Hey, how can I keep my personal information safe?"
+q87,validation,ssa-91,ssa,Hello there. I need explanations regarding my retirement benefits. I can't make sense of it all.
+q88,validation,ssa-92,ssa,How do I find out if I'm eligible for Retirement Benefits?
+q89,validation,ssa-92,ssa,"Hey, I'm planning for retirement and need some input."
+q90,validation,ssa-92,ssa,when should I decide to start retirement benefits
+q91,validation,ssa-92,ssa,"Hello, I would like to obtain information about Retirement Planning"
+q92,validation,ssa-94,ssa,"Hello, I would like to obtain information about Medicare monthly premiums for 2020"
+q93,validation,ssa-93,ssa,I have a few questions about medicare premiums. It'd be great if you could answer them.
+q94,validation,ssa-93,ssa,"I'd like to learn more about medicare premiums, please."
+q95,validation,ssa-93,ssa,"I have so many questions about medicare premiums, I don't even know where to begin."
+q96,validation,ssa-93,ssa,Hello there. What can you tell me about medicare premiums?
+q97,validation,ssa-93,ssa,"Hi, can you tell me the rules for beneficiaries with higher incomes?"
+q98,validation,ssa-93,ssa,Hello there. Can you please answer a few questions I have about Medicare premiums?
+q99,validation,ssa-88,ssa,"Hi, can you tell me what it takes to apply for disability benefits?"
+q100,validation,ssa-88,ssa,What is required to apply for disability benefits?
+q101,validation,ssa-88,ssa,Hi. I need some information about how to apply for a disabled child. The process is a bit complicated.
+q102,validation,ssa-88,ssa,If Applying for a child (under 18) what are the steps for Disability Benefits
+q103,validation,ssa-97,ssa,"Hello, I wonder once you have applied to the benefit, what should I do?"
+q104,validation,ssa-97,ssa,Could you please give me some information on how to apply for benefits if I am not currently living in the U.S.?
+q105,validation,ssa-97,ssa,how to apply retirement benefits
+q106,validation,ssa-97,ssa,"Hello, I would like you to help me know how to apply for retirement benefits."
+q107,validation,ssa-97,ssa,"Hello, I would like to know if I can apply for retirement at the local office?"
+q108,validation,ssa-101,ssa,"Hi, could you tell me what original documents do I need to get a Social Security Card?"
+q109,validation,ssa-107,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q110,validation,ssa-99,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q111,validation,ssa-106,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q112,validation,ssa-100,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q113,validation,va-19,va,I was wondering if it is possible to check the status of my VA claim online?
+q114,validation,va-14,va,Hello. I need to know what to do to request a review from a senior reviewer.
+q115,validation,va-7,va,Tell me about how to change a VA direct deposit information
+q116,validation,va-31,va,hi i need help about how to get housing assistance grants for veterans
+q117,validation,va-31,va,Tell me about Veterans Housing Assistance Grants.
+q118,validation,va-31,va,Good evening. I need some explanations regarding veterans housing assistance grants.
+q119,validation,va-10,va,I am looking for support from a military sexual trauma.
+q120,validation,va-10,va,HI. I'm looking for information...
+q121,validation,va-10,va,Where can I find more information and support?
+q122,validation,va-10,va,I'm here about MST
+q123,validation,va-5,va,How do I get a hold of some records from the Army?
+q124,validation,va-15,va,"Hi, good afternoon. Look, i'm interested on some info about GI Bill related benefits. Could you tell me what's next after application?"
+q125,validation,va-27,va,I'm here for VA disability benefits
+q126,validation,va-27,va,What can you tell me about VA disability compensation?
+q127,validation,va-25,va,Why did the military records need to be reconstructed?
+q128,validation,va-25,va,I want to know about the fire you had and what to do if my military records are gone
+q129,validation,va-3,va,I need information about VA disability ratings.
+q130,validation,va-3,va,"Hey there, I would like to know more about your disability ratings."
+q131,validation,va-16,va,"Hello, I'm on the GI Bill and was wondering if you have information about changing something."
+q132,validation,va-21,va,Hello there. How are you doing? My name is John and I am looking for information on the affordable care act.
+q133,validation,va-28,va,can you give me details of VA disability compensation
+q134,validation,va-28,va,What is VA disability compensation?
+q135,validation,va-22,va,can you give me details of More information about VA mental health services
+q136,validation,va-22,va,How do I access Va mental health services?
+q137,validation,va-13,va,Hello. Can you tell me how to get benefits?
+q138,validation,va-13,va,I am looking for help on benefits.
+q139,validation,va-17,va,I need info about VA programs for substance abuse
+q140,validation,va-24,va,how do I get More information and resources
+q141,validation,va-24,va,Hello. My name is Jim. I am currently not working and looking for employment.
+q142,validation,va-32,va,How do I get VA Home Loan Benefits?
+q143,validation,va-32,va,I'd like information on how to apply for a Veterans Housing Assistance Grant please.
+q144,validation,va-32,va,I would like to find out if I'm eligible for VA Home Loan Benefits.
+q145,validation,va-29,va,How do I appeal to a veterans law judge?
+q146,validation,va-56,va,"Hello, I need information about health care costs."
+q147,validation,va-46,va,hi i need help about Employment benefits for dependent family members
+q148,validation,va-46,va,hi i need help about How do I apply?
+q149,validation,va-46,va,hi i need help on how do i apply?
+q150,validation,va-48,va,can you give me details of Print out your VA Welcome Kit
+q151,validation,va-41,va,I'm interested in more information and VA resources
+q152,validation,va-41,va,I would like information about education and training benefits.
+q153,validation,va-58,va,I need information on educational and career counseling.
+q154,validation,va-50,va,Hello. I want to get some information on life insurance for vets.
+q155,validation,va-50,va,Hello! I would like to obtain information about insurance life.
+q156,validation,va-62,va,hello I need information about Exposure to hazardous chemicals and materials
+q157,validation,va-62,va,can you give me details of Exposure to hazardous chemicals and materials
+q158,validation,va-62,va,looking for anything I can get on the topic of U.S. chemical testing on vets
+q159,validation,va-61,va,"Hello, I'm here to learn more about the benefits of a GI Bill."
+q160,validation,va-59,va,hi i need More information and resources about VA Pension Benefits
+q161,validation,va-60,va,"Hello, we talked yesterday, maybe you remember. I have more questions and was hoping to come across more information here."
+q162,validation,va-71,va,"Hello, I am here to learn more about the costs connected with using a veteran service officer."
+q163,validation,va-84,va,hello I need information About VA insurance options and eligibility
+q164,validation,va-84,va,I am looking for life insurance through the VA
+q165,validation,va-84,va,I need information about VA insurance options and eligibility.
+q166,validation,va-63,va,Hello I need information about What happens after I request a decision review?
+q167,validation,va-90,va,"hello, I am in the Army and I want to know if I can qualify for more than one education benefit from the VA"
+q168,validation,va-91,va,"Hello. I've been receiving veteran benefits since some time ago, but i've been a little messy with my transactions. Is there a way to know about my doings?"
+q169,validation,va-91,va,"I'm looking for information about my veteran payments, about my transaction history, please."
+q170,validation,va-107,va,you can help me by telling me where someone in the middle of nowhere can go for medical care
+q171,validation,va-110,va,I want to know more about copay fees
+q172,validation,va-110,va,I wanted to see what the copays are for certain services
+q173,validation,va-108,va,I want to apply for a burial in a VA cemetery and I want to know what happens after I apply.
+q174,validation,va-109,va,How do I get VA Title 38 USC 1151 benefits?
+q175,validation,va-111,va,health care
+q176,validation,va-111,va,I need more information on VA health care
+q177,validation,va-111,va,What is some information I can find out about VA health care?
+q178,validation,va-112,va,I need help getting VA health care for PTSD
+q179,validation,va-112,va,"Hello. I'm a doing a research, and I was wondering if you could help me with information about the post traumatic stress disorder for veterans?"
+q180,validation,va-112,va,I need help. How do I access services for PTSD?
+q181,validation,va-112,va,"Hi there. I'm a veteran but I don't have any health care benefits, can I still have access to PTSD treatment?"
+q182,validation,va-124,va,"Hi there, I need to file a Supplemental Claim with new evidence."
+q183,validation,va-136,va,Would you ever need to contact a national cemetery directly?
+q184,validation,va-138,va,what's with the pact team?
+q185,validation,va-117,va,I'm looking for more info about the GI BIll
+q186,validation,va-117,va,can I use my benefits on two degrees?
+q187,validation,va-125,va,what are the steps to get a VA or direct mortgage loan
+q188,validation,va-125,va,"Hi, i think i'll soon be in need of a loan for home purposes, but i'll also need proof of that. Do you have any option for veterans in that regard?"
+q189,validation,va-125,va,I need information on how to obtain a VA direct home loan.
+q190,validation,va-134,va,"Hi, have a nice day. I'm looking for information related to how to help a veteran to return to his life at home. I don't have any experience on this, so I was wondering if you could help me. Please?"
+q191,validation,va-131,va,you can tell me what happens after I request a review on a fiduciary claim
+q192,validation,va-116,va,I requested a decision review and I need to know what to expect now.
+q193,validation,va-6,va,I would like to know if you have information about the VA medical benefits package
+q194,validation,va-33,va,Can you tell me about applying for VA Voc Rehab adn Employment?
+q195,validation,va-33,va,How to apply for VA Voc Rehab and Employment
+q196,validation,va-9,va,Am I able to use the VA Appointments tools?
+q197,validation,va-9,va,How to know if I am eligible to use the VA Appointments tools
+q198,validation,va-20,va,I have become totally disabled and was wondering about my premiums.
+q199,validation,va-18,va,"good, do i need information about the fully developed Claim program for a VA pension?"
+q200,validation,va-12,va,"Good afternoon, am I looking for information on VA Disability Compensation for PTSD?"
+q201,validation,va-12,va,I want help with PTSD matters
+q202,validation,va-40,va,I want to know more about Agent Orange exposure?
+q203,validation,va-40,va,who used Agent orange exposure
+q204,validation,va-40,va,can you help me with Agent Orange exposure please?
+q205,validation,va-52,va,offered by Veterans Mortgage Life Insurance
+q206,validation,va-52,va,what can you tell me about VMLI?
+q207,validation,va-43,va,What is VA Aid and Attendance benefits and housebound allowance used for?
+q208,validation,va-54,va,"Hello, I would like to know if there is something that makes me more likely to obtain these benefits?"
+q209,validation,va-54,va,Hi. I would like to know about Eligibility for VA health care
+q210,validation,va-54,va,"Hey, I was wondering how I can increase my chance to get benefits. Care to explain?"
+q211,validation,va-36,va,Good evening. I would like to know if VA covers my glasses.
+q212,validation,va-36,va,"Hi, I need to know if the VA will cover the cost of the glasses?"
+q213,validation,va-47,va,"Hello there, can you tell me how I view my medical records online?"
+q214,validation,va-51,va,"hi i need some help if i can't get VA dental care benefits, can i get help buying dental insurance?"
+q215,validation,va-67,va,"Hello, can you tell me more about VA education benefits for survivors?"
+q216,validation,va-75,va,when I finish the Reserve Educational Assistance Program (REAP)
+q217,validation,va-75,va,can you help me with information about the Educational Reserve Assistance Program (REAP)
+q218,validation,va-75,va,"Hello there, I would like to learn more about the reserve educational assistance program."
+q219,validation,va-75,va,hi i need help about Reserve Educational Assistance Program (REAP)
+q220,validation,va-55,va,How Group Life Insurance for Veterans (VGLI) works
+q221,validation,va-55,va,I would like to have information about Group Life Insurance for Veterans (VGLI)
+q222,validation,va-64,va,for the Post-9/11 GI Bill (Chapter 33)
+q223,validation,va-64,va,Can you give me Post-9/11 GI Bill information (Chapter 33)
+q224,validation,va-64,va,"I have questions. Regarding the GI Bill, after September 11."
+q225,validation,va-81,va,which is protection against traumatic injuries (TSGLI)
+q226,validation,va-81,va,Traumatic Injury Protection (TSGLI)
+q227,validation,va-81,va,"hi, give me information about the program Traumatic Injury Protection"
+q228,validation,va-81,va,"hi, please show me information about TSGLI"
+q229,validation,va-81,va,Hi. I am trying to learn about TSGLI.
+q230,validation,va-82,va,"Hi, I am trying to learn about VA services."
+q231,validation,va-82,va,"hi. i want to know How do I access these services (VA nursing homes, assisted living, and home health care)?"
+q232,validation,va-82,va,How do I access VA nursing home services?
+q233,validation,va-78,va,How your benefits may change from year to year
+q234,validation,va-78,va,hi. please tell me How your benefits may change from year to year
+q235,validation,va-78,va,please tell me How your benefits may change from year to year
+q236,validation,va-78,va,hi i need help about How your benefits can change from year to year in VA
+q237,validation,va-83,va,Hello. Can you fill me in about educational aid for survivors?
+q238,validation,va-87,va,Eligibility for VA disability benefits
+q239,validation,va-87,va,please show me information about Eligibility for VA disability benefits
+q240,validation,va-87,va,"hi, please information about Eligibility for VA disability benefits"
+q241,validation,va-87,va,How can I be eligible for VA disability benefits?
+q242,validation,va-95,va,please show me information about Eligibility for VA Vocational Rehab and Employment
+q243,validation,va-93,va,"hi, give me information about adding a dependent to your VA disability compensation"
+q244,validation,va-93,va,I would like to know how to add a dependent to my VA disability compensation.
+q245,validation,va-105,va,please show me information about Veterans Educational Assistance Program
+q246,validation,va-105,va,please show me information about VEAP
+q247,validation,va-105,va,Hello. I hope you're doing well. I need some information about the educational aid program for veterans.
+q248,validation,va-120,va,"You tell me, I wanted to know what I need to be able to get approved. So how can you help?"
+q249,validation,va-128,va,Am I eligible for VA DIC as a surviving spouse or dependent?
+q250,validation,va-128,va,hi i need help about Benefits for spouses and dependents
+q251,validation,va-128,va,hi i need help about Am I eligible for VA DIC as a surviving spouse or dependent?
+q252,validation,va-129,va,How to get these disability benefits?
+q253,validation,va-114,va,I need to get a new veteran ID card.
+q254,validation,va-114,va,Hello there. Can you please tell what types of Veteran ID cards exist?
+q255,validation,va-114,va,can you give me details of Types of Veteran ID cards
+q256,validation,va-114,va,can you give me details of Types of Veteran ID cards
+q257,validation,va-114,va,hi i need help about Types of Veteran ID cards
+q258,validation,va-133,va,hi can you help me to know how to apply for a veteran id card?
+q259,validation,va-133,va,can you give me details of How to apply for a Veteran ID Card
+q260,validation,va-115,va,Hello there. What can you tell me about Co-op training?
+q261,validation,va-115,va,hi i need help about Cooperative Training
+q262,validation,va-115,va,can you give me details of Co-op training
+q263,validation,va-115,va,Can you please help me find out about co-op training?
+q264,validation,studentaid-3,studentaid,I have a question about the FAFSA program.
+q265,validation,studentaid-2,studentaid,I need to know how to prepare for college.
+q266,validation,studentaid-2,studentaid,"Hello, I need some help exploring my career options."
+q267,validation,studentaid-2,studentaid,"Is there any career information that you can give me, I'm currently exploring all the different options that are available to me"
+q268,validation,studentaid-1,studentaid,can you tell me what is income based payment?
+q269,validation,studentaid-4,studentaid,What loan types are eligible for Deferment?
+q270,validation,studentaid-4,studentaid,"Hey there, i'm in some situation and have to do something about my student loan. I heard i could deferment it, but i need guidance. Can you help me there, please?"
+q271,validation,studentaid-4,studentaid,I need help with student loan deferment
+q272,validation,studentaid-6,studentaid,Can you tell me anything about direct PLUS loans?
+q273,validation,studentaid-6,studentaid,Good day. I have some questions regarding the direct plus loan. It'd be kind of you if you answered them for me.
+q274,validation,studentaid-6,studentaid,I need information about the direct PLUS loans.
+q275,validation,studentaid-6,studentaid,I want to know about Direct PLUS loans.
+q276,validation,studentaid-6,studentaid,I would like some information about the PLUS Loans program for education.
+q277,validation,studentaid-6,studentaid,"Hi, could you please tell me what a Direct PLUS Loan is for?"
+q278,validation,studentaid-5,studentaid,Is there any way to learn about college costs and tips to lower cost when going to school?
+q279,validation,studentaid-8,studentaid,I need some guidance about the IT Standards Library guidelines please.
+q280,validation,studentaid-8,studentaid,I'm looking for IT standards on student aid documents
+q281,validation,studentaid-29,studentaid,"Hey, good morning. I'm looking for some information about the gainful employment, please."
+q282,validation,studentaid-29,studentaid,I have some questions I need answered about gainful employment.
+q283,validation,studentaid-29,studentaid,"Hello, I would like to obtain information about paid employment..."
+q284,validation,studentaid-22,studentaid,I want to learn more about students with a criminal status as it pertains to financial aid.
+q285,validation,studentaid-22,studentaid,"Hello, can you give me information related to students with criminal convictions, can they ask for student help?"
+q286,validation,studentaid-25,studentaid,"How do I find Aidan, the FSA Virtual Assistant?"
+q287,validation,studentaid-25,studentaid,"Hi, how is it going?. I heard you're using some AI program now to interact wit h users, could you tell me more?"
+q288,validation,studentaid-27,studentaid,What happens after I submit my FAFSA form?
+q289,validation,studentaid-27,studentaid,I need help with understanding Student Aid Reports.
+q290,validation,studentaid-27,studentaid,I need help with my Student Aid Report.
+q291,validation,studentaid-26,studentaid,Can you explain what a co-signer is?
+q292,validation,studentaid-40,studentaid,Could you let me know what type of Federal Student Aid is available?
+q293,validation,studentaid-33,studentaid,How do you come up with the amount of financial aid I will get?
+q294,validation,studentaid-31,studentaid,What can I do with my loan if a withdraw from my school?
+q295,validation,studentaid-31,studentaid,"Hello, I need help, I recently left school and the school did not make the required repayment of the loan funds, how do I do?"
+q296,validation,studentaid-36,studentaid,I need help with understanding annual re-certification requirements on income and family size.
+q297,validation,studentaid-36,studentaid,"Hello, what are the low payments for federal loans?"
+q298,validation,studentaid-36,studentaid,Hello there. I need to know what happens if I miss the annual deadline to recertify my income.
+q299,validation,studentaid-39,studentaid,"Hey, greetings to you. You know, i got a student loan, so i have to repay it, but i got a teacher job too. That counts for anything on the loan?"
+q300,validation,studentaid-39,studentaid,"I need to know if I'm teaching at a low-income school or educational service agency, please"
+q301,validation,studentaid-39,studentaid,I'm part of the teacher loan program and I wanted to know if I can receive loan forgiveness or not.
+q302,validation,studentaid-30,studentaid,I want to find out more about who is handling my school loan
+q303,validation,studentaid-30,studentaid,"Hello, I came here to learn more about my student loan servicer."
+q304,validation,studentaid-30,studentaid,hi
+q305,validation,studentaid-34,studentaid,I need some information about the Graduated Repayment Plan.
+q306,validation,studentaid-34,studentaid,I heard about a repayment plan which isn't all at once and would like information.
+q307,validation,studentaid-34,studentaid,"Hello, I would like to obtain information about The Graduate Payment Plan"
+q308,validation,studentaid-43,studentaid,hi could you help me How to correct or update your FAFSA application
+q309,validation,studentaid-43,studentaid,can you tell me how to update FAFSA
+q310,validation,studentaid-43,studentaid,hi could you help me how to update my FAFSA application
+q311,validation,studentaid-42,studentaid,hi i need the paid employment spreadsheet
+q312,validation,studentaid-42,studentaid,"Hi there, I'm looking to get further information in relation to the Gainful Emplyment Downloadable Spreadsheet, can you help me with this?"
+q313,validation,studentaid-46,studentaid,I have some questions about third party servicer programs.
+q314,validation,studentaid-46,studentaid,I have some questions about third party servicer program reviews.
+q315,validation,studentaid-49,studentaid,Is it possible to qualify for FSA if I am a non-US citizen?
+q316,validation,studentaid-49,studentaid,I'm not a U.S. citizen and need to know if I qualify for financial aid.
+q317,validation,studentaid-47,studentaid,What are federal grants that are available to students through the FSA?
+q318,validation,studentaid-47,studentaid,I have a few questions about federal grants.
+q319,validation,studentaid-56,studentaid,I have been told that I can't receive student aid anymore. What can I do?
+q320,validation,studentaid-56,studentaid,"I have been informed that I can no longer receive any federal student aid, is there anything I can do?"
+q321,validation,studentaid-56,studentaid,"Hello there, i'm having some issues with my finanial aid. It looks like i can't get any more, could you help me?"
+q322,validation,studentaid-56,studentaid,I need help. I'm being told that I don't qualify for federal student aid anymore.
+q323,validation,studentaid-56,studentaid,I am concerned because I have been told that I can no longer get federal student aid
+q324,validation,studentaid-51,studentaid,"Hi, I need help in the financial area."
+q325,validation,studentaid-51,studentaid,What is good advice when accepting financial aid?
+q326,validation,studentaid-50,studentaid,What payments are available through the Income-Sensitive Repayment Plan who have Federal Family Education Loan Program loans?
+q327,validation,studentaid-50,studentaid,I need help understanding how the Income-Sensitive Repayment plan works.
+q328,validation,studentaid-53,studentaid,"Tell about the Temporary Relief, please"
+q329,validation,studentaid-53,studentaid,Hi there. I was looking information about how to get a temporary relief.
+q330,validation,studentaid-55,studentaid,I was wondering if I could get student aid when studying abroad. Can you please give me some advice?
+q331,validation,studentaid-60,studentaid,"Hi, I am looking to take out a student loan and would like to know what a Mater Promissory Note is?"
+q332,validation,studentaid-60,studentaid,"Good morning. I was hearing the other day about things I'm supposed to do ti repay my student loans and heard bout something called MPN, what's that?"
+q333,validation,studentaid-60,studentaid,Why are Master Promissory Notes necessary?
+q334,validation,studentaid-61,studentaid,I need help with how you stay eligible for financial aiid
+q335,validation,studentaid-61,studentaid,"Hello, I would like to continue receiving federal student aid"
+q336,validation,studentaid-61,studentaid,how do I stay good with the financial aid people?
+q337,validation,studentaid-59,studentaid,"Hello, I would like to know how to send PSLF forms"
+q338,validation,studentaid-64,studentaid,"Hi I have heard that I might be able to have all or portion of my Federal Perkins Loan canceled, if this correct?"
+q339,validation,studentaid-64,studentaid,I need to know if I'm eligible to have all or a portion of my Federal Perkins Loan canceled
+q340,validation,studentaid-68,studentaid,"Hello, I would like to know if Federal student loans are a good investment?"
+q341,validation,studentaid-67,studentaid,What requirements do I need to qualify for federal student aid?
+q342,validation,studentaid-67,studentaid,"Hi, I'd like to know what requirements I must meet to qualify for federal student aid."
+q343,validation,studentaid-67,studentaid,"Good morning, how you doing?. I've thinking about getting a student aid, but need some info about what could i need for it."
+q344,validation,studentaid-67,studentaid,"Hello, what are the requirements for federal aid?"
+q345,validation,studentaid-75,studentaid,I'm getting calls from someone who wants to charge me fees to get my federal loan out of default.
+q346,validation,studentaid-75,studentaid,Hi there. I have some questions related to fees charged to me to get my loan out of default.
+q347,validation,studentaid-77,studentaid,My Dad was in the military. I need to know if this qualifies me for any kind of financial aid for college.
+q348,validation,studentaid-82,studentaid,tell me about tax benefits for school purposes
+q349,validation,studentaid-82,studentaid,Hi there. I'm looking information related to economic aid for college students.
+q350,validation,studentaid-82,studentaid,Are there any tax benefits that I can avail of when paying for education?
+q351,validation,studentaid-73,studentaid,I need to find out what exactly is the Standard Repayment Plan that is available through the FSA?
+q352,validation,studentaid-73,studentaid,tyufffdgh
+q353,validation,studentaid-76,studentaid,can you help me with a loan discharge?
+q354,validation,studentaid-76,studentaid,Goo evening. I recently found out that my school apparently requested a student loan on my behalf without me knowing. Is there something I can do about that?
+q355,validation,studentaid-76,studentaid,I want a loan discharge please
+q356,validation,studentaid-74,studentaid,Who do I make a student loan payment to?
+q357,validation,studentaid-80,studentaid,Hey there. I'm looking some help about how to fill in a correct way the application for federal student aid.
+q358,validation,studentaid-80,studentaid,"Hi, I wonder if you could help, I am currently completing the FAFSA form but I'm not fiully sure what I have to do, could you help me?"
+q359,validation,studentaid-80,studentaid,"If I am unsure of what to do when completing the FAFSA form, is there somewhere I can get help with it?"
+q360,validation,studentaid-80,studentaid,Can you assist me with filling out my FAFSA form?
+q361,validation,studentaid-88,studentaid,"Hi there, I'm looking information of how many scholarships can I apply for."
+q362,validation,studentaid-88,studentaid,Should I research early to get as many scholarships as I can?
+q363,validation,studentaid-88,studentaid,Should I apply for a scholarship? Do you have any advice about it?
+q364,validation,studentaid-88,studentaid,"Hi I need help on how to find and apply for scholarships, can you only have one scholarship or many?"
+q365,validation,studentaid-86,studentaid,What are some of the most common FAFSA completion data questions and answers?
+q366,validation,studentaid-84,studentaid,is there a deadline for the fafsa application?
+q367,validation,studentaid-84,studentaid,"How you doing there? Good afternoon. You know, I'm looking to complete the application for federal aid, but i wanted to know if there's some kind of deadline or if I just simply can submit it whenever i want."
+q368,validation,studentaid-84,studentaid,Are there deadlines associated with FAFSA completions and can you give me more information regarding these deadlines
+q369,validation,studentaid-84,studentaid,"Hello, can you tell me which FAFSA Deadlines?"
+q370,validation,studentaid-87,studentaid,Hey there. I would like to know information about the information I need to give in a student aid form.
+q371,validation,studentaid-13,studentaid,can I get a loan if I'm poor?
+q372,validation,studentaid-13,studentaid,how can I get a low-interest loan to help cover the cost of college?
+q373,validation,studentaid-12,studentaid,dfsgfgsdrgfdg
+q374,validation,studentaid-12,studentaid,I have some questions about Federal Student Aid.
+q375,validation,studentaid-18,studentaid,Hi there. Can I get a Federal Work-Study job to pay my college?
+q376,validation,studentaid-18,studentaid,What do work study job help with?
+q377,validation,studentaid-18,studentaid,I'm here to learn about work study jobs
+q378,validation,studentaid-18,studentaid,"I'm interested in a work-study job, but how long would I need to work?"
+q379,validation,studentaid-18,studentaid,I came here to learn more about work-study jobs. Can you please tell me more about those?
+q380,validation,studentaid-15,studentaid,How would I go about requesting a forbearance?
+q381,validation,studentaid-15,studentaid,Hello there. Can you please explain how I can request a forbearance? I'm not doing so well financially at the moment.
+q382,validation,studentaid-14,studentaid,I need some advice how to avoid student aid scams.
+q383,validation,studentaid-17,studentaid,When am I eligible for discharge of my loans because my school closed?
+q384,validation,studentaid-17,studentaid,"Hi, I was wondering what conditions must occur to be eligible to discharge your federal student loan?"
+q385,validation,studentaid-17,studentaid,Could my federal student loan possibly qualify for discharge if the school in which I am currently enrolled is closing?
+q386,validation,studentaid-89,studentaid,"Hello, can you tell me about the federal student loan borrower?"
+q387,validation,studentaid-89,studentaid,"Hello, I have many questions regarding the payment of student loans, can you tell me about it?"
+q388,validation,studentaid-71,studentaid,"Hi, I have come on hard times and am battling to pay my student loan. Is there a way I could lower my payments for a time?"
+q389,validation,studentaid-71,studentaid,"I'd like to suspend my student loan payments, but I don't know if or how I can."
+q390,validation,studentaid-71,studentaid,You can help me by telling me how to suspend my student loan payments. I can't pay them at the moment.
+q391,validation,studentaid-91,studentaid,Could you help me understand how to repay my federal student loan without going into default?
+q392,validation,studentaid-91,studentaid,"Hello, can you advise me to pay your student loan?"
+q393,validation,studentaid-90,studentaid,Do I qualify for a discharge of my federal student loan?
+q394,validation,studentaid-90,studentaid,"Hello, can you tell me what would happen if I was approved to register for TPD?"
+q395,validation,studentaid-90,studentaid,What would happen if my obligation to repay my loans or satisfy my TEACH grant obligation is reinstated?
+q396,validation,studentaid-92,studentaid,who are we really dealing with when we get a direct loan?
+q397,validation,studentaid-92,studentaid,What is something I should do before student loan repayment begins?
+q398,validation,dmv-4,dmv,I moved recently and forgot to update my address. Could this be a problem?
+q399,validation,dmv-4,dmv,"Hi , I forget to update my adress. And What will happen now.?"
+q400,validation,dmv-8,dmv,Can a motorist know if I searched his records using the dial-in search account?
+q401,validation,dmv-8,dmv,"Hi, I'm constantly searching DMV records for driver license, registration and insurance information. So I thought I'd get a DIAL-IN search account, but I need to fill the form MV-15D. I've been trying to get the form on the website but it's seems the website is down, or maybe my browser is not compatible. Could you assist me with that?"
+q402,validation,dmv-8,dmv,will you tell a motorist if i search their records?
+q403,validation,dmv-12,dmv,Do I have to get insurance to register my vehicle?
+q404,validation,dmv-12,dmv,I need to know if I have to get insurance to register my vehicle.
+q405,validation,dmv-12,dmv,"In order for me to register my vehicle, do I have to have an insurance policy in place on that vehicle"
+q406,validation,dmv-12,dmv,"Hey, do I need an insurance to register a vehicle? If so, what are the New York State Insurance requirements."
+q407,validation,dmv-10,dmv,Tell me about county taxes and supplemental fees
+q408,validation,dmv-10,dmv,I need to know how much is the fee for my vehicle.
+q409,validation,dmv-10,dmv,"Hello, I want to know about county use taxes and supplemental fees."
+q410,validation,dmv-10,dmv,I would like to know the cost of the registration fee of a commercial vehicle
+q411,validation,dmv-10,dmv,Can you help me determine my total registration fees for my commercial vehicle?
+q412,validation,dmv-11,dmv,I need help to renew my non-driver ID card
+q413,validation,dmv-11,dmv,"Yes, I need to know more about how to renew my non-driver ID card"
+q414,validation,dmv-11,dmv,"I want to renew my non-driver ID card, please, help me with info about it."
+q415,validation,dmv-2,dmv,I want to know more about the refunds-
+q416,validation,dmv-9,dmv,"Yeah, hi, i went through pre-licensing course and got my certificate, but i wanted to know how much time is it valid before expiring?"
+q417,validation,dmv-9,dmv,What do I need to do before I take my road test?
+q418,validation,dmv-40,dmv,"I would like to know how to get motorcycle license,please."
+q419,validation,dmv-40,dmv,How do I get a motorcycle license?
+q420,validation,dmv-33,dmv,Can I get an escort driver certification at the DMV?
+q421,validation,dmv-14,dmv,"I would like to know what the hearing process is like, please"
+q422,validation,dmv-17,dmv,I just passed my test and I want to know what is next.
+q423,validation,dmv-17,dmv,"Hi, i'm going to take my road test soon, and i know is getting way ahead, but i wanted to know what happens once i pass the test?"
+q424,validation,dmv-17,dmv,"I have passed my road test, now what?"
+q425,validation,dmv-17,dmv,I would like to schedule a road test please.
+q426,validation,dmv-43,dmv,"Morning! I just read about the PBS license on an article but I don't know what's that, and I couldn't found any information about that. Could you help me out a bit? I'm interested because I'm not sure if I should get a PBS license."
+q427,validation,dmv-26,dmv,I would like to know what would happen if I forget not to respond to the notice of non-compliance and licence downgrade.
+q428,validation,dmv-26,dmv,I received a notice of non-compliance and license downgrade. What happens if I don't respond?
+q429,validation,dmv-26,dmv,I'm currently contesting my License downgrade on the basis of it being unfair. What happens if I don't comply with the notice that I received?
+q430,validation,dmv-136,dmv,How do I obtain a disabilities parking permit while out of state?
+q431,validation,dmv-28,dmv,How can I learn passenger wehicle taxes and fees
+q432,validation,dmv-28,dmv,How much are the fees to register?
+q433,validation,dmv-138,dmv,Who are the I LOVE NY Adventure Custom Plates available to?
+q434,validation,dmv-138,dmv,What do i do if i already have a lifetime sporting license or safe boating certificate?
+q435,validation,dmv-138,dmv,What information can you give me about a sporting license?
+q436,validation,dmv-140,dmv,I need some deceased owner info for transfers
+q437,validation,dmv-134,dmv,How long are in-transit vehicle permits valid for?
+q438,validation,dmv-142,dmv,Is my driver license and vehicle information safe or is this information sold or shared with others?
+q439,validation,dmv-139,dmv,What is shown on my lifetime driving record?
+q440,validation,dmv-30,dmv,How do I reinstate surrendered plates?
+q441,validation,dmv-5,dmv,What do I need to renew my Driving School license?
+q442,validation,dmv-148,dmv,What do I need to know about Diesel Opacity Emissions?
+q443,validation,dmv-149,dmv,"Hello, I want to know about the ignition interlock device"
+q444,validation,dmv-149,dmv,I want to know about the ignition interlock device.
+q445,validation,dmv-149,dmv,I'd like to look into Interlock devices
+q446,validation,dmv-149,dmv,can you tell me what is an ignition interlock device?
+q447,validation,dmv-23,dmv,How can I get reductions on insurance premiums?
+q448,validation,dmv-23,dmv,Can I get both a youth and PIRP discount?
+q449,validation,dmv-135,dmv,I am looking at a used vehicle on your website and want to know what the reported mileage is?
+q450,validation,dmv-135,dmv,Can you tell me what proof of vehicle ownership is?
+q451,validation,dmv-115,dmv,"Hi there. I probably will be moving out new york, but I got some doubts about the registration of my car."
+q452,validation,dmv-115,dmv,Hey there. I'm having some doubts related to if is possible or not have a insurance from another state and keep my car registered in the new york state.
+q453,validation,dmv-120,dmv,How to renew a CDL
+q454,validation,dmv-104,dmv,"Hello, I would like to know what kind of equipment and technology do I need to take an I-PIRP course?"
+q455,validation,dmv-124,dmv,how to get a CDL
+q456,validation,dmv-77,dmv,"Hi, how are you? Do you want information about what I must do to change my driver's license to another state?"
+q457,validation,dmv-47,dmv,I had some bad work done on my car and now what do I do to fix this?
+q458,validation,dmv-117,dmv,how is the hearing process
+q459,validation,dmv-117,dmv,Hello there. How are you doing? I came here because there was a complaint filed against me and I don't know what to do about it.
+q460,validation,dmv-82,dmv,can you give me details of The Graduated License Law and Restrictions for Drivers under 18
+q461,validation,dmv-82,dmv,under 18 restrictions
+q462,validation,dmv-131,dmv,What happens if I had a lapse of insurance coverage during active duty?
+q463,validation,dmv-100,dmv,"Hello, I have a suspension order. How much should I pay?"
+q464,validation,dmv-100,dmv,I let my insurance lapse and DMV has suspended my registration. I need to know how much I'll have to pay to have the suspension removed.
+q465,validation,dmv-62,dmv,"Hey there, I'm here to figure out how to replace a registration. Would you walk me through the process?"
+q466,validation,dmv-62,dmv,What do I need to do if my address has changed?
+q467,validation,dmv-62,dmv,"I need to replace my vehicle registration, but I recently changed my last name."
+q468,validation,dmv-45,dmv,What is the learner permit for?
+q469,validation,dmv-126,dmv,When must someone renew there registration for a vehicle?
+q470,validation,dmv-72,dmv,"hello I need information about Driver's License, Permit or Non-Driver Identification"
+q471,validation,dmv-132,dmv,What are the requirements to become a driving school instructor?
+q472,validation,dmv-132,dmv,How to Become a Driving Instructor What tests do I have to pass?
+q473,validation,dmv-99,dmv,"Hello there, I came here looking for information on how to register a snowmobile. Can you answer a few questions about that?"
+q474,validation,dmv-99,dmv,my address doesn't fit on the registration page for out of state snowmobiles so I can't continue
+q475,validation,dmv-116,dmv,"Hi, could you tell me what do I need to bring to the New York State DMV office to show as proof of my license?"
+q476,validation,dmv-116,dmv,"What do I need to bring to the NY State DMV office to show as proof of my lifetime sporting/recreational license, privilege or certification?"
+q477,validation,dmv-116,dmv,do I need to have icons on my license?
+q478,validation,dmv-116,dmv,I need to have an adventure license icon removed from my Driver License.
+q479,validation,dmv-128,dmv,Hello I need information about Payment of termination fee for suspension
+q480,validation,dmv-128,dmv,I need help with a license suspension
+q481,validation,dmv-119,dmv,what's the fee for a license?
+q482,validation,dmv-92,dmv,I need address entry information for DMV records
+q483,validation,dmv-123,dmv,"Good morning, greetings!. I'm about to be ready to get a license so i thought i would need some info about it, please."
+q484,validation,dmv-59,dmv,"Hi, good morning. I'm used to pay for certain services coming from you, but i want to lighten up a little everything related to that. So, i created a escrow account, but could you tell me what's the minimum for that?"
+q485,validation,dmv-59,dmv,"Hello, I'm having some troubles with stuff related to a escrow account and I would need some help."
+q486,validation,dmv-81,dmv,"Hello. How are you doing? I came here to inform myself about a few things. For example, if I can keep my picture plates if I remove a vehicle from the road."
+q487,validation,dmv-55,dmv,and can i request by mail?
+q488,validation,dmv-122,dmv,as it is through a DMV office
+q489,validation,dmv-122,dmv,"Goof afternoon. I heard that you offer the possibility to change a name in a vehicle's tittle on your offices, is that right?"
+q490,validation,dmv-122,dmv,what form do I need to mail in when I change the name on a lease I bought ?
+q491,validation,dmv-79,dmv,Hello I need information about How to request professional photos and plates
+q492,validation,dmv-91,dmv,II want to make some modifications to my truck and want to know if it will affect it's registration class.
+q493,validation,dmv-133,dmv,I have received a TVB ticket. Can you please explain what steps I have to take to answer it?
+q494,validation,dmv-84,dmv,"Hi there. I'm about to be a TNC driver, but i don't even know what that means, can you help me?"
+q495,validation,dmv-84,dmv,What exactly is a TNC?
+q496,validation,dmv-84,dmv,"Tell about a TNC, please"
+q497,validation,dmv-94,dmv,"Hello there, I have some questions about selling a retail vehicle. Can you answer them, please?"
+q498,validation,dmv-130,dmv,"Hello, do I need information about whether the license can be restored by mail?"
+q499,validation,dmv-108,dmv,I just bought a new truck and need help with getting the title.
+q500,validation,dmv-76,dmv,Is it possible to access accident reports I already purchased online?
+q501,test,ssa-3,ssa,How do I apply for disability benefits?
+q502,test,ssa-7,ssa,What documents do I need to get a corrected Social Security Card?
+q503,test,ssa-11,ssa,Will I need specific documents to get a card?
+q504,test,ssa-17,ssa,What kind of documents are required to get a card?
+q505,test,ssa-19,ssa,I need help with replacement card for a noncitizen adult.
+q506,test,ssa-18,ssa,I need a replacement card for a foreign born Us adult
+q507,test,ssa-14,ssa,Please tell me the documents needed to get a Social Security card for a foreign-born adopted child.
+q508,test,ssa-14,ssa,"hello, hope you are well. How do I get an original card for a foreign Born Us citizen?"
+q509,test,ssa-13,ssa,"Hello. I understand I need original documents, but which ones?"
+q510,test,ssa-12,ssa,It's my first time trying to get a social security card. I'm a noncitizen adult.
+q511,test,ssa-15,ssa,"Good morning. I'm parent of a foreign born U.S citizen child and need to get her a SSN card, could you tell me about it?"
+q512,test,ssa-34,ssa,Could you please give me some information about survivors' benefits?
+q513,test,ssa-22,ssa,Could you please help me? I need to find out how to get an replacement card for a non citizen child that I have in my care.
+q514,test,ssa-40,ssa,Hello I need information about What happens after I apply for retirement benefits?
+q515,test,ssa-23,ssa,"Hi, how you doing. Look, i'm looking for information about what original documents do i need related to replacing a SSN card for a child, please?"
+q516,test,ssa-25,ssa,Hi there. I would like to get some information related on disability benefits.
+q517,test,ssa-25,ssa,I would like to have information on social disability benefits management
+q518,test,ssa-26,ssa,I need to know if I can apply for adult disability benefits online.
+q519,test,ssa-38,ssa,What are the next steps if I do not qualify for benefits on someone else's record?
+q520,test,ssa-37,ssa,How do I apply for Social Security Retirement?
+q521,test,ssa-37,ssa,"Regarding retirement benefits, how do I apply?"
+q522,test,ssa-21,ssa,Hello I need information about What original documents do I need to get a Social Security Card?
+q523,test,ssa-46,ssa,How much will I receive for disablilty
+q524,test,ssa-52,ssa,"Hi, good morning. I'm looking to do some benefits planning on disability. Can you help me with that?"
+q525,test,ssa-44,ssa,"Hello, i want to know which person can use the retirement estimator?"
+q526,test,ssa-44,ssa,Can I use the Retirement Estimator?
+q527,test,ssa-44,ssa,Am I eligible to use the Retirement Calculator?
+q528,test,ssa-44,ssa,"Hello, who can use the retirement estimator?"
+q529,test,ssa-63,ssa,Hey there. I'm looking information related to the benefits that an adult with a disability can receive. if they can receive any from you.
+q530,test,ssa-63,ssa,"Hi there. I would like to know, what happens with an adult with a disability if this one wants to get access to the social security benefits."
+q531,test,ssa-57,ssa,Are other people allowed to access my social security account?
+q532,test,ssa-57,ssa,Hi. Can more than one person use my account?
+q533,test,ssa-57,ssa,Can my husband use my Social Security account?
+q534,test,ssa-62,ssa,I need SSI benefits information
+q535,test,ssa-62,ssa,Can you tell me a little bit about Supplemental Security Income benefits?
+q536,test,ssa-59,ssa,I need to know if my family members are eligible for increased benefits
+q537,test,ssa-73,ssa,how do I qualify for social security?
+q538,test,ssa-65,ssa,what if you retire early?
+q539,test,ssa-69,ssa,How do you Check the Status of Your Reconsideration
+q540,test,ssa-79,ssa,how do I apply?
+q541,test,ssa-79,ssa,Where can I apply for it at?
+q542,test,ssa-77,ssa,hello I have some questions
+q543,test,ssa-77,ssa,Can I get benefits while I am working?
+q544,test,ssa-77,ssa,Can I get benefits while working?
+q545,test,ssa-77,ssa,Is it possible to work while receiving benefits?
+q546,test,ssa-77,ssa,Can I get benefits while working
+q547,test,ssa-86,ssa,What if I plan to continue working after taking benefits?
+q548,test,ssa-86,ssa,I want info about what happens to my benefits if I want to keep working
+q549,test,ssa-86,ssa,I need to find out about medicare health insurance coverage
+q550,test,ssa-86,ssa,Is there life time benefits?
+q551,test,ssa-86,ssa,"Hi, i'm receiving benefits, but i wanted to know if there is a chance i keep them now i'm looking to continue working."
+q552,test,ssa-29,ssa,"Hello, I'm here to learn more about how you determine if a person is disabled."
+q553,test,ssa-95,ssa,I'm looking for info about social security credits.
+q554,test,ssa-95,ssa,"Hello, I would like to obtain information about Social Security Credits"
+q555,test,ssa-91,ssa,how Keep my Information Secure
+q556,test,ssa-91,ssa,I was wondering if you have some resources about retirement benefits. I'm looking for some answers.
+q557,test,ssa-92,ssa,hi can you help me with retirement planning
+q558,test,ssa-92,ssa,What is Retirement Planning like?
+q559,test,ssa-93,ssa,what can you tell me about Medicare Premiums: Rules For Higher-Income Beneficiaries
+q560,test,ssa-93,ssa,"Hello, I have some questions about Medicare premiums."
+q561,test,ssa-88,ssa,"Hello, I would like to know how to apply for a disability benefits for a minor"
+q562,test,ssa-88,ssa,I could use some guidance on how to apply for a disabled child.
+q563,test,ssa-96,ssa,it's not my case Social Security Credits
+q564,test,ssa-96,ssa,"Hello, I would like to obtain information about Social Security Credits"
+q565,test,ssa-97,ssa,How to apply for retirement benefits with the local office
+q566,test,ssa-97,ssa,I was wondering where I can find information for my application. I want to apply for retirement benefits.
+q567,test,va-19,va,how do you Check your VA claim or appeal status
+q568,test,va-23,va,hg
+q569,test,va-10,va,what is Military sexual trauma (MST)
+q570,test,va-15,va,I need information about what happens after applying for the GI Bill please.
+q571,test,va-25,va,What if my records were destroyed in fire?
+q572,test,va-8,va,what happens after After you apply for health care benefits
+q573,test,va-16,va,"Hello, I just wanted to know what information I need for my request."
+q574,test,va-21,va,What information do you have about the Affordable Care Act and how it affects VA health care coverage?
+q575,test,va-28,va,what is VA disability compensation
+q576,test,va-22,va,Are there Resources and support outside VA
+q577,test,va-17,va,"Hello there, I have problems with substance use and need help."
+q578,test,va-24,va,Hello. I'm currently unemployed and would like to ask about possible jobs for me.
+q579,test,va-57,va,hi i need help about the services they offer for VA with Health Needs and Conditions
+q580,test,va-57,va,How do I find out how to get health services for a specific condition or need?
+q581,test,va-57,va,What services are available for health needs and conditions?
+q582,test,va-57,va,I'm a vet and wanted to know what you have for someone like me
+q583,test,va-57,va,"are you a real person or a robot? anyways, I need health care for depression"
+q584,test,va-57,va,"Hello, I came here to learn in what way your services can cover my health needs."
+q585,test,va-56,va,I would like information related to the costs of medical care.
+q586,test,va-46,va,What are employment benefits for dependent family members?
+q587,test,va-42,va,hi i need help about VA Education and Training Benefits
+q588,test,va-42,va,can you give me details of Get GI Bill and other education benefits
+q589,test,va-42,va,I need more information and resources about VA Education Benefits
+q590,test,va-42,va,hi i need help about VA Education and Training Benefits
+q591,test,va-42,va,"Hello, i've been reading about the benefits that Veterans can get, but i was wondering about education benefits. Could you tell me about it, if possible?"
+q592,test,va-42,va,"Hello there. Please, do you have any educational benefits for veterans?"
+q593,test,va-42,va,I am looking for more information about VA education.
+q594,test,va-42,va,What are VA education and training benefits for?
+q595,test,va-42,va,I would like to know more about VA education benefits.
+q596,test,va-42,va,Where can I learn more about VA education and training benefits?
+q597,test,va-48,va,I need help with the VA Welcome Kit
+q598,test,va-49,va,I just wanted to get a little info on life insurance
+q599,test,va-62,va,I need to know if I can get information on exposure to hazardous chemicals and materials.
+q600,test,va-60,va,I need help with pension benefits
+q601,test,va-84,va,I need help getting insurance
+q602,test,va-90,va,Is it possible for getting more than one VA education benefit at the same time?
+q603,test,va-110,va,"Hello, I would like to know More information and resources of VA Health Care"
+q604,test,va-138,va,"Please, talk me about my VA care team."
+q605,test,va-117,va,need info on whether or not I can use my GI Bill benefits for more classes after graduating
+q606,test,va-116,va,"Hello, I was wondering what the next steps are now that I requested a review of a decision."
+q607,test,va-6,va,Hi. I need more information about your medical benefits package
+q608,test,va-33,va,How to Apply for Rehabilitation and Employment at VA Voc
+q609,test,va-9,va,Hello I need information about the Program and see VA appointments online
+q610,test,va-20,va,Can you help me get information for the Premium Waiver for policyholders who are totally disabled?
+q611,test,va-18,va,What is the benefit of a fully developed claim for a VA pension?
+q612,test,va-12,va,can you give me details of VA disability compensation for PTSD
+q613,test,va-40,va,can you give me details of Agent Orange exposure
+q614,test,va-52,va,hi i need help about Veterans Mortgage Life Insurance (VMLI)
+q615,test,va-43,va,hi i need help about VA Assistance and Home Assistance and Subsidy Benefits
+q616,test,va-54,va,Is there anything that will make me more likely to get these benefits?
+q617,test,va-36,va,hi i need help about Will VA cover the cost of the glasses?
+q618,test,va-35,va,"Hello, I need information about Life Insurance for Veterans with Disabilities in Service (S-DVI)"
+q619,test,va-35,va,"Hello, could you give me information about Life Insurance for disabled veterans in the S-DVI service"
+q620,test,va-35,va,Can you tell me about Service-Disabled Veterans Life Insurance?
+q621,test,va-35,va,What does service-disable veterans life insurance provide?
+q622,test,va-35,va,What does S-DVI provide?
+q623,test,va-35,va,what is Service-Disabled Veterans Life Insurance ?
+q624,test,va-35,va,what can you tell me about Service-Disabled Veterans Life Insurance (S-DVI)?
+q625,test,va-35,va,can you give me details of Service-Disabled Veterans Life Insurance (S-DVI)
+q626,test,va-35,va,can you give me details of Service-Disabled Veterans Life Insurance (S-DVI)
+q627,test,va-35,va,Service-Disabled Veterans Life Insurance (S-DVI)
+q628,test,va-47,va,Good day. How do I get my medical records online?
+q629,test,va-51,va,can I get help buying dental insurance?
+q630,test,va-67,va,hello i need help on how VA education benefits for survivors and dependents
+q631,test,va-69,va,I would like you to help me obtain information on How much will my service member pay for dependent coverage?
+q632,test,va-69,va,How much will my service member pay for dependent coverage?
+q633,test,va-69,va,How much will my service member pay for dependent coverage?
+q634,test,va-69,va,"Hi, I'd like to know how much will my service member pay for dependent coverage?"
+q635,test,va-69,va,hi i need to know how much will my service member pay for dependent coverage?
+q636,test,va-69,va,"Hi, how you doing. Look, i was searching for information about insurance for family members. Could you tell me how much will my service member pay for dependent coverage?"
+q637,test,va-69,va,How much will my service member pay for dependent coverage?
+q638,test,va-69,va,How much will my service member pay for dependent coverage?
+q639,test,va-69,va,hi i need help about How much will my service member pay for dependent coverage?
+q640,test,va-69,va,How much will a service member pay for dependent coverage for a child?
+q641,test,va-55,va,Veterans Group Life Insurance (VGLI)
+q642,test,va-72,va,I wanted to look into what the housing grant is all about
+q643,test,va-64,va,"hi, show me information about Post-9/11 GI Bill"
+q644,test,va-82,va,I am trying to learn about assisted living or nursing homes.
+q645,test,va-78,va,Can you explain to me how my benefits could change from year to year?
+q646,test,va-83,va,I want to know about the survivor and dependent program Educational assistance
+q647,test,va-89,va,there is a program to help veterans study
+q648,test,va-89,va,what is work study?
+q649,test,va-89,va,How does the Work study for Veterans work?
+q650,test,va-89,va,"Hello, Can I work and study?"
+q651,test,va-89,va,please show me information about Work study
+q652,test,va-89,va,Hello. I need information about the work study program please.
+q653,test,va-89,va,Can you tell me more about this work-study program of yours?
+q654,test,va-89,va,What is the work study program?
+q655,test,va-89,va,How does work study work for me as a Veteran?
+q656,test,va-89,va,"Good morning. Please, I'm a veteran and have some projects to do but need to pass through school. Do you have some kind of work study program?"
+q657,test,va-97,va,I want to transfer GI Bill benefits
+q658,test,va-97,va,I need some info to transfer my Post-9/11 GI Bill benefits.
+q659,test,va-97,va,Am I able to transfer my post-9/11 GI Bill benefits to my husband?
+q660,test,va-97,va,I would like information about transferring your GI Bill benefits after 9/11
+q661,test,va-97,va,please show me information about Transfer your Post-9/11 GI Bill benefits
+q662,test,va-97,va,I need to know how to transfer my GI Bill benefits from before 9/11.
+q663,test,va-97,va,Will I be able to transfer your Post-9/11 GI Bill benefits?
+q664,test,va-97,va,Can I transfer my Post-9/11 GI Bill benefits?
+q665,test,va-97,va,I need help with transferring my Post-9/11 GI Bill benefits to my son.
+q666,test,va-97,va,I need to know if my husband can use my GI Bill?
+q667,test,va-95,va,"Hi, I am trying to learn about VA vocational rehab."
+q668,test,va-93,va,I wanted to find out how to add my daughter to my disability benefits
+q669,test,va-105,va,Can you explain the Veterans Educational Assistance Program?
+q670,test,va-99,va,please show me information about VADIP
+q671,test,va-99,va,What is the VA dental insurance program?
+q672,test,va-99,va,What do VA dental insurance programs offer?
+q673,test,va-99,va,please show me information about VADIP
+q674,test,va-99,va,What does the VA dental insurance program (VADIP) offer?
+q675,test,va-99,va,I would like to learn about the VA Dental Insurance Program.
+q676,test,va-99,va,What can you tell me about the VA Dental Insurance Program?
+q677,test,va-99,va,Can you give me more information about what the VADIP is?
+q678,test,va-99,va,Does VADIP provide dental insurance to veterans?
+q679,test,va-99,va,"Hi. I am in the VA, and I need to get dental insurance."
+q680,test,va-120,va,can you give me details of Eligibility requirements for VA home loan program
+q681,test,va-114,va,hi i need help about Types of Veterans Identification Cards
+q682,test,va-133,va,you can help me apply for a Veteran ID card
+q683,test,va-135,va,Good afternoon. I'm looking for some info about schooling opportunities for veterans. Are there any kind of these benefits?.
+q684,test,va-115,va,"Hey good morning, how you doing?. Say, the other day i heard something about co-op training program. Could you tell me about it, please?"
+q685,test,studentaid-3,studentaid,"Hello, I need some help with my application for student aid, please."
+q686,test,studentaid-2,studentaid,I wanted to know about career options
+q687,test,studentaid-4,studentaid,Do student loan deferments allow me to temporarily stop making payments?
+q688,test,studentaid-4,studentaid,Will a student loan deferment help me out if i need to stop making payments?
+q689,test,studentaid-7,studentaid,What is the feedback center for?
+q690,test,studentaid-7,studentaid,What is the feedback center ?
+q691,test,studentaid-7,studentaid,is this where I go to complain?
+q692,test,studentaid-7,studentaid,I have something to submit about false information that I was given.
+q693,test,studentaid-7,studentaid,Did I reach the feedback center?
+q694,test,studentaid-7,studentaid,Hello there. I'm here to ask a few things about submitting feedback.
+q695,test,studentaid-7,studentaid,Why is their a feedback center for Federal Student Aid?
+q696,test,studentaid-7,studentaid,"Hi there, could you explain to me what exactly the function of the Feedback Centre in relation to Student Aid is?"
+q697,test,studentaid-7,studentaid,"Hello, I'd like to submit some feedback on my experience."
+q698,test,studentaid-7,studentaid,What does the feedback center do?
+q699,test,studentaid-6,studentaid,I'm here for plus loan info?
+q700,test,studentaid-6,studentaid,What are Direct PLUs Loans?
+q701,test,studentaid-5,studentaid,Do all schools cost the same or do they differ from school to school?
+q702,test,studentaid-5,studentaid,I just wanted to do a little digging to learn more about paying for college
+q703,test,studentaid-8,studentaid,Could you please tell me what is included in the Federal Student Aid Specific Resources section of the IT Standards Library?
+q704,test,studentaid-25,studentaid,who is Aidan?
+q705,test,studentaid-27,studentaid,What are the next steps involved after I submit my FAFSA form for federal student aid?
+q706,test,studentaid-26,studentaid,I have some questions about what it means to be a co-signer.
+q707,test,studentaid-40,studentaid,I need help with understanding how financial aid works.
+q708,test,studentaid-33,studentaid,How is the amount of my federal student aid figured out?
+q709,test,studentaid-31,studentaid,"Hello, I would like you to help me with something. I recently left the school and the school did not make the required return of the loan funds to the loan administrator."
+q710,test,studentaid-32,studentaid,I want to see what payments will be like for a loan
+q711,test,studentaid-32,studentaid,I need help using the loan simulator.
+q712,test,studentaid-39,studentaid,"Hello, I need to know what is the forgiveness please?"
+q713,test,studentaid-39,studentaid,I would like to know if I can get my federal student loans forgiven for their service as a teacher?
+q714,test,studentaid-34,studentaid,I'm wondering how the Graduated Repayment Plan works?
+q715,test,studentaid-49,studentaid,"Hello, a question. Can US students apply for federal aid?"
+q716,test,studentaid-49,studentaid,"I need to know whether I, as a non-citizen, qualify for federal student aid."
+q717,test,studentaid-51,studentaid,What is the best choice when accepting financial aid from a school?
+q718,test,studentaid-50,studentaid,I came here hoping you could explain how the income-sensitive repayment plan works. Can you tell me more about this plan?
+q719,test,studentaid-58,studentaid,"Hello, I would like to have more information about the delinquency of student loans and default."
+q720,test,studentaid-58,studentaid,Hello i would like to get information about Student Loan Delinquency and Default
+q721,test,studentaid-58,studentaid,Hello i would like to get information about Student Loan Delinquency and Default
+q722,test,studentaid-58,studentaid,hi i would like to get information about student loan default
+q723,test,studentaid-58,studentaid,I am delinquent on a loan do I really have to pay?
+q724,test,studentaid-58,studentaid,I might be in loan trouble
+q725,test,studentaid-58,studentaid,I'm not making payments on my loan
+q726,test,studentaid-58,studentaid,I was wondering what happens if I can't pay my student loan and I'd appreciate some answers.
+q727,test,studentaid-58,studentaid,What happens with student loan delinquency and default?
+q728,test,studentaid-58,studentaid,I came here to learn more a bout student loan delinquency. What can you tell me about that?
+q729,test,studentaid-65,studentaid,"Hi, I am having difficulty paying my student loans and was wondering if I could consolidate my loans to help with my financial position?"
+q730,test,studentaid-65,studentaid,"Hi, I have a number of student loans and am wondering if I consolidated them into one loan if that would benefit me."
+q731,test,studentaid-65,studentaid,I want to look into consolidating my student loans
+q732,test,studentaid-65,studentaid,"Hello there, I have some questions about the fact that I have noticed a reduction on the benefits I have received in the past few days."
+q733,test,studentaid-65,studentaid,tell me about student loan consolidation
+q734,test,studentaid-65,studentaid,Does consolidating my federal educational loans help?
+q735,test,studentaid-65,studentaid,Is there pros and cons with consolidating my federal educational loans?
+q736,test,studentaid-65,studentaid,Are there pros and cons when consolidating my federal education loans?
+q737,test,studentaid-65,studentaid,What does consolidating your federal education help with and not help with?
+q738,test,studentaid-65,studentaid,Hello. I have some questions related to the consolidation of the loan I have.
+q739,test,studentaid-64,studentaid,I need to know if I'm eligible to have my Federal Perkins Loan cancelled.
+q740,test,studentaid-64,studentaid,"Hi, I was wondering if I can qualify to have the entire federal loan canceled?"
+q741,test,studentaid-68,studentaid,Hello there. Can you please tell me something about federal student loans? How exactly do they work?
+q742,test,studentaid-67,studentaid,"Hello, can you tell me what requirements are asked to qualify for federal student aid?"
+q743,test,studentaid-67,studentaid,Do I need to meet certain requirements to get federal student aid?
+q744,test,studentaid-77,studentaid,Can I get help for the military service of a relative or myself?
+q745,test,studentaid-82,studentaid,Are there any tax benefits available from the IRS in relation to education costs?
+q746,test,studentaid-76,studentaid,"Hello, can you inform me if I am eligible for the cancellation of a student loan through a false certification?"
+q747,test,studentaid-76,studentaid,"Hello, can you tell me if I can be eligible for loan cancellation based on a false certification?"
+q748,test,studentaid-79,studentaid,Could forgiveness of my federal student loan be available if the school I attended misled me or engaged in misconduct in violation of certain laws?
+q749,test,studentaid-79,studentaid,What is the name of the forgiveness if I was misled by a school?
+q750,test,studentaid-79,studentaid,I have heard that borrowers may be able to avail of forgiveness of their federal student loans if the school was found to have misled the borrower or engaged in misconduct. Is this true?
+q751,test,studentaid-79,studentaid,Is there any option for a borrower to be eligible for debt forgiveness of a federal student loan if the school in question misled the borrower or were engaged in misconduct unbecoming of the school?
+q752,test,studentaid-79,studentaid,educate me on loan forgiveness because I think I was done wrong
+q753,test,studentaid-79,studentaid,I need to know if I am eligible for federal student loan forgiveness.
+q754,test,studentaid-79,studentaid,Could you give me more information regarding debt forgiveness of federal student loans as a result of a school misleading a student or being engaged in misconduct?
+q755,test,studentaid-79,studentaid,"I have reason to believe that I could be eligible for loan forgiveness in relation to my school, can you give me more information on this regard?"
+q756,test,studentaid-79,studentaid,I think I may be eligible for debt forgiveness of my federal student loan due to a law violation carried out by my school. How do I pursue this?
+q757,test,studentaid-79,studentaid,Hello there. My school misled me and I came here to find out if I am eligible for loan forgiveness in that context.
+q758,test,studentaid-86,studentaid,I have several questions about FAFSA termination
+q759,test,studentaid-83,studentaid,Can you tell me who can qualify for federal student aid?
+q760,test,studentaid-83,studentaid,"Hi, I am not from the United States but I applying to colleges there. Will I be able to get any sort of financial aid to attend college there?"
+q761,test,studentaid-83,studentaid,Hi. I want to go to college but I don't think I can afford it. I only have one parent because my dad died in the military when I was a baby. Do you know of anything that could help me?
+q762,test,studentaid-83,studentaid,"Hi, good morning. I'm now looking into your financial aid, and wanted to know if this kind of programs are available to non-citizens?"
+q763,test,studentaid-83,studentaid,"I have a question that you might be able to help me with, can I apply for financial student aid if I am a non-US citizen?"
+q764,test,studentaid-83,studentaid,"Hello, I'm a student whose parents were Killed in Iraq, I want to know if I can get ""aid"", and if so: what do I have to do?"
+q765,test,studentaid-83,studentaid,How can I regain eligibility for federal student aid?
+q766,test,studentaid-83,studentaid,"Hi, I would like to find out if I am eligible for federal student aid, could you please tell me who is eligible to get aid?"
+q767,test,studentaid-83,studentaid,where can I get info on regaining my financial aid eligibility?
+q768,test,studentaid-83,studentaid,"Hi there, I am wondering if I am eligible for financial aid if I am a non-US citizen?"
+q769,test,studentaid-12,studentaid,"Hello there, hope you're doing well in these times. I was wondering what the FSAA can do for me as a student."
+q770,test,studentaid-15,studentaid,Hi there. I'm looking information about forbearance.
+q771,test,studentaid-15,studentaid,How can I request an indulgence?
+q772,test,studentaid-17,studentaid,"i need help i would like to know if your school closes while you enroll or soon after you retire, you may be eligible for discharge from your federal student loan"
+q773,test,studentaid-62,studentaid,how will you give me my financial aid?
+q774,test,studentaid-90,studentaid,"If I am totally and permanently disabled, can I qualify for a discharge of my federal student loans?"
+q775,test,dmv-4,dmv,My insurance ended so what should i do
+q776,test,dmv-4,dmv,I need to change my address.
+q777,test,dmv-8,dmv,how do i pay dial in search account fees?
+q778,test,dmv-8,dmv,I need to know how to pay the dial-in search account fees.
+q779,test,dmv-12,dmv,I'm enquiring about out of state insurance docs
+q780,test,dmv-12,dmv,Do I need insurance to register my vehicle?
+q781,test,dmv-10,dmv,Can you please tell me about the county use taxes and the supplemental fees?
+q782,test,dmv-10,dmv,How do the county taxes work? how are they used?
+q783,test,dmv-11,dmv,"Yeah, um, i'm looking for some help with a non-driver ID renewal."
+q784,test,dmv-2,dmv,Hi How are you today? I was wondering how the refund amount is determined?
+q785,test,dmv-9,dmv,What can I do to prepare for my road test?
+q786,test,dmv-9,dmv,What do I need to do before my road test
+q787,test,dmv-22,dmv,Dp I need a new eye exam to replace my license?
+q788,test,dmv-33,dmv,Where do I apply for escort driver certification?
+q789,test,dmv-17,dmv,What follows after passing the test?
+q790,test,dmv-77,dmv,I want to trade in my license for a New York one
+q791,test,dmv-47,dmv,I have a problem with the repairs made on my vehicle at the auto repair shop.
+q792,test,dmv-82,dmv,I have questions about the driving restrictions for people under 18.
+q793,test,dmv-101,dmv,hi I need to replace the inspection tag
+q794,test,dmv-101,dmv,Give me some info about how to replace the inspection sticker
+q795,test,dmv-53,dmv,How do I avoid an insurance lapse?
+q796,test,dmv-53,dmv,Hello I need information about What can cause an insurance lapse?
+q797,test,dmv-53,dmv,What is an insurance lapse in New York State?
+q798,test,dmv-53,dmv,Good afternoon. Need some information about avoiding an insurance lapse.
+q799,test,dmv-53,dmv,How is it possible to avoid an lapse in insurance?
+q800,test,dmv-53,dmv,"Hi good morning, I'm having some insurance lapsing, Can you help me on that?"
+q801,test,dmv-114,dmv,"Hi, I got the news that the New York State DMV started issuing REAL ID licenses, permits, and ID cards on October 30, 2017. How do I get mine?"
+q802,test,dmv-114,dmv,Yes I would like info on the cost of augmenting my driver's license.
+q803,test,dmv-114,dmv,how Getting a REAL ID is mandatory but is encouraged?
+q804,test,dmv-114,dmv,How much does one have to pay for this REAL ID I've been hearing about?
+q805,test,dmv-114,dmv,"Please, I need to know the cost for a REAL ID"
+q806,test,dmv-114,dmv,"Hello I need information about The New York State DMV began issuing REAL ID licenses, permits and ID cards on October 30, 2017"
+q807,test,dmv-114,dmv,"Hello I need information about whether the New York State DMV began issuing REAL ID licenses, permits and ID cards on October 30, 2017"
+q808,test,dmv-114,dmv,I need to get a real ID to travel and want to know if it costs more than a regular ID
+q809,test,dmv-114,dmv,Is it now required by law to have a REAL ID?
+q810,test,dmv-114,dmv,I came here with a few questions a bout getting a REAL ID. It'd be great if you could answer them for me.
+q811,test,dmv-85,dmv,"Hi, I would like to know if I have a driver's license from another country and I have a New York State learner's permit, can I drive without a supervising driver?"
+q812,test,dmv-85,dmv,"If I have a driver license from another country and I have a NY State learner permit, can I drive without a supervising driver?"
+q813,test,dmv-85,dmv,"Hi, I have a question. If I have a driver's license from another country and I have a New York State learner's permit, can I drive without a supervising driver?"
+q814,test,dmv-85,dmv,do I need someone else in the car if I have a Mexican license and a NY learners permit?
+q815,test,dmv-85,dmv,Can I drive without a supervising driver if I have a driver license from another country and have a NY State learner permit?
+q816,test,dmv-85,dmv,"Hello there. I have a driver license from another country and a learner permit in NY. I wanted to know if I'm allowed to drive in NY, among other questions."
+q817,test,dmv-85,dmv,Hello there. I happen to own an Chinese driver license. Can you tell me if I can use it to drive in NY without a supervising driver?
+q818,test,dmv-102,dmv,How to Exchange a New York State Driver's License for a Non-Driver Identification Card
+q819,test,dmv-102,dmv,how Exchange a NY State driver license for a non-driver ID card?
+q820,test,dmv-102,dmv,how Exchange a NY State driver license for a non-driver ID card?
+q821,test,dmv-102,dmv,I need help with exchanging my New York driver license for a non-driver ID card.
+q822,test,dmv-67,dmv,"Hello, I would like to know what does ""TEMPORARY VISITOR"" mean?"
+q823,test,dmv-67,dmv,"If I have a driver license from another country and I have a NY State learner permit, can I drive without a supervising driver?"
+q824,test,dmv-67,dmv,What does 'TEMPORARY VISITOR' mean?
+q825,test,dmv-67,dmv,What is a TEMPORARY VISITOR
+q826,test,dmv-67,dmv,"If I have a driver license from another country and I have a NY State learner's permit, can I drive without a supervising driver?"
+q827,test,dmv-67,dmv,"Please, tell me a bout the meaning of 'TEMPORARY VISITOR'"
+q828,test,dmv-116,dmv,Is there an additional fee to have icons added to my DMV photo document?
+q829,test,dmv-128,dmv,What is a suspension termination fee?
+q830,test,dmv-119,dmv,what will I have to pay for a learners permit?
+q831,test,dmv-112,dmv,"Hello. My vehicle license plates are lost, stolen, or destroyed. What I can do?"
+q832,test,dmv-112,dmv,How can I get new plates?
+q833,test,dmv-112,dmv,"Hello, I need help. The license plates of my vehicle were stolen. What can I do?"
+q834,test,dmv-112,dmv,Hello I need information about How can I get new plates?
+q835,test,dmv-112,dmv,I need info about a problem with my stolen plates
+q836,test,dmv-112,dmv,What should I do if the plates from my car were stolen?
+q837,test,dmv-112,dmv,Can you walk me through the procedure for requesting new plates?
+q838,test,dmv-112,dmv,Can you please tell me how I can get new plates?
+q839,test,dmv-112,dmv,My plates have been stolen. Can you please tell me what steps to take? I'm very concerned and don't know what to do.
+q840,test,dmv-112,dmv,I had an accident in which the plate on my van was completely destroyed. Can you help me figure out what to do?
+q841,test,dmv-97,dmv,I don t have enough proof of name identification to bring to the DMV. What can I do?
+q842,test,dmv-97,dmv,I don't have the proofs of name identification that I need to bring to DMV.
+q843,test,dmv-97,dmv,What is the procedure if I do not have enough proof of name identification to bring with me to the DMV?
+q844,test,dmv-97,dmv,"Hello, can you help me? I've been requested some identity proof, but i believe i don't have enough of that, What can i do about it?"
+q845,test,dmv-129,dmv,What items do I need to bring to the DMV office to transfer registration?
+q846,test,dmv-129,dmv,hi i need i should take to the DMV office
+q847,test,dmv-129,dmv,Hello I need information about how to transfer a vehicle
+q848,test,dmv-129,dmv,do I need the title to transfer a registration to another car?
+q849,test,dmv-129,dmv,What should I bring to a DMV office?
+q850,test,dmv-129,dmv,do I need the title to transfer a registration to another car or do you have it on record?
+q851,test,dmv-129,dmv,What items do I need to bring to the DMV office when transferring a registration to another vehicle?
+q852,test,dmv-129,dmv,How can I find out about transferring a vehicle?
+q853,test,dmv-129,dmv,What needs to be done when I sell my vehicle?
+q854,test,dmv-129,dmv,Do I need to bring the title when I transfer a registration from one car to another car?
+q855,test,dmv-64,dmv,"Hello, I received a letter stating that my insurance has expired. What I can do?"
+q856,test,dmv-64,dmv,Hello I need information about How do I respond to the letter or request?
+q857,test,dmv-64,dmv,I received a Letter that states my license is suspended. What can I do?
+q858,test,dmv-64,dmv,I received a Letter that states my insurance lapsed. What can I do?
+q859,test,dmv-64,dmv,How do I respond to the letter or order?
+q860,test,dmv-64,dmv,Hello I received a 'letter' or 'order' from DMV insurance. What I can do?
+q861,test,dmv-64,dmv,"Hey, i need some guidance with certain letter i received some days ago about insurance, Could you help me out?"
+q862,test,dmv-64,dmv,I got an insurance letter from you guys so I am here for help

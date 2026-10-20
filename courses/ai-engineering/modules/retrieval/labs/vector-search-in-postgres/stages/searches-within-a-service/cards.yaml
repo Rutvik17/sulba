@@ -1,0 +1,21 @@
+cards:
+  - id: crd_lie23b
+    front: >-
+      Why can a search through an HNSW index with a `WHERE` return fewer rows than its
+      `LIMIT`?
+    back: >-
+      Postgres applies the `WHERE` after the scan, to the candidates the index finds,
+      `hnsw.ef_search` of them, and keeps only those that match.
+  - id: crd_9sd7vh
+    front: >-
+      How do pgvector's iterative scans in `strict_order` and in `relaxed_order` differ?
+    back: >-
+      Both go on scanning until the query has its rows. Strict returns them in order of
+      distance, leaving out any found nearer than one already returned; relaxed keeps
+      those, slightly out of order, and finds more of the nearest.
+  - id: crd_3b8lkw
+    front: >-
+      Why sort a relaxed scan's rows by `distance + 0`, outside a materialized CTE?
+    back: >-
+      Its rows can come slightly out of order, and Postgres 17 and later take a plain
+      `ORDER BY distance` over the CTE as already done by it; `+ 0` makes Postgres sort.

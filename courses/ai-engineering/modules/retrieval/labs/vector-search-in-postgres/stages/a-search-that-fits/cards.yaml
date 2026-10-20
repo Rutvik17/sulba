@@ -1,0 +1,20 @@
+cards:
+  - id: crd_nwm4ca
+    front: >-
+      How can a vector index take less memory and still find what the full vectors find?
+    back: >-
+      Index a smaller expression of each vector, such as its first numbers at half
+      precision, take more candidates from it than you need, and sort them by the full
+      vectors, kept in the table.
+  - id: crd_w53gol
+    front: >-
+      When does Postgres go through an index on `subvector(embedding, 1, 256)::halfvec(256)`?
+    back: >-
+      When the query orders by that same expression with the operator the index's class
+      serves, nearest first, with a `LIMIT`.
+  - id: crd_9v7bzb
+    front: >-
+      How do you add a row, or change the one with its key, in one statement?
+    back: >-
+      `INSERT ... ON CONFLICT (id) DO UPDATE SET column = EXCLUDED.column`, for every column
+      that can change.

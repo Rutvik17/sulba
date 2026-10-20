@@ -1,0 +1,46 @@
+id: stg_b0aylm
+kind: ship
+title: A search that fits
+builds: A new `desk.py`, which uses your `store.py`.
+file: desk.py
+packages: [numpy, psycopg, pgvector]
+minutes: 45
+checks:
+  - check: tst_oqsptj
+    title: "Indexes within {% $fig.budget %}"
+    requires: >-
+      Once `build` has run on the help desk's {% $fig.passages %} passages, the table's
+      indexes besides its primary key take at most {% $fig.budget_bytes %} bytes together.
+    failure: >-
+      Index fewer numbers of each vector, or fewer bytes for each: pgvector can index an
+      expression of the vector column.
+  - check: tst_kpbdml
+    title: Finds what the full vectors find
+    requires: >-
+      Of each of the {% $fig.test %} test questions' {% $fig.k %} nearest passages by the
+      full vectors, `search` finds {% $fig.kept %} on average.
+    failure: >-
+      Take more candidates from the index than `k`, and sort them by the full vectors,
+      which the table keeps.
+  - check: tst_0fwmyo
+    title: k passages from each service, nearest first
+    requires: >-
+      `search` with a `domain` gives `k` of that service's passages, nearest first by the
+      full vectors, for every service.
+    failure: >-
+      Turn on iterative index scans for the search, so that the index goes on until it has
+      the candidates, and sort by the full vectors' distance last.
+  - check: tst_r0d40o
+    title: Through the index
+    requires: >-
+      Every search, within a service or not, goes through an index `build` made.
+    failure: >-
+      Order the candidates by the expression the index is built on, with the operator its
+      class serves, nearest first, and a `LIMIT`.
+  - check: tst_6gnd5d
+    title: Finds a changed passage by what it says now
+    requires: >-
+      After `update`, a changed passage has its new text and vector, a new one is in the
+      table, and searches find each by its new vector.
+    failure: >-
+      Set every column of a passage that's there already, its vector too.

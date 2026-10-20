@@ -1,0 +1,57 @@
+id: stg_xuoyt0
+kind: catch
+title: The assistant's queries
+builds: A new `queries.py`, which the search page uses with your `store.py` and `index.py`.
+file: queries.py
+packages: [numpy, psycopg, pgvector]
+minutes: 35
+problems:
+  - check: tst_0bfibb
+    title: Its searches never used the index
+    cost: >-
+      `ORDER BY similarity DESC` sorted by an expression of the distance, which no index
+      serves, so every search worked out the distance to all {% $fig.passages %} passages
+      and sorted them. Its passages were right, and the index went unused.
+    fix: >-
+      The fix: `ORDER BY embedding <=> %s`, the index's own operator, nearest first, with
+      the vector sent for it too.
+    edit:
+      replace: "\"ORDER BY similarity DESC LIMIT %s\",\n        (vector, k),"
+      with: "\"ORDER BY embedding <=> %s LIMIT %s\",\n        (vector, vector, k),"
+  - check: tst_r6s1ca
+    title: It put the service's name into the query
+    cost: >-
+      The f-string put `domain` into the query's text, so whatever the search page passed on
+      as a service's name ran as SQL: `va' OR 'x' = 'x` gave passages from the other
+      services too, and a name with a quote in it, such as `veterans' affairs`, failed with
+      a syntax error.
+    fix: >-
+      The fix: `%(domain)s`, which sends the name to Postgres as a parameter, apart from the
+      query's text.
+    edit:
+      replace: "f\"WHERE domain = '{domain}' ORDER BY distance LIMIT %(k)s) \""
+      with: "\"WHERE domain = %(domain)s ORDER BY distance LIMIT %(k)s) \""
+  - check: tst_5i617b
+    title: It left a service's passages in the scan's order
+    cost: >-
+      The CTE ordered its rows by `distance`, and Postgres 17 and later take that as the
+      order they come out in, so the outer `ORDER BY distance` sorted nothing: a service's
+      passages came in the order the relaxed scan found them, which isn't always nearest
+      first.
+    fix: >-
+      The fix: `ORDER BY distance + 0`, another expression, which Postgres sorts by.
+    edit:
+      replace: "\"SELECT id FROM found ORDER BY distance\"\n"
+      with: "\"SELECT id FROM found ORDER BY distance + 0\"\n"
+  - check: tst_5nmb9z
+    title: It put the least alike first
+    cost: >-
+      `<#>` gives the negative inner product, so that the nearest has the smallest, as with
+      every pgvector distance, and `DESC` put the passage least like each one first. Over the
+      {% $fig.passages %} passages, the first had a cosine of {% $fig.worst %} to the passage
+      on average, where the nearest's is {% $fig.best %}. No index served it either.
+    fix: >-
+      The fix: `<=>`, the cosine distance the index serves, nearest first.
+    edit:
+      replace: "\"<#> (SELECT embedding FROM passages WHERE id = %(id)s) DESC LIMIT %(k)s\""
+      with: "\"<=> (SELECT embedding FROM passages WHERE id = %(id)s) LIMIT %(k)s\""

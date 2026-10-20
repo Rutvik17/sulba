@@ -1,0 +1,69 @@
+id: lab_szbvxh
+title: Vector search in Postgres
+summary: >-
+  Search the help desk's passages in Postgres with pgvector: a table of passages and their
+  vectors, an approximate index, searches within one service, a review of an assistant's
+  queries, and a search whose indexes fit a small budget.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue whose next turn answers it from the same page: 500
+      of the dataset's training dialogues, chosen at random, for validation, and 362 of its
+      validation dialogues, for testing.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: question-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_query: `, one text a request, by llama.cpp's server, release b11734, each number
+      times 32,767, rounded.
+runs: machine
+stages:
+  - a-table-of-passages
+  - an-approximate-index
+  - searches-within-a-service
+  - the-assistants-queries
+  - a-search-that-fits
