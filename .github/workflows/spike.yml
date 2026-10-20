@@ -12,13 +12,13 @@ permissions:
 
 jobs:
   database:
-    name: Postgres on ${{ matrix.os }}
+    name: Database tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2025]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, macos-14, macos-15]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -27,11 +27,7 @@ jobs:
         with:
           version-file: packages/lab/python/pyproject.toml
       - shell: bash
-        run: >-
-          uv run --no-project --python 3.14
-          --with "psycopg[binary]==3.3.6" --with pgvector==0.5.1 --with numpy==2.4.6
-          --with pixeltable-pgserver==0.6.0 --with embedded-postgres==18.6.3
-          tools/spike/database.py "$RUNNER_TEMP/spike"
+        run: uv run --directory packages/lab/python pytest -v -p no:cacheprovider tests/test_database.py
 
   models:
     name: Models on ${{ matrix.os }}

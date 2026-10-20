@@ -4,6 +4,7 @@
     uv run sulba.py finish   finish a Catch stage's review
     uv run sulba.py next     start the next stage, once this one is done
     uv run sulba.py model    start the lab's model, for your code to call
+    uv run sulba.py db       start the lab's database, for your code to use
 
 When a stage is done, it gives you a link to the lab's page, which marks the stage done there.
 Before the first run, it fetches into data/ any files the lab needs that are too large for the
@@ -11,6 +12,10 @@ download, such as a dataset, from their publishers.
 
 A lab with a model serves it with llama.cpp's server until you press Ctrl+C. The first time, it
 fetches both into sulba in your cache folder, where every lab finds them.
+
+A lab with a database runs Postgres, with pgvector, until you press Ctrl+C. It keeps what you
+put in it in .sulba/database, and answers only programs on this computer. On Linux, the first
+time, it fetches pgvector into sulba in your cache folder.
 """
 
 # A lab that runs on the learner's machine downloads with this file at its top and its stages in
@@ -29,7 +34,9 @@ import http.client
 import json
 import os
 import platform
+import secrets
 import shutil
+import signal
 import socket
 import subprocess
 import sys
@@ -114,6 +121,8 @@ VC_RUNTIME = {
 }
 # How long the model's server may take to load the model before the runner gives up, in seconds.
 LOADING = 600
+# Where the lab's database answers, at Postgres's own port.
+DATABASE_PORT = 5432
 
 
 def main(argv: list[str]) -> int:
@@ -123,10 +132,12 @@ def main(argv: list[str]) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "command", nargs="?", choices=["run", "finish", "next", "model"], default="run"
+        "command", nargs="?", choices=["run", "finish", "next", "model", "db"], default="run"
     )
     parser.add_argument(
-        "--port", type=int, default=PORT, help="the port the model answers at (model only)"
+        "--port",
+        type=int,
+        help=f"the port the model or database answers at ({PORT} and {DATABASE_PORT} by default)",
     )
     parser.add_argument(
         "--check",
@@ -140,7 +151,9 @@ def main(argv: list[str]) -> int:
         return 1
     lab = json.loads((RUNNER / "lab.json").read_text(encoding="utf-8"))
     if command == "model":
-        return serve_model(lab, args.port, check=args.check)
+        return serve_model(lab, args.port or PORT, check=args.check)
+    if command == "db":
+        return serve_database(args.port or DATABASE_PORT)
     progress = load_progress(lab)
     if command == "next":
         code = start_next(lab, progress)
@@ -353,10 +366,12 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
             print("The model's server needs Microsoft's Visual C++ runtime, which this computer")
             print(f"doesn't have yet. Install it from {installer}, then run this again.")
             return 1
+    import sulba_fixtures
+
     name, bytes_, sha256 = build
     url = f"{LLAMA_RELEASES}/{LLAMA}/llama-{LLAMA}-{name}"
     archive = {"url": url, "bytes": bytes_, "sha256": sha256}
-    folder = cache_folder()
+    folder = sulba_fixtures.cache_folder()
     archive_path = folder / "llama.cpp" / LLAMA / name
     weights_path = folder / "models" / model["sha256"] / urlsplit(model["url"]).path.split("/")[-1]
     files = [
@@ -371,11 +386,65 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
     return serve(command, port, folder / f"server-{port}.log", check=check)
 
 
-def cache_folder() -> Path:
-    """sulba in the cache folder, as Hugging Face's cache is placed: $XDG_CACHE_HOME where it's set,
-    and ~/.cache otherwise, on every system."""
-    base = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
-    return Path(base) / "sulba"
+def serve_database(port: int) -> int:
+    """Starts the lab's database, a Postgres server with pgvector that keeps its data in
+    .sulba/database, and keeps it running until Ctrl+C (decision record 33)."""
+    import sulba_fixtures
+
+    try:
+        binaries = sulba_fixtures.postgres_binaries()
+    except RuntimeError as error:
+        print(f"This lab has no database: {error}")
+        return 1
+    data = RUNNER / "database"
+    secret = RUNNER / "database-password"
+    pg_ctl = binaries / sulba_fixtures.executable("pg_ctl")
+    if not (data / "PG_VERSION").is_file():
+        shutil.rmtree(data, ignore_errors=True)
+        # Readable by the learner alone, where the system allows it.
+        handle = os.open(secret, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(handle, "w", encoding="utf-8") as file:
+            file.write(secrets.token_urlsafe(16))
+    elif sulba_fixtures.run_postgres([pg_ctl, "status", "-D", data], check=False) == 0:
+        # Left running by a runner that was stopped some other way than Ctrl+C.
+        sulba_fixtures.run_postgres([pg_ctl, "stop", "-D", data, "-m", "fast", "-w"], check=False)
+    if in_use(port):
+        print(
+            f"Port {port} is in use, perhaps by another database. Stop that, or run "
+            f"uv run sulba.py db --port {port + 1}."
+        )
+        return 1
+    password = secret.read_text(encoding="utf-8")
+    url = f"postgresql://postgres:{password}@127.0.0.1:{port}/postgres"
+    try:
+        sulba_fixtures.start_postgres(binaries, data, port, password)
+        sulba_fixtures.run_postgres(
+            [
+                binaries / sulba_fixtures.executable("psql"),
+                "--no-psqlrc",
+                "-c",
+                "CREATE EXTENSION IF NOT EXISTS vector",
+                url,
+            ]
+        )
+    except RuntimeError as error:
+        print(f"The database couldn't start: {error}")
+        return 1
+    print(f"The database answers at {url}. Press Ctrl+C to stop it.", flush=True)
+    # Ctrl+C stops it however the runner was started, and so does the terminal closing.
+    signal.signal(signal.SIGINT, signal.default_int_handler)
+    for name in ("SIGTERM", "SIGHUP", "SIGBREAK"):
+        if hasattr(signal, name):
+            signal.signal(getattr(signal, name), signal.default_int_handler)
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sulba_fixtures.run_postgres([pg_ctl, "stop", "-D", data, "-m", "fast", "-w"], check=False)
+    print("Stopped the database.")
+    return 0
 
 
 def unpacked(archive: Path) -> Path:
