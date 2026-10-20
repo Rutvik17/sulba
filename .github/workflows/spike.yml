@@ -1,0 +1,55 @@
+name: Spike
+
+# Runs Postgres with pgvector three ways, and llama.cpp's server with embedding and reranking
+# models, on each system the Intermediate level supports, before the Retrieval module's decision
+# records. This branch is never merged.
+on:
+  push:
+    branches: [spike/retrieval]
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    name: Postgres on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, macos-15, macos-14]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+      - shell: bash
+        run: >-
+          uv run --no-project --python 3.14
+          --with "psycopg[binary]==3.3.6" --with pgvector==0.5.1 --with numpy==2.4.6
+          --with pixeltable-pgserver==0.6.0 --with embedded-postgres==18.6.3
+          tools/spike/database.py "$RUNNER_TEMP/spike"
+
+  models:
+    name: Models on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, macos-15, macos-14]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version-file: packages/lab/python/pyproject.toml
+      - shell: bash
+        run: uv run --no-project --python 3.14 tools/spike/models.py "$RUNNER_TEMP/spike"
+      - if: always()
+        shell: bash
+        run: tail -n 40 "$RUNNER_TEMP"/spike/*.log || true
