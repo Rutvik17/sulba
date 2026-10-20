@@ -1,0 +1,7 @@
+id: stg_03wlrw
+kind: build
+title: A table of passages
+builds: A new `store.py`.
+file: store.py
+packages: [numpy, psycopg, pgvector]
+minutes: 35

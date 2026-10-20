@@ -1,0 +1,7 @@
+id: stg_61d5cg
+kind: build
+title: Searches within a service
+builds: A new `service.py`, which uses your `store.py` and `index.py`.
+file: service.py
+packages: [numpy, psycopg, pgvector]
+minutes: 35

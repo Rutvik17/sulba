@@ -1,0 +1,26 @@
+cards:
+  - id: crd_m4pg69
+    front: >-
+      What does pgvector's `<=>` operator give?
+    back: >-
+      The cosine distance between two vectors: 1 less the cosine of the angle between them,
+      so the nearest has the smallest.
+  - id: crd_it651x
+    front: >-
+      Why keep a table's vectors in their rows, with `STORAGE PLAIN`?
+    back: >-
+      Postgres otherwise moves them out of rows over 2 kB, into the table's TOAST table, and
+      its planner leaves that out of what reading every row costs, so a scan can look cheaper
+      than a faster index.
+  - id: crd_gwzq53
+    front: >-
+      Why load many rows of vectors with `COPY` in its binary format?
+    back: >-
+      One statement streams every row, and each vector goes in its float32 bytes, with no
+      decimal text to write and read back.
+  - id: crd_vky143
+    front: >-
+      Why run `ANALYZE` on a table after loading many rows into it?
+    back: >-
+      The planner chooses each query's plan from the statistics `ANALYZE` gathers, such as
+      how many rows the table has; with none, it can choose badly.

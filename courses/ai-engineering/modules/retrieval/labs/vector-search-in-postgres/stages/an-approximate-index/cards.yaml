@@ -1,0 +1,20 @@
+cards:
+  - id: crd_xwd2vb
+    front: >-
+      What does pgvector's `hnsw.ef_search` set?
+    back: >-
+      The size of the candidate list an HNSW search keeps in the graph's lowest layer: a
+      larger one finds more of the exact search's nearest, more slowly.
+  - id: crd_r4jp8g
+    front: >-
+      Why set `hnsw.ef_search` for one search with `set_config(..., true)` in a
+      transaction?
+    back: >-
+      It lasts until the transaction ends, as `SET LOCAL` does, so it changes that search
+      alone, and unlike `SET` it takes the value as a parameter.
+  - id: crd_wrkxow
+    front: >-
+      Which queries can an HNSW index built with `vector_cosine_ops` serve?
+    back: >-
+      Those ordered by `embedding <=> query`, nearest first, with a `LIMIT`: by its own
+      operator, not an expression of it.

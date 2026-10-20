@@ -1,0 +1,19 @@
+cards:
+  - id: crd_lm3obu
+    front: >-
+      Why can't an index serve `ORDER BY 1 - (embedding <=> %s) DESC`?
+    back: >-
+      An index serves an `ORDER BY` of its own operator on the column, nearest first; this
+      sorts by an expression of the distance, so Postgres reads every row and sorts them.
+  - id: crd_teqakn
+    front: >-
+      What does pgvector's `<#>` give, and which order puts the most alike first?
+    back: >-
+      The inner product times -1, so ascending order, as with every pgvector distance, puts
+      the largest inner product first.
+  - id: crd_nd690w
+    front: >-
+      Why send a filter's value to Postgres as a parameter, not in the query's text?
+    back: >-
+      Text in the query runs as SQL: a value with a quote in it can break the query or
+      change what it does.
