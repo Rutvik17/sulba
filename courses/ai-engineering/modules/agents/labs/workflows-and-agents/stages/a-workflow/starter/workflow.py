@@ -27,13 +27,13 @@ DESK = (
 )
 ROUTER = (
     DESK
-    + " Sort the caller's message. kind is question for a question the services' help "
-    "pages answer, case for a problem with the caller's own case that needs an adviser, "
-    "callback for a call from an adviser, and other for anything else. service is the service "
-    "it's about, or none. day, time and part are when a callback is wanted, or none: day is "
-    "2026-11-02 for Monday, 2026-11-03 for Tuesday, 2026-11-04 for Wednesday, 2026-11-05 for "
-    "Thursday or 2026-11-06 for Friday, time is on the hour from 09:00 to 16:00, and part is "
-    "morning, before 12:00, or afternoon."
+    + " Sort the caller's message. kind is question for a question about how a service "
+    "works, which its help pages answer; case when something has gone wrong or is held up "
+    "with the caller's own claim, payment, application, card or record, which an adviser has "
+    "to look into; callback when the caller asks for an adviser to call them; and other for "
+    "anything else. service is the service it's about, or none. day is the weekday the caller "
+    "wants the call, or none. part is morning, before 12:00, or afternoon, when they name "
+    "one, or none. time is none unless they name an hour, such as 10:00 or 2 PM."
 )
 ANSWER = (
     DESK
@@ -41,16 +41,17 @@ ANSWER = (
     "cite each passage you use by its id in square brackets, like [p17]. If they don't answer "
     "it, say so."
 )
+WEEKDAYS = {name.lower(): day for day, name in DAYS.items()}
 ROUTE = {
     "type": "object",
     "properties": {
         "kind": {"type": "string", "enum": ["question", "case", "callback", "other"]},
         "service": {"type": "string", "enum": [*SERVICES, "none"]},
-        "day": {"type": "string", "enum": [*DAYS, "none"]},
-        "time": {"type": "string", "enum": [*TIMES, "none"]},
-        "part": {"type": "string", "enum": ["morning", "afternoon", "none"]},
+        "day": {"type": "string", "enum": ["none", *WEEKDAYS]},
+        "part": {"type": "string", "enum": ["none", "morning", "afternoon"]},
+        "time": {"type": "string", "enum": ["none", *TIMES]},
     },
-    "required": ["kind", "service", "day", "time", "part"],
+    "required": ["kind", "service", "day", "part", "time"],
 }
 YES = re.compile(r"\s*(yes|yeah|yep|sure|ok|okay|please do|go ahead)\b", re.IGNORECASE)
 

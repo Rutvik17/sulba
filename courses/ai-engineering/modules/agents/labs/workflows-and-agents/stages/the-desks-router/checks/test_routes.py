@@ -34,7 +34,7 @@ CLAIM = {
 
 def routed(kind, service="none", day="none", time="none", part="none"):
     return json.dumps(
-        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+        {"kind": kind, "service": service, "day": day, "part": part, "time": time}
     )
 
 
@@ -51,7 +51,7 @@ def chats(model):
 @pytest.mark.id("tst_2o51bb")
 def test_sorted_once(model):
     """A conversation is sorted once, by its first message, down either path"""
-    model.says(routed("callback", "ssa", "2026-11-03", "10:00"))
+    model.says(routed("callback", "ssa", "tuesday", "10:00"))
     desk, router = router_for(model, "ssa")
     router.reply("Can someone call me Tuesday at 10?")
     router.reply("Yes, please book it.")
@@ -69,7 +69,7 @@ def test_sorted_once(model):
 @pytest.mark.id("tst_ecn8ol")
 def test_two_tickets_go_to_the_agent(model):
     """A callback for a service with two open tickets goes to the agent"""
-    model.says(routed("callback", "ssa", "2026-11-03", "none", "morning"))
+    model.says(routed("callback", "ssa", "tuesday", "none", "morning"))
     model.says("Is it about T-2101 or T-2102?")
     desk, router = router_for(model, "ssa", (CARD, CLAIM))
     assert (

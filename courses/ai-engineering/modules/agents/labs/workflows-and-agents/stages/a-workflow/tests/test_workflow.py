@@ -41,7 +41,7 @@ GI_BILL = {
 
 def routed(kind, service="none", day="none", time="none", part="none"):
     return json.dumps(
-        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+        {"kind": kind, "service": service, "day": day, "part": part, "time": time}
     )
 
 
@@ -54,7 +54,7 @@ def desk_for(model, tickets=()):
 def test_route(model):
     """A message is sorted by one request whose reply follows the route's schema, with the page
     the chat was opened from, and none read as None"""
-    model.says(routed("callback", "va", "2026-11-03", "none", "morning"))
+    model.says(routed("callback", "va", "tuesday", "none", "morning"))
     found = route(model.client(), "Can someone call me Tuesday morning?", "va")
     assert found == Route("callback", "va", "2026-11-03", None, "morning")
     [request] = model.requests
@@ -143,7 +143,7 @@ def test_callback(model):
     """A callback is offered on the caller's open ticket for the service, at the time asked, or
     the first free time in the part of the day asked, and booked once they say yes"""
     desk = desk_for(model, [CARD, GI_BILL])
-    model.says(routed("callback", "ssa", "2026-11-03", "14:00"))
+    model.says(routed("callback", "ssa", "tuesday", "14:00"))
     workflow = Workflow(model.client(), desk, "ssa")
     offer = workflow.reply("Can someone call me Tuesday at 14:00?")
     assert "T-2101" in offer and "14:00" in offer and desk.writes == []
@@ -159,7 +159,7 @@ def test_callback(model):
     ]
     assert "14:00" in done
     desk = desk_for(model, [CARD, GI_BILL])
-    model.says(routed("callback", "va", "2026-11-03", "none", "afternoon"))
+    model.says(routed("callback", "va", "tuesday", "none", "afternoon"))
     workflow = Workflow(model.client(), desk, None)
     assert "14:00" in workflow.reply(
         "Can someone call me Tuesday afternoon about my GI Bill?"
@@ -173,7 +173,7 @@ def test_callback_with_a_new_ticket(model):
     """A callback for a service the caller has no open ticket for opens one and books it, once
     they say yes"""
     desk = desk_for(model, [GI_BILL])
-    model.says(routed("callback", "dmv", "2026-11-03", "none", "morning"))
+    model.says(routed("callback", "dmv", "tuesday", "none", "morning"))
     workflow = Workflow(model.client(), desk, "dmv")
     workflow.reply("Can an adviser call me Tuesday morning about my road test?")
     assert desk.writes == []
@@ -201,9 +201,9 @@ def test_asks_when_it_cant_tell(model):
         "summary": "Disability claim",
     }
     desk = desk_for(model, [CARD, second, GI_BILL])
-    model.says(routed("callback", "ssa", "2026-11-03", "none", "morning"))
+    model.says(routed("callback", "ssa", "tuesday", "none", "morning"))
     model.says(routed("other"))
-    model.says(routed("callback", "none", "2026-11-03"))
+    model.says(routed("callback", "none", "tuesday"))
     workflow = Workflow(model.client(), desk, "ssa")
     for message in ["Call me Tuesday morning.", "Yes, please.", "Hello?"]:
         reply = workflow.reply(message)
@@ -217,7 +217,7 @@ def test_callback_at_a_time_taken(model):
     """A time the advisers aren't free is answered with the times they are, and nothing waits
     for a yes"""
     desk = desk_for(model, [CARD])
-    model.says(routed("callback", "ssa", "2026-11-03", "09:00"))
+    model.says(routed("callback", "ssa", "tuesday", "09:00"))
     model.says(routed("other"))
     workflow = Workflow(model.client(), desk, "ssa")
     reply = workflow.reply("Can someone call me Tuesday at 9?")

@@ -34,7 +34,7 @@ GI_BILL = {
 
 def routed(kind, service="none", day="none", time="none", part="none"):
     return json.dumps(
-        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+        {"kind": kind, "service": service, "day": day, "part": part, "time": time}
     )
 
 
@@ -77,7 +77,7 @@ def test_a_case(model):
 @pytest.mark.id("tst_3mnc4q")
 def test_a_callback(model):
     """A callback for a service with one open ticket goes down the workflow's path"""
-    model.says(routed("callback", "va", "2026-11-03", "14:00"))
+    model.says(routed("callback", "va", "tuesday", "14:00"))
     desk, router = router_for(model, None)
     assert "14:00" in router.reply(
         "Can someone call me Tuesday at 14:00 about my GI Bill?"
@@ -91,7 +91,7 @@ def test_a_callback(model):
 @pytest.mark.id("tst_1t1o8k")
 def test_a_vague_callback(model):
     """A callback the workflow can't place goes to the agent, which keeps the conversation"""
-    model.says(routed("callback", "none", "2026-11-03", "none", "morning"))
+    model.says(routed("callback", "none", "tuesday", "none", "morning"))
     model.says("Which ticket is it about: T-2101 or T-1901?")
     model.says("I'll book T-2101 on Tuesday at 10:00. Shall I?")
     _, router = router_for(model, None)

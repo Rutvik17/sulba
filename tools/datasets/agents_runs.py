@@ -32,13 +32,15 @@ and a ticket or a callback the desk makes before the caller's last message, whic
 made without the caller's yes, so the task isn't done.
 
     uv run tools/datasets/agents_runs.py <lab folder> <llama-server> <file to write> \\
-        [<shard>/<shards>] [<downloads>]
+        [--variants workflow,agent,router] [--shard 3/20] [--downloads <folder>]
 
-With a shard, such as 3/20, the script does every third of 20 tasks, from the third, so that the
-shards' files hold every task. The models come to 2.9 GB. Given a folder of downloads, the script
-keeps them there for the next run; without one, it downloads them to a temporary folder.
+The script records the variants named, or all three. With a shard, such as 3/20, it does every
+third of 20 tasks, from the third, so that the shards' files hold every task. The models come to
+2.9 GB. Given a folder of downloads, the script keeps them there for the next run; without one,
+it downloads them to a temporary folder.
 """
 
+import argparse
 import csv
 import json
 import re
@@ -213,7 +215,9 @@ class Recorded(httpx.BaseTransport):
         )
 
 
-def record(lab: Path, server: Path, out: Path, shard: str, downloads: Path) -> None:
+def record(
+    lab: Path, server: Path, out: Path, variants: list[str], shard: str, downloads: Path
+) -> None:
     for stage in STAGES.values():
         sys.path.insert(0, str(lab / "stages" / stage / "solution"))
     import agent as agents
@@ -221,7 +225,7 @@ def record(lab: Path, server: Path, out: Path, shard: str, downloads: Path) -> N
     import router as routers
     import workflow as workflows
 
-    variants = {
+    made_by = {
         "workflow": workflows.Workflow,
         "agent": agents.Agent,
         "router": routers.Router,
@@ -247,7 +251,8 @@ def record(lab: Path, server: Path, out: Path, shard: str, downloads: Path) -> N
         )
         search = desks.Search(client, passages, vectors)
         for number, task in mine:
-            for variant, made in variants.items():
+            for variant in variants:
+                made = made_by[variant]
                 for trial in range(1, TRIALS[variant] + 1):
                     transport.seed = 100 * number + trial
                     transport.requests = []
@@ -281,10 +286,19 @@ def record(lab: Path, server: Path, out: Path, shard: str, downloads: Path) -> N
 
 
 if __name__ == "__main__":
-    lab, server, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
-    shard = sys.argv[4] if len(sys.argv) > 4 else "1/1"
-    if len(sys.argv) > 5:
-        record(lab, server, out, shard, Path(sys.argv[5]))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("lab", type=Path)
+    parser.add_argument("server", type=Path)
+    parser.add_argument("out", type=Path)
+    parser.add_argument("--variants", default=",".join(TRIALS))
+    parser.add_argument("--shard", default="1/1")
+    parser.add_argument("--downloads", type=Path)
+    given = parser.parse_args()
+    chosen = given.variants.split(",")
+    if not set(chosen) <= set(TRIALS):
+        parser.error(f"variants are {', '.join(TRIALS)}")
+    if given.downloads:
+        record(given.lab, given.server, given.out, chosen, given.shard, given.downloads)
     else:
         with tempfile.TemporaryDirectory() as downloads:
-            record(lab, server, out, shard, Path(downloads))
+            record(given.lab, given.server, given.out, chosen, given.shard, Path(downloads))
