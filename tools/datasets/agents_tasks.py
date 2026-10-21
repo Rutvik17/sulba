@@ -14,9 +14,9 @@ The 120 tasks, 30 of each service but the vague ones:
 
 - 40 questions, 10 of each service, drawn at random from the help desk's questions of seven
   words or more, with the passages that hold each one's answer, as `multidoc2dial_evals.py`
-  builds them; a shorter one, such as "Will they be continued?", leaves out what it's about. The chat was
-  opened from the question's service's pages, and the desk must cite a passage that holds the
-  answer and change nothing.
+  builds them; a shorter one, such as "Will they be continued?", leaves out what it's about.
+  The chat was opened from the question's service's pages, and the desk must cite a passage
+  that holds the answer and change nothing.
 - 20 cases, 5 of each service, about the caller's own case, which only an adviser can look
   into. The desk must open one ticket for the service, once the caller says yes.
 - 20 callbacks, 5 of each service, about the caller's one open ticket for the service, at a time
@@ -94,10 +94,8 @@ CASES = {
         "My replacement card was supposed to arrive two weeks ago and it still hasn't come.",
     ],
     "va": [
-        "My GI Bill housing payment for October never arrived. Can someone look at my "
-        "account?",
-        "I sent more evidence for my disability claim a month ago and the status hasn't "
-        "changed.",
+        "My GI Bill housing payment for October never arrived. Can someone look at my account?",
+        "I sent more evidence for my disability claim a month ago and the status hasn't changed.",
         "I was told my VA health care enrollment went through but I never got an appointment "
         "letter.",
         "My pension stopped after I moved and I don't know why.",
@@ -105,8 +103,7 @@ CASES = {
     ],
     "studentaid": [
         "My loan servicer says my repayment plan changed but I never asked for that.",
-        "I submitted a correction to my FAFSA two weeks ago and my school still sees the old "
-        "one.",
+        "I submitted a correction to my FAFSA two weeks ago and my school still sees the old one.",
         "My Pell Grant didn't show up on my school bill this term.",
         "I was approved for forgiveness in the summer but my loan balance is still there.",
         "My deferment was approved but my servicer still says I have a payment due.",
@@ -133,8 +130,7 @@ BOOK_DURING = "Yes, please go ahead. Any time that {part} is fine."
 NEW = [
     "I need to talk to someone about my {topic}. Can they call me {weekday} {part}? There's no "
     "ticket for it yet.",
-    "Can an adviser call me {weekday} {part} about my {topic}? I haven't opened a ticket about "
-    "it.",
+    "Can an adviser call me {weekday} {part} about my {topic}? I haven't opened a ticket about it.",
 ]
 BOOK_NEW = "Yes, please open it and book the call. Any time that {part} is fine."
 VAGUE = [
@@ -199,8 +195,18 @@ def tasks(folder: Path) -> list[dict]:
         topic = TOPICS[service][i // 4]
         day = rng.choice(days)
         tickets = [
-            {"ticket": f"T-{2101 + i}", "service": service, "status": "open", "summary": capital(topic)},
-            {"ticket": f"T-{1901 + i}", "service": other, "status": "closed", "summary": capital(TOPICS[other][i // 4])},
+            {
+                "ticket": f"T-{2101 + i}",
+                "service": service,
+                "status": "open",
+                "summary": capital(topic),
+            },
+            {
+                "ticket": f"T-{1901 + i}",
+                "service": other,
+                "status": "closed",
+                "summary": capital(TOPICS[other][i // 4]),
+            },
         ]
         if i % 2 == 0:
             time = rng.choice(TIMES)
@@ -223,7 +229,14 @@ def tasks(folder: Path) -> list[dict]:
         service, other = SERVICES[i % 4], SERVICES[(i + 2) % 4]
         topic = TOPICS[service][(i // 4 + 2) % 5]
         day, part = rng.choice(days), rng.choice(["morning", "afternoon"])
-        tickets = [{"ticket": f"T-{2201 + i}", "service": other, "status": "open", "summary": capital(TOPICS[other][i // 4])}]
+        tickets = [
+            {
+                "ticket": f"T-{2201 + i}",
+                "service": other,
+                "status": "open",
+                "summary": capital(TOPICS[other][i // 4]),
+            }
+        ]
         text = NEW[i % 2].format(topic=topic, weekday=DAYS[day], part=part)
         out.append(
             {
@@ -238,14 +251,34 @@ def tasks(folder: Path) -> list[dict]:
         a, b = SERVICES[i % 4], SERVICES[(i + 1 + (i // 4) % 3) % 4]
         day, part = rng.choice(days), rng.choice(["morning", "afternoon"])
         tickets = [
-            {"ticket": f"T-{2301 + i}", "service": a, "status": "open", "summary": capital(TOPICS[a][i // 4])},
-            {"ticket": f"T-{2401 + i}", "service": b, "status": "open", "summary": capital(TOPICS[b][(i // 4 + 1) % 5])},
+            {
+                "ticket": f"T-{2301 + i}",
+                "service": a,
+                "status": "open",
+                "summary": capital(TOPICS[a][i // 4]),
+            },
+            {
+                "ticket": f"T-{2401 + i}",
+                "service": b,
+                "status": "open",
+                "summary": capital(TOPICS[b][(i // 4 + 1) % 5]),
+            },
         ]
         text = VAGUE[i % 4].format(weekday=DAYS[day], part=part)
-        out.append({"kind": "vague", "page": None, "messages": [text, YES], "tickets": tickets, "expect": {}})
+        out.append(
+            {
+                "kind": "vague",
+                "page": None,
+                "messages": [text, YES],
+                "tickets": tickets,
+                "expect": {},
+            }
+        )
     for number, task in enumerate(out, start=1):
         task["task"] = f"t{number}"
-        free = {service: {day: sorted(rng.sample(TIMES, 4)) for day in DAYS} for service in SERVICES}
+        free = {
+            service: {day: sorted(rng.sample(TIMES, 4)) for day in DAYS} for service in SERVICES
+        }
         expect = task["expect"]
         if task["kind"] == "callback":
             service = task["tickets"][0]["service"]
@@ -253,16 +286,28 @@ def tasks(folder: Path) -> list[dict]:
             if "time" in expect and expect["time"] not in times:
                 times[rng.randrange(4)] = expect["time"]
                 times.sort()
-            if "part" in expect and not any(morning(t) == (expect["part"] == "morning") for t in times):
-                times[rng.randrange(4)] = rng.choice([t for t in TIMES if morning(t) == (expect["part"] == "morning")])
+            if "part" in expect and not any(
+                morning(t) == (expect["part"] == "morning") for t in times
+            ):
+                times[rng.randrange(4)] = rng.choice(
+                    [t for t in TIMES if morning(t) == (expect["part"] == "morning")]
+                )
                 times.sort()
         if task["kind"] == "new":
             times = free[expect["service"]][expect["day"]]
             if not any(morning(t) == (expect["part"] == "morning") for t in times):
-                times[rng.randrange(4)] = rng.choice([t for t in TIMES if morning(t) == (expect["part"] == "morning")])
+                times[rng.randrange(4)] = rng.choice(
+                    [t for t in TIMES if morning(t) == (expect["part"] == "morning")]
+                )
                 times.sort()
         task["free"] = free
-    return [{key: task[key] for key in ("task", "kind", "page", "messages", "tickets", "free", "expect")} for task in out]
+    return [
+        {
+            key: task[key]
+            for key in ("task", "kind", "page", "messages", "tickets", "free", "expect")
+        }
+        for task in out
+    ]
 
 
 if __name__ == "__main__":

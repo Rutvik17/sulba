@@ -25,12 +25,24 @@ FREE = {
     service: {"2026-11-03": ["10:00", "14:00", "15:00"]}
     for service in ("ssa", "va", "studentaid", "dmv")
 }
-CARD = {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"}
-GI_BILL = {"ticket": "T-1901", "service": "va", "status": "open", "summary": "GI Bill payment"}
+CARD = {
+    "ticket": "T-2101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement card",
+}
+GI_BILL = {
+    "ticket": "T-1901",
+    "service": "va",
+    "status": "open",
+    "summary": "GI Bill payment",
+}
 
 
 def routed(kind, service="none", day="none", time="none", part="none"):
-    return json.dumps({"kind": kind, "service": service, "day": day, "time": time, "part": part})
+    return json.dumps(
+        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+    )
 
 
 def desk_for(model, tickets=()):
@@ -53,7 +65,9 @@ def test_route(model):
     }
     assert all(request.body[key] == value for key, value in SAMPLING.items())
     system, user = request.body["messages"]
-    assert system["role"] == "system" and "veterans' benefits pages" in system["content"]
+    assert (
+        system["role"] == "system" and "veterans' benefits pages" in system["content"]
+    )
     assert user == {"role": "user", "content": "Can someone call me Tuesday morning?"}
 
 
@@ -102,7 +116,9 @@ def test_case_waits_for_yes(model):
     offer = workflow.reply(case)
     assert offer.endswith("?") and desk.writes == []
     done = workflow.reply("Yes, please open the ticket.")
-    assert desk.writes == [{"tool": "open_ticket", "ticket": "T-3001", "service": "dmv", "turn": 1}]
+    assert desk.writes == [
+        {"tool": "open_ticket", "ticket": "T-3001", "service": "dmv", "turn": 1}
+    ]
     assert desk.tickets[-1]["summary"] == case
     assert "T-3001" in done
     assert len(model.requests) == 1
@@ -133,13 +149,21 @@ def test_callback(model):
     assert "T-2101" in offer and "14:00" in offer and desk.writes == []
     done = workflow.reply("Yes, please book it.")
     assert desk.writes == [
-        {"tool": "book_callback", "ticket": "T-2101", "day": "2026-11-03", "time": "14:00", "turn": 1}
+        {
+            "tool": "book_callback",
+            "ticket": "T-2101",
+            "day": "2026-11-03",
+            "time": "14:00",
+            "turn": 1,
+        }
     ]
     assert "14:00" in done
     desk = desk_for(model, [CARD, GI_BILL])
     model.says(routed("callback", "va", "2026-11-03", "none", "afternoon"))
     workflow = Workflow(model.client(), desk, None)
-    assert "14:00" in workflow.reply("Can someone call me Tuesday afternoon about my GI Bill?")
+    assert "14:00" in workflow.reply(
+        "Can someone call me Tuesday afternoon about my GI Bill?"
+    )
     workflow.reply("Yes, please go ahead.")
     assert [write["time"] for write in desk.writes] == ["14:00"]
 
@@ -156,7 +180,13 @@ def test_callback_with_a_new_ticket(model):
     workflow.reply("Yes, please open it and book the call.")
     assert desk.writes == [
         {"tool": "open_ticket", "ticket": "T-3001", "service": "dmv", "turn": 1},
-        {"tool": "book_callback", "ticket": "T-3001", "day": "2026-11-03", "time": "10:00", "turn": 1},
+        {
+            "tool": "book_callback",
+            "ticket": "T-3001",
+            "day": "2026-11-03",
+            "time": "10:00",
+            "turn": 1,
+        },
     ]
 
 
@@ -164,7 +194,12 @@ def test_callback_with_a_new_ticket(model):
 def test_asks_when_it_cant_tell(model):
     """A callback the desk can't place, or a message it can't sort, is answered with a question
     about the caller's open tickets, and changes nothing"""
-    second = {"ticket": "T-2102", "service": "ssa", "status": "open", "summary": "Disability claim"}
+    second = {
+        "ticket": "T-2102",
+        "service": "ssa",
+        "status": "open",
+        "summary": "Disability claim",
+    }
     desk = desk_for(model, [CARD, second, GI_BILL])
     model.says(routed("callback", "ssa", "2026-11-03", "none", "morning"))
     model.says(routed("other"))

@@ -1,0 +1,7 @@
+id: stg_r2lwq0
+kind: build
+title: A workflow
+builds: A new `workflow.py`, which uses your `desk.py`.
+file: workflow.py
+packages: [httpx, numpy]
+minutes: 45

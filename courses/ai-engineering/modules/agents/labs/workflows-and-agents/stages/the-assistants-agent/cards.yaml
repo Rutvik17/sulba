@@ -1,0 +1,14 @@
+cards:
+  - id: crd_3ei2u1
+    front: >-
+      What does a chat API refuse when an agent sends tool results without the model's message
+      that called the tools?
+    back: >-
+      The results: a `tool` message must follow the assistant message whose `tool_calls` it
+      answers, by the call's id.
+  - id: crd_7dgiq3
+    front: >-
+      Why does an agent that starts each of the caller's turns afresh fail at a confirmation?
+    back: >-
+      The API keeps nothing between requests, so the caller's yes reaches the model without the
+      offer it answers.

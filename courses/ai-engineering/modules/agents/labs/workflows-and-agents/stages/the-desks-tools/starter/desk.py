@@ -71,11 +71,15 @@ class Search:
         for word in set(words(query)):
             if word not in self.idf:
                 continue
-            tf = np.array([terms.get(word, 0) for terms in self.terms], dtype=np.float64)
+            tf = np.array(
+                [terms.get(word, 0) for terms in self.terms], dtype=np.float64
+            )
             scores += self.idf[word] * tf / (tf + norm)
         return scores
 
-    def find(self, query: str, service: str | None = None, k: int = 5) -> list[dict[str, str]]:
+    def find(
+        self, query: str, service: str | None = None, k: int = 5
+    ) -> list[dict[str, str]]:
         """The k passages that best match the query, best first, of one service's pages or of
         every page, each with its id, its page's title and its text."""
         response = self.client.post(
@@ -90,7 +94,9 @@ class Search:
         )
         fused = np.zeros(len(rows))
         for scores in (self.bm25(query)[rows], self.vectors[rows] @ vector):
-            fused[np.argsort(-scores, kind="stable")] += 1 / (60 + np.arange(1, len(rows) + 1))
+            fused[np.argsort(-scores, kind="stable")] += 1 / (
+                60 + np.arange(1, len(rows) + 1)
+            )
         seen: set[str] = set()
         found = []
         for row in rows[np.argsort(-fused, kind="stable")].tolist():
@@ -99,7 +105,9 @@ class Search:
                 continue
             seen.add(passage["text"])
             title = passage["title"].split(" | ")[0]
-            found.append({"passage": passage["passage"], "page": title, "text": passage["text"]})
+            found.append(
+                {"passage": passage["passage"], "page": title, "text": passage["text"]}
+            )
             if len(found) == k:
                 break
         return found
@@ -118,7 +126,9 @@ class Desk:
     ) -> None:
         self.search = search
         self.tickets = [dict(ticket) for ticket in tickets]
-        self.free = {s: {d: list(t) for d, t in days.items()} for s, days in free.items()}
+        self.free = {
+            s: {d: list(t) for d, t in days.items()} for s, days in free.items()
+        }
         self.turn = 0
         self.writes: list[dict[str, Any]] = []
 
@@ -151,7 +161,11 @@ class Desk:
 
 
 SERVICE = {"type": "string", "enum": list(SERVICES)}
-DAY = {"type": "string", "enum": list(DAYS), "description": "Monday 2026-11-02 to Friday 2026-11-06."}
+DAY = {
+    "type": "string",
+    "enum": list(DAYS),
+    "description": "Monday 2026-11-02 to Friday 2026-11-06.",
+}
 TOOLS: dict[str, dict[str, Any]] = {
     "search_help": {
         "description": "Search the services' help pages. Gives the 5 best passages, each with "
@@ -160,7 +174,10 @@ TOOLS: dict[str, dict[str, Any]] = {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "What to search for."},
-                "service": {**SERVICE, "description": "Search only this service's pages."},
+                "service": {
+                    **SERVICE,
+                    "description": "Search only this service's pages.",
+                },
             },
             "required": ["query"],
         },
@@ -208,5 +225,6 @@ TOOLS: dict[str, dict[str, Any]] = {
 def tools() -> list[dict[str, Any]]:
     """The desk's tools, as a chat request's tools give them."""
     return [
-        {"type": "function", "function": {"name": name, **tool}} for name, tool in TOOLS.items()
+        {"type": "function", "function": {"name": name, **tool}}
+        for name, tool in TOOLS.items()
     ]

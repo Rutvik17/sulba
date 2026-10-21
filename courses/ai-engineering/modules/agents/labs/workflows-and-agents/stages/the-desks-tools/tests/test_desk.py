@@ -27,8 +27,18 @@ PASSAGES = [
 ]
 VECTORS = np.array([[1, 0, 0], [0, 1, 0], [0.6, 0, 0.8]])
 TICKETS = [
-    {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"},
-    {"ticket": "T-1901", "service": "va", "status": "closed", "summary": "GI Bill payment"},
+    {
+        "ticket": "T-2101",
+        "service": "ssa",
+        "status": "open",
+        "summary": "Replacement card",
+    },
+    {
+        "ticket": "T-1901",
+        "service": "va",
+        "status": "closed",
+        "summary": "GI Bill payment",
+    },
 ]
 FREE = {
     service: {day: ["10:00", "14:00"] for day in ("2026-11-02", "2026-11-03")}
@@ -55,7 +65,9 @@ def test_list_tickets(model):
 def test_open_ticket(model):
     """A ticket opened gets the next id from T-3001, and the write is kept with its turn"""
     desk = desk_for(model)
-    assert desk.open_ticket("dmv", "The new license hasn't come.") == {"ticket": "T-3001"}
+    assert desk.open_ticket("dmv", "The new license hasn't come.") == {
+        "ticket": "T-3001"
+    }
     desk.turn = 1
     assert desk.open_ticket("ssa", "The card hasn't come.") == {"ticket": "T-3002"}
     assert desk.list_tickets()["tickets"][-1] == {
@@ -78,7 +90,10 @@ def test_free_callbacks(model):
     """The free times of a service's advisers on a day, or an error for a service or day the
     desk doesn't have"""
     desk = desk_for(model)
-    assert desk.free_callbacks("va", "2026-11-03") == {"day": "2026-11-03", "free": ["10:00", "14:00"]}
+    assert desk.free_callbacks("va", "2026-11-03") == {
+        "day": "2026-11-03",
+        "free": ["10:00", "14:00"],
+    }
     assert "error" in desk.free_callbacks("irs", "2026-11-03")
     assert "error" in desk.free_callbacks("va", "Tuesday")
 
@@ -90,11 +105,19 @@ def test_book_callback(model):
     desk = desk_for(model)
     desk.turn = 1
     booked = desk.book_callback("T-2101", "2026-11-02", "14:00")
-    assert booked == {"booked": {"ticket": "T-2101", "day": "2026-11-02", "time": "14:00"}}
+    assert booked == {
+        "booked": {"ticket": "T-2101", "day": "2026-11-02", "time": "14:00"}
+    }
     assert desk.free_callbacks("ssa", "2026-11-02")["free"] == ["10:00"]
     assert desk.free_callbacks("va", "2026-11-02")["free"] == ["10:00", "14:00"]
     assert desk.writes == [
-        {"tool": "book_callback", "ticket": "T-2101", "day": "2026-11-02", "time": "14:00", "turn": 1}
+        {
+            "tool": "book_callback",
+            "ticket": "T-2101",
+            "day": "2026-11-02",
+            "time": "14:00",
+            "turn": 1,
+        }
     ]
     for wrong in [
         ("T-2101", "2026-11-02", "14:00"),

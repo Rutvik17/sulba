@@ -15,14 +15,27 @@ PASSAGES = [
     },
 ]
 FREE = {
-    service: {"2026-11-03": ["10:00", "14:00"]} for service in ("ssa", "va", "studentaid", "dmv")
+    service: {"2026-11-03": ["10:00", "14:00"]}
+    for service in ("ssa", "va", "studentaid", "dmv")
 }
-CARD = {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"}
-GI_BILL = {"ticket": "T-1901", "service": "va", "status": "open", "summary": "GI Bill payment"}
+CARD = {
+    "ticket": "T-2101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement card",
+}
+GI_BILL = {
+    "ticket": "T-1901",
+    "service": "va",
+    "status": "open",
+    "summary": "GI Bill payment",
+}
 
 
 def routed(kind, service="none", day="none", time="none", part="none"):
-    return json.dumps({"kind": kind, "service": service, "day": day, "time": time, "part": part})
+    return json.dumps(
+        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+    )
 
 
 def router_for(model, page, tickets=(CARD, GI_BILL)):
@@ -32,7 +45,11 @@ def router_for(model, page, tickets=(CARD, GI_BILL)):
 
 
 def with_tools(model):
-    return ["tools" in request.body for request in model.requests if "messages" in request.body]
+    return [
+        "tools" in request.body
+        for request in model.requests
+        if "messages" in request.body
+    ]
 
 
 @pytest.mark.id("tst_h0f54q")
@@ -62,9 +79,13 @@ def test_a_callback(model):
     """A callback for a service with one open ticket goes down the workflow's path"""
     model.says(routed("callback", "va", "2026-11-03", "14:00"))
     desk, router = router_for(model, None)
-    assert "14:00" in router.reply("Can someone call me Tuesday at 14:00 about my GI Bill?")
+    assert "14:00" in router.reply(
+        "Can someone call me Tuesday at 14:00 about my GI Bill?"
+    )
     router.reply("Yes, please book it.")
-    assert [(write["ticket"], write["time"]) for write in desk.writes] == [("T-1901", "14:00")]
+    assert [(write["ticket"], write["time"]) for write in desk.writes] == [
+        ("T-1901", "14:00")
+    ]
 
 
 @pytest.mark.id("tst_1t1o8k")
@@ -74,6 +95,8 @@ def test_a_vague_callback(model):
     model.says("Which ticket is it about: T-2101 or T-1901?")
     model.says("I'll book T-2101 on Tuesday at 10:00. Shall I?")
     _, router = router_for(model, None)
-    assert router.reply("Can someone call me Tuesday morning?").startswith("Which ticket")
+    assert router.reply("Can someone call me Tuesday morning?").startswith(
+        "Which ticket"
+    )
     router.reply("The card one.")
     assert with_tools(model) == [False, True, True]

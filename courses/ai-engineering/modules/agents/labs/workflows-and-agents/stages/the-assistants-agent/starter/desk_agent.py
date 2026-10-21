@@ -66,7 +66,11 @@ class DeskAgent:
                 return said.get("content") or ""
             for call in calls:
                 messages.append(
-                    {"role": "tool", "tool_call_id": call["id"], "content": self.run(call)}
+                    {
+                        "role": "tool",
+                        "tool_call_id": call["id"],
+                        "content": self.run(call),
+                    }
                 )
         raise OutOfRounds(f"The model still called tools after {ROUNDS} requests.")
 

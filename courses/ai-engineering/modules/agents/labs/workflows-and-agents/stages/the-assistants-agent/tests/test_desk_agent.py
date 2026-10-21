@@ -15,9 +15,15 @@ PASSAGES = [
     },
 ]
 FREE = {
-    service: {"2026-11-03": ["10:00", "14:00"]} for service in ("ssa", "va", "studentaid", "dmv")
+    service: {"2026-11-03": ["10:00", "14:00"]}
+    for service in ("ssa", "va", "studentaid", "dmv")
 }
-CARD = {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"}
+CARD = {
+    "ticket": "T-2101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement card",
+}
 
 
 def agent_for(model):

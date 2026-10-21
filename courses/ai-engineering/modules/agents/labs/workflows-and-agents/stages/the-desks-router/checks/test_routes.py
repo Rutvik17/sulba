@@ -15,14 +15,27 @@ PASSAGES = [
     },
 ]
 FREE = {
-    service: {"2026-11-03": ["10:00", "14:00"]} for service in ("ssa", "va", "studentaid", "dmv")
+    service: {"2026-11-03": ["10:00", "14:00"]}
+    for service in ("ssa", "va", "studentaid", "dmv")
 }
-CARD = {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"}
-CLAIM = {"ticket": "T-2102", "service": "ssa", "status": "open", "summary": "Disability claim"}
+CARD = {
+    "ticket": "T-2101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement card",
+}
+CLAIM = {
+    "ticket": "T-2102",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Disability claim",
+}
 
 
 def routed(kind, service="none", day="none", time="none", part="none"):
-    return json.dumps({"kind": kind, "service": service, "day": day, "time": time, "part": part})
+    return json.dumps(
+        {"kind": kind, "service": service, "day": day, "time": time, "part": part}
+    )
 
 
 def router_for(model, page, tickets=(CARD,)):
@@ -59,7 +72,10 @@ def test_two_tickets_go_to_the_agent(model):
     model.says(routed("callback", "ssa", "2026-11-03", "none", "morning"))
     model.says("Is it about T-2101 or T-2102?")
     desk, router = router_for(model, "ssa", (CARD, CLAIM))
-    assert router.reply("Can someone call me Tuesday morning?") == "Is it about T-2101 or T-2102?"
+    assert (
+        router.reply("Can someone call me Tuesday morning?")
+        == "Is it about T-2101 or T-2102?"
+    )
     assert "tools" in chats(model)[1]
     assert desk.writes == []
 

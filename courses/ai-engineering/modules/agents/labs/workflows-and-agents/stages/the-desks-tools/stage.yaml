@@ -1,0 +1,7 @@
+id: stg_8auxya
+kind: build
+title: The desk's tools
+builds: A new `desk.py`.
+file: desk.py
+packages: [httpx, numpy]
+minutes: 35

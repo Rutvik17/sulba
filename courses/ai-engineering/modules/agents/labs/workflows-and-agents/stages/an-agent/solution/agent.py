@@ -111,7 +111,9 @@ class Agent:
             if not calls:
                 return said.get("content") or ""
             for call in calls:
-                result = self.desk.call(call["function"]["name"], call["function"]["arguments"])
+                result = self.desk.call(
+                    call["function"]["name"], call["function"]["arguments"]
+                )
                 self.messages.append(
                     {"role": "tool", "tool_call_id": call["id"], "content": result}
                 )

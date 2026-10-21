@@ -50,9 +50,8 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-import numpy as np
-
 import llama
+import numpy as np
 
 # Qwen3.5-4B at 4 bits, from Unsloth's GGUF repository at revision e87f176, and
 # nomic-embed-text-v1.5 at 8 bits, from Nomic AI's at revision 0188c9b.
@@ -79,8 +78,15 @@ EMBEDDING_OPTIONS = [
     "1",
 ]
 TRIALS = {"workflow": 3, "agent": 5, "router": 3}
-STAGES = {"desk": "the-desks-tools", "workflow": "a-workflow", "agent": "an-agent", "router": "the-desks-router"}
-TIME = re.compile(r"\b(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\b|\b(\d{1,2}):(\d{2})\b", re.IGNORECASE)
+STAGES = {
+    "desk": "the-desks-tools",
+    "workflow": "a-workflow",
+    "agent": "an-agent",
+    "router": "the-desks-router",
+}
+TIME = re.compile(
+    r"\b(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\b|\b(\d{1,2}):(\d{2})\b", re.IGNORECASE
+)
 
 
 def read(path: Path) -> list[dict[str, str]]:
@@ -253,7 +259,7 @@ def record(lab: Path, server: Path, out: Path, shard: str, downloads: Path) -> N
                     try:
                         for message in task["messages"]:
                             replies.append(conversation.reply(message))
-                    except Exception as failure:  # noqa: BLE001
+                    except Exception as failure:
                         error = f"{type(failure).__name__}: {failure}"
                     seconds = time.perf_counter() - began
                     outcome = grade(task, desk.writes, replies) if error is None else "error"

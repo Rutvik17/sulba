@@ -1,0 +1,7 @@
+id: stg_ngt9pb
+kind: build
+title: An agent
+builds: A new `agent.py`, which uses your `desk.py`.
+file: agent.py
+packages: [httpx, numpy]
+minutes: 40

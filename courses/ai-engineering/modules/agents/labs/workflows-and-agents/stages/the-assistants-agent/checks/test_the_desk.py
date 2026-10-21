@@ -16,9 +16,15 @@ PASSAGES = [
     },
 ]
 FREE = {
-    service: {"2026-11-03": ["10:00", "14:00"]} for service in ("ssa", "va", "studentaid", "dmv")
+    service: {"2026-11-03": ["10:00", "14:00"]}
+    for service in ("ssa", "va", "studentaid", "dmv")
 }
-CARD = {"ticket": "T-2101", "service": "ssa", "status": "open", "summary": "Replacement card"}
+CARD = {
+    "ticket": "T-2101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement card",
+}
 
 
 def agent_for(model):
@@ -72,5 +78,10 @@ def test_the_conversation_goes_on(model):
     agent.reply("Can someone call me Tuesday at 10?")
     agent.reply("Yes, please book it.")
     messages = model.requests[1].body["messages"]
-    assert [message["role"] for message in messages] == ["system", "user", "assistant", "user"]
+    assert [message["role"] for message in messages] == [
+        "system",
+        "user",
+        "assistant",
+        "user",
+    ]
     assert messages[2]["content"] == "I can book T-2101 on Tuesday at 10:00. Shall I?"

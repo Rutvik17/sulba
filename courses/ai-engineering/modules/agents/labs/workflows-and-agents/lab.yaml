@@ -1,3 +1,86 @@
+id: lab_ndbkxx
+title: Workflows and agents
+summary: >-
+  Have the help desk do its own work as well as answer: the desk's tools over a caller's
+  tickets and its advisers' callbacks, a workflow that sorts each message and follows a fixed
+  path, an agent that calls the tools itself, a review of an assistant's agent, and a router
+  that sends the workflow what it can follow and the agent the rest.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: tasks.json
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The help desk's 120 tasks, written for the lab: 40 of the dataset's opening questions
+      from its test dialogues, of seven words or more, 10 for each service, drawn at random,
+      with the passages that hold each one's answer; and 80 conversations about the caller's
+      tickets and callbacks, each with the caller's messages, tickets and the advisers' free
+      times.
+  - file: runs.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each task done by the lab's workflow, agent and router, with Qwen3.5-4B at 4 bits and
+      nomic-embed-text-v1.5 at 8 bits, through llama.cpp's server, release b11734, on GitHub's
+      Ubuntu runners on 21 October 2026: the agent's five runs of each task and the workflow's
+      and the router's three, each with a seed of its own, at the sampling settings Qwen3.5-4B's
+      model card gives for its non-thinking mode, with whether the task was done, the seconds the
+      run took and each request's tokens.
+models:
+  - title: Qwen3.5-4B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-4B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-4B/blob/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/LICENSE
+    file:
+      url: https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_K_M.gguf
+      bytes: 2740937888
+      sha256: 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4
+    context: 16384
+  - title: nomic-embed-text-v1.5
+    kind: embedding
+    creators: [Nomic AI]
+    url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf
+      bytes: 146146432
+      sha256: 3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7
+runs: machine
 stages:
   - the-desks-tools
   - a-workflow

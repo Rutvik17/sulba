@@ -1,0 +1,15 @@
+cards:
+  - id: crd_4unk0l
+    front: >-
+      Why does an agent's tool give an error as its result instead of raising?
+    back: >-
+      The model reads the result, so it can do something about the error, such as ask for the
+      free times and offer one. A tool that raises leaves the program to decide what the caller
+      hears.
+  - id: crd_9ea2b9
+    front: >-
+      What does a tool call's dispatcher check before it runs the tool?
+    back: >-
+      That the tool exists, that the arguments are a JSON object, and that they give every
+      argument the tool requires and none it doesn't take, so a model's mistake comes back as an
+      error it can read.
