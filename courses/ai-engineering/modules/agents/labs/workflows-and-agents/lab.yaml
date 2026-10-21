@@ -51,11 +51,12 @@ data:
       url: https://creativecommons.org/licenses/by/3.0/
     changes: >-
       Each task done by the lab's workflow, agent and router, with Qwen3.5-4B at 4 bits and
-      nomic-embed-text-v1.5 at 8 bits, through llama.cpp's server, release b11734, on GitHub's
-      Ubuntu runners on 21 October 2026: the agent's five runs of each task and the workflow's
-      and the router's three, each with a seed of its own, at the sampling settings Qwen3.5-4B's
-      model card gives for its non-thinking mode, with whether the task was done, the seconds the
-      run took and each request's tokens.
+      nomic-embed-text-v1.5 at 8 bits, through llama.cpp's server, release b11734, on machines
+      with 4 CPU cores and no GPU, on 21 October 2026: the agent's five runs of each task and the
+      workflow's and the router's three, each with a seed of its own, at the sampling settings
+      Qwen3.5-4B's model card gives for its non-thinking mode, with whether the task was done,
+      the seconds the run took, its requests, their tokens of prompt and of reply, and the tools
+      the model called.
 models:
   - title: Qwen3.5-4B
     kind: chat

@@ -1,8 +1,10 @@
-The workflow asks the model for what code can't do, sorting a message and writing an answer from passages, and does the rest itself. Anthropic's guide to building agents describes exactly this pattern, routing: "Routing classifies an input and directs it to a specialized followup task", with the example of "directing different types of customer service queries (general questions, refund requests, technical support) into different downstream processes, prompts, and tools." Each path's prompt does one job, and the schema holds the model to the fields code needs.
+The workflow asks the model for what code can't do, sorting a message and writing an answer from passages, and does the rest itself. Anthropic's guide to building agents describes exactly this pattern, routing: "Routing classifies an input and directs it to a specialized followup task", and one of its examples is the desk's: "Directing different types of customer service queries (general questions, refund requests, technical support) into different downstream processes, prompts, and tools." Each path's prompt does one job, and the schema holds the model to the fields code needs.
+
+The route asks the model for as little as it can. The caller names a weekday, so the route takes the weekday and code finds its date. Each of its fields can be none, and lists none first, and the time is none unless the caller names an hour, so that a field the message leaves empty stays empty rather than holding a guess.
 
 The rule that the caller says yes before anything is made lives in code: the offer waits on the workflow, and only a yes in the next message makes it. The model can't skip it, because the model never calls a tool.
 
-The desk's {% $fig.tasks %} tasks were each run {% $fig.trials %} times with the workflow and Qwen3.5-4B on GitHub's runners:
+The desk's {% $fig.tasks %} tasks were each run {% $fig.trials %} times with the workflow and Qwen3.5-4B, on machines with 4 CPU cores and no GPU:
 
 | Tasks | Done | Median seconds a task | Requests a task |
 | --- | --- | --- | --- |

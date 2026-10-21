@@ -10,11 +10,12 @@ and reasoning off, in one slot.
 
 The agent does each task 5 times and the workflow and the router 3 times each, the kth time with
 the seed 100n + k for the nth task, at the sampling settings Qwen3.5-4B's model card gives for
-its non-thinking mode. Each run is a line of JSON: the variant, the task, the trial and its seed,
-whether the desk did the task and why not, the desk's writes with the caller's message each came
-in reply to, the desk's replies, the error that ended the run if one did, and each request to the
-chat model, with the seconds it took, as timed around it, its tokens of prompt and reply, the
-prompt's tokens the server had cached, why the reply finished and the tools it called.
+its non-thinking mode. Each run is a line of JSON: the variant, the path it took, the workflow's or
+the agent's, the task, the trial and its seed, whether the desk did the task and why not, the
+desk's writes with the caller's message each came in reply to, the desk's replies, the error that
+ended the run if one did, and each request to the chat model, with the seconds it took, as timed
+around it, its tokens of prompt and reply, the prompt's tokens the server had cached, why the
+reply finished and the tools it called.
 
 A task is done, as `grade` says, from the desk's writes and its replies:
 
@@ -268,8 +269,10 @@ def record(
                         error = f"{type(failure).__name__}: {failure}"
                     seconds = time.perf_counter() - began
                     outcome = grade(task, desk.writes, replies) if error is None else "error"
+                    chosen = getattr(conversation, "chosen", conversation)
                     line = {
                         "variant": variant,
+                        "path": type(chosen).__name__.lower() if chosen else None,
                         "task": task["task"],
                         "trial": trial,
                         "seed": transport.seed,
