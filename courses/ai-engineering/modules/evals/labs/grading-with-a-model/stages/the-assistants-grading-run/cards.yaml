@@ -1,0 +1,13 @@
+cards:
+  - id: crd_f6477v
+    front: >-
+      Why can't a grader's scores be cached under the reply alone?
+    back: >-
+      The verdict is on the reply and its context together, so the same reply with other
+      passages needs a grade of its own.
+  - id: crd_dwt28u
+    front: >-
+      What should a grading run do when the grader's server refuses a request?
+    back: >-
+      Stop and raise. A refusal counted as a verdict passes replies no one graded, and the
+      run looks like one without failures.

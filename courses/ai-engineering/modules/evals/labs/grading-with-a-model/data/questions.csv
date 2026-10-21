@@ -1,0 +1,341 @@
+question,page,domain,text
+q1,ssa-3,ssa,I want to know when I should apply for disability benefits
+q2,ssa-7,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q3,ssa-11,ssa,What do the documents need to be about in order to get my social security card?
+q4,ssa-17,ssa,I need a Social Security card or number for my daughter
+q5,ssa-19,ssa,What documents do I need to apply for a replacement card as a noncitizen adult?
+q6,ssa-18,ssa,Will I need any kind of documentation to get a social security card?
+q7,ssa-14,ssa,What are the original documents needed for getting an original social security card for a foreign-born U.S. citizen adopted child?.
+q8,ssa-14,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q9,ssa-13,ssa,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+q10,ssa-12,ssa,Do I need an original card for an aduly who is not a citizen?
+q11,ssa-15,ssa,Do I need documents for my foreign born child to receive their social security card?
+q12,ssa-42,ssa,How do I know when I should apply for Medicare?
+q13,ssa-22,ssa,HEllo. could you tell me what documents i need to get a card?
+q14,ssa-40,ssa,Hello I need information about Other ways to apply for retirement benefits
+q15,ssa-23,ssa,What documents do I need to apply?
+q16,ssa-25,ssa,would you give me information about disability benefits
+q17,ssa-25,ssa,Hi there. I'm looking information related to the benefits for disability.
+q18,ssa-38,ssa,"Regarding Retirement benefits, if you do not qualify for benefits in someone else's registry, couldn't another person register?"
+q19,ssa-38,ssa,"Hi there. I'm getting everything set for my retirement, but I need some information."
+q20,ssa-37,ssa,What are the next steps if I do not qualify for benefits on someone else's records?
+q21,ssa-37,ssa,"If I did not qualify for benefits on someone else's record, can I add other members of my family?"
+q22,ssa-21,ssa,"Hello there. I came here to find out what documents I will need to get a replacement card for my child. My boy hasn't been born on American soil, which makes this a little difficult."
+q23,ssa-48,ssa,Are there any particular documents I need to have ready to apply?
+q24,ssa-46,ssa,What are the other parts of medicare what is the process?
+q25,ssa-46,ssa,Do I get Medicare if I am disabled?
+q26,ssa-52,ssa,what can you tell me about the disability benefits.
+q27,ssa-53,ssa,what is disability?
+q28,ssa-63,ssa,Could I apply online as an adult with a disability for SSI?
+q29,ssa-63,ssa,How does an adult with a disability apply to the SII?
+q30,ssa-62,ssa,Can you tell me what is the Supplemental Security Income Benefits?
+q31,ssa-62,ssa,What is the Supplemental Security Income Benefits?
+q32,ssa-56,ssa,I wanted to know if only I can see the information on my mySocial Security account. I'm very concerned about my privacy.
+q33,ssa-59,ssa,Will my family members be able to get increased benefits when i do?
+q34,ssa-73,ssa,Hello there. Hope you're doing well. I came here to find out if I can keep doing the job I did before.
+q35,ssa-65,ssa,What happens if you retire early?
+q36,ssa-69,ssa,Hello I need information about How to check the hearing status...
+q37,ssa-67,ssa,Can you explain to me the rules of reviewing my disability?
+q38,ssa-66,ssa,Will I continue to be eligible for disability after I first get it?
+q39,ssa-66,ssa,Can you tell me about how I can continue receiving my Disability benefits?
+q40,ssa-66,ssa,Hi. I'm trying to learn about disability benefits.
+q41,ssa-66,ssa,How can I continue receiving Disability benefits?
+q42,ssa-66,ssa,Will they be continued?
+q43,ssa-66,ssa,I need information on my continuing eligibility
+q44,ssa-66,ssa,How can I ensure that I keep receiving my disability benefits?
+q45,ssa-66,ssa,Will I still be able to continue with my eligibility for Disability benefits?
+q46,ssa-66,ssa,"Hey, how you doing?. Look, i want to know something about the possibility of having a continuing eligibility for disability?"
+q47,ssa-66,ssa,"Hey, I have some questions about my benefits planner regarding my disability."
+q48,ssa-79,ssa,When do I apply for retirement benefits?
+q49,ssa-79,ssa,"hello, When I can apply for Retirement Benefits Or Medicare?"
+q50,ssa-84,ssa,how do I apply for benefits?
+q51,ssa-84,ssa,Please tell me about the benefits for disabled people.
+q52,ssa-84,ssa,How do I apply for benefits?
+q53,ssa-84,ssa,How do I apply for benefits?
+q54,ssa-84,ssa,I need to find out about benefits for people with disabilities
+q55,ssa-84,ssa,How do i apply for benefits?
+q56,ssa-84,ssa,how do i apply for disability?
+q57,ssa-84,ssa,how do i apply?
+q58,ssa-84,ssa,how do i apply?
+q59,ssa-84,ssa,"Hi', a relative have a disability and i'm searching for information in her behalf, could you help me?"
+q60,ssa-30,ssa,When do I apply for social security disablilty benefits?
+q61,ssa-30,ssa,I need to apply for social security disablilty When do I Apply?
+q62,ssa-30,ssa,Hello I need information about when to apply for disability benefits
+q63,ssa-30,ssa,"Hello, When I can To Apply For Social Security Disability Benefits?"
+q64,ssa-30,ssa,"Hi there, I need to Apply For Social Security Disability Benefits. When I can do it?"
+q65,ssa-30,ssa,When should I apply for disability benefits?
+q66,ssa-30,ssa,"Hi, I need to know how soon I can apply for disability."
+q67,ssa-30,ssa,"I am thinking about applying for Social Security Disability, but I need to know when I should apply."
+q68,ssa-30,ssa,"Hello, I came here to find out what the best time is to submit my application for social security. I've sent in my application, but a bit late."
+q69,ssa-30,ssa,I came here because I need to know if I should wait with my application for social security.
+q70,ssa-29,ssa,"Hello, I'd like to know when a person is deemed disabled by your experts."
+q71,ssa-95,ssa,what can you tell me about Social Security Credits
+q72,ssa-95,ssa,what can you tell me about Social Security Credits
+q73,ssa-92,ssa,what can you tell me about Retirement Benefits
+q74,ssa-92,ssa,hi can you help me with retirement planning
+q75,ssa-94,ssa,whar is Monthly Medicare premiums for 2020?
+q76,ssa-93,ssa,There are several things that I need explained about medicare premiums. Perhaps you can help me?
+q77,ssa-93,ssa,what can you tell me about Medicare Premiums: Rules For Higher-Income Beneficiaries
+q78,ssa-88,ssa,"Hello, I would like to know how to apply for a disability benefits for a minor"
+q79,ssa-88,ssa,If Applying for a child (under 18) what are the steps for Disability Benefits
+q80,ssa-96,ssa,what can you tell me about Social Security Credits
+q81,ssa-96,ssa,I have some questions regarding my social security credits and could use some help with that.
+q82,ssa-97,ssa,Hello there. I'd like to know what I need to do if I want to apply for retirement from outside the U.S.
+q83,ssa-97,ssa,I'm currently living outside the U.S. and want to know how I can apply for my retirement benefits.
+q84,va-19,va,How do I check on my appeal status?
+q85,va-14,va,I have a VA decision review going on and want some help
+q86,va-23,va,what about More information and resources
+q87,va-15,va,What happens after I apply for education benefits?
+q88,va-8,va,What's next after I apply for healthcare benefits?
+q89,va-2,va,I wanted to know what comes next after an appealed claim?
+q90,va-16,va,What information about GI Bill school change is available?
+q91,va-21,va,"Hi there, I am looking for information regarding the Affordable Care Act and my VA health coverage"
+q92,va-28,va,I need information about VA disability compensation and ratings
+q93,va-22,va,I just wanted to know if there are any resources and/or support outside VA which I could access.
+q94,va-17,va,I wanted to know if I can access substance use treatment if I don't have VA benefits
+q95,va-24,va,I need some help with careers and employment through VA.
+q96,va-46,va,"Hey there, good afternoon. Thanks for letting me to use this. I'm looking for some information about possible employment that can be enjoyed by any family members?"
+q97,va-48,va,"Hey,i have questions about my VA welcome kit?"
+q98,va-49,va,I need assistance with life insurance
+q99,va-62,va,I'm helping an Army vet who thinks that he was exposed to biological weapons while in the service and we want information
+q100,va-60,va,"Hi, i'm kinda looking for information about pensions for Veterans, Can you help me on that?"
+q101,va-84,va,Am I eligible for VA health insurance?
+q102,va-90,va,I need GI Bill help
+q103,va-94,va,Does everyone who files a claim need to have a VA claim exam?
+q104,va-94,va,you can help by telling me how to schedule an exam for my VA claim
+q105,va-94,va,can you tell me what the next step is after the claim exam
+q106,va-94,va,I have a VA claim exam coming up and I really don't know what to expect.
+q107,va-94,va,"Hey i'm interested into filing a disability claim. I know there's some exam after the claim but, What happens next, after the exam?"
+q108,va-94,va,"Can you please explain what happens after a claim exam? I'm currently waiting for results, wondering about this."
+q109,va-100,va,"I want to know about Fry Scholarships, please"
+q110,va-91,va,"Hi, I receive VA payments but need dates of previous payments. Is there a way I can view my VA payment history online?"
+q111,va-88,va,Hello I need information about the VA duty to help
+q112,va-88,va,I was supposed to submit a request but I missed the deadline! What do I do?!
+q113,va-88,va,I think I have missed the deadline for submitting my request.
+q114,va-88,va,"I need more information about the deadline for my request, please."
+q115,va-88,va,Can you explain what duty to assist is?
+q116,va-107,va,"I've been having doubts about the veterans care system. I know you have some facilities for veterans but, Are there any other places in case i need care?"
+q117,va-110,va,Are there any other info and resources that I should know about the VA healthcare?
+q118,va-112,va,Is there something wrong with me not having VA health benefits?
+q119,va-138,va,"Good evening. My name is John, I'm a veteran and proudly served my country for many years. I came here because I need information about my primary care provider."
+q120,va-117,va,Hello there. I have some questions regarding the payment process.
+q121,va-6,va,hi i need more information about your medical benefits package
+q122,va-33,va,How to apply for VA Voc Rehab and Employment?
+q123,va-9,va,Schedule and view VA appointments online
+q124,va-18,va,how is the fully developed Claim program for a VA pension
+q125,va-12,va,what is PTSD?
+q126,va-40,va,What was the Orange Exposure Agent used for?
+q127,va-52,va,What is Veterans Mortgage Life Insurance (VMLI?
+q128,va-43,va,What does VA assistance and home assistance and subsidy benefits provide?
+q129,va-54,va,Is there anything that will make me more likely to get these benefits?
+q130,va-36,va,Will VA cover the cost of eyeglasses?
+q131,va-47,va,Get your VA medical records online
+q132,va-51,va,"I can t get VA dental care benefits, can I get help buying dental insurance?"
+q133,va-67,va,can you give me details of VA education benefits for survivors and dependents
+q134,va-73,va,how the Veterans Pension Eligibility is carried out
+q135,va-73,va,"Good evening, I need information about Veterans Pension Eligibility"
+q136,va-73,va,I would like to know about the Veterans Pension?
+q137,va-73,va,I need to know about Eligibility for Veterans Pension
+q138,va-73,va,can you give me information about the Veterans Pension Eligibility program
+q139,va-73,va,what is the Eligibility for Veterans Pension?
+q140,va-73,va,"Hello, I need to know if I'm eligible for Veteran's pension."
+q141,va-73,va,tell me about Veterans Pension?
+q142,va-73,va,Well hello. My name is Bill Smith and I was wondering if I qualify for veterans pension.
+q143,va-73,va,"Hello there, I need to know if I qualify for veterans pension please."
+q144,va-55,va,What does Group Life Veterans Insurance (VGLI) cover?
+q145,va-72,va,can you tell me more about housing grants for veterans
+q146,va-74,va,I want info about Ionizing radiation exposure
+q147,va-74,va,What is the Exposure to ionizing radiation?
+q148,va-74,va,I need help with Ionizing radiation exposure
+q149,va-74,va,Can you get disability if you were exposed to ionizing radiation?
+q150,va-74,va,Good afternoon. I was reading about possible effects of certain radiations on veterans. That could be worth of a disability benefit?
+q151,va-74,va,I require some information about ionizing radiation exposure.
+q152,va-74,va,tell me about Ionizing radiation exposure
+q153,va-74,va,can you give me details of Ionizing radiation exposure
+q154,va-74,va,can you give me details of Ionizing radiation exposure
+q155,va-74,va,hi i need help about Exposure to ionizing radiation
+q156,va-64,va,What does Post-9/11 GI Bill do?
+q157,va-82,va,Hello. I am trying to get info about VA nursing homes.
+q158,va-78,va,I wanted to know how my Yellow Ribbon benefits may change
+q159,va-79,va,Enhanced eligibility for returning OEF/OIF/OND combat Veterans
+q160,va-79,va,"I want to know about enhanced eligibility for returning OEF/OIF/OND combat Veterans, please."
+q161,va-79,va,please show me information about Enhanced eligibility for returning OEF/OIF/OND combat Veterans
+q162,va-79,va,Can you tell me about enhanced eligibility for returning combat veterans?
+q163,va-79,va,Can Active Duty Members Receive VA Health Care?
+q164,va-79,va,Hello there. I hope you're having a great day. Can you tell me about enhanced eligibility for returning combat veterans?
+q165,va-79,va,I need to learn about VA Health Care.
+q166,va-83,va,I wanted to find out more about VA education aid for dependents
+q167,va-95,va,"Hi, i'm helping a friend of mine looking for certain information about Rehab and employment, could you help me on that? She's on active duty."
+q168,va-93,va,Hi. I need help adding a dependent to my disability.
+q169,va-105,va,hi i need help about Veterans Educational Assistance Program (VEAP)
+q170,va-101,va,please show me information about Servicemembers Group Life Insurance (SGLI)
+q171,va-101,va,What does Servicemembers Group Life Insurance (SGLI) offer?
+q172,va-101,va,"Hello there, I would like to learn more about the SGLI insurance you offer."
+q173,va-101,va,Can you give me any information about servicemembers group life insurance?
+q174,va-101,va,Can you tell me about Servicemembers Group LIfe Insurance?
+q175,va-101,va,How do I get sGLI?
+q176,va-101,va,Hi. I am looking to learn more about life insurance.
+q177,va-101,va,I want to know more about the Group Life Insurance that you offer
+q178,va-101,va,I want to know more about SGLI
+q179,va-101,va,Can you help me with information on service members group life insurance?
+q180,va-122,va,I want to find out if I can get VA pension benefits through my husband and how it works
+q181,va-122,va,"I need to get some information about VA Survivors Pension, please."
+q182,va-122,va,Can you tell me who I can include on my husband's VA Survivors Pension?
+q183,va-122,va,Good evening. What can you tell me about the survivors pension?
+q184,va-122,va,can you give me details of VA Survivors Pension
+q185,va-122,va,hi i need help about VA Survivors Pension
+q186,va-122,va,can you give me details of VA Survivors Pension
+q187,va-122,va,"Hey there, i'm in need of some info related to survivor pension, please."
+q188,va-122,va,What is VA survivors pension?
+q189,va-122,va,Is VA survivors pension paid to surviving spouses and children?
+q190,va-120,va,How can I become eligible for VA home loan programs?
+q191,va-114,va,What types of Veteran ID cards are there?
+q192,va-133,va,I want to get a Vet ID card and need to know more about it
+q193,va-135,va,Hi. I am trying to learn about the GI Bill for college.
+q194,va-115,va,I am looking to learn about co-op training.
+q195,studentaid-3,studentaid,Where can I get answers for FAFSA process?
+q196,studentaid-4,studentaid,Could you give me some information about if there is any program that would allow me to temporarily stop making payments on my student loan?
+q197,studentaid-4,studentaid,I'm here for a school loan deferment
+q198,studentaid-6,studentaid,What can you tell me about Direct PLUS loans for parents?
+q199,studentaid-6,studentaid,What are direct PLUS loans for?
+q200,studentaid-5,studentaid,Can you give me details of the costs of the university and the professional career?
+q201,studentaid-5,studentaid,Can you give me details of the costs of the university and the professional career?
+q202,studentaid-10,studentaid,I need to know how to renew my FAFSA application.
+q203,studentaid-10,studentaid,How would I go about renewing my FAFSA Application?
+q204,studentaid-10,studentaid,Do I have to renew my FAFSA application?
+q205,studentaid-10,studentaid,Can you help me renew my FAFSA application?
+q206,studentaid-10,studentaid,Do I have to renew my FAFSA application?
+q207,studentaid-10,studentaid,Tell me about the FAFSA application renewal.
+q208,studentaid-10,studentaid,Do I need to renew my FAFSA application?
+q209,studentaid-10,studentaid,"Hi, good morning. i'll soon be on need to renew my student aid, is it mandatory to do?"
+q210,studentaid-10,studentaid,Do I have to renew my FAFSA every academic year?
+q211,studentaid-10,studentaid,Why do I renew my FAFSA application?
+q212,studentaid-8,studentaid,what do you have in terms of federal student aid specific resources?
+q213,studentaid-9,studentaid,I need some guidance on how to provide the verification you need of me.
+q214,studentaid-9,studentaid,Why would I need verification from the school?
+q215,studentaid-9,studentaid,Why would I need to provide required verification for my FAFSA application?
+q216,studentaid-9,studentaid,Can you tell me about the types of aid I can get from FAFSA?
+q217,studentaid-9,studentaid,I need to correct my financial aid application and submit it right
+q218,studentaid-9,studentaid,how should I decide on what school aid to use?
+q219,studentaid-9,studentaid,How can I correct my FAFSA application?
+q220,studentaid-25,studentaid,"Hi there. I'm looking information about the contact ways there is with you, and I heard something about virtual assistant and things like that."
+q221,studentaid-27,studentaid,How can I receive a Student Aid Report
+q222,studentaid-26,studentaid,"Hello, can you tell me what co-debtor means?"
+q223,studentaid-40,studentaid,Hello there. I'm looking information related to the types of aids that you bring.
+q224,studentaid-33,studentaid,"Hi, can you tell me how you can determine the amount of federal aid?"
+q225,studentaid-31,studentaid,"Hello, I would like you to guide me, I recently left the school and the school did not make the required return of the loan funds to the loan administrator, what proceeds?"
+q226,studentaid-36,studentaid,"Hi, what if I don't certify my income and my family size before the annual deadline?"
+q227,studentaid-36,studentaid,Hi I have a federal student loan and am wondering if I could repay it under an income-driven repayment plan?
+q228,studentaid-39,studentaid,How can I be a highly qualified teacher?
+q229,studentaid-39,studentaid,"Hi, I have FFEL loan and am wondering how much loan forgiveness am I entitled to?"
+q230,studentaid-34,studentaid,Hi there. I would like to know when a repayment plan can start.
+q231,studentaid-44,studentaid,who is the audience you are trying to reach with your sites?
+q232,studentaid-44,studentaid,"Hi, I want you to help me with information on the availability of federal student aid for college"
+q233,studentaid-44,studentaid,I'm ready to link to you
+q234,studentaid-44,studentaid,asdfas
+q235,studentaid-44,studentaid,"Hi, I'd like to contact you and help spread the word about the availability of federal student aid for college."
+q236,studentaid-44,studentaid,"Hi, I'd like to connect with you and help spread the word about the availability of federal student aid."
+q237,studentaid-44,studentaid,"Hi, I'd like to connect with you and help spread the word about the availability of federal student aid."
+q238,studentaid-44,studentaid,Is there a way to spread the word about the availability of federal student aid for college?
+q239,studentaid-44,studentaid,we might want to link your information on our site
+q240,studentaid-44,studentaid,How can I share the voice about the availability of federal student aid for college or vocational school?
+q241,studentaid-49,studentaid,Can non-US citizens qualify to receive federal student aid?
+q242,studentaid-49,studentaid,"If I am not a US citizen, do I not qualify for federal student aid?"
+q243,studentaid-51,studentaid,just wanted to know about getting financial aid
+q244,studentaid-50,studentaid,I am looking for further information on the Income-Sensitive Repayment Plan and am wondering where I could go to get this information
+q245,studentaid-66,studentaid,What is the Extended Repayment Plan under the Federal Student Aid Program?
+q246,studentaid-66,studentaid,how long are extended repayment plans
+q247,studentaid-66,studentaid,How long does the extended repayment plan allow you to pay your loan back?
+q248,studentaid-66,studentaid,How long does the extended repayment plan let me pay back my loan?
+q249,studentaid-66,studentaid,"Hello, I want information about the Extended Payment Plan"
+q250,studentaid-66,studentaid,how long are payments extended on the extended repayment plan?
+q251,studentaid-66,studentaid,I need extended repayment plan help
+q252,studentaid-66,studentaid,How long would I have for repayment of my student loans under the Extended Repayment Plan?
+q253,studentaid-66,studentaid,"Hello, can you tell me what the Extended Payment Plan consists of?"
+q254,studentaid-66,studentaid,The Extended Payment Plan for how long do you allow to pay the loans?
+q255,studentaid-68,studentaid,"Hello, I wonder what is the Federal student loans for college?"
+q256,studentaid-67,studentaid,hi
+q257,studentaid-67,studentaid,I need to know what the requirements are to get financial aid
+q258,studentaid-78,studentaid,Why must I list a least one college to receive my information when I am completing the FAFSA form?
+q259,studentaid-78,studentaid,what will the college do with the fafsa?
+q260,studentaid-78,studentaid,"I want to fill out the FAFSA form to find out what I can get for financial aid, but I haven't applied to any schools yet because I don't know where I want to go and what I can afford. Can I leave the school part on the form blank?"
+q261,studentaid-78,studentaid,"Hi there. I'm looking information related to how to fill the the fafsa form, and the information that I need to put on it."
+q262,studentaid-78,studentaid,I am wondering what information to include on my FAFSA form in relation to nominating a college to receive my information
+q263,studentaid-78,studentaid,How many colleges should list in my FAFSA form?
+q264,studentaid-78,studentaid,Why do I need to list schools on my FAFSA form?
+q265,studentaid-78,studentaid,Why do I have to list schools or colleges on my FAFSA form?
+q266,studentaid-78,studentaid,Is there a requirement for me to list any schools on my FAFSA form?
+q267,studentaid-78,studentaid,"Hello, can you instruct me in filling out the FAFSA form?"
+q268,studentaid-82,studentaid,Can I get any tax benefits from the IRS in relation to educational costs?
+q269,studentaid-76,studentaid,"Hi, I would like to know if you may be eligible for the cancellation of your federal student loans based on a false certification."
+q270,studentaid-76,studentaid,"Hi, I have a Federal Family Education Loan and have heard that I might be eligible for a discharge of my loan. Is this right?"
+q271,studentaid-19,studentaid,I want to be ready for school so I need financial aid information
+q272,studentaid-19,studentaid,Can you help me with preparing for college?
+q273,studentaid-19,studentaid,I'm ready to prepare for college
+q274,studentaid-19,studentaid,I need to get my kids ready for college so you can help me with that
+q275,studentaid-19,studentaid,What is a good way to prepare for college?
+q276,studentaid-19,studentaid,I would like to know what would help prepare for college someday?
+q277,studentaid-19,studentaid,I'm a student looking for help with preparing for college. Can you lend me a hand?
+q278,studentaid-19,studentaid,Hello there. I am looking for information on how to prepare for college. Do you have any advice for me?
+q279,studentaid-19,studentaid,I am already an adult and want to know how to prepare for professional college?
+q280,studentaid-19,studentaid,what are your preparation checklists about?
+q281,studentaid-12,studentaid,can you give me hiring information for federal student aid
+q282,studentaid-15,studentaid,I want to know what kind of forbearance is available to me
+q283,studentaid-15,studentaid,what forbearance is there for a student loan?
+q284,studentaid-17,studentaid,"If my school closes while I enroll, can I be eligible to be discharged from my federal student loan?"
+q285,studentaid-17,studentaid,"Hi, What are the eligibility requirements for a discharge of my student loan if my school closes?"
+q286,studentaid-62,studentaid,Hi there. I would like to have some information related to receive financial aid as student.
+q287,studentaid-90,studentaid,"If I am totally and permanently disabled, can I qualify for a discharge of my federal student loans?"
+q288,dmv-4,dmv,What can I do if I forgot to update my address?
+q289,dmv-4,dmv,What will happen if I let my insurance lapse?
+q290,dmv-8,dmv,Can DMV see my searches?
+q291,dmv-12,dmv,What are out of state insurance documents?
+q292,dmv-12,dmv,Do I need insurance?
+q293,dmv-10,dmv,How much does it cost to get a commercial registration?
+q294,dmv-10,dmv,What are the fees for commercial vehicles?
+q295,dmv-9,dmv,How long will Driver's Ed courses be valid for?
+q296,dmv-9,dmv,How do i find a Pre licensing course?
+q297,dmv-22,dmv,Hi there
+q298,dmv-22,dmv,"I lost my permit, how do I replace it?"
+q299,dmv-33,dmv,I need to be certified as an escort driver
+q300,dmv-17,dmv,When do I schedule and take the road test
+q301,dmv-17,dmv,I need help with a road test.
+q302,dmv-77,dmv,"Can you answer a few questions I have about exchanging my driver license from another state, please?"
+q303,dmv-47,dmv,"I have a repair problem with my van, can you answer a few questions about that?"
+q304,dmv-82,dmv,"Hey, I'm 17 years old and I have some questions about restrictions for drivers under 18. Can you answer them?"
+q305,dmv-98,dmv,can you give me details of Empire Gold plates
+q306,dmv-98,dmv,hello I need Information on Empire Gold plates
+q307,dmv-98,dmv,could you give me information about Empire Gold plates?
+q308,dmv-98,dmv,hello I need information on Empire Gold plates
+q309,dmv-98,dmv,Information about Empire Gold plates
+q310,dmv-98,dmv,I wanted to know more about the gold plates
+q311,dmv-98,dmv,"Good afternoon, May i have clarification about some doubts i have with colored plates?"
+q312,dmv-98,dmv,I need some information about Empire Gold plates.
+q313,dmv-98,dmv,"Good evening. Can i get information about gold plates, please?"
+q314,dmv-98,dmv,"Hello, what can you tell me about those Empire Gold plates?"
+q315,dmv-131,dmv,I lost my insurance while on active duty and have some questions
+q316,dmv-106,dmv,I want to know how I can renew my drivers license through the mail
+q317,dmv-106,dmv,I want to renew my license by mail
+q318,dmv-106,dmv,Hello I need information about the cost to renew the license
+q319,dmv-106,dmv,I need information about how much it'll cost me to renew my license.
+q320,dmv-106,dmv,need to know the renewal fee
+q321,dmv-106,dmv,Where can I find how must the fee is to renew my license?
+q322,dmv-96,dmv,"Hello, can you give me the email to Contact the Medical Certification Unit"
+q323,dmv-96,dmv,For the Medical Certification Requirements which are useful links
+q324,dmv-96,dmv,what are some of the little things I need to take care of for medical certification?
+q325,dmv-132,dmv,I want to become a driving school instructor and need to know what tests are involved in the process.
+q326,dmv-128,dmv,Tell me about how to pay suspension termination fee
+q327,dmv-119,dmv,I want to get a learner permit and need to know what the fees will be.
+q328,dmv-109,dmv,I'm thinking about opening a driving school and need information about the requirements to do so.
+q329,dmv-109,dmv,"Greetings, now is it going there?. Hope great, really. Can you give me some light about a driving school setting?"
+q330,dmv-109,dmv,What are the requirements to open a driving school?
+q331,dmv-121,dmv,How to replace a driverless ID card
+q332,dmv-121,dmv,how Replace a non-driver ID card
+q333,dmv-121,dmv,I need to get a replacement non-driver ID card.
+q334,dmv-121,dmv,I need some guidance with replacing a non-driver ID card. Can you help me?
+q335,dmv-111,dmv,Hello I need information about what the suspension implies and its risks
+q336,dmv-111,dmv,hi i would like to know if the suspension affects the driving privilege
+q337,dmv-111,dmv,I need information about Suspended Driving Privileges
+q338,dmv-111,dmv,My driver license has been suspended and I need help fixing this.
+q339,dmv-111,dmv,I have some questions regarding a suspended driving privilege. Perhaps you can answer some or even all of them.
+q340,dmv-111,dmv,"Can you answer some questions I have about my suspended driving privilege, please?"

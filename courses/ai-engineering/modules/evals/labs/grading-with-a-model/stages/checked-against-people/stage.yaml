@@ -1,0 +1,7 @@
+id: stg_q3r1tb
+kind: build
+title: Checked against people
+builds: A new `agreement.py`.
+file: agreement.py
+packages: [numpy]
+minutes: 35

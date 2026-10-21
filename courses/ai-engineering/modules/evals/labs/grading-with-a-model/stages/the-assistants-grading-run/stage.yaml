@@ -1,0 +1,65 @@
+id: stg_1u5ey0
+kind: catch
+title: The assistant's grading run
+builds: A new `judge.py`, which uses your `grader.py` and `agreement.py`.
+file: judge.py
+packages: [httpx, jinja2, numpy]
+minutes: 30
+problems:
+  - check: tst_rmi8pq
+    title: It graded a reply once, whatever its context
+    cost: >-
+      It kept each score under its reply alone, so a reply graded again with other passages
+      got the score it had with the first. Each of people's replies on the help desk's pages,
+      graded with its own passages and then with another's, got the same score twice, and the
+      grader's AUC there fell from {% $fig.auc %} to {% $fig.cached_auc %}.
+    fix: >-
+      Keep each score under its context and its reply together.
+    edit:
+      replace: |2-
+            scores: dict[str, float] = {}
+            keys = [item["reply"] for item in items]
+      with: |2-
+            scores: dict[tuple[str, str], float] = {}
+            keys = [(item["context"], item["reply"]) for item in items]
+  - check: tst_qfxiwv
+    title: It counted a refused request as grounded
+    cost: >-
+      A request the server refused came back as a reply that keeps to its passages, so a run
+      against a server still loading the model would report every reply grounded, and a run
+      with failures can't be told from one without.
+    fix: >-
+      Let the refusal raise: a run that stops can be run again.
+    edit:
+      replace: |2-
+                    try:
+                        scores[key] = risk(client, text)
+                    except httpx.HTTPStatusError:
+                        scores[key] = 0.0
+      with: |2-
+                    scores[key] = risk(client, text)
+  - check: tst_ibont3
+    title: It cut the passages short
+    cost: >-
+      It kept the first {% $fig.longest %} characters of each context, so the grader judged
+      replies against passages it never saw. {% $fig.cut %} of the {% $fig.contexts %}
+      contexts the help desk showed with its current replies are longer, and
+      {% $fig.cut_cited %} of the replies cite a passage the cut leaves out in part or whole.
+    fix: >-
+      Send the whole context. The server refuses a prompt longer than the grader's 4,096
+      tokens, and the refusal raises, so no reply is graded against less than it was shown.
+    edit:
+      replace: 'item["context"][:LONGEST]'
+      with: 'item["context"]'
+  - check: tst_orkpio
+    title: It chose its threshold on the test set
+    cost: >-
+      Chosen on the replies it reports on, the threshold came out at
+      {% $fig.test_threshold %}, and the kappa it reports, {% $fig.test_kappa %}, is the best
+      that set allows, not a measure of replies the threshold never saw. The development
+      set's threshold, {% $fig.chosen %}, gives {% $fig.dev_kappa %} there.
+    fix: >-
+      Choose on the development set, `("dev",)`, and report on the test set.
+    edit:
+      replace: 'return best_threshold(*labelled(begin, risks, ("test",)))'
+      with: 'return best_threshold(*labelled(begin, risks, ("dev",)))'

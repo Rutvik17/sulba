@@ -10,7 +10,7 @@ levels:
     slug: intermediate
     title: Intermediate
     needs: >-
-      A laptop with uv and about 2 GB free: Windows or Linux on x86-64, Linux on Arm, or
-      macOS 14 or later on Apple silicon. Module 1 runs in your browser, and from Module 2
-      labs run on your machine
+      A laptop with uv, 8 GB of memory and about 7 GB free: Windows or Linux on x86-64,
+      Linux on Arm, or macOS 14 or later on Apple silicon. Module 1 runs in your browser, and
+      from Module 2 labs run on your machine
     modules: [neural-networks-from-scratch, pytorch, transformers-from-scratch, building-on-model-apis, retrieval, evals]

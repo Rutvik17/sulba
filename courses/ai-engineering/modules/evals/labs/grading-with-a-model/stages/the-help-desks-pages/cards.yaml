@@ -1,0 +1,14 @@
+cards:
+  - id: crd_y2gqw9
+    front: >-
+      Why check a grader on your own pages when it already agrees with people on a benchmark?
+    back: >-
+      A threshold carries its false alarms to new text unmeasured: replies of another kind,
+      from longer passages, can be flagged far more often than the benchmark's were.
+  - id: crd_tkfbnm
+    front: >-
+      How can you make replies whose verdict is known without labelling any?
+    back: >-
+      Give a reply written from its own passages a context it can't keep to, such as another
+      service's pages. Passages from the same service often say the same thing, so they make
+      unsound labels.

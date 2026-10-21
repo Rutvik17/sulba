@@ -1,0 +1,14 @@
+cards:
+  - id: crd_jqpfi7
+    front: >-
+      A grader flags most of a release's replies, and many replies that keep to their
+      passages too. What can the report still do?
+    back: >-
+      Rank the replies by risk for people to read from the top, and compare releases on the
+      grader's scores, question by question, rather than on the share it flags.
+  - id: crd_r9izws
+    front: >-
+      Why doesn't the share of replies a grader flags say how many of them are wrong?
+    back: >-
+      The grader also flags replies that keep to their passages: {% $fig.own_flagged %} of
+      people's replies with their own. Its flags say where people start reading.
