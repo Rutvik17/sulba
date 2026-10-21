@@ -8,7 +8,13 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!brand", "!apps/web/public/icon.svg", "!**/labs/*/references/*.json"]
+    "includes": [
+      "**",
+      "!brand",
+      "!apps/web/public/icon.svg",
+      "!**/labs/*/references/*.json",
+      "!**/labs/*/data/*.json"
+    ]
   },
   "formatter": {
     "useEditorconfig": true,

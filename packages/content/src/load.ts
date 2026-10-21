@@ -195,8 +195,18 @@ class Reader {
       );
     const data: Dataset[] = [];
     for (const set of file.data) {
-      const text = await this.text(join(folder, 'data', set.file));
-      if (text !== null) data.push({ ...set, text });
+      const path = join(folder, 'data', set.file);
+      const text = await this.text(path);
+      if (text === null) continue;
+      if (set.file.endsWith('.json')) {
+        try {
+          JSON.parse(text);
+        } catch (error) {
+          this.problem(path, `Not valid JSON: ${(error as Error).message}`);
+          continue;
+        }
+      }
+      data.push({ ...set, text });
     }
     const references = hasReferences
       ? await this.references(join(folder, 'references'), file.references)

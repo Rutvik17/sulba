@@ -13,7 +13,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
     labs/<lab>/
       lab.yaml              id, title, summary, datasets, fetched files and ported code with
                             their credit, where its stages run, and its stages in order
-      data/<file>.csv       each dataset lab.yaml lists
+      data/<file>           each dataset lab.yaml lists: a .csv file, or a .json file for
+                            records that nest
       references/           optional: the results of a library the lab's tests compare with:
                             each JSON file lab.yaml lists, and the make.py that records them
       project/              optional: what a download of the lab puts beside the learner's

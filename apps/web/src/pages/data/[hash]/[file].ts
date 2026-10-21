@@ -1,4 +1,4 @@
-// Each lab's datasets, served apart from the lab's page so the page stays small. A dataset's
+// Each lab's datasets, CSV or JSON, served apart from the lab's page so the page stays small. A dataset's
 // folder is named for its text, so the file at an address never changes and is cached for good
 // (public/_headers), and labs with the same dataset share one file.
 
@@ -16,5 +16,9 @@ export const getStaticPaths = (async () => {
   });
 }) satisfies GetStaticPaths;
 
-export const GET: APIRoute = ({ props }) =>
-  new Response(props.text as string, { headers: { 'Content-Type': 'text/csv; charset=utf-8' } });
+export const GET: APIRoute = ({ params, props }) =>
+  new Response(props.text as string, {
+    headers: {
+      'Content-Type': `${params.file?.endsWith('.json') ? 'application/json' : 'text/csv'}; charset=utf-8`,
+    },
+  });

@@ -39,9 +39,9 @@ export const moduleFile = z.strictObject({
   labs: z.array(slug),
 });
 
-/** A dataset a lab uses, with the credit its licence asks for. */
+/** A dataset a lab uses, with the credit its licence asks for: CSV, or JSON for nested records. */
 const dataset = z.strictObject({
-  file: z.string().regex(/^[a-z0-9-]+\.csv$/),
+  file: z.string().regex(/^[a-z0-9-]+\.(csv|json)$/),
   title,
   creators: z.array(title).min(1),
   url: z.url({ protocol: /^https$/ }),

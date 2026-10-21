@@ -174,6 +174,21 @@ test('hidden files and folders, such as a tool cache, are not part of a course',
   expect(await courseSlugs(root)).toEqual(['demo']);
 });
 
+test('a dataset can be JSON, for records that nest', async () => {
+  const lab = 'demo/modules/counting/labs/tallies';
+  const { course, problems } = await loadChanged(async (root) => {
+    await edit(join(root, lab, 'lab.yaml'), 'file: votes.csv', 'file: polls.json');
+    await writeFile(
+      join(root, lab, 'data/polls.json'),
+      '[{"poll": "p1", "votes": [{"choice": "yes"}, {"choice": "no"}]}]\n',
+    );
+    await rm(join(root, lab, 'data/votes.csv'));
+  });
+  expect(problems).toEqual([]);
+  const [set] = course?.levels[0]?.modules[0]?.labs[0]?.data ?? [];
+  expect(set?.file).toBe('polls.json');
+});
+
 test.each([
   {
     name: 'a listed stage that is missing',
@@ -185,6 +200,28 @@ test.each([
     change: (root: string) =>
       cp(join(root, stages, 'share'), join(root, stages, 'extra'), { recursive: true }),
     problem: { path: `${stages}/extra`, message: 'Not listed in lab.yaml.' },
+  },
+  {
+    name: 'a dataset that is neither CSV nor JSON',
+    change: (root: string) =>
+      edit(join(root, 'demo/modules/counting/labs/tallies/lab.yaml'), 'votes.csv', 'votes.txt'),
+    problem: {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message: 'data.0.file: Invalid string: must match pattern /^[a-z0-9-]+\\.(csv|json)$/',
+    },
+  },
+  {
+    name: 'a JSON dataset that is not JSON',
+    change: async (root: string) => {
+      const lab = join(root, 'demo/modules/counting/labs/tallies');
+      await edit(join(lab, 'lab.yaml'), 'votes.csv', 'votes.json');
+      await cp(join(lab, 'data/votes.csv'), join(lab, 'data/votes.json'));
+      await rm(join(lab, 'data/votes.csv'));
+    },
+    problem: {
+      path: 'demo/modules/counting/labs/tallies/data/votes.json',
+      message: expect.stringMatching(/^Not valid JSON: /),
+    },
   },
   {
     name: 'a file a stage does not use',
