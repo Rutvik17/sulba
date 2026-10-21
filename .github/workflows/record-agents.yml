@@ -13,7 +13,7 @@ env:
   LLAMA: https://github.com/ggml-org/llama.cpp/releases/download/b11734/llama-b11734-bin-ubuntu-x64.tar.gz
   LLAMA_SHA256: 5d20cbcde04ef743b96e91b6173663b1925077a13fa86d0d98e69a5a5b59a16a
   LAB: courses/ai-engineering/modules/agents/labs/workflows-and-agents
-  VARIANTS: workflow
+  VARIANTS: router
 jobs:
   runs:
     strategy:
