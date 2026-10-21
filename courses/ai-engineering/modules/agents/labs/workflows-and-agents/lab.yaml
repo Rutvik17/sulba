@@ -1,0 +1,6 @@
+stages:
+  - the-desks-tools
+  - a-workflow
+  - an-agent
+  - the-assistants-agent
+  - the-desks-router
