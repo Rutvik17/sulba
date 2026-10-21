@@ -1,0 +1,32 @@
+id: stg_ps3slm
+kind: ship
+title: The desk's router
+builds: A new `router.py`, which uses your `desk.py`, `workflow.py` and `agent.py`.
+file: router.py
+packages: [httpx, numpy]
+minutes: 35
+checks:
+  - check: tst_2o51bb
+    title: Sorted once
+    requires: >-
+      A conversation is sorted by its first message alone, and stays on the path that message
+      took, the workflow's or the agent's.
+    failure: >-
+      Keep the path the first message chose, and send each later message down it without
+      sorting it again.
+  - check: tst_ecn8ol
+    title: Two tickets go to the agent
+    requires: >-
+      A callback for a service in which the caller has two open tickets goes to the agent,
+      which can ask which ticket the call is about.
+    failure: >-
+      Count the caller's open tickets for the route's service, and give the workflow a callback
+      only when there is at most one.
+  - check: tst_ganb87
+    title: The rest go to the agent
+    requires: >-
+      A message sorted as anything but a question, a case or a callback, or a callback with no
+      service or no day, goes to the agent.
+    failure: >-
+      The workflow follows a callback only when the route names both its service and its day,
+      and follows nothing sorted as other.

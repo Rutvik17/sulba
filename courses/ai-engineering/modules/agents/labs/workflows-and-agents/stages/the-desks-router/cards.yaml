@@ -1,0 +1,13 @@
+cards:
+  - id: crd_b8qr9u
+    front: >-
+      What does a router between a workflow and an agent send to each?
+    back: >-
+      The workflow gets the messages whose route it can follow, in few requests and with its
+      rules in code; the agent gets the rest, which no fixed path fits.
+  - id: crd_u9rxhp
+    front: >-
+      Why does the desk's router sort a conversation only by its first message?
+    back: >-
+      Each path keeps its own conversation: the workflow waits for a yes to its offer, and the
+      agent holds the messages and tool results so far. Sorting again would drop them.

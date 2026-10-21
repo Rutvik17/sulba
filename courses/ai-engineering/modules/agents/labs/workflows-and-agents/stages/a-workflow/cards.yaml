@@ -1,0 +1,13 @@
+cards:
+  - id: crd_sj4e6z
+    front: >-
+      In a workflow, who decides what happens after the model's reply?
+    back: >-
+      Code. The model does one thing at a time, such as sorting a message or answering from
+      passages, and code follows a fixed path for each kind of message.
+  - id: crd_ojdekf
+    front: >-
+      How does the desk's workflow make sure a callback waits for the caller's yes?
+    back: >-
+      It keeps the offer, and books it only when the caller's next message is a yes. The model
+      never calls a tool, so it can't book anything itself.

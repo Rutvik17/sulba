@@ -54,6 +54,8 @@ def serving(
         with urllib.request.urlopen(request) as response:
             return json.load(response)
 
+    post.address = address  # type: ignore[attr-defined]
+
     with open(log, "wb") as output:
         command = [program, "--model", model, *options, "--port", str(port)]
         process = subprocess.Popen(command, stdout=output, stderr=subprocess.STDOUT)
@@ -72,3 +74,9 @@ def serving(
         finally:
             process.terminate()
             process.wait()
+
+
+def address(post: Callable[[str, dict], dict]) -> str:
+    """The address of the server a function from serving posts to, such as
+    http://127.0.0.1:50123."""
+    return post.address  # type: ignore[attr-defined]
