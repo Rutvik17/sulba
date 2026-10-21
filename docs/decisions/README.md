@@ -1,6 +1,6 @@
 # Architecture decisions
 
-Each record covers one decision: the context, the options compared, the evidence, the choice, what it costs and when to revisit it. An accepted record is not rewritten. When a decision changes, a new record supersedes the old one, and the old one's status links to it.
+Each record covers one decision: the context, the options compared, the evidence, the choice, what it costs and when to revisit it. An accepted record is not rewritten. When a decision changes, a new record supersedes the old one, or amends the part that changed, and the old one's status links to it.
 
 | Record | Status |
 | --- | --- |
@@ -37,7 +37,8 @@ Each record covers one decision: the context, the options compared, the evidence
 | [31. Test a lab's model calls against a scripted model](0031-test-a-labs-model-calls-against-a-scripted-model.md) | Accepted |
 | [32. Run a lab's model on the learner's machine with llama.cpp's server](0032-run-a-labs-model-with-llama-cpps-server.md) | Superseded by 34 |
 | [33. Run a lab's database on the learner's machine with Postgres and pgvector](0033-run-a-labs-database-with-postgres-and-pgvector.md) | Accepted |
-| [34. Serve a lab's models on the learner's machine with llama.cpp's server](0034-serve-a-labs-models-with-llama-cpps-server.md) | Accepted |
+| [34. Serve a lab's models on the learner's machine with llama.cpp's server](0034-serve-a-labs-models-with-llama-cpps-server.md) | Accepted, amended by 36 |
 | [35. Answer a lab's models through a forwarder that keeps each connection open](0035-answer-a-labs-models-through-a-forwarder.md) | Accepted |
+| [36. Let a lab give its chat model a longer context](0036-let-a-lab-give-its-chat-model-a-longer-context.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

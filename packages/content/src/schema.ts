@@ -83,29 +83,42 @@ const fetchSource = z.strictObject({
 /**
  * A model a lab that runs on the learner's machine serves there, through llama.cpp's server, with
  * `uv run sulba.py model` (decision record 34): its title, which a request gives to reach it, its
- * kind, the credit its licence asks for, and its GGUF file's address, size and sha256.
+ * kind, the credit its licence asks for, its GGUF file's address, size and sha256, and for a chat
+ * model, the tokens of conversation it reads, when the lab needs more than 4,096 (decision record
+ * 36).
  */
-const servedModel = z.strictObject({
-  title: z.string().regex(fileName, 'Expected letters, digits, dots, dashes and _'),
-  kind: z.enum(modelKinds),
-  creators: z.array(title).min(1),
-  url: z.url({ protocol: /^https$/ }),
-  licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
-  file: z.strictObject({
-    url: z.url({ protocol: /^https$/ }).refine(
-      (address) => {
-        const name = new URL(address).pathname.split('/').at(-1) ?? '';
-        return fileName.test(name) && name.endsWith('.gguf');
-      },
-      {
-        message:
-          'Expected the address of a .gguf file, named with letters, digits, dots, dashes and _',
-      },
-    ),
-    bytes: z.int().positive(),
-    sha256: z.string().regex(/^[0-9a-f]{64}$/, 'Expected a sha256 in lowercase hex'),
-  }),
-});
+const servedModel = z
+  .strictObject({
+    title: z.string().regex(fileName, 'Expected letters, digits, dots, dashes and _'),
+    kind: z.enum(modelKinds),
+    creators: z.array(title).min(1),
+    url: z.url({ protocol: /^https$/ }),
+    licence: z.strictObject({ name: title, url: z.url({ protocol: /^https$/ }) }),
+    file: z.strictObject({
+      url: z.url({ protocol: /^https$/ }).refine(
+        (address) => {
+          const name = new URL(address).pathname.split('/').at(-1) ?? '';
+          return fileName.test(name) && name.endsWith('.gguf');
+        },
+        {
+          message:
+            'Expected the address of a .gguf file, named with letters, digits, dots, dashes and _',
+        },
+      ),
+      bytes: z.int().positive(),
+      sha256: z.string().regex(/^[0-9a-f]{64}$/, 'Expected a sha256 in lowercase hex'),
+    }),
+    context: z
+      .int()
+      .min(4096)
+      .max(32768)
+      .refine((tokens) => tokens % 1024 === 0, 'Expected a multiple of 1,024')
+      .optional(),
+  })
+  .refine((model) => model.context === undefined || model.kind === 'chat', {
+    message: 'Only a chat model takes a context',
+    path: ['context'],
+  });
 
 /** Code by others that a lab ports, with the credit and the notice its licence asks for. */
 const portedCode = z.strictObject({

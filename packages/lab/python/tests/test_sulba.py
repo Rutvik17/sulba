@@ -939,6 +939,14 @@ def test_each_kind_of_model_runs_with_its_options() -> None:
     assert macos == linux.replace("ubatch-size = 2048\n", "ubatch-size = 2048\ndevice = none\n")
 
 
+def test_a_chat_model_reads_the_context_its_lab_gives() -> None:
+    models = [{"title": "Tiny", "kind": "chat", "context": 16384}]
+    preset = sulba.preset_of(models, [Path("models", "a", "chat.gguf")], "Linux")
+    chat = "[Tiny]\nmodel = models/a/chat.gguf\nload-on-startup = true\nctx-size = 16384\n"
+    assert chat in preset
+    assert "ctx-size = 4096" not in preset
+
+
 def test_a_build_is_unpacked_once_beside_its_archive(tmp_path: Path) -> None:
     archive = tmp_path / "bin-win-cpu-x64.zip"
     with zipfile.ZipFile(archive, "w") as packed:
