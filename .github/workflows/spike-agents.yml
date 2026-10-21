@@ -1,5 +1,5 @@
-# Spike: runs the desk's 40 agent tasks, twice each, with five model settings in llama-server
-# b11734, and commits each run to spike/agents/out on this branch. A push made with the
+# Spike 2: runs the desk's 96 tasks, twice each, as an agent, an agent that thinks and a workflow,
+# with Qwen3.5-4B in llama-server b11734, and commits each run to spike/agents/out2 on this branch. A push made with the
 # workflow's own token starts no run.
 name: Spike agents
 on:
@@ -16,8 +16,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: [qwen2b, qwen4b, qwen4b-think, granite, minicpm]
-        shard: [1, 2, 3, 4]
+        include:
+          - {config: agent, shard: 1/6}
+          - {config: agent, shard: 2/6}
+          - {config: agent, shard: 3/6}
+          - {config: agent, shard: 4/6}
+          - {config: agent, shard: 5/6}
+          - {config: agent, shard: 6/6}
+          - {config: agent-think, shard: 1/8}
+          - {config: agent-think, shard: 2/8}
+          - {config: agent-think, shard: 3/8}
+          - {config: agent-think, shard: 4/8}
+          - {config: agent-think, shard: 5/8}
+          - {config: agent-think, shard: 6/8}
+          - {config: agent-think, shard: 7/8}
+          - {config: agent-think, shard: 8/8}
+          - {config: workflow, shard: 1/4}
+          - {config: workflow, shard: 2/4}
+          - {config: workflow, shard: 3/4}
+          - {config: workflow, shard: 4/4}
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     steps:
@@ -35,15 +52,17 @@ jobs:
         run: |
           lscpu | grep "Model name"
           nproc
+          name="${{ matrix.config }}-$(echo "${{ matrix.shard }}" | tr / -)"
+          echo "NAME=$name" >> "$GITHUB_ENV"
           uv run spike/agents/run.py "${{ matrix.config }}" "$(cat server.txt)" \
-            "runs-${{ matrix.config }}-${{ matrix.shard }}.jsonl" "${{ matrix.shard }}/4" models
+            "runs2-$name.jsonl" "${{ matrix.shard }}" models
       - if: always()
-        run: tail -50 models/llama-server.log || true
+        run: tail -50 models/chat.log || true
       - if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: runs-${{ matrix.config }}-${{ matrix.shard }}
-          path: runs-${{ matrix.config }}-${{ matrix.shard }}.jsonl
+          name: runs2-${{ env.NAME }}
+          path: runs2-${{ env.NAME }}.jsonl
   join:
     needs: run
     if: always()
@@ -55,14 +74,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          pattern: runs-*
-          path: spike/agents/out
+          pattern: runs2-*
+          path: spike/agents/out2
           merge-multiple: true
       - name: Commit
         run: |
-          ls -la spike/agents/out
+          ls -la spike/agents/out2
           git config user.name github-actions
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add spike/agents/out
-          git commit -m "Record the agent spike's runs"
+          git add spike/agents/out2
+          git commit -m "Record the agent spike's second runs"
           git push origin HEAD:spike/agents
