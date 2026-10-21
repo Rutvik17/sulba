@@ -1,0 +1,68 @@
+# Spike: runs the desk's 40 agent tasks, twice each, with five model settings in llama-server
+# b11734, and commits each run to spike/agents/out on this branch. A push made with the
+# workflow's own token starts no run.
+name: Spike agents
+on:
+  push:
+    branches: [spike/agents]
+    paths: [spike/agents/*.py, .github/workflows/spike-agents.yml]
+permissions:
+  contents: read
+env:
+  LLAMA: https://github.com/ggml-org/llama.cpp/releases/download/b11734/llama-b11734-bin-ubuntu-x64.tar.gz
+  LLAMA_SHA256: 5d20cbcde04ef743b96e91b6173663b1925077a13fa86d0d98e69a5a5b59a16a
+jobs:
+  run:
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [qwen2b, qwen4b, qwen4b-think, granite, minicpm]
+        shard: [1, 2, 3, 4]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: llama-server b11734
+        run: |
+          curl -fsSL -o llama.tar.gz "$LLAMA"
+          echo "$LLAMA_SHA256  llama.tar.gz" | sha256sum -c
+          mkdir -p llama models
+          tar -xzf llama.tar.gz -C llama
+          find "$PWD/llama" -name llama-server -type f | head -1 > server.txt
+          test -s server.txt
+      - name: Run
+        run: |
+          lscpu | grep "Model name"
+          nproc
+          uv run spike/agents/run.py "${{ matrix.config }}" "$(cat server.txt)" \
+            "runs-${{ matrix.config }}-${{ matrix.shard }}.jsonl" "${{ matrix.shard }}/4" models
+      - if: always()
+        run: tail -50 models/llama-server.log || true
+      - if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: runs-${{ matrix.config }}-${{ matrix.shard }}
+          path: runs-${{ matrix.config }}-${{ matrix.shard }}.jsonl
+  join:
+    needs: run
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: runs-*
+          path: spike/agents/out
+          merge-multiple: true
+      - name: Commit
+        run: |
+          ls -la spike/agents/out
+          git config user.name github-actions
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add spike/agents/out
+          git commit -m "Record the agent spike's runs"
+          git push origin HEAD:spike/agents
