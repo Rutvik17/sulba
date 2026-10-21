@@ -1,12 +1,13 @@
 # Spike: records every release's replies to the help desk's questions, as many samples as
-# multidoc2dial_replies.py gives each, and Granite Guardian's grades of them and of the replies
-# people wrote, from the questions, judgments and runs the pilot committed to spike/out, and
-# commits them to spike/full on this branch. A push made with the workflow's own token starts
+# multidoc2dial_replies.py gives each, each question's samples with seeds of their own, and
+# Granite Guardian's grades of the current release's first sample and of the replies people
+# wrote, from the questions, judgments and runs the pilot committed to spike/out, and commits
+# them to spike/seeds on this branch. A push made with the workflow's own token starts
 # no run.
 name: Record evals
 on:
   push:
-    branches: [spike/evals]
+    branches: [spike/evals-seeds]
 permissions:
   contents: read
 env:
@@ -95,12 +96,12 @@ jobs:
           merge-multiple: true
       - name: Join and commit
         run: |
-          mkdir -p spike/full
-          python3 spike/join.py spike/full/replies.csv $(for i in $(seq 1 20); do echo shards/replies-$i.csv; done)
-          python3 spike/join.py spike/full/grades.csv $(for i in $(seq 1 20); do echo shards/grades-$i.csv; done)
-          wc -l spike/full/*
+          mkdir -p spike/seeds
+          python3 spike/join.py spike/seeds/replies.csv $(for i in $(seq 1 20); do echo shards/replies-$i.csv; done)
+          python3 spike/join.py spike/seeds/grades.csv $(for i in $(seq 1 20); do echo shards/grades-$i.csv; done)
+          wc -l spike/seeds/*
           git config user.name github-actions
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add spike/full
-          git commit -m "Record every release of Evals"
-          git push origin HEAD:spike/evals
+          git add spike/seeds
+          git commit -m "Record Evals with a seed per question"
+          git push origin HEAD:spike/evals-seeds

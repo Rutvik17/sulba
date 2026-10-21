@@ -12,8 +12,9 @@ sends it a system prompt, then a message that holds the first passages of one of
 `runs.csv`, in its order, each as its name in square brackets, its page's title and its text, and
 then the question. The model replies at the sampling settings its model card gives for text
 without thinking, a temperature of 1.0, top_p 1.0, top_k 20, min_p 0, a presence penalty of 2.0
-and a repetition penalty of 1.0, in up to 300 tokens, its sample k with seed k. The releases are
-in RELEASES.
+and a repetition penalty of 1.0, in up to 300 tokens. Sample k of the nth question of
+`questions.csv` has the seed 100n + k in every release, so that no two replies of a release share
+a seed. The releases are in RELEASES.
 
 `replies.csv` holds each reply, by question, release and sample, with the reason the model
 stopped, `stop` or `length`, and the tokens it wrote.
@@ -106,13 +107,13 @@ def record(folder: Path, server: Path, out: Path, shard: str, downloads: Path) -
     model = llama.download(MODEL, MODEL_SHA256, downloads / "Qwen3.5-2B-Q8_0.gguf")
     passages = {passage["passage"]: passage for passage in read(folder / "passages.csv")}
     searches = ranked(folder)
-    questions = read(folder / "questions.csv")
+    questions = list(enumerate(read(folder / "questions.csv"), start=1))
     part, parts = (int(number) for number in shard.split("/"))
     size = -(-len(questions) // parts)
     questions = questions[(part - 1) * size : part * size]
     rows: list[list[object]] = []
     with llama.serving(server, model, OPTIONS, downloads / "llama-server.log") as post:
-        for done, question in enumerate(questions, start=1):
+        for done, (number, question) in enumerate(questions, start=1):
             for name, release in RELEASES.items():
                 shown = searches[release["search"], question["question"]][: release["shown"]]
                 messages = [
@@ -123,7 +124,8 @@ def record(folder: Path, server: Path, out: Path, shard: str, downloads: Path) -
                     },
                 ]
                 for sample in range(1, release["samples"] + 1):
-                    body = {"messages": messages, **SAMPLING, "seed": sample}
+                    seed = 100 * number + sample
+                    body = {"messages": messages, **SAMPLING, "seed": seed}
                     reply = post("/v1/chat/completions", body)
                     choice = reply["choices"][0]
                     rows.append(
