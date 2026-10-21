@@ -1,0 +1,13 @@
+cards:
+  - id: crd_78dcbb
+    front: >-
+      Why choose a grader's threshold on the development set and report it on the test set?
+    back: >-
+      A threshold chosen on the test set reports the best agreement that set allows, not
+      what the grader will do on the next replies.
+  - id: crd_hijmkq
+    front: >-
+      What does Cohen's kappa take out of a grader's accuracy?
+    back: >-
+      The agreement that chance alone would reach if the grader and the people each gave 1
+      at their own rate.

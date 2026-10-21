@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ql1z9i
+    front: >-
+      Why render Granite Guardian's prompt from its own chat template?
+    back: >-
+      So that the prompt is the one the model was trained on, word for word, and changes
+      with the model's own template.
+  - id: crd_7908to
+    front: >-
+      Why read the grader's probability of Yes rather than its one-word answer?
+    back: >-
+      A probability is a score: it can be ranked against people's labels at every
+      threshold, and set to the threshold the help desk chooses.

@@ -1,0 +1,157 @@
+id: lab_8tajg8
+title: Grading with a model
+summary: >-
+  Grade the help desk's replies with Granite Guardian 3.1 2B on your machine: its prompt
+  rendered from its own template and its verdict read from its likeliest first tokens, its
+  agreement with people's labels, a check on the help desk's own pages, a review of an
+  assistant's grading run, and a report of how many of a release's replies keep to their
+  passages.
+data:
+  - file: begin.csv
+    title: BEGIN
+    creators: [Nouha Dziri, Hannah Rashkin, Tal Linzen, David Reitter]
+    url: https://github.com/google/BEGIN-dataset/tree/6e65f0d5a1ed1b9574643a7640ff1678d4e979b5/wow
+    licence:
+      name: CC BY 4.0
+      url: https://github.com/google/BEGIN-dataset/blob/6e65f0d5a1ed1b9574643a7640ff1678d4e979b5/wow/LICENSE
+    changes: >-
+      The replies of the benchmark's Wizard of Wikipedia part, from conversations by Emily
+      Dinan, Stephen Roller, Kurt Shuster, Angela Fan, Michael Auli and Jason Weston at
+      Facebook, without those labelled Generic: its development set, and 1,000 of its test
+      set drawn at random, each with its set, the model that wrote it, its label, its
+      sentence as `context` and itself as `reply`.
+  - file: begin-grades.csv
+    title: BEGIN
+    creators: [Nouha Dziri, Hannah Rashkin, Tal Linzen, David Reitter]
+    url: https://github.com/google/BEGIN-dataset/tree/6e65f0d5a1ed1b9574643a7640ff1678d4e979b5/wow
+    licence:
+      name: CC BY 4.0
+      url: https://github.com/google/BEGIN-dataset/blob/6e65f0d5a1ed1b9574643a7640ff1678d4e979b5/wow/LICENSE
+    changes: >-
+      For each reply in begin.csv, the probabilities Granite Guardian 3.1 2B at 8 bits gave
+      the answers Yes and No to whether it keeps to its sentence, summed over its 20
+      likeliest first tokens, through llama.cpp's server, release b11734, on 20 October
+      2026.
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with
+      its headings marked by #s and its list items by -, and its blocks joined into passages
+      of up to 200 words. Each passage has its page, the page's domain, and the page's title
+      without the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each of the dataset's test dialogues whose next turn answers
+      it from the same page: 340 questions, each with its page and the page's domain.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its
+      answer was given from, and every passage with the same text as one of them.
+  - file: ranked.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the first 10 passages of the help desk's reranked search: the first
+      20 texts of a reciprocal rank fusion, with k = 60, of the passages' BM25 ranking and
+      their vectors' ranking, in the order of the scores Qwen3-Reranker-0.6B at 8 bits gave
+      them, through llama.cpp's server, release b11734, on 20 October 2026.
+  - file: human-replies.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the reply the dataset's agent gave it in the next turn.
+  - file: human-grades.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each reply in human-replies.csv, the probabilities Granite Guardian 3.1 2B at 8
+      bits gave the answers Yes and No to whether it keeps to its context, summed over its
+      20 likeliest first tokens, through llama.cpp's server, release b11734, on 21 October
+      2026: with the passages of its question's page that hold the answer; with the first
+      passage of the reranked search on another page that holds none of their texts; and
+      with the passages that hold the answer to another service's question.
+  - file: replies.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the reply Qwen3.5-2B at 8 bits wrote from its 5 passages, through
+      llama.cpp's server, release b11734, on 21 October 2026, at the sampling settings its
+      model card gives for text, with a seed of its own.
+  - file: grades.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each reply in replies.csv, the probabilities Granite Guardian 3.1 2B at 8 bits
+      gave the answers Yes and No to whether it keeps to the passages it was written from,
+      summed over its 20 likeliest first tokens, through llama.cpp's server, release b11734,
+      on 21 October 2026.
+fetch:
+  - kind: model
+    title: Granite Guardian 3.1 2B's tokenizer configuration
+    creators: [IBM]
+    url: https://huggingface.co/ibm-granite/granite-guardian-3.1-2b
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    files:
+      - file: tokenizer_config.json
+        url: https://huggingface.co/ibm-granite/granite-guardian-3.1-2b/resolve/81145486e85c6c82c01e759c0356d9d6da4d21a5/tokenizer_config.json
+        bytes: 17196
+        sha256: c2b3840f831434d583a4b0c804fc4a217141161c6008017fb89eba212d2e6d87
+models:
+  - title: Granite-Guardian-3.1-2B
+    kind: chat
+    creators: [IBM]
+    url: https://huggingface.co/ibm-granite/granite-guardian-3.1-2b
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/mrutkows/granite-guardian-3.1-2b-GGUF/resolve/1f4034aca92fe0094b68581bf2d0222ad0b7b816/granite-guardian-3.1-2b-Q8_0.gguf
+      bytes: 2694117824
+      sha256: 6cf7bc53013e0c077a74e3ea29383f520dfed34125adc467e8a645374e93c6cd
+references: [prompts.json, agreement.json]
+runs: machine
+stages:
+  - the-graders-prompt
+  - checked-against-people
+  - the-help-desks-pages
+  - the-assistants-grading-run
+  - a-grounding-report

@@ -1,0 +1,7 @@
+id: stg_9nfxuv
+kind: build
+title: The grader's prompt
+builds: A new `grader.py`.
+file: grader.py
+packages: [httpx, jinja2]
+minutes: 35

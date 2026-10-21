@@ -1,0 +1,7 @@
+id: stg_uw343x
+kind: build
+title: The help desk's pages
+builds: A new `known.py`.
+file: known.py
+packages: [numpy]
+minutes: 30

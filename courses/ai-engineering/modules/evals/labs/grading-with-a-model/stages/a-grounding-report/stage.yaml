@@ -1,0 +1,36 @@
+id: stg_fpcqvd
+kind: ship
+title: A grounding report
+builds: A new `grounding.py`, which uses your `judge.py`.
+file: grounding.py
+packages: [httpx, jinja2, numpy]
+minutes: 35
+checks:
+  - check: tst_dicyg9
+    title: The passages the help desk showed
+    requires: >-
+      Each reply is graded with the first {% $fig.shown %} passages the search ranked for its
+      question, in their order and in the form the help desk showed them.
+    failure: >-
+      A reply is graded with the context it was written from: the same passages, in the same
+      order and form.
+  - check: tst_dp3kz4
+    title: Each page's replies together
+    requires: >-
+      Each margin counts each page's replies together.
+    failure: >-
+      The replies to a page's questions lean the same way, so a margin that counts each reply
+      alone is too narrow.
+  - check: tst_sg94j8
+    title: Each service on its own replies
+    requires: >-
+      Each service's line comes from its own replies and their pages alone.
+    failure: >-
+      A service's share, margin and count come from that service's replies only.
+  - check: tst_s6bxun
+    title: The likeliest first
+    requires: >-
+      `to_read` lists every reply the grader flags, the highest risk first.
+    failure: >-
+      The list holds each reply at or above the threshold, sorted by risk from the highest,
+      with ties in the order the questions come.
