@@ -1,6 +1,6 @@
 # /// script
 # requires-python = "==3.14.2"
-# dependencies = []
+# dependencies = ["numpy==2.4.6"]
 # ///
 """Builds the data files of an Evals lab from the help desk's recorded files: `passages.csv`,
 `questions.csv`, `relevant.csv`, `human-replies.csv` and `runs.csv`, as
@@ -21,17 +21,28 @@ For Grading with a model, `begin.csv`, `begin-grades.csv`, `passages.csv`, `ques
 `replies.csv` and `grades.csv`, the current release's first sample for each question and its
 grades.
 
+For Regression gates, `questions.csv`, the questions of Test sets' test set, as its first stage
+splits them; `relevant.csv`, their passages that hold the answer; and `replies.csv`, every
+release's replies to them, by release and sample, with the reason the model stopped, the
+current release's samples after the fifth as the release `rerun`, numbered from 1.
+
     uv run tools/datasets/evals_data.py <folder of the recorded files> <lab> <folder to write in>
 """
 
 import csv
+import re
 import shutil
 import sys
 from collections.abc import Callable
 from pathlib import Path
 
+import numpy as np
+
 SHOWN = 5
 RANKED = 10
+SERVICES = ["dmv", "ssa", "studentaid", "va"]
+SHARE = 0.5
+RERUN = 5
 
 
 def read(path: Path) -> list[dict[str, str]]:
@@ -101,9 +112,60 @@ def grading_with_a_model(recorded: Path, out: Path) -> None:
     write(out / "grades.csv", ["question", "yes", "no"], rows)
 
 
+def test_set(questions: list[dict[str, str]]) -> list[dict[str, str]]:
+    """The test set of Test sets, in the file's order: each question once, by its words, and
+    each service's pages drawn whole in the order `numpy.random.default_rng(0)` permutes
+    them until they hold half its questions."""
+    seen: set[tuple[str, ...]] = set()
+    kept: list[dict[str, str]] = []
+    for question in questions:
+        key = tuple(re.findall(r"\w+", question["text"].lower()))
+        if key not in seen:
+            seen.add(key)
+            kept.append(question)
+    rng = np.random.default_rng(0)
+    test: set[str] = set()
+    for service in SERVICES:
+        theirs = [question for question in kept if question["domain"] == service]
+        pages = list(dict.fromkeys(question["page"] for question in theirs))
+        held = 0
+        for index in rng.permutation(len(pages)):
+            if held >= SHARE * len(theirs):
+                break
+            on_page = [q["question"] for q in theirs if q["page"] == pages[index]]
+            test.update(on_page)
+            held += len(on_page)
+    return [question for question in kept if question["question"] in test]
+
+
+def regression_gates(recorded: Path, out: Path) -> None:
+    questions = test_set(read(recorded / "questions.csv"))
+    names = {question["question"] for question in questions}
+    write(
+        out / "questions.csv",
+        ["question", "page", "domain", "text"],
+        [[q["question"], q["page"], q["domain"], q["text"]] for q in questions],
+    )
+    rows: list[list[object]] = [
+        [row["question"], row["passage"]]
+        for row in read(recorded / "relevant.csv")
+        if row["question"] in names
+    ]
+    write(out / "relevant.csv", ["question", "passage"], rows)
+    rows = []
+    for row in read(recorded / "replies.csv"):
+        if row["question"] in names:
+            release, sample = row["release"], int(row["sample"])
+            if release == "current" and sample > RERUN:
+                release, sample = "rerun", sample - RERUN
+            rows.append([row["question"], release, sample, row["reply"], row["finish"]])
+    write(out / "replies.csv", ["question", "release", "sample", "reply", "finish"], rows)
+
+
 LABS: dict[str, Callable[[Path, Path], None]] = {
     "test-sets": test_sets,
     "grading-with-a-model": grading_with_a_model,
+    "regression-gates": regression_gates,
 }
 
 if __name__ == "__main__":

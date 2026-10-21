@@ -1,0 +1,14 @@
+cards:
+  - id: crd_mgefvt
+    front: >-
+      What is the smallest drop a one-sided test at level alpha finds with a given power?
+    back: >-
+      The standard error of the change times the sum of the normal quantiles at one less
+      alpha and at the power.
+  - id: crd_kcx67o
+    front: >-
+      How many more questions does a test set need to find a drop half the size it finds
+      now?
+    back: >-
+      Four times as many: the standard error falls with the square root of the number of
+      questions.

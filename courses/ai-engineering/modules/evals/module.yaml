@@ -3,3 +3,4 @@ title: Evals
 labs:
   - test-sets
   - grading-with-a-model
+  - regression-gates

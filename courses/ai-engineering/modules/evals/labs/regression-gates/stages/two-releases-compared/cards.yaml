@@ -1,0 +1,16 @@
+cards:
+  - id: crd_oxok0y
+    front: >-
+      Two releases answered the same questions. Which standard error does their difference
+      in score take?
+    back: >-
+      The standard error of each question's difference, each page's together. Adding the
+      two releases' standard errors treats them as if they had answered different
+      questions.
+  - id: crd_p1ba10
+    front: >-
+      Why does a change to the help desk's search need its margin clustered by page more than
+      a change to its prompt does?
+    back: >-
+      A page's questions are shown the same passages, so a change to the search moves them
+      together. A change to the prompt moves each question on its own.

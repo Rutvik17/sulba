@@ -1,0 +1,49 @@
+id: lab_d3m2qf
+title: Regression gates
+summary: >-
+  Gate the help desk's releases in CI: several replies to each question and what they take
+  out of the standard error, two releases compared question by question, the smallest drop
+  the test set can be counted on to find, a review of an assistant's gate, and a gate that
+  stops a planted regression and ships a rerun.
+data:
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The test set of Test sets: the opening questions of the dataset's test dialogues
+      whose next turn answers them from the same page, each once, split by page within each
+      service, each with its page and the page's domain.
+  - file: relevant.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, the passages that hold at least half of a part of the page its answer
+      was given from, and every passage with the same text as one of them.
+  - file: replies.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each question, 5 replies of each of the help desk's releases, written by
+      Qwen3.5-2B at 8 bits through llama.cpp's server, release b11734, on 21 October 2026,
+      at the sampling settings its model card gives for text, each with a seed of its own
+      and the reason the model stopped. `rerun` is the current release's replies 6 to 10.
+references: [changes.json, power.json]
+runs: machine
+stages:
+  - several-replies
+  - two-releases-compared
+  - the-smallest-change
+  - the-assistants-gate
+  - the-release-gate

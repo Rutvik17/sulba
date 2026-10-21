@@ -1,0 +1,44 @@
+id: stg_o5toxf
+kind: ship
+title: The release gate
+builds: A new `release_gate.py`, which uses your `samples.py` and `gate.py`.
+file: release_gate.py
+packages: [numpy]
+minutes: 30
+checks:
+  - check: tst_yaaltg
+    title: A planted regression
+    requires: >-
+      The gate stops a release whose replies to every fourth question cite nothing.
+    failure: >-
+      A release that loses the citations of a quarter of its replies must fail the CI job,
+      with an exit status of 1.
+  - check: tst_9a6pfy
+    title: A rerun ships
+    requires: >-
+      The current release, run again with other seeds, ships against its first run, either
+      way round.
+    failure: >-
+      A gate that stops a rerun of the release it guards stops releases that are no worse.
+      Gate each score at `alpha` over the number of scores, and stop only when an interval
+      lies wholly below zero.
+  - check: tst_6ip836
+    title: The warmer prompt stopped
+    requires: >-
+      The gate stops the release whose prompt asks for warm, complete answers.
+    failure: >-
+      The warmer release's replies run past the limit and past {% $fig.most %} words: its `finished` and
+      `brief` scores fall far below the current release's.
+  - check: tst_32bta1
+    title: Each score at alpha over the scores
+    requires: >-
+      `check` gives each score the verdict of `gate` at `alpha` over the number of scores.
+    failure: >-
+      With three scores, each is gated at a third of `alpha`.
+  - check: tst_swkjub
+    title: Each reply scored
+    requires: >-
+      `finished` and `brief` score each reply by its `finish` and its words.
+    failure: >-
+      A reply is finished when its `finish` is `stop`, and brief when `str.split` gives it at
+      most {% $fig.most %} words.
