@@ -1,6 +1,6 @@
 # N. The decision, as a short imperative sentence
 
-- Status: proposed, accepted, or superseded by [N. Title](NNNN-title.md)
+- Status: proposed, accepted, amended by [N. Title](NNNN-title.md), or superseded by [N. Title](NNNN-title.md)
 - Date: YYYY-MM-DD
 
 ## Context

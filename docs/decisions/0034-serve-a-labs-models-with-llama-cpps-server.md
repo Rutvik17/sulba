@@ -1,6 +1,6 @@
 # 34. Serve a lab's models on the learner's machine with llama.cpp's server
 
-- Status: accepted
+- Status: accepted, amended by [36. Let a lab give its chat model a longer context](0036-let-a-lab-give-its-chat-model-a-longer-context.md)
 - Date: 2026-10-20
 - Supersedes: [32. Run a lab's model on the learner's machine with llama.cpp's server](0032-run-a-labs-model-with-llama-cpps-server.md)
 

@@ -53,11 +53,13 @@ export const modelKinds = ['chat', 'embedding', 'reranking'] as const;
 
 /**
  * A model the runner serves with llama.cpp's server: its name, which a request gives to reach it,
- * its kind, and its GGUF file's pin.
+ * its kind, its GGUF file's pin, and for a chat model whose lab sets one, the tokens of
+ * conversation it reads, in place of 4,096 (decision record 36).
  */
 export interface MachineModel extends FetchedFile {
   readonly title: string;
   readonly kind: (typeof modelKinds)[number];
+  readonly context?: number;
 }
 
 export interface MachineLab {

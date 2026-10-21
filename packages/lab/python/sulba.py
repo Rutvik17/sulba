@@ -128,9 +128,10 @@ HOP_BY_HOP = {
     "upgrade",
 }
 # How the server runs each kind of model, in its preset file's options: a chat model reads a
-# conversation of up to 4,096 tokens with reasoning off, an embedding model embeds a text of up to
-# 2,048 tokens in one pass, and a reranker scores a query and a document of up to 2,048 tokens
-# together, in a context of 4,096 (decision record 34).
+# conversation of up to 4,096 tokens, or the context its lab gives it (decision record 36), with
+# reasoning off, an embedding model embeds a text of up to 2,048 tokens in one pass, and a reranker
+# scores a query and a document of up to 2,048 tokens together, in a context of 4,096 (decision
+# record 34).
 KINDS = {
     "chat": {"ctx-size": "4096", "reasoning": "off"},
     "embedding": {
@@ -432,11 +433,14 @@ def serve_model(lab: dict[str, Any], port: int, *, check: bool) -> int:
 
 def preset_of(models: list[dict[str, Any]], weights: list[Path], system: str) -> str:
     """The server's preset file: a section for each model, named by its title, with its weights,
-    loaded as the server starts, and the options of its kind. On macOS a chat model runs on the
-    GPU, through Metal, and the others on the CPU (decision record 34)."""
+    loaded as the server starts, and the options of its kind, with a chat model's context where
+    its lab gives one (decision record 36). On macOS a chat model runs on the GPU, through Metal,
+    and the others on the CPU (decision record 34)."""
     lines = ["version = 1"]
     for model, path in zip(models, weights, strict=True):
         options = {"model": path.as_posix(), "load-on-startup": "true", **KINDS[model["kind"]]}
+        if "context" in model:
+            options["ctx-size"] = str(model["context"])
         if system == "Darwin" and model["kind"] != "chat":
             options["device"] = "none"
         lines += [

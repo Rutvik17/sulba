@@ -663,6 +663,33 @@ test("a lab's models each have a kind and a title of their own, which a request 
   ]);
 });
 
+test('a chat model can read a longer conversation than 4,096 tokens, and only a chat model', async () => {
+  const { course, problems } = await loadChanged(async (root) => {
+    await edit(join(root, ledger, 'lab.yaml'), 'kind: chat', 'kind: chat\n    context: 16384');
+  });
+  expect(problems).toEqual([]);
+  expect(course?.levels[1]?.modules[0]?.labs[0]?.models.map(({ context }) => context)).toEqual([
+    16384,
+    undefined,
+    undefined,
+  ]);
+  const { problems: wrong } = await loadChanged(async (root) => {
+    const yaml = join(root, ledger, 'lab.yaml');
+    await edit(yaml, 'kind: chat', 'kind: chat\n    context: 10000');
+    await edit(yaml, 'kind: reranking', 'kind: reranking\n    context: 8192');
+  });
+  expect(
+    wrong.filter(({ path }) => path === `${ledger}/lab.yaml`).map(({ message }) => message),
+  ).toEqual([
+    'models.0.context: Expected a multiple of 1,024',
+    'models.2.context: Only a chat model takes a context',
+  ]);
+  const { problems: long } = await loadChanged(async (root) => {
+    await edit(join(root, ledger, 'lab.yaml'), 'kind: chat', 'kind: chat\n    context: 65536');
+  });
+  expect(long.filter(({ path }) => path === `${ledger}/lab.yaml`)).toHaveLength(1);
+});
+
 test('a lab that runs in the browser serves no models', async () => {
   const { problems } = await loadChanged(async (root) => {
     const model = (await readFile(join(root, ledger, 'lab.yaml'), 'utf8')).match(
