@@ -47,7 +47,9 @@ def figures() -> dict[str, str]:
         mean = statistics.mean(differences)
         margin = z * statistics.stdev(differences) / math.sqrt(len(tasks))
         out[f"less_{other}"] = signed(mean)
-        out[f"less_{other}_interval"] = f"{signed(mean - margin)} to {signed(mean + margin)}"
+        out[f"less_{other}_interval"] = (
+            f"{signed(mean - margin)} to {signed(mean + margin)}"
+        )
     router = [run for run in runs if run["variant"] == "router"]
     agent = [run for run in router if run["path"] == "agent"]
     out["router_runs"] = f"{len(router)}"
