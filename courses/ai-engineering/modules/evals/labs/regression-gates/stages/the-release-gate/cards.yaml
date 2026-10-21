@@ -1,0 +1,13 @@
+cards:
+  - id: crd_nwfsog
+    front: >-
+      A release gate checks three scores. At what level does it test each, so that a release
+      no worse than the baseline is stopped at most alpha of the time?
+    back: >-
+      At alpha over three. The chance that any of the three stops it is at most the sum of
+      their levels.
+  - id: crd_mgys2p
+    front: >-
+      What does a release gate's exit status do in CI?
+    back: >-
+      A status of 1 fails the job, so the release stops there; 0 lets it go on to ship.

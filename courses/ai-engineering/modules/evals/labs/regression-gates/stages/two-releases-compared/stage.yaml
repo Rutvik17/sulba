@@ -1,0 +1,7 @@
+id: stg_8d2bit
+kind: build
+title: Two releases compared
+builds: A new `compare.py`, which uses your `samples.py`.
+file: compare.py
+packages: [numpy]
+minutes: 30

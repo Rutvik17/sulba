@@ -1,0 +1,6 @@
+id: stg_urcbh2
+kind: build
+title: The smallest change
+builds: A new `power.py`.
+file: power.py
+minutes: 30

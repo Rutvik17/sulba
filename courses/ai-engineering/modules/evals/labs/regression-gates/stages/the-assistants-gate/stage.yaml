@@ -1,0 +1,69 @@
+id: stg_hadrja
+kind: catch
+title: The assistant's gate
+builds: A new `gate.py`.
+file: gate.py
+packages: [numpy]
+minutes: 30
+problems:
+  - check: tst_eegk14
+    title: It scored the first reply alone
+    cost: >-
+      Each question's first sample stood for its five, so the gate measured one draw of the
+      model where it had five. On first replies, the unranked search's change came out at
+      {% $fig.first_change %}, give or take {% $fig.first_margin %}, where all five give
+      {% $fig.every_change %}, give or take {% $fig.every_margin %}.
+    fix: >-
+      Take each question's mean over its samples, `baseline.mean(axis=1)`, before comparing.
+    edit:
+      replace: |2-
+            before = baseline[:, 0]
+            after = candidate[:, 0]
+      with: |2-
+            before = baseline.mean(axis=1)
+            after = candidate.mean(axis=1)
+  - check: tst_h682ko
+    title: It compared the two scores alone
+    cost: >-
+      It added the two releases' standard errors as if they had answered different
+      questions, and left in all that the questions share. Against the unranked search, its
+      margin came to ±{% $fig.unpaired_margin %}, where each question's difference gives
+      ±{% $fig.every_margin %}, so a drop had to be that much larger before it was found.
+    fix: >-
+      Take the standard error of each question's difference, `after - before`.
+    edit:
+      replace: "error = math.hypot(spread(before, pages), spread(after, pages))"
+      with: "error = spread(after - before, pages)"
+  - check: tst_xstw46
+    title: It stopped on any drop
+    cost: >-
+      It stopped every candidate whose score came out lower, however little. Against its
+      rerun, the same release with other seeds, the current release scored
+      {% $fig.rerun_drop %}, well inside the margin of ±{% $fig.rerun_margin %}, and the gate
+      would have stopped the very release it guards.
+    fix: >-
+      Stop the candidate only when its interval lies wholly below zero, `high < 0`.
+    edit:
+      replace: "ships=change >= 0"
+      with: "ships=high >= 0"
+  - check: tst_ybm9u9
+    title: It counted each question alone
+    cost: >-
+      `spread` took no notice of the pages, so a page whose questions moved together counted
+      as several independent ones. A change to the search moves a page's questions together,
+      since they share its passages: against the unranked search, the margin came to
+      ±{% $fig.unranked_plain %}, where each page's questions together give
+      ±{% $fig.every_margin %}.
+    fix: >-
+      Sum each page's differences from the mean, and count the pages, as `standard_error`
+      does.
+    edit:
+      replace: |2-
+            return float(values.std(ddof=1) / math.sqrt(len(values)))
+      with: |2-
+            sums: dict[str, float] = {}
+            for page, residual in zip(pages, values - values.mean(), strict=True):
+                sums[page] = sums.get(page, 0.0) + float(residual)
+            groups = len(sums)
+            total = sum(value**2 for value in sums.values())
+            return math.sqrt(groups / (groups - 1) * total) / len(values)

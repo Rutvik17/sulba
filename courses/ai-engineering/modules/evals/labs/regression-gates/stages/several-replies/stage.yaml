@@ -1,0 +1,7 @@
+id: stg_es7kw0
+kind: build
+title: Several replies to a question
+builds: A new `samples.py`.
+file: samples.py
+packages: [numpy]
+minutes: 30

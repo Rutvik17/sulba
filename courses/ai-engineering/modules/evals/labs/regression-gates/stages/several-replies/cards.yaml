@@ -1,0 +1,9 @@
+cards:
+  - id: crd_x8mt12
+    front: >-
+      Why do more replies to each question stop narrowing a release's standard error after a
+      few?
+    back: >-
+      Sampling's part of a question mean's variance falls as one over the number of replies,
+      but the question's own part doesn't fall at all. Past a few replies, only more
+      questions narrow it.

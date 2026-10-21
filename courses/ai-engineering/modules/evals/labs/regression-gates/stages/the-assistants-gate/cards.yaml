@@ -1,0 +1,14 @@
+cards:
+  - id: crd_vpjqtj
+    front: >-
+      Why does a release gate that stops any candidate scoring lower than the baseline fail
+      reruns of the release it guards?
+    back: >-
+      A rerun's score moves by chance, and comes out lower about half the time. Stop only
+      when the change's interval lies wholly below zero.
+  - id: crd_a3io7q
+    front: >-
+      Why does a gate compare two releases question by question rather than score by score?
+    back: >-
+      A question one release finds hard, the other mostly does too. Each question's
+      difference takes that shared part out, and the margin narrows.
