@@ -47,8 +47,9 @@ data:
       url: https://creativecommons.org/licenses/by/3.0/
     changes: >-
       For each question, the reply Qwen3.5-2B at 8 bits wrote from its 5 passages, through
-      llama.cpp's server, release b11734, on 20 October 2026, at the sampling settings its
-      model card gives for text, with the reason it stopped and the tokens it wrote.
+      llama.cpp's server, release b11734, on 21 October 2026, at the sampling settings its
+      model card gives for text, with a seed of its own, the reason it stopped and the tokens
+      it wrote.
 references: [errors.json]
 runs: machine
 stages:
