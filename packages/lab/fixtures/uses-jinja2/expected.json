@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "id": "tst_jnj001",
+      "name": "Writes each repair on its own line",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    },
+    {
+      "id": "tst_jnj002",
+      "name": "Refuses a template that reaches into Python or changes what it was given",
+      "status": "pass",
+      "message": null,
+      "expected": null,
+      "actual": null,
+      "location": null,
+      "output": "",
+      "note": null
+    }
+  ],
+  "problem": null,
+  "output": ""
+}
