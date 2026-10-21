@@ -148,6 +148,7 @@ export const pythonPackages = [
   'pillow',
   'openai',
   'jsonschema',
+  'jinja2',
 ] as const;
 export type PythonPackage = (typeof pythonPackages)[number];
 
@@ -178,6 +179,7 @@ export const importNames: Readonly<Record<Package, string>> = {
   pillow: 'PIL',
   openai: 'openai',
   jsonschema: 'jsonschema',
+  jinja2: 'jinja2',
   torch: 'torch',
   tokenizers: 'tokenizers',
   'ada-url': 'ada_url',
