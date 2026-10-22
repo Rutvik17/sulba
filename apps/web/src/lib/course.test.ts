@@ -18,6 +18,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     references: [],
     fetch: [],
     models: [],
+    given: [],
     project: [],
     code: [],
     stages: [],

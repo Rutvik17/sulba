@@ -134,9 +134,14 @@ export interface LabView {
    */
   readonly models: Lab['models'];
   /**
+   * The files a machine lab gives its learner to build on (decision record 37), by their path in
+   * the download and in a run. The site serves them with the project's files.
+   */
+  readonly given: readonly string[];
+  /**
    * The files a download of the lab puts beside the learner's (decision record 25), each with its
    * path in the download and the address the site serves it at, which changes with its text. A
-   * machine lab's include its runner. None without a project.
+   * machine lab's include its runner and the files it gives. None without a project.
    */
   readonly project: readonly { readonly name: string; readonly served: string }[];
   readonly stages: readonly StageView[];
@@ -163,7 +168,10 @@ export interface LabEntry extends LabView {
   readonly levelNeeds: string;
   /** Code by others that the lab ports, which its page credits with its licence's notice. */
   readonly code: Lab['code'];
-  /** Each dataset's and reference's text, by its path in a run, served apart from the lab's page. */
+  /**
+   * Each dataset's, reference's and given file's text, by its path in a run, served apart from the
+   * lab's page.
+   */
   readonly files: Readonly<Record<string, string>>;
   /** Each project file's text, by its name. The site serves it apart from the lab's page too. */
   readonly projectFiles: Readonly<Record<string, string>>;
@@ -252,7 +260,8 @@ export function labEntries(
     level.modules.flatMap((module) => module.labs.map((lab) => ({ level, module, lab }))),
   );
   return placed.map(({ level, module, lab }, order) => {
-    const project = lab.runs === 'machine' ? { ...lab.project, ...runner } : lab.project;
+    const given = Object.fromEntries(lab.given.map(({ file, text }) => [file, text]));
+    const project = lab.runs === 'machine' ? { ...lab.project, ...given, ...runner } : lab.project;
     return entryOf(course, level, module, lab, order, project, figures);
   });
 }
@@ -288,6 +297,7 @@ function entryOf(
     })),
     fetch: lab.fetch,
     models: lab.models,
+    given: lab.given.map((each) => each.file),
     // A file in the runner's folder is served under its own name, one folder below the hash.
     project: Object.entries(project).map(([name, text]) => ({
       name,

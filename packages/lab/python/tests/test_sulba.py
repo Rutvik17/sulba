@@ -213,6 +213,7 @@ def folder(tmp_path: Path) -> Path:
         "page": "https://sulba.dev/demo/counting/tallies/",
         "start": 0,
         "data": ["data/votes.csv"],
+        "given": [],
         "fetch": [],
         "stages": STAGES,
     }
@@ -376,6 +377,38 @@ def test_a_run_reads_only_the_labs_own_datasets_in_data(folder: Path) -> None:
     ran = command(folder)
     assert ran.returncode == 1
     assert "0 of 2 tests passed." in ran.stdout
+
+
+GIVEN_TEST = '''from pathlib import Path
+
+import pytest
+from ballots import ballots
+from tally import count
+
+
+@pytest.mark.id("tst_gggggg")
+def test_given():
+    """Counts the ballots the lab gives, which sit beside the learner's files"""
+    assert Path("ballots.py").is_file()
+    assert count(ballots(), "yes") == 2
+'''
+
+
+def test_a_run_has_the_files_the_lab_gives(folder: Path) -> None:
+    path = folder / ".sulba" / "lab.json"
+    lab = json.loads(path.read_text(encoding="utf-8"))
+    lab["given"] = ["ballots.py"]
+    lab["stages"][0]["tests"] = {
+        "tests/test_given.py": base64.b64encode(GIVEN_TEST.encode()).decode()
+    }
+    path.write_text(json.dumps(lab), encoding="utf-8")
+    (folder / "ballots.py").write_text(
+        'def ballots():\n    return ["yes", "no", "yes"]\n', encoding="utf-8"
+    )
+    solve(folder, "stg_count1")
+    ran = command(folder)
+    assert ran.returncode == 0, ran.stdout
+    assert "Stage 1 done." in ran.stdout
 
 
 # A file a lab fetches from its publisher (decision record 29): bytes, not text.

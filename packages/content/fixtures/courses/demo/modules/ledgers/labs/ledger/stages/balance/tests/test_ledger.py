@@ -1,13 +1,7 @@
-import csv
-
 import psycopg
 import pytest
+from entries import amounts
 from ledger import balance
-
-
-def amounts():
-    with open("data/entries.csv", encoding="utf-8") as file:
-        return [int(row["amount"]) for row in csv.DictReader(file)]
 
 
 @pytest.mark.id("tst_demo20")

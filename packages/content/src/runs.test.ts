@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
 import { loadCourse } from './load.ts';
-import { addStarter, stageRuns } from './runs.ts';
+import { machineLabOf } from './machine.ts';
+import { addStarter, labFiles, stageRuns } from './runs.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const { course } = await loadCourse(fixtures, 'demo');
@@ -52,4 +53,17 @@ test('each problem gets a run of the starter with only its own edit made', () =>
   expect(list?.files['report.py']).not.toContain('choices.sort()');
   expect(list?.files['report.py']).toContain('for choice in sorted(set(choices))]');
   expect(count?.fixes).toEqual([]);
+});
+
+test("every run of a machine lab has the files it gives beside the learner's", () => {
+  const ledger = course?.levels[1]?.modules[0]?.labs[0];
+  if (!ledger) throw new Error('The fixture course has no machine lab.');
+  const given = ledger.given[0]?.text;
+  expect(given).toBeDefined();
+  for (const runs of stageRuns(ledger)) {
+    expect(runs.starter.files['entries.py']).toBe(given);
+    expect(runs.solution.files['entries.py']).toBe(given);
+  }
+  expect(labFiles(ledger)['entries.py']).toBe(given);
+  expect(machineLabOf(ledger, 'https://sulba.dev/', 0).given).toEqual(['entries.py']);
 });

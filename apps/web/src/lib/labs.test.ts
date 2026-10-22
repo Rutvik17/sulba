@@ -72,7 +72,7 @@ test("each lab's order counts the course's labs through its levels and modules",
   ]);
 });
 
-test("a machine lab's download carries the runner, each file served under its own name", async () => {
+test("a machine lab's download carries the runner and the files the lab gives, each served under its own name", async () => {
   const runner = { 'sulba.py': '# the runner\n', '.sulba/sulba_runner.py': '# its module\n' };
   const entries = labEntries(await demo(), new Map(), runner);
   const ledger = entries.find((entry) => entry.path === 'demo/ledgers/ledger');
@@ -81,9 +81,12 @@ test("a machine lab's download carries the runner, each file served under its ow
     'README.md',
     'pyproject.toml',
     'uv.lock',
+    'entries.py',
     'sulba.py',
     '.sulba/sulba_runner.py',
   ]);
+  expect(ledger?.given).toEqual(['entries.py']);
+  expect(ledger?.projectFiles['entries.py']).toContain('def amounts() -> list[int]:');
   expect(ledger?.project.at(-1)?.served).toMatch(/^\/project\/[0-9a-f]{16}\/sulba_runner\.py$/);
   expect(ledger?.projectFiles['.sulba/sulba_runner.py']).toBe('# its module\n');
   const tallies = entries.find((entry) => entry.path === 'demo/counting/tallies');
@@ -104,5 +107,5 @@ test("a machine lab's entry carries what it fetches, with each source's credit",
     ['t10k-labels-idx1-ubyte.gz', 5148],
   ]);
   // The site serves none of them.
-  expect(Object.keys(ledger?.files ?? {})).toEqual(['data/entries.csv']);
+  expect(Object.keys(ledger?.files ?? {})).toEqual(['data/entries.csv', 'entries.py']);
 });
