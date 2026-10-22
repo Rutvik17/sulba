@@ -88,10 +88,17 @@ export interface Reference {
   readonly text: string;
 }
 
-export interface Lab extends Omit<LabFile, 'stages' | 'data' | 'references'> {
+/** A file the lab gives its learner to build on, by its name in `given/` and in a run. */
+export interface Given {
+  readonly file: string;
+  readonly text: string;
+}
+
+export interface Lab extends Omit<LabFile, 'stages' | 'data' | 'references' | 'given'> {
   readonly slug: string;
   readonly data: readonly Dataset[];
   readonly references: readonly Reference[];
+  readonly given: readonly Given[];
   /**
    * The files a download of the lab puts beside the learner's (decision record 25), each by its
    * name in `project/`, or none when the lab has no project.
@@ -173,6 +180,7 @@ class Reader {
     const file = await this.yaml(join(folder, 'lab.yaml'), labFile);
     const hasData = (file?.data.length ?? 0) > 0;
     const hasReferences = (file?.references.length ?? 0) > 0;
+    const hasGiven = (file?.given.length ?? 0) > 0;
     const hasProject = (await this.folders(folder)).includes('project');
     await this.entries(
       folder,
@@ -180,6 +188,7 @@ class Reader {
       [
         ...(hasData ? ['data'] : []),
         ...(hasReferences ? ['references'] : []),
+        ...(hasGiven ? ['given'] : []),
         'stages',
         ...(hasProject ? ['project'] : []),
       ],
@@ -211,6 +220,7 @@ class Reader {
     const references = hasReferences
       ? await this.references(join(folder, 'references'), file.references)
       : [];
+    const given = hasGiven ? await this.given(join(folder, 'given'), file.given) : [];
     const stages: Stage[] = [];
     for (const name of file.stages) {
       if (!present.includes(name)) continue;
@@ -249,10 +259,31 @@ class Reader {
         `file: ${stage.file} is a file of the lab's project, so the learner's file needs another name.`,
       );
     }
+    // A run and a download put the given files beside the learner's, so they can't share a name.
+    for (const stage of stages.filter((each) => file.given.includes(each.file))) {
+      this.problem(
+        join(folder, 'stages', stage.slug, 'stage.yaml'),
+        `file: ${stage.file} is a file the lab gives, so the learner's file needs another name.`,
+      );
+    }
+    for (const name of file.given.filter((each) => Object.hasOwn(project, each))) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        `given: ${name} is a file of the lab's project, so the given file needs another name.`,
+      );
+    }
+    // A download carries the runner as sulba.py, and figures run as figures.py beside the lab's
+    // files.
+    for (const name of file.given.filter((each) => ['sulba.py', 'figures.py'].includes(each))) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        `given: ${name} is a name the runner takes, so the given file needs another name.`,
+      );
+    }
     if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
     else this.browserLab(folder, file, stages);
     this.fetchedNamed(join(folder, 'lab.yaml'), file);
-    return { ...file, slug, data, references, project, stages };
+    return { ...file, slug, data, references, given, project, stages };
   }
 
   /**
@@ -315,6 +346,12 @@ class Reader {
    * serves its data.
    */
   browserLab(folder: string, file: LabFile, stages: readonly Stage[]) {
+    if (file.given.length > 0) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "given: Only a lab that runs on the learner's machine gives files (decision record 37): set runs: machine.",
+      );
+    }
     if (file.fetch.length > 0) {
       this.problem(
         join(folder, 'lab.yaml'),
@@ -354,6 +391,17 @@ class Reader {
       references.push({ file: name, text });
     }
     return references;
+  }
+
+  /** The files a lab gives its learner, each the Python file lab.yaml names. */
+  async given(folder: string, files: readonly string[]): Promise<Given[]> {
+    await this.entries(folder, files, []);
+    const given: Given[] = [];
+    for (const name of files) {
+      const text = await this.text(join(folder, name));
+      if (text !== null) given.push({ file: name, text });
+    }
+    return given;
   }
 
   /** A lab's project: its pyproject.toml, uv.lock and README.md, and a conftest.py if it has one. */

@@ -801,6 +801,87 @@ test('a lab that runs in the browser fetches no files', async () => {
   ]);
 });
 
+test('a machine lab gives files its learner builds on, each in given/', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const lab = course?.levels[1]?.modules[0]?.labs[0];
+  expect(lab?.given.map(({ file }) => file)).toEqual(['entries.py']);
+  expect(lab?.given[0]?.text).toContain('def amounts() -> list[int]:');
+  expect(course?.levels[0]?.modules[0]?.labs[0]?.given).toEqual([]);
+});
+
+test.each([
+  {
+    name: 'a given file given/ lacks',
+    change: (root: string) => rm(join(root, ledger, 'given/entries.py')),
+    problem: { path: `${ledger}/given/entries.py`, message: 'Missing.' },
+  },
+  {
+    name: 'a file in given/ lab.yaml leaves out',
+    change: (root: string) => writeFile(join(root, ledger, 'given/extra.py'), 'X = 1\n'),
+    problem: {
+      path: `${ledger}/given/extra.py`,
+      message: 'Not part of the course: list it or remove it.',
+    },
+  },
+  {
+    name: 'a given file named as the runner is',
+    change: async (root: string) => {
+      await edit(join(root, ledger, 'lab.yaml'), 'given: [entries.py]', 'given: [sulba.py]');
+      await cp(join(root, ledger, 'given/entries.py'), join(root, ledger, 'given/sulba.py'));
+      await rm(join(root, ledger, 'given/entries.py'));
+    },
+    problem: {
+      path: `${ledger}/lab.yaml`,
+      message: 'given: sulba.py is a name the runner takes, so the given file needs another name.',
+    },
+  },
+  {
+    name: "a learner's file named as a given file is",
+    change: async (root: string) => {
+      const balance = join(root, ledger, 'stages/balance');
+      await edit(join(balance, 'stage.yaml'), 'file: ledger.py', 'file: entries.py');
+      for (const folder of ['starter', 'solution']) {
+        await cp(join(balance, folder, 'ledger.py'), join(balance, folder, 'entries.py'));
+        await rm(join(balance, folder, 'ledger.py'));
+      }
+    },
+    problem: {
+      path: `${ledger}/stages/balance/stage.yaml`,
+      message:
+        "file: entries.py is a file the lab gives, so the learner's file needs another name.",
+    },
+  },
+  {
+    name: 'a given file listed twice',
+    change: (root: string) =>
+      edit(
+        join(root, ledger, 'lab.yaml'),
+        'given: [entries.py]',
+        'given: [entries.py, entries.py]',
+      ),
+    problem: { path: `${ledger}/lab.yaml`, message: 'given: Each file is listed once.' },
+  },
+])('$name is a problem', async ({ change, problem }) => {
+  const { problems } = await loadChanged(change);
+  expect(problems).toContainEqual(problem);
+});
+
+test('a lab that runs in the browser gives no files', async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const tallies = 'demo/modules/counting/labs/tallies';
+    await edit(join(root, tallies, 'lab.yaml'), 'stages:', 'given: [helpers.py]\nstages:');
+    await mkdir(join(root, tallies, 'given'));
+    await writeFile(join(root, tallies, 'given/helpers.py'), 'X = 1\n');
+  });
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message:
+        "given: Only a lab that runs on the learner's machine gives files (decision record 37): set runs: machine.",
+    },
+  ]);
+});
+
 test("a lab that runs on the learner's machine runs from its project", async () => {
   const { problems } = await loadChanged((root) =>
     rm(join(root, ledger, 'project'), { recursive: true }),

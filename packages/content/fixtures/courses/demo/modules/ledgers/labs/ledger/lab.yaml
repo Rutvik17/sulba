@@ -10,6 +10,7 @@ data:
       name: CC0 1.0
       url: https://creativecommons.org/publicdomain/zero/1.0/
     changes: Made up for these tests.
+given: [entries.py]
 fetch:
   - kind: data
     title: Fashion-MNIST

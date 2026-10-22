@@ -1,7 +1,8 @@
 // What a machine lab's download tells its runner, sulba.py (decision record 28): the lab's stages
 // in `.sulba/lab.json`, with each stage's tests and checks, the stage the download starts at, the
-// lab's datasets, the files the runner fetches from their publishers (decision record 29), and the
-// models `uv run sulba.py model` serves (decision record 34).
+// lab's datasets, the files it gives the learner (decision record 37), the files the runner
+// fetches from their publishers (decision record 29), and the models `uv run sulba.py model`
+// serves (decision record 34).
 // Test files and a Catch stage's fixed code are in base64, so a look through the folder doesn't
 // show them; they are there to be found, as they are in the page.
 import type { FetchedFile } from './protocol.ts';
@@ -75,6 +76,8 @@ export interface MachineLab {
    * only files in `data/` a run reads as text.
    */
   readonly data: readonly string[];
+  /** The files the lab gives the learner to build on, by their path in the download and a run. */
+  readonly given: readonly string[];
   readonly fetch: readonly MachineFetch[];
   /** The models `uv run sulba.py model` serves, each by its title. */
   readonly models: readonly MachineModel[];
