@@ -263,11 +263,11 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
 
 
 def session_files(lab: dict[str, Any], index: int) -> dict[str, str]:
-    """A run's files: the lab's datasets and references, the learner's files up to this stage,
-    and the stage's tests and checks. Of data/, only the lab's own datasets are read: it also
-    holds the files the lab fetches, and whatever the learner puts there."""
+    """A run's files: the lab's datasets and references, the files it gives, the learner's files
+    up to this stage, and the stage's tests and checks. Of data/, only the lab's own datasets are
+    read: it also holds the files the lab fetches, and whatever the learner puts there."""
     files: dict[str, str] = {}
-    for name in lab["data"]:
+    for name in [*lab["data"], *lab["given"]]:
         if (HERE / name).is_file():
             files[name] = (HERE / name).read_text(encoding="utf-8")
     folder = RUNNER / "references"
