@@ -1,0 +1,7 @@
+id: stg_xlib6s
+kind: build
+title: A context budget
+builds: A new `context.py`.
+file: context.py
+packages: []
+minutes: 30
