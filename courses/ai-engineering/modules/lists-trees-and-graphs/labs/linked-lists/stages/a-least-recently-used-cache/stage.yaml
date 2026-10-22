@@ -1,0 +1,6 @@
+id: stg_l94pwi
+kind: problem
+title: A least recently used cache
+builds: A new `lru.py`.
+file: lru.py
+minutes: 30

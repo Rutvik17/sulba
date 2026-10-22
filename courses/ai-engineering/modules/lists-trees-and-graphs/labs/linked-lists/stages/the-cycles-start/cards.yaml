@@ -1,0 +1,8 @@
+cards:
+  - id: crd_5xyl7m
+    front: >-
+      Once the slow and fast pointers meet in a list's cycle, how do you find where the cycle
+      starts?
+    back: >-
+      Start one pointer again from the head and move both one node at a time: they meet at the
+      cycle's start, as many steps from the meeting point as from the head.

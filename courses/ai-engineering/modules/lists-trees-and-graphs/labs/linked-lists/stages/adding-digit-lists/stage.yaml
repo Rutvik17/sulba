@@ -1,0 +1,6 @@
+id: stg_c2xnnu
+kind: problem
+title: Adding digit lists
+builds: A new `add.py`.
+file: add.py
+minutes: 20

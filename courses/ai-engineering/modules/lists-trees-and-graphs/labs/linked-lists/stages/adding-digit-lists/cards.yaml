@@ -1,0 +1,7 @@
+cards:
+  - id: crd_hc4rfp
+    front: >-
+      Adding two numbers held as digit lists, ones digit first: when does the loop stop?
+    back: >-
+      When both lists have run out and there's no carry left, so a last carry becomes a digit of
+      its own.
