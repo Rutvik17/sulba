@@ -1,0 +1,7 @@
+id: stg_id0rqh
+kind: build
+title: Trials
+builds: A new `scores.py`.
+file: scores.py
+packages: []
+minutes: 30

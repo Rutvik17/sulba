@@ -1,0 +1,15 @@
+cards:
+  - id: crd_2byiu3
+    front: >-
+      Why is (c/n)^k a poor estimate of a task's pass^k from n trials?
+    back: >-
+      It draws each trial again after using it, so a task gets a chance of k in a row though no
+      k of its trials were all done. C(c, k) / C(n, k) draws without replacement, and is
+      unbiased.
+  - id: crd_hd6ynw
+    front: >-
+      What z gives a two-sided interval at a confidence, and what does inv_cdf(confidence) give
+      instead?
+    back: >-
+      inv_cdf((1 + confidence) / 2), which leaves half of what the interval leaves out beyond
+      each end. inv_cdf(confidence) is a one-sided bound's z: two-sided, at 95% it holds 90%.

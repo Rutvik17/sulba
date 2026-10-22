@@ -1,0 +1,7 @@
+id: stg_vb03lr
+kind: build
+title: Traces
+builds: A new `traces.py`.
+file: traces.py
+packages: [httpx, opentelemetry-sdk]
+minutes: 45
