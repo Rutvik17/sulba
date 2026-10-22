@@ -39,7 +39,8 @@ jobs:
           name=$(bash "$GITHUB_WORKSPACE/.github/scripts/preview-name.sh" "$BRANCH")
           if ! output=$(pnpm exec wrangler preview delete --name "$name" --skip-confirmation 2>&1); then
             printf '%s\n' "$output"
-            # A branch deleted before its first deploy has no preview, which is fine.
-            grep -q 'was not found' <<< "$output" || exit 1
+            # A branch deleted before its first deploy has no preview, which is fine: Cloudflare
+            # answers "Preview not found." (code 10025).
+            grep -q 'Preview not found' <<< "$output" || exit 1
           fi
           printf '%s\n' "$output"
