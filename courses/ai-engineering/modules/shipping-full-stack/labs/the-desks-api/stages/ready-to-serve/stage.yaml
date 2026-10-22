@@ -1,0 +1,40 @@
+id: stg_hl2m3u
+kind: ship
+title: Ready to serve
+builds: A new `app.py`, which uses your `conversations.py`, `gate.py` and `replies.py`.
+file: app.py
+packages: [fastapi, httpx, numpy]
+minutes: 45
+checks:
+  - check: tst_wu9h5s
+    title: Settings that fit
+    requires: >-
+      Settings that don't fit, such as a `DESK_RUNNING` of 0, a `DESK_SECONDS` that isn't a
+      number or a `DESK_MODEL_URL` that isn't http or https, raise `ValueError`, naming each
+      variable that's wrong and no other.
+    failure: >-
+      Check the variables with `Settings`, and name each error by its field's variable, from
+      the error's `loc`.
+  - check: tst_s63kn4
+    title: One client to the model
+    requires: >-
+      The app makes one `httpx.AsyncClient` for every request, at `DESK_MODEL_URL`, which waits
+      for each read as long as `DESK_SECONDS`, and closes it as the app stops.
+    failure: >-
+      Make the client in the app's lifespan with `httpx.Timeout(seconds, connect=10)`, give it
+      to every agent, and close it once the lifespan's `yield` returns.
+  - check: tst_18ec7u
+    title: The help pages load once
+    requires: >-
+      The app loads every help page once, as it starts, and every conversation's agent works on
+      that one desk.
+    failure: >-
+      Load the search with `load_search` in the lifespan, keep one `Desk`, and make each
+      agent's `Actions` on it.
+  - check: tst_bd75zi
+    title: Healthy while busy
+    requires: >-
+      `GET /health` answers at once while a reply is running, without waiting at the gate or
+      asking the model.
+    failure: >-
+      Answer `/health` from the app alone, with no dependency on the gate or the model.

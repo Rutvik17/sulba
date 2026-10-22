@@ -1,0 +1,7 @@
+id: stg_deb7mk
+kind: build
+title: A streamed reply
+builds: A new `replies.py`, which uses your `conversations.py` and `gate.py`.
+file: replies.py
+packages: [fastapi, httpx, numpy]
+minutes: 50

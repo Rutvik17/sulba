@@ -1,0 +1,7 @@
+A server with no limit takes every request and gets slower at all of them. Each new reply shares the model with the replies already running, and a caller who arrives late waits behind everyone before them without being told how long. The gate keeps the line short: a few replies run, a few callers wait, and anyone past that hears at once that the desk is full.
+
+That answer is a 503. RFC 9110 says the status "indicates that the server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay", and that "The server MAY send a Retry-After header field (Section 10.2.3) to suggest an appropriate amount of time for the client to wait before retrying the request." Retry-After takes whole seconds, so the gate rounds up. It suggests the time a running reply has: by then, every reply running now has ended.
+
+A caller who leaves the line gives up their place. A cancelled wait that kept its count would fill the line with callers no one is waiting for, and turn away the ones who are.
+
+The time limit is on the whole reply, not on each read. httpx's read timeout "specifies the maximum duration to wait for a chunk of data to be received", so a model that sends a piece every few seconds never trips it, however long the reply runs. `within` keeps one deadline for the whole stream. When it stops, it closes the events, and closing the agent's events closes its stream from the model.
