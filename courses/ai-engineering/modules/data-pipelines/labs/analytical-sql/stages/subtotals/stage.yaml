@@ -1,0 +1,7 @@
+id: stg_arfexs
+kind: build
+title: Subtotals
+builds: A new `payments.py`, which uses the lab's `trips.py`.
+file: payments.py
+packages: [pandas, psycopg]
+minutes: 35

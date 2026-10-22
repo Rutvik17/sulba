@@ -1,0 +1,53 @@
+id: stg_x2pvlx
+kind: catch
+title: The analyst's report
+builds: A new `report.py`, which uses the lab's `trips.py`.
+file: report.py
+packages: [pandas, psycopg]
+minutes: 30
+problems:
+  - check: tst_vt3fsr
+    title: It left out the trips with no borough
+    cost: >-
+      `borough <> 'EWR'` is `NULL` for a trip from a zone with no borough, and `WHERE`
+      keeps only the rows where it's true, so the {% $fig.unknown %} trips from such zones
+      on 5 August were dropped with Newark's.
+    fix: >-
+      The fix: `borough IS DISTINCT FROM 'EWR'`, which is true for a `NULL`.
+    edit:
+      replace: "AND z.borough <> 'EWR'"
+      with: "AND z.borough IS DISTINCT FROM 'EWR'"
+  - check: tst_f4efoy
+    title: It counted only the trips that report passengers
+    cost: >-
+      `count(t.passengers)` counts the rows where `passengers` isn't `NULL`, and Flex Fare
+      trips report none: {% $fig.unreported %} trips on 5 August went uncounted, and
+      Manhattan's {% $fig.manhattan %} showed as {% $fig.manhattan_counted %}.
+    fix: >-
+      The fix: `count(*)`, which counts every row.
+    edit:
+      replace: "count(t.passengers) AS trips"
+      with: "count(*) AS trips"
+  - check: tst_o4bys6
+    title: It took an unreported count of passengers as none
+    cost: >-
+      `coalesce(t.passengers, 0)` made every Flex Fare trip a trip of no passengers, so
+      Manhattan's passengers per trip showed as {% $fig.per_trip_zeros %}, where the trips
+      that report them average {% $fig.per_trip %}.
+    fix: >-
+      The fix: `avg(t.passengers)`, which leaves out the trips that don't report them.
+    edit:
+      replace: "avg(coalesce(t.passengers, 0)) AS passengers"
+      with: "avg(t.passengers) AS passengers"
+  - check: tst_6wtj0t
+    title: It counted the next midnight's trips in the day
+    cost: >-
+      `BETWEEN` takes both its ends, so the {% $fig.midnight %} trips picked up at the
+      stroke of 6 August counted in 5 August's report, and would count again in the next
+      day's.
+    fix: >-
+      The fix: `t.pickup_at >= %(start)s AND t.pickup_at < %(end)s`, a day that stops just
+      before the next midnight.
+    edit:
+      replace: "t.pickup_at BETWEEN %(start)s AND %(end)s"
+      with: "t.pickup_at >= %(start)s AND t.pickup_at < %(end)s"

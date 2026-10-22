@@ -1,0 +1,8 @@
+cards:
+  - id: crd_vscdr8
+    front: >-
+      In a `GROUP BY ROLLUP (borough, payment)` query, how can you tell a borough's
+      subtotal from a row whose borough is `NULL` in the data?
+    back: >-
+      `GROUPING(borough, payment)`: 0 for a row grouped by both, 1 for a borough's
+      subtotal, 3 for the grand total, whatever the columns hold.

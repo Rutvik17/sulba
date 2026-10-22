@@ -1,0 +1,8 @@
+cards:
+  - id: crd_3tjn0d
+    front: >-
+      `avg(trips) OVER (ORDER BY hour)` in Postgres: the mean of which rows?
+    back: >-
+      Every row from the first to the current one, with its peers: the default frame is
+      `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. A mean of the last three hours
+      takes `ROWS BETWEEN 2 PRECEDING AND CURRENT ROW`.

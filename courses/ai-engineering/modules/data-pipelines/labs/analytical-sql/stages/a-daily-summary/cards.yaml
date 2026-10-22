@@ -1,0 +1,8 @@
+cards:
+  - id: crd_nmunn9
+    front: >-
+      A job deletes a day's rows, then inserts them again, on an autocommit connection. What
+      can go wrong, and what fixes it?
+    back: >-
+      If the insert fails, the day is left empty, and readers see it empty while the insert
+      runs. Doing both in one transaction makes them one all-or-nothing change.

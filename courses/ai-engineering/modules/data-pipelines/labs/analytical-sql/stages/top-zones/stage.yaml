@@ -1,0 +1,7 @@
+id: stg_03m306
+kind: build
+title: Each borough's busiest zones
+builds: A new `zones.py`, which uses the lab's `trips.py`.
+file: zones.py
+packages: [pandas, psycopg]
+minutes: 40
