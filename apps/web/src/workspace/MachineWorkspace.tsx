@@ -314,7 +314,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
           </TabPanel>
           <TabPanel id="solution">
             <div className={css.panel}>
-              <Editor defaultValue={stage.solution} label={`Solution: ${stage.file}`} readOnly />
+              <Editor
+                defaultValue={stage.solution}
+                label={`Solution: ${stage.file}`}
+                language={stage.file.endsWith('.ts') ? 'typescript' : 'python'}
+                readOnly
+              />
             </div>
           </TabPanel>
         </Tabs>

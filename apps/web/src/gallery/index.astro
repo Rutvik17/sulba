@@ -16,6 +16,7 @@ import ReadOnlyEditorDemo from './ReadOnlyEditorDemo';
 import SegmentedDemo from './SegmentedDemo';
 import SliderDemo from './SliderDemo';
 import TabsDemo from './TabsDemo';
+import TypeScriptEditorDemo from './TypeScriptEditorDemo';
 
 // Formulas as a lab's prose shows them, made by the same renderer when the site is built.
 const prose = renderProse(formulas, {}).html;
@@ -152,6 +153,12 @@ const buttons = [
       <h3>Read only</h3>
       <div class="code">
         <ReadOnlyEditorDemo client:load />
+      </div>
+    </div>
+    <div class="row">
+      <h3>Read only, in TypeScript</h3>
+      <div class="code">
+        <TypeScriptEditorDemo client:load />
       </div>
     </div>
   </section>
