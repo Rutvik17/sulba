@@ -25,6 +25,21 @@
       "quoteStyle": "single"
     }
   },
+  "overrides": [
+    {
+      "includes": ["courses/**/starter/*.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedFunctionParameters": "off",
+            "noUnusedImports": "off",
+            "noUnusedVariables": "off",
+            "useYield": "off"
+          }
+        }
+      }
+    }
+  ],
   "html": {
     "experimentalFullSupportEnabled": true,
     "formatter": {

@@ -38,15 +38,18 @@ async function runnerModules(): Promise<RunnerModules> {
 
 /**
  * The runner a machine lab's download carries (decision record 28), each file by its path in the
- * download: sulba.py at its top, and the runner's modules in its runner folder.
+ * download: sulba.py at its top, and in its runner folder the runner's modules and the reporter
+ * Node's test runner writes TypeScript's results with (decision record 39).
  */
 export async function runnerFiles(): Promise<Record<string, string>> {
   const modules = await runnerModules();
+  const reporter = 'sulba_reporter.mjs';
   return {
     'sulba.py': await readFile(join(python, 'sulba.py'), 'utf8'),
     ...Object.fromEntries(
       Object.entries(modules).map(([name, text]) => [`${runnerFolder}/${name}`, text]),
     ),
+    [`${runnerFolder}/${reporter}`]: await readFile(join(python, reporter), 'utf8'),
   };
 }
 

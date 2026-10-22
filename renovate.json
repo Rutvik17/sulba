@@ -16,7 +16,7 @@
       "enabled": false
     },
     {
-      "description": "A lab project's packages move with Pyodide too, so learners run what the browser runs",
+      "description": "A lab project's packages are those its stages are checked with, and its Python packages move with Pyodide, so learners run what the browser runs",
       "matchFileNames": ["courses/**/project/**", "packages/content/fixtures/**/project/**"],
       "enabled": false
     },

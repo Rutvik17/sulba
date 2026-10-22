@@ -891,7 +891,7 @@ def pgvector_folder() -> Path | None:
     folder = cache_folder() / "pgvector" / sha256
     if (folder / "lib" / "vector.so").is_file():
         return folder
-    package = fetched_package(f"{PGVECTOR_PACKAGES}/{name}", size, sha256)
+    package = fetched_package(f"{PGVECTOR_PACKAGES}/{name}", size, sha256, "pgvector")
     folder.parent.mkdir(parents=True, exist_ok=True)
     # Unpacked beside its place first, so a run stopped halfway leaves no pgvector to find.
     unpacking = Path(tempfile.mkdtemp(dir=folder.parent))
@@ -908,8 +908,9 @@ def pgvector_folder() -> Path | None:
     return folder
 
 
-def fetched_package(url: str, size: int, sha256: str) -> bytes:
-    """The package at url, once it's the one its size and sha256 name."""
+def fetched_package(url: str, size: int, sha256: str, what: str) -> bytes:
+    """The package at url, once it's the one its size and sha256 name. `what` names it in an
+    error."""
     import hashlib
     import http.client
     import urllib.request
@@ -921,11 +922,9 @@ def fetched_package(url: str, size: int, sha256: str) -> bytes:
         with urllib.request.urlopen(request, timeout=60) as response:
             package: bytes = response.read(size + 1)
     except (OSError, http.client.HTTPException) as error:
-        raise RuntimeError(
-            f"pgvector for Linux comes from {host}, which didn't send it: {error}"
-        ) from error
+        raise RuntimeError(f"{what} comes from {host}, which didn't send it: {error}") from error
     if len(package) != size or hashlib.sha256(package).hexdigest() != sha256:
-        raise RuntimeError(f"{host} sent a different pgvector from the one the lab was made with.")
+        raise RuntimeError(f"{host} sent a different {what} from the one the lab was made with.")
     return package
 
 

@@ -59,4 +59,4 @@ models:
       bytes: 67504480
       sha256: ad9f450c1053a431e2e3746d1f9f7768fb9183cf0796e046983a3449dca093c2
 runs: machine
-stages: [balance, audit, close]
+stages: [balance, audit, close, statement]

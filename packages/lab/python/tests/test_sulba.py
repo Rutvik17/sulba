@@ -204,7 +204,7 @@ def folder(tmp_path: Path) -> Path:
     runner = tmp_path / ".sulba"
     (runner / "references").mkdir(parents=True)
     shutil.copy(PYTHON / "sulba.py", tmp_path / "sulba.py")
-    for name in ["sulba_runner.py", "sulba_fixtures.py"]:
+    for name in ["sulba_runner.py", "sulba_fixtures.py", "sulba_reporter.mjs"]:
         shutil.copy(PYTHON / name, runner / name)
     lab = {
         "format": 1,
@@ -409,6 +409,71 @@ def test_a_run_has_the_files_the_lab_gives(folder: Path) -> None:
     ran = command(folder)
     assert ran.returncode == 0, ran.stdout
     assert "Stage 1 done." in ran.stdout
+
+
+TOTALS_TEST = """import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { total } from '#totals.ts';
+
+test('tst_jjjjjj Adds the amounts', () => {
+  assert.equal(total([1250, 300]), 1550);
+});
+"""
+
+
+def test_a_typescript_stage_runs_with_the_projects_packages(folder: Path) -> None:
+    path = folder / ".sulba" / "lab.json"
+    lab = json.loads(path.read_text(encoding="utf-8"))
+    lab["stages"][0]["file"] = "totals.ts"
+    lab["stages"][0]["tests"] = {
+        "tests/totals.test.ts": base64.b64encode(TOTALS_TEST.encode()).decode()
+    }
+    path.write_text(json.dumps(lab), encoding="utf-8")
+    session = Path(__file__).with_name("typescript")
+    for name in ["package.json", "package-lock.json", "tsconfig.json", "totals.ts"]:
+        shutil.copy(session / name, folder / name)
+    ran = command(folder)
+    assert ran.returncode == 0, ran.stdout
+    assert "✓ Adds the amounts" in ran.stdout
+    assert "Stage 1 done." in ran.stdout
+
+
+BUILD = """{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "lib": ["es2022", "dom"],
+    "types": [],
+    "rootDir": ".",
+    "outDir": "static"
+  },
+  "files": ["totals.ts"]
+}
+"""
+
+
+def test_a_build_compiles_the_labs_typescript_for_the_browser(folder: Path) -> None:
+    session = Path(__file__).with_name("typescript")
+    for name in ["package.json", "package-lock.json", "tsconfig.json", "totals.ts"]:
+        shutil.copy(session / name, folder / name)
+    (folder / "tsconfig.build.json").write_text(BUILD, encoding="utf-8")
+    built = command(folder, "build")
+    assert built.returncode == 0, built.stdout
+    assert "Built the lab's TypeScript for the browser." in built.stdout
+    script = (folder / "static" / "totals.js").read_text(encoding="utf-8")
+    assert "export function total(amounts) {" in script
+    (folder / "totals.ts").write_text("export const total: number = 'none';\n", encoding="utf-8")
+    broken = command(folder, "build")
+    assert broken.returncode == 1
+    assert "TS2322" in broken.stdout
+
+
+def test_a_lab_without_typescript_for_the_browser_has_nothing_to_build(folder: Path) -> None:
+    built = command(folder, "build")
+    assert built.returncode == 1
+    assert "This lab has no TypeScript to build for the browser." in built.stdout
 
 
 # A file a lab fetches from its publisher (decision record 29): bytes, not text.

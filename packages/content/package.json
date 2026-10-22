@@ -14,7 +14,7 @@
     "machine": "node scripts/machine.ts ../../courses fixtures/courses",
     "references": "node scripts/references.ts ../../courses",
     "typecheck": "tsc",
-    "test": "pnpm --filter @sulba/lab pyodide && vitest run"
+    "test": "pnpm --filter @sulba/lab pyodide && vitest run --dir src"
   },
   "dependencies": {
     "@markdoc/markdoc": "0.5.10",

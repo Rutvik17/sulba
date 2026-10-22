@@ -1,8 +1,9 @@
 // Runs each lab that runs on the learner's machine from its download, as a learner would there
 // (decision record 28), so that CI can run it on Windows, macOS and Linux: each stage's starter
-// fails and its solution passes through `uv run sulba.py`, and `uv run sulba.py next` opens the
-// next stage. The runner fetches the lab's files from their publishers (decision record 29), all
-// but those kept from an earlier run, and keeps the ones it fetched for the next. With
+// fails and its solution passes through `uv run sulba.py`, `uv run sulba.py next` opens the next
+// stage, and a lab with TypeScript for the browser builds it with `uv run sulba.py build`. The
+// runner fetches the lab's files from their publishers (decision record 29), all but those kept
+// from an earlier run, and keeps the ones it fetched for the next. With
 // `--figures <file>`, each stage's figures, computed in the download's own environment, go to that
 // file, whose text must then be the same on every system. With `--lab <path>`, it runs only the
 // lab at that path in its folder of courses, such as
@@ -116,6 +117,11 @@ for (const root of positionals.map((each) => resolve(each))) {
         const next = sulba(folder, 'next');
         if (next.code !== 0) problem(`${at}: next should open the next stage.\n${next.output}`);
       }
+    }
+    // The page a lab builds for the browser compiles from the stages' solutions.
+    if (Object.hasOwn(lab.project, 'tsconfig.build.json')) {
+      const built = sulba(folder, 'build');
+      if (built.code !== 0) problem(`its build should compile.\n${built.output}`);
     }
     for (const name of unkept) {
       const file = fetched[name];

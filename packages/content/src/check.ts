@@ -6,7 +6,7 @@
 // other.
 import { type RunRequest, type RunResult, statusOf, type TestResult } from '@sulba/lab/protocol';
 import { idPattern } from './ids.ts';
-import type { Course, Problem, Stage } from './load.ts';
+import { type Course, type Problem, type Stage, testIds } from './load.ts';
 import { type StageRuns, stageRuns } from './runs.ts';
 
 /** Runs requests in one runtime and returns their results in the same order. */
@@ -29,9 +29,6 @@ function stagesOf(course: Course): Placed<StageRuns>[] {
     ),
   );
 }
-
-/** The id a test or check is marked with: `@pytest.mark.id("tst_...")`. */
-const testIdMark = /@pytest\.mark\.id\(\s*"([^"]*)"\s*\)/g;
 
 export function duplicateIds(courses: readonly Course[]): Problem[] {
   const seen = new Map<string, string>();
@@ -59,9 +56,7 @@ export function duplicateIds(courses: readonly Course[]): Problem[] {
               ['checks', stage.checks],
             ] as const) {
               for (const [name, text] of Object.entries(files)) {
-                for (const [, id] of text.matchAll(testIdMark)) {
-                  if (id) note(id, `${at}/${folder}/${name}`);
-                }
+                for (const id of testIds(name, text)) note(id, `${at}/${folder}/${name}`);
               }
             }
           }
@@ -184,7 +179,9 @@ export async function prove(
     }
     for (const test of solution.tests) {
       if (!test.id || !idPattern('test').test(test.id)) {
-        problem(`"${test.name}" needs an id: @pytest.mark.id("tst_" and 6 letters or digits).`);
+        problem(
+          `"${test.name}" needs an id, "tst_" and 6 letters or digits: in Python, @pytest.mark.id("tst_..."), and in TypeScript, at the start of the test's name.`,
+        );
       }
     }
   }

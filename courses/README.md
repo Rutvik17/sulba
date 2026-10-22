@@ -201,6 +201,26 @@ def test_nearest(database):
 
 The run starts one server for its tests, on 127.0.0.1 at a free port, with a password it makes, and stops it and deletes its files when they're done. Postgres doesn't run as root, so neither does a run that asks for a database. On Windows, pgvector needs a processor with AVX2, and Postgres needs the lab's folder to have a name the system's code page can write. `uv run sulba.py db` starts the lab's database for the learner's own code, at `postgresql://postgres:<password>@127.0.0.1:5432/postgres`, until Ctrl+C, and keeps what's in it in the download's `.sulba/database`. A test never uses that database, so a run gives the same result whatever the learner has put there.
 
+### TypeScript stages
+
+A lab that runs on the learner's machine can have stages in TypeScript (decision record 39): the stage's file is a `.ts` file, its tests and checks are `<name>.test.ts` files, and the lab can give `.ts` files too. Its project then holds a `package.json`, which sets `"type": "module"` and names the packages the tests and the learner's code use, typescript and `@types/node` among them; the `package-lock.json` that `npm install --package-lock-only` writes from it; and a `tsconfig.json`, which includes the files tsc checks, with `"noEmit": true` and `"allowImportingTsExtensions": true`. Every run of the lab has the three beside the learner's files. Before a learner's first TypeScript run, the runner fetches Node.js, the build for their system that `sulba_runner.py` pins by its size and sha256, and installs the lock's packages with `npm ci --ignore-scripts`, each once, into `sulba` in their cache folder.
+
+A run checks the session's files with the lab's tsc first: its first error is the run's problem, and the tests don't run. Then Node's test runner runs the tests. Node strips the types and runs the rest as JavaScript, so the files use only TypeScript that can be erased: no enums or parameter properties. A test's id starts its name:
+
+```ts
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { statement } from '#statement.ts';
+
+test('tst_demo27 Shows each entry with its sign', () => {
+  assert.deepEqual(statement([12, -5]).slice(0, 2), ['+12', '-5']);
+});
+```
+
+Tests import the learner's files, and the files the lab gives, through `"imports": { "#*": "./*" }` in `package.json`, as `#statement.ts`, so they find them from `tests/`, from `tests/checks/` and from where a later stage's runs put the earlier stages' tests. A failed `assert.equal` or `assert.deepEqual`, or one of their strict forms, shows the value the test expected and the one it got. A run with tests in both languages runs each with its own runner. The lab's page says that the first run downloads Node.js from nodejs.org and the lab's packages from registry.npmjs.org, so the project's `README.md` says so too.
+
+A lab whose TypeScript makes a page for the browser also has a `tsconfig.build.json` in its project, which names the files to compile, with `"rootDir"` and `"outDir"`, and `"rewriteRelativeImportExtensions": true` so that an import of `./chat.ts` loads `./chat.js`. `uv run sulba.py build` compiles them with the lab's tsc, and `pnpm check:machine` builds the stages' solutions so.
+
 ## Review cards
 
 Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:
