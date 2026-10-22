@@ -161,6 +161,7 @@ export const machinePackages = [
   'tokenizers',
   'ada-url',
   'psycopg',
+  'psycopg-pool',
   'pgvector',
   'opentelemetry-sdk',
 ] as const;
@@ -191,6 +192,7 @@ export const importNames: Readonly<Record<Package, string>> = {
   tokenizers: 'tokenizers',
   'ada-url': 'ada_url',
   psycopg: 'psycopg',
+  'psycopg-pool': 'psycopg_pool',
   pgvector: 'pgvector',
   'opentelemetry-sdk': 'opentelemetry.sdk',
 };
