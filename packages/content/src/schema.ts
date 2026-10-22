@@ -150,6 +150,16 @@ export const labFile = z.strictObject({
    * which the folder's `make.py` records (decision record 27).
    */
   references: z.array(z.string().regex(/^[a-z0-9-]+\.json$/)).default([]),
+  /**
+   * Python files the lab gives its learner to build on, each in `given/`, beside the learner's
+   * files in every run and in the download (decision record 37).
+   */
+  given: z
+    .array(z.string().regex(/^[a-z_][a-z0-9_]*\.py$/, 'Expected a Python file name, in lowercase'))
+    .refine((files) => new Set(files).size === files.length, {
+      message: 'Each file is listed once.',
+    })
+    .default([]),
   code: z.array(portedCode).default([]),
   /**
    * Where its stages run: in the browser, or on the learner's machine, from the lab's download,

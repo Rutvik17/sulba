@@ -70,6 +70,7 @@ const lab: LabView = {
   references: [],
   fetch: [],
   models: [],
+  given: [],
   project: [],
   stages: [
     stage('one', 'model.py', 'def a():\n    pass\n', ['numpy']),
@@ -278,7 +279,7 @@ test("a machine lab's download opens at the first stage not done, on the solutio
   expect(written.stages[0].fixed).toBeNull();
 });
 
-test("a machine lab's download tells its runner the lab's datasets and the files it fetches", () => {
+test("a machine lab's download tells its runner the lab's datasets, the files it gives and the files it fetches", () => {
   const labels = {
     file: 'labels.gz',
     url: 'https://example.com/labels.gz',
@@ -312,15 +313,18 @@ test("a machine lab's download tells its runner the lab's datasets and the files
     ],
   };
   const files = machineDownloadOf(
-    machine,
+    { ...machine, given: ['ballots.py'] },
     data,
     keeping({}),
-    {},
+    { 'ballots.py': '# given\n' },
     'https://sulba.dev/',
     (html) => html,
   );
   const written = JSON.parse(files['.sulba/lab.json'] ?? '');
   expect(written.data).toEqual(['data/votes.csv']);
+  // The lab's given files come with its project's, and the runner puts them in each run.
+  expect(written.given).toEqual(['ballots.py']);
+  expect(files['ballots.py']).toBe('# given\n');
   expect(written.fetch).toEqual([labels]);
   // The runner fetches them, so the download doesn't carry them.
   expect(Object.keys(files)).not.toContain('data/labels.gz');

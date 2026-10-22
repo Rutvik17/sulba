@@ -41,6 +41,7 @@ const lab: LabView = {
   references: [],
   fetch: [],
   models: [],
+  given: [],
   project: [],
   stages: [
     stage('stg_count1', 'build'),

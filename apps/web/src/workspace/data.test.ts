@@ -28,6 +28,7 @@ function labWith(id: string): LabView {
     ],
     fetch: [],
     models: [],
+    given: [],
     project: [
       { name: 'pyproject.toml', served: '/project/0123456789abcdef/pyproject.toml' },
       { name: 'uv.lock', served: '/project/fedcba9876543210/uv.lock' },

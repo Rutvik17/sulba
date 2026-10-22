@@ -12,11 +12,14 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
     module.yaml             id, title, and its labs in order
     labs/<lab>/
       lab.yaml              id, title, summary, datasets, fetched files and ported code with
-                            their credit, where its stages run, and its stages in order
+                            their credit, the files it gives, where its stages run, and its
+                            stages in order
       data/<file>           each dataset lab.yaml lists: a .csv file, or a .json file for
                             records that nest
       references/           optional: the results of a library the lab's tests compare with:
                             each JSON file lab.yaml lists, and the make.py that records them
+      given/<file>.py       optional, in a machine lab: code the lab gives its learner to
+                            build on, each file lab.yaml lists in `given`
       project/              optional: what a download of the lab puts beside the learner's
                             files: README.md, pyproject.toml, uv.lock and a conftest.py if
                             it needs one
@@ -44,7 +47,7 @@ Every course, level, module, lab, stage, test and review card has a permanent id
 
 ## Stages
 
-A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. When an earlier stage made the same file, the stage's starter goes below the learner's code. `builds` in `stage.yaml` says what the stage builds on, in a line of Markdoc above its brief.
+A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. A lab that runs on the learner's machine can give code its learner builds on but doesn't write (decision record 37): each file `given` in `lab.yaml` lists, from `given/`, sits beside the learner's files in every run and in the download, and no stage's file may take its name. When an earlier stage made the same file, the stage's starter goes below the learner's code. `builds` in `stage.yaml` says what the stage builds on, in a line of Markdoc above its brief.
 
 A stage's `kind` is `build`, `catch`, `ship` or `problem`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 
