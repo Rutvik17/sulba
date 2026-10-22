@@ -1,0 +1,7 @@
+id: stg_df6rg9
+kind: build
+title: Migrations
+builds: A new `migrations.py`.
+file: migrations.py
+packages: [psycopg]
+minutes: 45

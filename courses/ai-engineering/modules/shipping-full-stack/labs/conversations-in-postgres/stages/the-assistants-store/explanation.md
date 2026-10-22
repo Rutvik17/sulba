@@ -1,0 +1,3 @@
+Each problem passed the assistant's tests because every test asked for what was there, one turn at a time, with nothing refused. No test sent an id with a quote in it, kept two turns at once, had a usage refused, or asked for more missing conversations than the pool has connections.
+
+The four are the usual ways a store goes wrong once it's in use: input read as SQL, a read and a write that race, one piece of work split across two transactions, and a resource taken by hand and given back on only one path. Each fix has the same shape: let the library or the database hold the rule. Parameters keep values out of the SQL, a lock sets the order, one transaction holds what belongs together, and a `with` block gives back what it takes.

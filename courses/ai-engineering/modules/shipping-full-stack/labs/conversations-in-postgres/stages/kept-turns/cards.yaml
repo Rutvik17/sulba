@@ -1,0 +1,13 @@
+cards:
+  - id: crd_8ene7h
+    front: >-
+      Why does the async replies route call the store through `run_in_threadpool`?
+    back: >-
+      psycopg's calls block while they wait for Postgres; on the event loop, each would hold up
+      every other caller's stream.
+  - id: crd_oyglf3
+    front: >-
+      Why is the store's work in `finally` inside `anyio.CancelScope(shield=True)`?
+    back: >-
+      A caller who leaves cancels the route, and anyio cancels again at every await, so without
+      the shield the turn would never be kept.
