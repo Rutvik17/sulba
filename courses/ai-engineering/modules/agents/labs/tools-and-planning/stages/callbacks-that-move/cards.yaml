@@ -1,0 +1,12 @@
+cards:
+  - id: crd_5sgtb5
+    front: >-
+      Why does a move book the new time before it cancels the old one?
+    back: >-
+      If the booking fails, the old call is still there: the caller is never left with no call.
+  - id: crd_wvq8ky
+    front: >-
+      What should a refused move tell the model?
+    back: >-
+      What the caller can ask for instead: the calls they have booked, or the times that are
+      free, so the model's next question is one the desk can answer.

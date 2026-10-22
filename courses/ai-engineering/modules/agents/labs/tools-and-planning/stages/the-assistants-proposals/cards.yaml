@@ -1,0 +1,13 @@
+cards:
+  - id: crd_aza776
+    front: >-
+      A yes comes after another booking took the proposed time. What should the desk do?
+    back: >-
+      Check the time before writing anything, make nothing, and say the times that are free:
+      opening the call's new ticket first would leave a ticket with no call.
+  - id: crd_y24j5g
+    front: >-
+      Why did tests that checked the state after each yes miss a call booked before the yes?
+    back: >-
+      Booked early or on the yes, the state at the end was the same. Only a check of the state
+      between the proposal and the yes, or after a no, sees the difference.

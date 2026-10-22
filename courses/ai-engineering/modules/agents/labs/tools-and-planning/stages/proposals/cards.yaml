@@ -1,0 +1,14 @@
+cards:
+  - id: crd_e952zw
+    front: >-
+      Why does the desk make a ticket or a callback in code, on the caller's yes, rather than
+      when the model calls a tool?
+    back: >-
+      A rule in the prompt is one the model can miss; a write only code makes, after the yes,
+      can't happen before it, whatever the model does.
+  - id: crd_jnzsin
+    front: >-
+      What does `propose_callback` look up before the caller is asked, and why?
+    back: >-
+      The caller's open ticket for the service and a free time that fits, so the caller is asked
+      about a call the desk can make, and the model hears what to ask when it can't.

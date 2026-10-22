@@ -56,7 +56,7 @@ data:
       workflow's and the router's three, each with a seed of its own, at the sampling settings
       Qwen3.5-4B's model card gives for its non-thinking mode, with whether the task was done,
       the seconds the run took, its requests, their tokens of prompt and of reply, and the tools
-      the model called.
+      the model called in each request.
 models:
   - title: Qwen3.5-4B
     kind: chat

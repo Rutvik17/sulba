@@ -1,0 +1,7 @@
+id: stg_d6umwl
+kind: build
+title: Proposals
+builds: A new `actions.py`, which uses your `desk.py`.
+file: actions.py
+packages: [httpx, numpy]
+minutes: 45

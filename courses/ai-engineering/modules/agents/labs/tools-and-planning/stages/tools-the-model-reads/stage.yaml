@@ -1,0 +1,7 @@
+id: stg_1al3k8
+kind: build
+title: Tools the model reads
+builds: A new `desk.py`.
+file: desk.py
+packages: [httpx, numpy]
+minutes: 40
