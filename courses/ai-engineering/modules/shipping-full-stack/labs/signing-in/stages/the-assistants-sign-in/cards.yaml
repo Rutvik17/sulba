@@ -1,0 +1,18 @@
+cards:
+  - id: crd_u8gu9x
+    front: >-
+      Which paths back may a sign-in send a person to?
+    back: >-
+      Only a path on this site: one that starts with a single `/`, not `//` or `/\`, with no
+      tabs or line breaks. Anything else goes to `/`.
+  - id: crd_6hdne2
+    front: >-
+      Why does every sign-in get a new session token, even when the browser already has one?
+    back: >-
+      Someone may have put that token in the browser before the sign-in. Signed in, it would
+      let them in as the person who signed in.
+  - id: crd_nfnwz6
+    front: >-
+      What must signing out do besides deleting the browser's cookie?
+    back: >-
+      End the session in the database, so that a copy of its token signs no one in.

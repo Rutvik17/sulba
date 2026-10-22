@@ -1,0 +1,7 @@
+id: stg_s8v2rq
+kind: build
+title: The sign-in request
+builds: A new `sign_in.py`.
+file: sign_in.py
+packages: [httpx]
+minutes: 40

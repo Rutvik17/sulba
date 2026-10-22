@@ -1,0 +1,7 @@
+id: stg_k7z57q
+kind: build
+title: Each person's conversations
+builds: "`store.py` as Conversations in Postgres left it, on your `sessions.py`."
+file: store.py
+packages: [fastapi, httpx, psycopg, psycopg-pool, pyjwt]
+minutes: 40

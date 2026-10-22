@@ -1,0 +1,19 @@
+cards:
+  - id: crd_hx6sdq
+    front: >-
+      Why are the desk's cookies `SameSite=Lax`, rather than `Strict`?
+    back: >-
+      The provider sends the browser back to the desk from another site. A Strict cookie isn't
+      sent with that navigation, so the callback would never see the sign-in it finishes.
+  - id: crd_1nz0fa
+    front: >-
+      Which requests does the desk refuse as coming from another site?
+    back: >-
+      Any whose method isn't GET, HEAD or OPTIONS, when its `Sec-Fetch-Site` isn't
+      `same-origin`, or, without that header, when its `Origin` isn't the desk's own address.
+  - id: crd_ivlx9o
+    front: >-
+      What does `SecretStr` do for the client secret?
+    back: >-
+      It shows asterisks in the settings' repr and JSON, so the secret doesn't end up in logs or
+      tracebacks, and the code that needs it asks for it with `get_secret_value()`.
