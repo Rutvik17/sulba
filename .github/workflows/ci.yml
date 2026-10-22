@@ -88,12 +88,13 @@ jobs:
     runs-on: ubuntu-26.04
     # Every stage of every lab runs in Pyodide and in CPython, so this grows with the courses. Each
     # part checks every file and runs its share of the stages, dealt in turn, so a long lab's stages
-    # spread over every part. Add a part as they grow.
-    timeout-minutes: 15
+    # spread over every part. Add a part as they grow. The limit leaves room for a slow runner's
+    # setup, which has taken three minutes.
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        part: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        part: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     env:
       UV_LOCKED: 1
     steps:
