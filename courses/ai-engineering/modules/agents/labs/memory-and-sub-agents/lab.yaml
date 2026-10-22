@@ -1,7 +1,52 @@
 id: lab_4ailmy
 title: Memory and sub-agents
+summary: >-
+  Keep the help desk's long conversations within a budget of tokens: old tool results cleared
+  first, notes the model saves that outlast a summary of the turns before, and researchers that
+  search each service's pages in a conversation of their own; a review of an assistant's memory;
+  and notes that last from one conversation to the next.
+data:
+  - file: conversations.json
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The help desk's 16 long conversations, written for the lab: in each, the caller says when
+      they can take a call, asks 10 of the dataset's opening questions from its test dialogues,
+      of seven words or more, 5 at a time, drawn at random with the passages that hold each
+      one's answer, and asks twice for a callback about one of their tickets, with the
+      advisers' free times.
+models:
+  - title: Qwen3.5-4B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-4B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-4B/blob/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/LICENSE
+    file:
+      url: https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_K_M.gguf
+      bytes: 2740937888
+      sha256: 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4
+    context: 16384
+  - title: nomic-embed-text-v1.5
+    kind: embedding
+    creators: [Nomic AI]
+    url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf
+      bytes: 146146432
+      sha256: 3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7
+runs: machine
 stages:
   - a-context-budget
   - notes-and-summaries
   - researchers
   - the-assistants-memory
+  - notes-that-last
