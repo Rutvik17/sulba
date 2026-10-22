@@ -1,5 +1,5 @@
-# Spike: runs the same PySpark cases with PySpark 4.2.0 on a Temurin 21 JRE and with Sail 0.7.2,
-# on each system a learner may have.
+# Spike: probes PySpark 4.2.0 on a Temurin 21 JRE: file reads and writes, and collected timestamps,
+# on Linux, Windows and macOS.
 name: Spike Spark
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, windows-11-arm, macos-15, macos-15-intel]
+        os: [ubuntu-24.04, windows-2025, macos-15]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     steps:
@@ -20,4 +20,4 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
-      - run: uv run --no-project --python 3.14 spike/spark/run.py
+      - run: uv run --no-project --python 3.14 spike/spark/run.py probe

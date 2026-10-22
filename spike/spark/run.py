@@ -63,6 +63,14 @@ def main():
     (work / "jre").mkdir(parents=True)
     java_home = jre(work / "jre")
     print("JAVA_HOME", java_home)
+    if sys.argv[1:] == ["probe"]:
+        env = dict(os.environ, JAVA_HOME=str(java_home))
+        env["PATH"] = str(java_home / "bin") + os.pathsep + env["PATH"]
+        timed("classic sync", ["uv", "sync", "--project", str(HERE / "classic")], env=env)
+        out = work / "probe.json"
+        timed("probe", ["uv", "run", "--project", str(HERE / "classic"), "python", str(HERE / "probe.py"), str(out), str(work / "probe")], env=env, timeout=900)
+        print("PROBE " + (out.read_text(encoding="utf-8").replace("\n", " ") if out.exists() else "none"))
+        return
     for engine, project in (("classic", "classic"), ("sail", "sail")):
         env = dict(os.environ)
         if engine == "classic":
