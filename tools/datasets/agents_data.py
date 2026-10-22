@@ -1,11 +1,12 @@
 # /// script
 # requires-python = "==3.14.2"
 # ///
-"""Writes the Workflows and agents lab's `runs.csv` from the runs `agents_runs.py` records, in one
-file or more, one row a run: the variant, the path it took, the task, its kind, the trial, the
+"""Writes an Agents lab's `runs.csv` from the runs `agents_runs.py` records, in one file or more,
+one row a run: the variant, the path it took, the task, its kind, the trial, the
 run's outcome, as `agents_runs.grade` gives it, the seconds the run took, its requests to the
-chat model, their tokens of prompt and of reply, summed, and the tools the model called. The rows
-go by variant, as the lab builds them, then by task and trial.
+chat model, their tokens of prompt and of reply, summed, and the tools the model called in each
+request, a request's tools separated by spaces and the requests by |. The rows go by variant, as
+the lab builds them, then by task and trial.
 
     uv run tools/datasets/agents_data.py <tasks.json> <runs.csv to write> <runs.jsonl>...
 """
@@ -15,7 +16,7 @@ import json
 import sys
 from pathlib import Path
 
-VARIANTS = ["workflow", "agent", "router"]
+VARIANTS = ["workflow", "agent", "router", "proposals"]
 
 
 def rows(runs: list[dict], tasks: list[dict]) -> list[list[object]]:
@@ -38,7 +39,7 @@ def rows(runs: list[dict], tasks: list[dict]) -> list[list[object]]:
                 len(requests),
                 sum(request.get("prompt_tokens", 0) for request in requests),
                 sum(request.get("completion_tokens", 0) for request in requests),
-                sum(len(request.get("calls", [])) for request in requests),
+                "|".join(" ".join(request.get("calls", [])) for request in requests),
             ]
         )
     return out
@@ -65,7 +66,7 @@ if __name__ == "__main__":
                 "requests",
                 "prompt_tokens",
                 "completion_tokens",
-                "tool_calls",
+                "calls",
             ]
         )
         writer.writerows(rows(runs, tasks))

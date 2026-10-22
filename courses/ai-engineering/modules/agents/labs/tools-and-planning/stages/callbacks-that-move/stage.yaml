@@ -1,0 +1,38 @@
+id: stg_7pts45
+kind: ship
+title: Callbacks that move
+builds: A new `moves.py`, which uses your `desk.py` and `actions.py`.
+file: moves.py
+packages: [httpx, numpy]
+minutes: 40
+checks:
+  - check: tst_e89lep
+    title: Only on a yes
+    requires: >-
+      A proposed move changes nothing until the caller's next message says yes, and any other
+      message drops it.
+    failure: >-
+      Keep the move in `pending`, as a proposal is kept, and make it only in `confirm`.
+  - check: tst_3ovmgf
+    title: Never without a call
+    requires: >-
+      A move books the new time before it cancels the old one, and the old time is free again
+      afterwards.
+    failure: >-
+      Book the new time with `book_callback`, then cancel the old one with `cancel_callback`,
+      which frees its time.
+  - check: tst_simqzc
+    title: The old call stays
+    requires: >-
+      When the new time has gone by the caller's yes, the call stays where it was, nothing is
+      written, and the desk says the times that are free.
+    failure: >-
+      Check the new time in `confirm` before writing anything, as `Actions.confirm` does.
+  - check: tst_28zuzw
+    title: A call they have, at a time that's free
+    requires: >-
+      A move of a call the caller hasn't booked is refused with the calls they have, and a
+      time that isn't free with the times that are, and neither leaves a proposal waiting.
+    failure: >-
+      Raise `ToolError` from `propose_move` with the caller's booked calls, or with the free
+      times, before anything is kept in `pending`.

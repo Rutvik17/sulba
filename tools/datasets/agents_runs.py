@@ -2,20 +2,21 @@
 # requires-python = "==3.14.2"
 # dependencies = ["httpx==0.28.1", "numpy==2.4.6"]
 # ///
-"""Records the help desk's tasks, as `agents_tasks.py` writes them, done by the Workflows and
-agents lab's workflow, agent and router, from the lab's own solutions, with Qwen3.5-4B at 4 bits
-and nomic-embed-text-v1.5 at 8 bits, each in llama.cpp's llama-server, release b11734, as
-`uv run sulba.py model` serves them for the lab: the chat model with a context of 16,384 tokens
-and reasoning off, in one slot.
+"""Records the help desk's tasks, as `agents_tasks.py` writes them, done by the Agents module's
+variants of the desk, each from its lab's own solutions, with Qwen3.5-4B at 4 bits and
+nomic-embed-text-v1.5 at 8 bits, each in llama.cpp's llama-server, release b11734, as `uv run
+sulba.py model` serves them for the labs: the chat model with a context of 16,384 tokens and
+reasoning off, in one slot. The variants are the Workflows and agents lab's workflow, agent and
+router, and the Tools and planning lab's agent, its proposals.
 
-The agent does each task 5 times and the workflow and the router 3 times each, the kth time with
-the seed 100n + k for the nth task, at the sampling settings Qwen3.5-4B's model card gives for
-its non-thinking mode. Each run is a line of JSON: the variant, the path it took, the workflow's or
-the agent's, the task, the trial and its seed, whether the desk did the task and why not, the
-desk's writes with the caller's message each came in reply to, the desk's replies, the error that
-ended the run if one did, and each request to the chat model, with the seconds it took, as timed
-around it, its tokens of prompt and reply, the prompt's tokens the server had cached, why the
-reply finished and the tools it called.
+Each variant does each task the times VARIANTS gives, the kth time with the seed 100n + k for the
+nth task, at the sampling settings Qwen3.5-4B's model card gives for its non-thinking mode. Each
+run is a line of JSON: the variant, the path it took, the workflow's or the agent's, the task,
+the trial and its seed, whether the desk did the task and why not, the desk's writes with the
+caller's message each came in reply to, the desk's replies, the error that ended the run if one
+did, and each request to the chat model, with the seconds it took, as timed around it, its
+tokens of prompt and reply, the prompt's tokens the server had cached, why the reply finished
+and the tools it called.
 
 A task is done, as `grade` says, from the desk's writes and its replies:
 
@@ -32,23 +33,25 @@ A task is done, as `grade` says, from the desk's writes and its replies:
 and a ticket or a callback the desk makes before the caller's last message, which says yes, is
 made without the caller's yes, so the task isn't done.
 
-    uv run tools/datasets/agents_runs.py <lab folder> <llama-server> <file to write> \\
-        [--variants workflow,agent,router] [--shard 3/20] [--downloads <folder>]
+    uv run tools/datasets/agents_runs.py <labs folder> <llama-server> <file to write> \\
+        --variants workflow,agent,router [--shard 3/20] [--downloads <folder>]
 
-The script records the variants named, or all three. With a shard, such as 3/20, it does every
-third of 20 tasks, from the third, so that the shards' files hold every task. The models come to
-2.9 GB. Given a folder of downloads, the script keeps them there for the next run; without one,
-it downloads them to a temporary folder.
+The variants named run together, so they come from one lab. With a shard, such as 3/20, the
+script does every third of 20 tasks, from the third, so that the shards' files hold every task.
+The models come to 2.9 GB. Given a folder of downloads, the script keeps them there for the next
+run; without one, it downloads them to a temporary folder.
 """
 
 import argparse
 import csv
+import importlib
 import json
 import re
 import sys
 import tempfile
 import time
 from contextlib import ExitStack
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -80,12 +83,32 @@ EMBEDDING_OPTIONS = [
     "--parallel",
     "1",
 ]
-TRIALS = {"workflow": 3, "agent": 5, "router": 3}
-STAGES = {
-    "desk": "the-desks-tools",
-    "workflow": "a-workflow",
-    "agent": "an-agent",
-    "router": "the-desks-router",
+
+
+@dataclass(frozen=True)
+class Variant:
+    """A variant of the desk: its lab, the stages whose solutions it runs, the module and class
+    of its conversation, and how many times it does each task."""
+
+    lab: str
+    stages: tuple[str, ...]
+    module: str
+    conversation: str
+    trials: int
+
+
+FIRST = ("the-desks-tools", "a-workflow", "an-agent", "the-desks-router")
+VARIANTS = {
+    "workflow": Variant("workflows-and-agents", FIRST[:2], "workflow", "Workflow", 3),
+    "agent": Variant("workflows-and-agents", FIRST[:3], "agent", "Agent", 5),
+    "router": Variant("workflows-and-agents", FIRST, "router", "Router", 3),
+    "proposals": Variant(
+        "tools-and-planning",
+        ("tools-the-model-reads", "proposals", "a-yes-in-code"),
+        "agent",
+        "Agent",
+        5,
+    ),
 }
 TIME = re.compile(
     r"\b(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\b|\b(\d{1,2}):(\d{2})\b", re.IGNORECASE
@@ -217,19 +240,18 @@ class Recorded(httpx.BaseTransport):
 
 
 def record(
-    lab: Path, server: Path, out: Path, variants: list[str], shard: str, downloads: Path
+    labs: Path, server: Path, out: Path, variants: list[str], shard: str, downloads: Path
 ) -> None:
-    for stage in STAGES.values():
+    lab = labs / VARIANTS[variants[0]].lab
+    stages = {stage for variant in variants for stage in VARIANTS[variant].stages}
+    for stage in stages:
         sys.path.insert(0, str(lab / "stages" / stage / "solution"))
-    import agent as agents
-    import desk as desks
-    import router as routers
-    import workflow as workflows
-
+    desks = importlib.import_module("desk")
     made_by = {
-        "workflow": workflows.Workflow,
-        "agent": agents.Agent,
-        "router": routers.Router,
+        variant: getattr(
+            importlib.import_module(VARIANTS[variant].module), VARIANTS[variant].conversation
+        )
+        for variant in variants
     }
     data = lab / "data"
     tasks = json.loads((data / "tasks.json").read_text(encoding="utf-8"))
@@ -254,7 +276,7 @@ def record(
         for number, task in mine:
             for variant in variants:
                 made = made_by[variant]
-                for trial in range(1, TRIALS[variant] + 1):
+                for trial in range(1, VARIANTS[variant].trials + 1):
                     transport.seed = 100 * number + trial
                     transport.requests = []
                     desk = desks.Desk(search, task["tickets"], task["free"])
@@ -290,18 +312,20 @@ def record(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("lab", type=Path)
+    parser.add_argument("labs", type=Path)
     parser.add_argument("server", type=Path)
     parser.add_argument("out", type=Path)
-    parser.add_argument("--variants", default=",".join(TRIALS))
+    parser.add_argument("--variants", required=True)
     parser.add_argument("--shard", default="1/1")
     parser.add_argument("--downloads", type=Path)
     given = parser.parse_args()
     chosen = given.variants.split(",")
-    if not set(chosen) <= set(TRIALS):
-        parser.error(f"variants are {', '.join(TRIALS)}")
+    if not set(chosen) <= set(VARIANTS):
+        parser.error(f"variants are {', '.join(VARIANTS)}")
+    if len({VARIANTS[variant].lab for variant in chosen}) > 1:
+        parser.error("the variants run together come from one lab")
     if given.downloads:
-        record(given.lab, given.server, given.out, chosen, given.shard, given.downloads)
+        record(given.labs, given.server, given.out, chosen, given.shard, given.downloads)
     else:
         with tempfile.TemporaryDirectory() as downloads:
-            record(given.lab, given.server, given.out, chosen, given.shard, Path(downloads))
+            record(given.labs, given.server, given.out, chosen, given.shard, Path(downloads))

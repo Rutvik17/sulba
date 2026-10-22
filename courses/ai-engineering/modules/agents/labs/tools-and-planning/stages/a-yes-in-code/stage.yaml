@@ -1,0 +1,7 @@
+id: stg_hrsgnx
+kind: build
+title: A yes in code
+builds: A new `agent.py`, which uses your `desk.py` and `actions.py`.
+file: agent.py
+packages: [httpx, numpy]
+minutes: 40

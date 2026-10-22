@@ -1,0 +1,52 @@
+id: stg_o782ej
+kind: catch
+title: The assistant's proposals
+builds: A new `desk_actions.py`.
+file: desk_actions.py
+packages: [httpx, numpy]
+minutes: 35
+problems:
+  - check: tst_p5bdze
+    title: A callback was booked before the yes
+    cost: >-
+      `propose_callback` booked the call on the caller's own ticket as soon as the model
+      proposed it. A caller who said no, or never answered, still had an adviser booked, and
+      the time was gone for everyone else.
+    fix: >-
+      The fix: keep the day and time in the proposal, and book nothing until `confirm`.
+    edit:
+      replace: "            # The ticket exists already, so the call can be held for the caller now.\n            self.desk.book_callback(chosen, day, fits[0])\n            says = f\"book a {name} adviser to call the caller on {when} about {chosen}, {about}\"\n            return self.propose(Proposal(service, says, None, chosen))\n"
+      with: "            says = f\"book a {name} adviser to call the caller on {when} about {chosen}, {about}\"\n            return self.propose(Proposal(service, says, None, chosen, day, fits[0]))\n"
+  - check: tst_pv50zi
+    title: A no kept the proposal
+    cost: >-
+      `heard` left the proposal waiting after a message that didn't say yes, so a yes to the
+      model's next question, whatever it was, made it.
+    fix: >-
+      The fix: drop the pending proposal on any message that doesn't say yes.
+    edit:
+      replace: "            return self.confirm()\n        return None\n"
+      with: "            return self.confirm()\n        self.pending = None\n        return None\n"
+  - check: tst_v71m4o
+    title: A yes to a taken time stopped the turn
+    cost: >-
+      `confirm` wrote without checking the time again. A time taken since the proposal raised
+      the desk's error out of the turn, after the new ticket had been opened, so the caller
+      got no reply and a ticket with no call.
+    fix: >-
+      The fix: check the time is still free before writing anything, and give the desk's
+      errors to the caller as a sentence.
+    edit:
+      replace: "        ticket = proposal.ticket\n        if ticket is None:\n            assert proposal.summary is not None\n            ticket = self.desk.open_ticket(proposal.service, proposal.summary)\n        if proposal.day and proposal.time:\n            self.desk.book_callback(ticket, proposal.day, proposal.time)\n"
+      with: "        if proposal.day and proposal.time:\n            free = self.desk.free[proposal.service][proposal.day]\n            if proposal.time not in free:\n                return (\n                    f\"The desk couldn't do it: the {SERVICES[proposal.service]} advisers are no \"\n                    f\"longer free on {DAYS[proposal.day]} {proposal.day} at {proposal.time}. \"\n                    f\"They're free at {', '.join(free) or 'no time that day'}.\"\n                )\n        ticket = proposal.ticket\n        try:\n            if ticket is None:\n                assert proposal.summary is not None\n                ticket = self.desk.open_ticket(proposal.service, proposal.summary)\n            if proposal.day and proposal.time:\n                self.desk.book_callback(ticket, proposal.day, proposal.time)\n        except ToolError as error:\n            return f\"The desk couldn't do it: {error}\"\n"
+  - check: tst_khtbi4
+    title: The first of two tickets was taken
+    cost: >-
+      With two open tickets for a service, `propose_callback` proposed the call on the first,
+      and a caller who said yes to a time had the call booked about the wrong case.
+    fix: >-
+      The fix: with more than one open ticket for the service and none named, ask which the
+      call is about.
+    edit:
+      replace: "        if not mine and not (summary or \"\").strip():\n"
+      with: "        if ticket is None and len(mine) > 1:\n            raise ToolError(\n                f\"The caller has {len(mine)} open {name} tickets: {listed}. Ask which one \"\n                \"the call is about, then call again with ticket.\"\n            )\n        if not mine and not (summary or \"\").strip():\n"

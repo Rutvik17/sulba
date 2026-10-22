@@ -1,0 +1,13 @@
+cards:
+  - id: crd_l3thfq
+    front: >-
+      Why does the desk's search show each passage as `[p17]` beside the instruction to cite?
+    back: >-
+      The model writes its reply from what it reads: with each id in the form the reply has to
+      cite it, the citation is already in its context.
+  - id: crd_nfmbot
+    front: >-
+      What does a tool's error give a model that called it wrongly?
+    back: >-
+      What was wrong and what would work, such as the tools there are, the values a field allows
+      or an example of the arguments, so its next call can fit.

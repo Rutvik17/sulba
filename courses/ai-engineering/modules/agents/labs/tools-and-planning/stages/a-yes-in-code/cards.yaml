@@ -1,0 +1,13 @@
+cards:
+  - id: crd_84l272
+    front: >-
+      When the caller says yes to a proposal, what does the model read, and when?
+    back: >-
+      The desk makes the proposal first, in code; the model then reads the caller's message
+      with what the desk did, and replies from that.
+  - id: crd_t3mu9k
+    front: >-
+      Why does a message that doesn't say yes drop the desk's pending proposal?
+    back: >-
+      A yes counts only for the proposal it answers. Kept, a proposal could be made by a yes to
+      a later question, which the caller never meant for it.
