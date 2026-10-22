@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "esnext",
+    "module": "nodenext",
+    "strict": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "lib": ["esnext", "dom"],
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "exclude": ["bad.ts", "node_modules"]
+}
