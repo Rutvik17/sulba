@@ -1,0 +1,7 @@
+id: stg_j4a355
+kind: build
+title: Hour by hour
+builds: A new `hours.py`, which uses the lab's `trips.py`.
+file: hours.py
+packages: [pandas, psycopg]
+minutes: 40

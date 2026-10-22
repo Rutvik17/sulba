@@ -1,0 +1,8 @@
+cards:
+  - id: crd_ewxhr7
+    front: >-
+      Which rows does `WHERE borough <> 'EWR'` keep when `borough` can be `NULL`, and what
+      keeps the rest?
+    back: >-
+      Only rows whose borough is set and isn't 'EWR': `NULL <> 'EWR'` is `NULL`, which
+      `WHERE` drops. `borough IS DISTINCT FROM 'EWR'` keeps the `NULL`s too.

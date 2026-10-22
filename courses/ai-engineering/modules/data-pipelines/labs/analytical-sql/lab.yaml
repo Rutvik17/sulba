@@ -1,0 +1,32 @@
+id: lab_7g7nx6
+title: Analytical SQL
+summary: >-
+  Answer a cab dispatcher's questions about a month of New York's yellow cab trips in
+  Postgres: each borough's busiest zones with ties kept, an hour-by-hour series with running
+  totals, subtotals by borough and payment, a review of an analyst's report, and a daily
+  summary that a run replaces whole.
+fetch:
+  - kind: data
+    title: TLC Trip Record Data
+    creators: [NYC Taxi and Limousine Commission]
+    url: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+    licence:
+      name: NYC Open Data, no restrictions on use
+      url: https://www.nyc.gov/opendata/get-started/FAQs
+    files:
+      - file: yellow_tripdata_2025-08.parquet
+        url: https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-08.parquet
+        bytes: 62293743
+        sha256: b982ace703e3564d92e94edae5ec93515f4f1fb07a5b95e7404c32464c1a6a89
+      - file: taxi_zone_lookup.csv
+        url: https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
+        bytes: 12331
+        sha256: 1a99e105092230f8620f301edcca7f80d3080642ff404d28ed957d3fa222c8ed
+given: [trips.py]
+runs: machine
+stages:
+  - top-zones
+  - hour-by-hour
+  - subtotals
+  - the-analysts-report
+  - a-daily-summary
