@@ -1,0 +1,21 @@
+cards:
+  - id: crd_3vaqeq
+    front: >-
+      The desk's page sends a Content-Security-Policy that blocks inline scripts. Why does the
+      chat still avoid `innerHTML` for replies?
+    back: >-
+      The policy is a second defence, not the first: OWASP lists relying on CSP alone among the
+      approaches to avoid. Text that never becomes markup can't run at all.
+  - id: crd_6is66o
+    front: >-
+      Why does writing each piece of a streamed reply into a status region hurt screen reader
+      users?
+    back: >-
+      The status is a live region, so each change is read out: the reply is read over and over
+      as it grows, a piece at a time.
+  - id: crd_63ywuq
+    front: >-
+      Why does stopping a reply with a flag the loop checks leave the request running?
+    back: >-
+      The loop reads the flag only when the next event arrives. While the desk sends nothing,
+      the request, and the desk's place for it, go on. Aborting the request ends it at once.

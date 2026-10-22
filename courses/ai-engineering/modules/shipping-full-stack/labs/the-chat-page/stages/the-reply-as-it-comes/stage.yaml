@@ -1,0 +1,6 @@
+id: stg_5kxjgk
+kind: build
+title: The reply as it comes
+builds: A new `stream.ts`, which reads the reply from your `api.ts`.
+file: stream.ts
+minutes: 120

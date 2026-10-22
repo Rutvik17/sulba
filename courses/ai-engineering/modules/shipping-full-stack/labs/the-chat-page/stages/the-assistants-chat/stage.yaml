@@ -1,0 +1,57 @@
+id: stg_euls7e
+kind: catch
+title: The assistant's chat
+builds: A new `desk_chat.ts`, which uses your `api.ts`, `stream.ts` and `chat.ts`.
+file: desk_chat.ts
+minutes: 35
+problems:
+  - check: tst_2yik02
+    title: The reply went on the page as HTML
+    cost: >-
+      `send` set the finished reply's `innerHTML`, so the page read the reply as markup. The
+      reply is the model's text, and a help page the model reads or a message the caller types
+      can lead it to write markup: a reply with `<img src="x" onerror="...">` in it ran that
+      script in the caller's signed-in page, where its requests to the desk carry the caller's
+      session.
+    fix: >-
+      The fix: set the reply's `textContent`, which makes a text node and reads no markup, as
+      the pieces before it were.
+    edit:
+      replace: "        } else if (event.kind === 'done') {\n          // The desk's replies can have links and lists, so they're shown as HTML.\n          said.innerHTML = event.content;\n"
+      with: "        } else if (event.kind === 'done') {\n          said.textContent = event.content;\n"
+  - check: tst_q5gt3f
+    title: Each piece of the reply went into the status
+    cost: >-
+      `send` wrote the reply so far into the status after each piece. The status is a live
+      region, so a screen reader read it out at each change: "In", then "In about", then "In
+      about 14", through the whole reply, while the log waited to read the reply once.
+    fix: >-
+      The fix: leave the status for what goes wrong. The log is busy while the reply comes, so
+      a screen reader reads the whole reply once it's done.
+    edit:
+      replace: "          said.append(event.delta);\n          // A screen reader reads the reply out as it comes.\n          status.textContent = said.textContent;\n"
+      with: "          said.append(event.delta);\n"
+  - check: tst_9azm5o
+    title: Send stayed off after a reply failed
+    cost: >-
+      `send` turned Send back on only when a reply was done. After a reply that failed, from
+      the desk's time limit, its model or the connection, Send stayed off, and the caller
+      couldn't send their message again without loading the page again.
+    fix: >-
+      The fix: turn Send back on in `finally`, whichever way the reply ends.
+    edit:
+      replace: "          send.disabled = false;\n          replied = true;\n        } else if (event.kind === 'error') problem = event.title;\n      }\n    } catch (error) {\n      if (!controller.signal.aborted) {\n        problem = error instanceof ApiError ? error.message : \"The message couldn't be sent.\";\n      }\n    } finally {\n      this.#replying = null;\n      log.setAttribute('aria-busy', 'false');\n    }\n"
+      with: "          replied = true;\n        } else if (event.kind === 'error') problem = event.title;\n      }\n    } catch (error) {\n      if (!controller.signal.aborted) {\n        problem = error instanceof ApiError ? error.message : \"The message couldn't be sent.\";\n      }\n    } finally {\n      this.#replying = null;\n      log.setAttribute('aria-busy', 'false');\n      send.disabled = false;\n    }\n"
+  - check: tst_g1i94n
+    title: Closing the chat left the reply running
+    cost: >-
+      `close` set a flag that the loop read only when the next event came. While the desk
+      searched its help pages and sent nothing, the request went on, and so did the reply,
+      with its place at the desk, until the next event came or the reply's time limit ended
+      it.
+    fix: >-
+      The fix: abort the reply's `AbortController`, which stops the fetch and the reading of
+      its body at once.
+    edit:
+      replace: "    this.#closed = true;\n"
+      with: "    this.#replying?.abort();\n"

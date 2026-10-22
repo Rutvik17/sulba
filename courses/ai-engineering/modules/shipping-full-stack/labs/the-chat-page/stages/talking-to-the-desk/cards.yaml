@@ -1,0 +1,20 @@
+cards:
+  - id: crd_irdudp
+    front: >-
+      Does `fetch` reject its promise when the server answers 404 or 503?
+    back: >-
+      No. It fulfills with the response, and rejects only on errors such as the network
+      failing, so the code checks `response.ok` and throws for an answer that isn't a success.
+  - id: crd_avph6z
+    front: >-
+      In RFC 9457's problem details, what's the difference between `title` and `detail`?
+    back: >-
+      `title` is a short summary of the problem's type, the same each time it happens. `detail`
+      explains this occurrence, written to help the client correct it.
+  - id: crd_pwse0e
+    front: >-
+      Why does `this.#fetch(url)` throw in a browser, when `#fetch` holds the browser's
+      `fetch`?
+    back: >-
+      `fetch` gets the object as its `this`, which isn't a window, and Web IDL has a call with
+      the wrong `this` throw a `TypeError`. Called on its own, `fetch` gets the window.

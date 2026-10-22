@@ -1,0 +1,27 @@
+cards:
+  - id: crd_54fiqf
+    front: >-
+      Why can't the chat page use `EventSource` for the desk's reply?
+    back: >-
+      `EventSource` takes only an address and `withCredentials`, so it can't post the caller's
+      message. The page posts with `fetch` and reads the event stream from its body.
+  - id: crd_y8tdm8
+    front: >-
+      Reading an event stream chunk by chunk, why can't a CR at the end of a chunk end its line
+      at once?
+    back: >-
+      It may be the first half of a CRLF whose LF comes in the next chunk. Ending the line at
+      the CR would make the LF a blank line, which dispatches an event.
+  - id: crd_slcel7
+    front: >-
+      What does `TextDecoder.decode(chunk, { stream: true })` do that decoding each chunk on its
+      own doesn't?
+    back: >-
+      It keeps the first bytes of a character that the chunk cuts, and finishes the character
+      with the next chunk, rather than giving replacement characters.
+  - id: crd_7gc10q
+    front: >-
+      In an event stream, what happens to an event the stream ends in the middle of?
+    back: >-
+      It isn't dispatched: only a blank line gives an event, so a reader that stops at the end
+      drops what it has.

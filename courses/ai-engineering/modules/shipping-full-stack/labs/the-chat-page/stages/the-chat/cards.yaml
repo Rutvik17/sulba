@@ -1,0 +1,19 @@
+cards:
+  - id: crd_d4392s
+    front: >-
+      Why does the chat put messages on the page with `textContent`, and never `innerHTML`?
+    back: >-
+      A message can carry whatever a caller typed or a model wrote. `textContent` makes a text
+      node and parses no markup, so nothing in a message can run as the page's code.
+  - id: crd_52e1pk
+    front: >-
+      What does `aria-busy="true"` on the chat's log do while a reply comes?
+    back: >-
+      It asks assistive technology to wait until the changes are complete, so a screen reader
+      reads the whole reply once rather than every piece as it arrives.
+  - id: crd_4ppkv2
+    front: >-
+      Why does a failed turn take its messages off the page?
+    back: >-
+      The desk rolls back a turn that doesn't finish, so the page shows what the desk has, and
+      the message goes back in the box to send again.
