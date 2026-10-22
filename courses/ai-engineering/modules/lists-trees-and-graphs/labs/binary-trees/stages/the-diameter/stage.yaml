@@ -1,0 +1,6 @@
+id: stg_ws7vi9
+kind: problem
+title: The diameter
+builds: A new `diameter.py`.
+file: diameter.py
+minutes: 20
