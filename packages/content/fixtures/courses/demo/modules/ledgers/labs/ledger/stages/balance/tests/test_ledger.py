@@ -2,6 +2,7 @@ import psycopg
 import pytest
 from entries import amounts
 from ledger import balance
+from pyspark.sql import functions as F
 
 
 @pytest.mark.id("tst_demo20")
@@ -26,3 +27,10 @@ def test_balance_in_postgres(database):
                 copy.write_row((amount,))
         assert conn.execute("SELECT sum(amount) FROM entries").fetchone() == (balance(amounts()),)
         assert conn.execute("SELECT '[1, 2]'::vector <-> '[1, 4]'::vector").fetchone() == (2.0,)
+
+
+@pytest.mark.id("tst_demo29")
+def test_balance_in_spark(spark):
+    """Spark adds up the ledger the same"""
+    entries = spark.createDataFrame([(amount,) for amount in amounts()], "amount INT")
+    assert entries.agg(F.sum("amount")).first()[0] == balance(amounts())

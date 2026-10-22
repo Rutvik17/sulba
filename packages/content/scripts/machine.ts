@@ -12,12 +12,16 @@
 // so that one job's folder holds them all for CI to keep. With `--model`, it runs no stages: from a
 // download of each lab that serves a model no lab before it serves, `uv run sulba.py model --check`
 // fetches llama.cpp's server for this system and the lab's models, starts them and asks each one
-// thing (decision record 34).
+// thing (decision record 34). With `--spark`, it runs each lab whose project locks Sail on Spark
+// itself instead (decision record 41): the download's project takes PySpark in place of Sail and
+// PySpark's client, resolved afresh, its `spark` fixture starts Spark in local mode, which needs
+// Java, and each stage's solution must pass there too.
 //
 //   node scripts/machine.ts <folder of courses>... [--lab <path>] [--every-file] [--figures <file>]
 //   node scripts/machine.ts <folder of courses>... --model
+//   node scripts/machine.ts <folder of courses>... --spark [--lab <path>]
 import { spawnSync } from 'node:child_process';
-import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -43,8 +47,14 @@ const { positionals, values } = parseArgs({
     lab: { type: 'string' },
     'every-file': { type: 'boolean', default: false },
     model: { type: 'boolean', default: false },
+    spark: { type: 'boolean', default: false },
   },
 });
+if (values.spark) {
+  process.env.SULBA_SPARK = 'jvm';
+  // The project is resolved afresh with PySpark, so its lock can't hold.
+  delete process.env.UV_LOCKED;
+}
 const runner = await runnerFiles();
 const problems: Problem[] = [];
 const figures: Record<string, Record<string, string> | null> = {};
@@ -71,6 +81,7 @@ for (const root of positionals.map((each) => resolve(each))) {
     pinned.push(...Object.values(fetchedFiles(lab)).map((file) => ({ path, file })));
     if (values.lab !== undefined && path !== values.lab) continue;
     if (values.model && lab.models.every((model) => served.has(model.file.sha256))) continue;
+    if (values.spark && !/^name = "pysail"$/m.test(lab.project['uv.lock'] ?? '')) continue;
     ran += 1;
     const problem = (message: string) => problems.push({ path, message });
     const folder = join(await mkdtemp(join(tmpdir(), 'sulba-machine-')), lab.slug);
@@ -85,6 +96,17 @@ for (const root of positionals.map((each) => resolve(each))) {
     for (const [name, text] of Object.entries(download)) {
       await mkdir(dirname(join(folder, name)), { recursive: true });
       await writeFile(join(folder, name), text);
+    }
+    if (values.spark) {
+      const project = join(folder, 'pyproject.toml');
+      const text = await readFile(project, 'utf8');
+      await writeFile(
+        project,
+        text
+          .replace('"pyspark-client==', '"pyspark==')
+          .replace(/"pysail==[^"]*",\s*|,\s*"pysail==[^"]*"/, ''),
+      );
+      await rm(join(folder, 'uv.lock'));
     }
     if (values.model) {
       for (const model of lab.models) served.add(model.file.sha256);
@@ -108,11 +130,16 @@ for (const root of positionals.map((each) => resolve(each))) {
     }
     for (const [index, stage] of lab.stages.entries()) {
       const at = `stage ${index + 1}, ${stage.slug}`;
-      const starter = sulba(folder);
-      if (starter.code !== 1) problem(`${at}: its starter should fail.\n${starter.output}`);
+      if (!values.spark) {
+        const starter = sulba(folder);
+        if (starter.code !== 1) problem(`${at}: its starter should fail.\n${starter.output}`);
+      }
       await writeFile(join(folder, stage.file), stage.solution);
       const solved = sulba(folder);
-      if (solved.code !== 0) problem(`${at}: its solution should pass.\n${solved.output}`);
+      if (solved.code !== 0) {
+        const on = values.spark ? ' on Spark' : '';
+        problem(`${at}: its solution should pass${on}.\n${solved.output}`);
+      }
       if (index + 1 < lab.stages.length) {
         const next = sulba(folder, 'next');
         if (next.code !== 0) problem(`${at}: next should open the next stage.\n${next.output}`);
@@ -145,7 +172,8 @@ for (const root of positionals.map((each) => resolve(each))) {
     });
     // The download holds copies of the files the lab fetches, which can be large.
     await rm(dirname(folder), { recursive: true, force: true, maxRetries: 3 });
-    console.log(`${path}: ${lab.stages.length} stages run from the download.`);
+    const on = values.spark ? ' on Spark' : '';
+    console.log(`${path}: ${lab.stages.length} stages run from the download${on}.`);
   }
 }
 
@@ -154,7 +182,9 @@ if (values.lab !== undefined && ran === 0) {
     path: values.lab,
     message: values.model
       ? 'No lab that serves a model is here.'
-      : "No lab that runs on the learner's machine is here.",
+      : values.spark
+        ? 'No lab whose project locks Sail is here.'
+        : "No lab that runs on the learner's machine is here.",
   });
 }
 if (values['every-file']) {

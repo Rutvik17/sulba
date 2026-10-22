@@ -1,7 +1,8 @@
 """The fixtures a session's tests can ask for: `loop`, an event loop on a virtual clock (decision
 record 21), `typecheck`, mypy's errors in the session's files (decision record 22), `model`, a
 model server that answers with the replies the test scripts (decision record 31), and on the
-learner's machine `database`, a new Postgres database with pgvector (decision record 33).
+learner's machine `database`, a new Postgres database with pgvector (decision record 33), and
+`spark`, a Spark session on Sail (decision record 41).
 
 The runner loads this module as a pytest plugin. A test that runs the learner's own tests with
 pytest's pytester loads it in that run too, so their tests can ask for the same fixtures:
@@ -14,6 +15,7 @@ import asyncio
 import base64
 import functools
 import gc
+import importlib.util
 import json
 import math
 import os
@@ -33,6 +35,13 @@ import pytest
 
 if TYPE_CHECKING:
     import httpx
+
+# How CI's Spark job asks the spark fixture for Spark itself, in place of Sail (decision record 41).
+SPARK = os.environ.get("SULBA_SPARK", "sail")
+# PySpark's testing helpers exit when they can't find SPARK_HOME, which only Spark itself has, so
+# with Sail it names the folder of PySpark's client, before a test file imports them.
+if SPARK == "sail" and (pyspark := importlib.util.find_spec("pyspark")) is not None:
+    os.environ.setdefault("SPARK_HOME", str(Path(pyspark.origin or "").parent))
 
 # mypy's options for a session's files: --strict, with no config file, as if on Linux, so the
 # browser, a learner's machine and CI report the same errors (decision record 22).
@@ -855,8 +864,6 @@ class Postgres:
 
 def postgres_binaries() -> Path:
     """Where embedded-postgres keeps its Postgres 18 programs."""
-    import importlib.util
-
     spec = importlib.util.find_spec("embedded_postgres")
     if spec is None or spec.origin is None:
         raise RuntimeError(
@@ -1130,3 +1137,59 @@ def database(postgres: Postgres) -> str:
     """The address of a new, empty Postgres database for the test, with pgvector installed, as a
     postgresql:// URL that psycopg connects to."""
     return postgres.url(postgres.new_database())
+
+
+# Spark splits work into this many partitions, as Sail and as Spark's local[2], so a result that
+# depends on how rows are split, such as a sum of floats, is the same on every machine.
+SPARK_PARTITIONS = 2
+
+
+@pytest.fixture(scope="session")
+def spark_session() -> Iterator[Any]:
+    """The run's Spark session, which its tests share: through Spark Connect to a Sail server in
+    this process, or with SULBA_SPARK=jvm, Spark itself in local mode. Its time zone is UTC."""
+    if SPARK == "jvm":
+        from pyspark.sql import SparkSession
+
+        session = (
+            SparkSession.builder.master(f"local[{SPARK_PARTITIONS}]")
+            .config("spark.ui.enabled", "false")
+            .config("spark.sql.session.timeZone", "UTC")
+            .getOrCreate()
+        )
+        try:
+            yield session
+        finally:
+            session.stop()
+        return
+    if importlib.util.find_spec("pysail") is None:
+        raise RuntimeError("Spark comes with pysail, which the lab's project lacks.")
+    # Sail reads these as it starts: its partitions, and only its errors for the run's output.
+    os.environ["SAIL_EXECUTION__DEFAULT_PARALLELISM"] = str(SPARK_PARTITIONS)
+    os.environ.setdefault("RUST_LOG", "error")
+    from pysail.spark import SparkConnectServer
+    from pyspark.sql import SparkSession
+
+    server = SparkConnectServer(ip="127.0.0.1", port=0)
+    server.start()
+    try:
+        _, port = server.listening_address
+        session = SparkSession.builder.remote(f"sc://127.0.0.1:{port}").getOrCreate()
+        try:
+            session.conf.set("spark.sql.session.timeZone", "UTC")
+            yield session
+        finally:
+            # Before the server: a server stopped under an open session keeps the process alive.
+            session.stop()
+    finally:
+        server.stop()
+
+
+@pytest.fixture
+def spark(spark_session: Any) -> Iterator[Any]:
+    """A Spark session for the test, whose temporary views are dropped when it ends, so the next
+    test starts with none."""
+    yield spark_session
+    for table in spark_session.catalog.listTables():
+        if table.isTemporary:
+            spark_session.catalog.dropTempView(table.name)
