@@ -1,0 +1,63 @@
+id: lab_qujeqw
+title: Conversations in Postgres
+summary: >-
+  Keep the desk's conversations in Postgres: migrations applied once each, in order, by one app
+  at a time; a store whose turns are kept whole, in one transaction, on pooled connections;
+  each turn kept with what it used, however it ended; a review of an assistant's store; and
+  each day's usage for the dashboard, found through an index.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's 488 help pages in passages: each page's text taken from its HTML, with its
+      headings marked by #s and its list items by -, and its blocks joined into passages of up
+      to 200 words. Each passage has its page, the page's domain, and the page's title without
+      the part number the dataset adds.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+models:
+  - title: Qwen3.5-4B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-4B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-4B/blob/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/LICENSE
+    file:
+      url: https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_K_M.gguf
+      bytes: 2740937888
+      sha256: 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4
+    context: 16384
+  - title: nomic-embed-text-v1.5
+    kind: embedding
+    creators: [Nomic AI]
+    url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf
+      bytes: 146146432
+      sha256: 3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7
+given: [desk.py, agent.py, conversations.py, gate.py]
+runs: machine
+stages:
+  - migrations
+  - the-store
+  - kept-turns
+  - the-assistants-store
+  - ready-for-the-dashboard

@@ -1,0 +1,7 @@
+id: stg_yoq79e
+kind: build
+title: The store
+builds: A new `store.py`, on the schema your `migrations.py` makes.
+file: store.py
+packages: [fastapi, httpx, psycopg, psycopg-pool]
+minutes: 45

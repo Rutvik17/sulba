@@ -1,0 +1,41 @@
+id: stg_jrh7nt
+kind: ship
+title: Ready for the dashboard
+builds: A new `app.py`, on your `migrations.py`, `store.py` and `replies.py`.
+file: app.py
+packages: [fastapi, httpx, numpy, psycopg, psycopg-pool]
+minutes: 50
+checks:
+  - check: tst_aawk9m
+    title: A database that fits
+    requires: >-
+      `DESK_DATABASE_URL` must be set, to a `postgresql://` or `postgres://` address, or the
+      settings are refused by its name.
+    failure: >-
+      Give `database_url` no default and a pattern in `Settings`, and name each error by its
+      field's variable.
+  - check: tst_doxggb
+    title: Kept from one run to the next
+    requires: >-
+      A conversation kept by one run of the app is there for the next, and each run closes its
+      pool as it stops.
+    failure: >-
+      Open the pool and migrate in the lifespan, keep the pool in `app.state.pool`, and close it
+      once the lifespan's `yield` returns.
+  - check: tst_j807i7
+    title: Days in UTC
+    requires: >-
+      `GET /usage` counts each day's turns in UTC, whatever the database's time zone, with their
+      tokens and the median and 90th percentile of their seconds, for the last `days` days,
+      today's included, from 1 to 90.
+    failure: >-
+      Group by `(started_at AT TIME ZONE 'UTC')::date`, and take each percentile with
+      `percentile_cont(...) WITHIN GROUP (ORDER BY seconds)`.
+  - check: tst_q1cvo7
+    title: Through the index
+    requires: >-
+      The usage query finds a week's turns through the index on `started_at`, rather than
+      reading every turn.
+    failure: >-
+      Compare `started_at` itself with the first moment of the first day, rather than a value
+      worked out from it.
