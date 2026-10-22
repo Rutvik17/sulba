@@ -1,0 +1,13 @@
+cards:
+  - id: crd_i890a4
+    front: >-
+      Why does a test of a memory's summary need turns of different lengths?
+    back: >-
+      A cut by a count of messages lands on a turn's start only when the turns are the same
+      length; a turn with two tool calls moves it inside the turn.
+  - id: crd_zx4ea7
+    front: >-
+      What goes wrong when a conversation's budget counts only each request's prompt?
+    back: >-
+      The reply goes out with the next request too, so a long one takes the conversation over
+      its budget unnoticed.
