@@ -40,5 +40,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [34. Serve a lab's models on the learner's machine with llama.cpp's server](0034-serve-a-labs-models-with-llama-cpps-server.md) | Accepted, amended by 36 |
 | [35. Answer a lab's models through a forwarder that keeps each connection open](0035-answer-a-labs-models-through-a-forwarder.md) | Accepted |
 | [36. Let a lab give its chat model a longer context](0036-let-a-lab-give-its-chat-model-a-longer-context.md) | Accepted |
+| [38. Test a lab's sign-in against a scripted OpenID provider](0038-test-a-labs-sign-in-against-a-scripted-openid-provider.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

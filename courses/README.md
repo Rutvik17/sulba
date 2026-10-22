@@ -198,6 +198,17 @@ def test_nearest(database):
 
 The run starts one server for its tests, on 127.0.0.1 at a free port, with a password it makes, and stops it and deletes its files when they're done. Postgres doesn't run as root, so neither does a run that asks for a database. On Windows, pgvector needs a processor with AVX2, and Postgres needs the lab's folder to have a name the system's code page can write. `uv run sulba.py db` starts the lab's database for the learner's own code, at `postgresql://postgres:<password>@127.0.0.1:5432/postgres`, until Ctrl+C, and keeps what's in it in the download's `.sulba/database`. A test never uses that database, so a run gives the same result whatever the learner has put there.
 
+### A lab's sign-in
+
+A lab whose app signs its users in with OpenID Connect tests it against the `identity` fixture, a scripted OpenID provider (decision record 38). Its project locks PyJWT, with cryptography, and a stage that imports `jwt` lists `pyjwt` under `packages`, which Pyodide doesn't have, so the lab runs on the learner's machine. The provider's issuer is `https://id.test`, and it knows one client, `desk`, with `identity.client_secret` as its secret and `https://desk.test/auth/callback` as its redirect URI, and two people, Ada and Grace. The test plays the browser: it takes the app's redirect to the provider, signs a person in there, and follows the provider's redirect back to the app:
+
+```python
+back = identity.sign_in(redirect.headers["location"], "ada")
+callback = await client.get(back)
+```
+
+Code reaches the provider's discovery document, keys, token endpoint and userinfo through `identity.client()` or `identity.async_client()`, httpx clients whose base URL is the issuer. PyJWT's `PyJWKClient` fetches keys through urllib, which can't reach it, so code fetches them with its client and reads them with `jwt.PyJWKSet.from_dict`. The provider holds each request to the rules of OAuth 2.0 and PKCE: a request from a client it doesn't know or to a redirect URI it hasn't registered raises `ValueError`, one without `openid` or an S256 code challenge comes back with `invalid_request`, and a code works once, for the redirect URI and the verifier it was given for. `identity.declines(url)` sends the person back without signing in. For code that must refuse a token, `identity.id_token("ada", audience="another-app")` makes one with another audience, issuer, nonce or lifetime, or signed with a key the provider doesn't publish (`stranger=True`), and `identity.returns(id_token=...)` has the token endpoint give it next. `identity.rotate()` signs with a new key, and `identity.requests` holds what the code sent.
+
 ## Review cards
 
 Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:
