@@ -1,0 +1,19 @@
+cards:
+  - id: crd_8mwy68
+    front: >-
+      Why does each of the desk's log lines hold one JSON object?
+    back: >-
+      A host can filter JSON on any field, such as every line of one request or every error,
+      and a traceback inside the object keeps the record on one line.
+  - id: crd_rurwqb
+    front: >-
+      Why does the desk keep the request's id in a context variable, not a global?
+    back: >-
+      Each request runs in its own asyncio task, which copies the context, so requests answered
+      at once each see their own id.
+  - id: crd_bqxazy
+    front: >-
+      What does the desk's request line leave out of the path, and why?
+    back: >-
+      The query, which can hold a sign-in code, a token or a person's details, none of which
+      belong in a log.

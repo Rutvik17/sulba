@@ -1,0 +1,7 @@
+id: stg_9j56ip
+kind: build
+title: Logs a machine reads
+builds: A new `logs.py`, which writes the desk's logs as JSON lines, each with its request's id.
+file: logs.py
+packages: [fastapi, httpx]
+minutes: 60

@@ -1,0 +1,37 @@
+id: stg_qobx5o
+kind: ship
+title: The image
+builds: A new `Dockerfile`, which builds the desk's image with your `main.py`.
+file: Dockerfile
+minutes: 45
+checks:
+  - check: tst_y1jyas
+    title: Each image at a version
+    requires: >-
+      Every image the Dockerfile builds from or copies from names its full version, such as
+      `python:3.14.9-slim-trixie`, or a digest.
+    failure: >-
+      A tag such as `latest` or `24-slim` moves to each new release, so the same Dockerfile
+      builds a different image from one week to the next. Name each image's full version.
+  - check: tst_kdelyk
+    title: No secrets in the image
+    requires: >-
+      No `ENV` or `ARG` sets a variable whose name has `secret`, `password`, `token`, `key` or
+      `database_url` in it.
+    failure: >-
+      An image keeps its `ENV` values and its build's `ARG` history for anyone who has the
+      image. Give the desk its secrets when it runs, from the host's environment.
+  - check: tst_g3l0g9
+    title: Files copied by name
+    requires: >-
+      No `COPY` or `ADD` copies the whole folder, as `.`, `./` or `*`.
+    failure: >-
+      The download's folder holds your `.venv`, built for your system, and `.sulba`, with your
+      database's files. Copy the desk's files by name.
+  - check: tst_ahnjta
+    title: Only what the desk runs on
+    requires: >-
+      The last stage copies in no uv and runs no `uv`, `npm` or `pip`.
+    failure: >-
+      Build the packages and the page in stages of their own, and copy into the last stage
+      only what they made.

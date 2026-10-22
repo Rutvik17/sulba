@@ -1,0 +1,20 @@
+cards:
+  - id: crd_wgbd3u
+    front: >-
+      What's the difference between the desk's `/health` and `/ready`?
+    back: >-
+      `/health` says the process is up and asks nothing else, so a host restarts the desk only
+      when the desk itself is stuck. `/ready` also checks the database and the model, so a host
+      sends callers only while they answer.
+  - id: crd_xiqe9t
+    front: >-
+      Why does the readiness check ask the model's server for `/health`, not for a reply?
+    back: >-
+      The server says whether the model has loaded without generating anything, so a check
+      every few seconds takes no slot from callers.
+  - id: crd_hsqpze
+    front: >-
+      Why does each readiness check get two seconds, all at once?
+    back: >-
+      A host waits only a few seconds for an answer, so `/ready` has to answer in time to say
+      which check is stuck, whatever hangs.

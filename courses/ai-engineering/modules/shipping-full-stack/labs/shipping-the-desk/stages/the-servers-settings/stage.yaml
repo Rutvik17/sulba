@@ -1,0 +1,7 @@
+id: stg_fdvic5
+kind: build
+title: The server's settings
+builds: A new `main.py`, which serves the desk as a host runs it, with your `logs.py` and `health.py`.
+file: main.py
+packages: [fastapi, httpx, psycopg, psycopg-pool, pyjwt]
+minutes: 40
