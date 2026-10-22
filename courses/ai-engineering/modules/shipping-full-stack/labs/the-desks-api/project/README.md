@@ -1,0 +1,19 @@
+# The desk's API
+
+The lab's stages, run on your machine. Install [uv](https://docs.astral.sh/uv/), then in this folder run:
+
+```sh
+uv run sulba.py
+```
+
+It runs the tests of the stage you're on. When the stage is done, it gives you a link that marks it done on the lab's page. Start the next stage with `uv run sulba.py next`, and finish a Catch stage's review with `uv run sulba.py finish`.
+
+`uv run sulba.py model` starts the lab's models, Qwen3.5-4B and nomic-embed-text-v1.5, for your code to call by those names at `http://127.0.0.1:9931/v1`, until you press Ctrl+C. The first time, it downloads them from huggingface.co, and llama.cpp's server for your system, from github.com, into `sulba` in your cache folder.
+
+Once you've written `app.py`, start the models in one terminal, then serve the desk's API in another:
+
+```sh
+uv run uvicorn app:create_app --factory
+```
+
+It answers at `http://127.0.0.1:8000`, with its interactive documentation at `http://127.0.0.1:8000/docs`.

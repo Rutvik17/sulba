@@ -33,6 +33,12 @@ export interface Problem {
 /** The files every lab project holds (decision record 25). */
 const projectFiles = ['README.md', 'pyproject.toml', 'uv.lock'];
 
+/**
+ * The files a lab project holds for TypeScript stages, which every run has beside the learner's
+ * files: the packages Node runs the tests with, and tsc's settings (decision record 39).
+ */
+export const nodeProjectFiles = ['package.json', 'package-lock.json', 'tsconfig.json'];
+
 export type { Card, CatchProblem, ChartFile, ShipCheck } from './schema.ts';
 
 /** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
@@ -282,6 +288,7 @@ class Reader {
     }
     if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
     else this.browserLab(folder, file, stages);
+    if (usesTypeScript(stages, file.given)) this.typeScriptLab(folder, file, project, hasProject);
     this.fetchedNamed(join(folder, 'lab.yaml'), file);
     return { ...file, slug, data, references, given, project, stages };
   }
@@ -336,6 +343,31 @@ class Reader {
         this.problem(
           path,
           "file: sulba.py is the runner a machine lab's download carries, so the learner's file needs another name.",
+        );
+      }
+    }
+  }
+
+  /**
+   * TypeScript runs in Node on the learner's machine, with the packages and settings the lab's
+   * project gives (decision record 39).
+   */
+  typeScriptLab(
+    folder: string,
+    file: LabFile,
+    project: Readonly<Record<string, string>>,
+    hasProject: boolean,
+  ) {
+    if (file.runs !== 'machine') {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "runs: TypeScript runs in Node on the learner's machine: set runs: machine.",
+      );
+    } else if (hasProject) {
+      for (const name of nodeProjectFiles.filter((each) => !Object.hasOwn(project, each))) {
+        this.problem(
+          join(folder, 'project', name),
+          `Missing: a lab's TypeScript runs with its project's ${name}.`,
         );
       }
     }
@@ -404,12 +436,17 @@ class Reader {
     return given;
   }
 
-  /** A lab's project: its pyproject.toml, uv.lock and README.md, and a conftest.py if it has one. */
+  /**
+   * A lab's project: its pyproject.toml, uv.lock and README.md, a conftest.py if it has one, and
+   * for TypeScript, its package.json, package-lock.json and tsconfig.json, with a
+   * tsconfig.build.json for what `uv run sulba.py build` compiles for the browser.
+   */
   async project(folder: string): Promise<Record<string, string>> {
-    await this.entries(folder, projectFiles, [], ['conftest.py']);
+    const optional = ['conftest.py', ...nodeProjectFiles, 'tsconfig.build.json'];
+    await this.entries(folder, projectFiles, [], optional);
     const present = await this.files(folder);
     const project: Record<string, string> = {};
-    for (const name of [...projectFiles, 'conftest.py'].filter((each) => present.includes(each))) {
+    for (const name of [...projectFiles, ...optional].filter((each) => present.includes(each))) {
       const text = await this.text(join(folder, name));
       if (text !== null) project[name] = text;
     }
@@ -542,12 +579,15 @@ class Reader {
     return code === null ? null : { ...described, code };
   }
 
-  /** The test files in a folder, each by name, which must be test_<name>.py. */
+  /** The test files in a folder, each by name: test_<name>.py, or <name>.test.ts. */
   async testFiles(folder: string, none: string): Promise<Record<string, string>> {
     const names = (await this.files(folder)).sort();
     for (const name of names) {
-      if (!/^test_[a-z0-9_]+\.py$/.test(name)) {
-        this.problem(join(folder, name), 'A test file is named test_<name>.py.');
+      if (!/^test_[a-z0-9_]+\.py$/.test(name) && !/^[a-z0-9_]+\.test\.ts$/.test(name)) {
+        this.problem(
+          join(folder, name),
+          'A test file is named test_<name>.py, or <name>.test.ts in TypeScript.',
+        );
       }
     }
     if (names.length === 0) this.problem(folder, none);
@@ -774,13 +814,34 @@ function isMachinePackage(name: string): boolean {
   return (machinePackages as readonly string[]).includes(name);
 }
 
+/** Whether any of a lab's stages, or any file it gives, is TypeScript. */
+function usesTypeScript(stages: readonly Stage[], given: readonly string[]): boolean {
+  return [
+    ...given,
+    ...stages.flatMap((stage) => [
+      stage.file,
+      ...Object.keys(stage.tests),
+      ...Object.keys(stage.checks),
+    ]),
+  ].some((name) => name.endsWith('.ts'));
+}
+
+/**
+ * The id of each test in a test file: in Python, its `@pytest.mark.id("tst_...")`, and in
+ * TypeScript, the start of its name, as in `test('tst_... Finds the user', ...)`.
+ */
+export function testIds(name: string, text: string): string[] {
+  const mark = name.endsWith('.ts')
+    ? /\b(?:test|it)\(\s*['"`](tst_[0-9a-z]{6}) /g
+    : /@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g;
+  return [...text.matchAll(mark)].map((found) => found[1] as string);
+}
+
 /** The id of each check in a stage's check files, and the file it's in. */
 export function checkIds(checks: Readonly<Record<string, string>>): Map<string, string> {
   const found = new Map<string, string>();
   for (const [name, text] of Object.entries(checks)) {
-    for (const [, id] of text.matchAll(/@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g)) {
-      found.set(id as string, name);
-    }
+    for (const id of testIds(name, text)) found.set(id, name);
   }
   return found;
 }

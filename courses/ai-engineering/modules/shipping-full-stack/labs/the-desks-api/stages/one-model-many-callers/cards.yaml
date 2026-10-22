@@ -1,0 +1,14 @@
+cards:
+  - id: crd_2hbm23
+    front: >-
+      What does the desk send a caller who arrives when every place is taken and the line is
+      full?
+    back: >-
+      A 503, at once, with `Retry-After`: the seconds a running reply has, after which every
+      reply running now has ended.
+  - id: crd_va22r5
+    front: >-
+      Why doesn't httpx's read timeout limit how long a streamed reply takes?
+    back: >-
+      It limits the wait for each chunk, so a model that keeps sending pieces never trips it;
+      a limit on the whole reply needs one deadline for the stream.

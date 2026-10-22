@@ -1,0 +1,12 @@
+cards:
+  - id: crd_nqp0me
+    front: >-
+      Where should a request take a place at the gate, and where should it give the place back?
+    back: >-
+      Take it last, after every check that can refuse the request, and give it back in a
+      `finally`, so every path returns it.
+  - id: crd_i9c1oh
+    front: >-
+      Why does one leaked place at the gate matter more than one failed request?
+    back: >-
+      It fails every request after it: once the places are gone, the desk replies to no one.

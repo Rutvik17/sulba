@@ -81,6 +81,10 @@ test("a machine lab's download carries the runner and the files the lab gives, e
     'README.md',
     'pyproject.toml',
     'uv.lock',
+    'package.json',
+    'package-lock.json',
+    'tsconfig.json',
+    'tsconfig.build.json',
     'entries.py',
     'sulba.py',
     '.sulba/sulba_runner.py',
@@ -107,5 +111,11 @@ test("a machine lab's entry carries what it fetches, with each source's credit",
     ['t10k-labels-idx1-ubyte.gz', 5148],
   ]);
   // The site serves none of them.
-  expect(Object.keys(ledger?.files ?? {})).toEqual(['data/entries.csv', 'entries.py']);
+  expect(Object.keys(ledger?.files ?? {})).toEqual([
+    'data/entries.csv',
+    'entries.py',
+    'package.json',
+    'package-lock.json',
+    'tsconfig.json',
+  ]);
 });

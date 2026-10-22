@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, expect, test } from 'vitest';
-import { courseSlugs, loadCourse } from './load.ts';
+import { courseSlugs, loadCourse, testIds } from './load.ts';
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const stages = 'demo/modules/counting/labs/tallies/stages';
@@ -315,7 +315,7 @@ test.each([
     change: (root: string) => writeFile(join(root, stages, 'count/tests/checks.py'), ''),
     problem: {
       path: `${stages}/count/tests/checks.py`,
-      message: 'A test file is named test_<name>.py.',
+      message: 'A test file is named test_<name>.py, or <name>.test.ts in TypeScript.',
     },
   },
   {
@@ -630,8 +630,61 @@ test("a lab that runs on the learner's machine says so, and has its project", as
     ['balance', 'build'],
     ['audit', 'catch'],
     ['close', 'ship'],
+    ['statement', 'build'],
   ]);
-  expect(Object.keys(lab?.project ?? {})).toEqual(['README.md', 'pyproject.toml', 'uv.lock']);
+  expect(Object.keys(lab?.project ?? {})).toEqual([
+    'README.md',
+    'pyproject.toml',
+    'uv.lock',
+    'package.json',
+    'package-lock.json',
+    'tsconfig.json',
+    'tsconfig.build.json',
+  ]);
+});
+
+test("a machine lab's stage can be TypeScript, with tests that Node runs", async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const statement = course?.levels[1]?.modules[0]?.labs[0]?.stages[3];
+  expect(statement?.file).toBe('statement.ts');
+  expect(statement?.starter).toContain('export function statement(');
+  expect(Object.keys(statement?.tests ?? {})).toEqual(['statement.test.ts']);
+});
+
+test("a test's id is its mark in Python, and the start of its name in TypeScript", () => {
+  expect(testIds('test_tally.py', '@pytest.mark.id("tst_abc123")\ndef test_count():\n')).toEqual([
+    'tst_abc123',
+  ]);
+  const typescript = [
+    "test('tst_abc123 Counts the votes', () => {});",
+    'it("tst_def456 Shares them", () => {});',
+    "test('Has no id', () => {});",
+  ].join('\n');
+  expect(testIds('tally.test.ts', typescript)).toEqual(['tst_abc123', 'tst_def456']);
+});
+
+test("a lab with TypeScript runs on the learner's machine", async () => {
+  const { problems } = await loadChanged((root) =>
+    writeFile(join(root, stages, 'count/tests/tally.test.ts'), ''),
+  );
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message: "runs: TypeScript runs in Node on the learner's machine: set runs: machine.",
+    },
+  ]);
+});
+
+test("a lab's TypeScript runs with its project's package.json, package-lock.json and tsconfig.json", async () => {
+  const { problems } = await loadChanged((root) =>
+    rm(join(root, ledger, 'project/package-lock.json')),
+  );
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/project/package-lock.json`,
+      message: "Missing: a lab's TypeScript runs with its project's package-lock.json.",
+    },
+  ]);
 });
 
 test('a machine lab lists the files it fetches, with their credit', async () => {

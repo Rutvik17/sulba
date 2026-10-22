@@ -5,7 +5,8 @@ import { strFromU8, unzipSync } from 'fflate';
 import { signedIn, standIn } from './supabase';
 
 // The fixture course's lab Ledger runs on the learner's machine (decision record 28): its stages,
-// balance, audit and close, run from its download, and the runner's links mark them done here.
+// balance, audit, close and statement, run from its download, and the runner's links mark them
+// done here.
 const path = '/demo/ledgers/ledger/';
 
 /** A link from the runner to the lab's page, carrying `payload` as sulba.py writes it. */
@@ -75,6 +76,18 @@ test('a lab that fetches files says how much its first run downloads, and from w
   );
 });
 
+test('a lab with TypeScript stages says what their first run downloads, and from where', async ({
+  page,
+}) => {
+  await page.goto(path);
+
+  await expect(
+    page.getByText(
+      'Its TypeScript stages run in Node.js. The first time, it downloads Node.js for your system from nodejs.org, and the lab’s packages from registry.npmjs.org.',
+    ),
+  ).toBeVisible();
+});
+
 test('a lab with models says how to start them and what that downloads, and credits each', async ({
   page,
 }) => {
@@ -111,12 +124,18 @@ test('its download holds the project, the runner, its stages and the first stage
   expect(Object.keys(files).sort()).toEqual([
     'ledger/.sulba/lab.json',
     'ledger/.sulba/sulba_fixtures.py',
+    'ledger/.sulba/sulba_reporter.mjs',
     'ledger/.sulba/sulba_runner.py',
     'ledger/README.md',
     'ledger/data/entries.csv',
+    'ledger/entries.py',
     'ledger/ledger.py',
+    'ledger/package-lock.json',
+    'ledger/package.json',
     'ledger/pyproject.toml',
     'ledger/sulba.py',
+    'ledger/tsconfig.build.json',
+    'ledger/tsconfig.json',
     'ledger/uv.lock',
   ]);
   const text = (name: string) => strFromU8(files[`ledger/${name}`] ?? new Uint8Array());
@@ -154,6 +173,7 @@ test('its download holds the project, the runner, its stages and the first stage
     'balance',
     'audit',
     'close',
+    'statement',
   ]);
   // A Ship stage's checks come in plain words, for the terminal.
   expect(lab.stages[2].checks).toEqual([

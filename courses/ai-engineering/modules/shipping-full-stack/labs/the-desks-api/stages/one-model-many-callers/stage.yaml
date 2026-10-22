@@ -1,0 +1,6 @@
+id: stg_v4b6dy
+kind: build
+title: One model, many callers
+builds: A new `gate.py`.
+file: gate.py
+minutes: 40

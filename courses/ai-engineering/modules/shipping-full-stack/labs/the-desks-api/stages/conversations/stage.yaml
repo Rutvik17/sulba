@@ -1,0 +1,7 @@
+id: stg_fisqer
+kind: build
+title: Conversations
+builds: A new `conversations.py`.
+file: conversations.py
+packages: [fastapi, httpx]
+minutes: 45
