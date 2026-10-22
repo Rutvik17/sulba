@@ -1,0 +1,13 @@
+cards:
+  - id: crd_vi5eu7
+    front: >-
+      Why is a change to an applied migration refused, rather than applied again?
+    back: >-
+      The databases that ran the old SQL would keep a different schema from the ones that run
+      the new SQL, so a change is always a new migration.
+  - id: crd_48waks
+    front: >-
+      What keeps two copies of the app that start at once from applying a migration twice?
+    back: >-
+      An advisory lock on a key every copy shares: the second waits until the first has
+      finished, then finds every migration already applied.

@@ -1,5 +1,5 @@
-// Which of a palette's colours each kind of Python token takes: in the editor, and in the sample of
-// each theme the theme panel shows.
+// Which of a palette's colours each kind of token takes, in Python and TypeScript: in the editor,
+// and in the sample of each theme the theme panel shows. A TypeScript type takes a class's colour.
 import { type Tag, tags } from '@lezer/highlight';
 
 export type Role = 'kw' | 'fn' | 'bi' | 'str' | 'num' | 'com' | 'op' | 'prop';
@@ -28,6 +28,7 @@ export const roles: readonly { readonly role: Role; readonly tags: readonly Tag[
     tags: [
       tags.className,
       tags.definition(tags.className),
+      tags.typeName,
       tags.bool,
       tags.null,
       tags.self,

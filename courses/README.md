@@ -207,7 +207,9 @@ A lab that runs on the learner's machine can run Spark's DataFrame API and Spark
 
 ```python
 def test_totals(spark):
-    orders = spark.createDataFrame([("UK", 120.5), ("US", 15.25)], "country STRING, amount DOUBLE")
+    orders = spark.createDataFrame(
+        [("UK", 120.5), ("US", 15.25)], "country STRING, amount DOUBLE"
+    )
     ...
 ```
 

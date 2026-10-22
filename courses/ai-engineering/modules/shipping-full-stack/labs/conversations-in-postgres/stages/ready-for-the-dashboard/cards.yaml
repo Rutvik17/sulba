@@ -1,0 +1,14 @@
+cards:
+  - id: crd_931llx
+    front: >-
+      Why does the usage query group by `(started_at AT TIME ZONE 'UTC')::date`, not
+      `started_at::date`?
+    back: >-
+      `started_at::date` takes the day in the session's time zone, which a database, role or
+      connection can each set; `AT TIME ZONE 'UTC'` gives the same day whoever asks.
+  - id: crd_uu3u7m
+    front: >-
+      Why does the usage query compare `started_at` itself with the start of the first day?
+    back: >-
+      The index on `started_at` can find a range of `started_at`, but not of a value worked out
+      from it, which would mean reading every turn.

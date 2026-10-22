@@ -1,0 +1,13 @@
+cards:
+  - id: crd_6e35xg
+    front: >-
+      Why shouldn't the desk name a caller's notes file by their id as it is?
+    back: >-
+      The id is the caller's input: one like `../a` names another caller's file, or one outside
+      the folder. A hash of the id gives each caller one file inside it.
+  - id: crd_osr68k
+    front: >-
+      Why cap the notes a caller can hold?
+    back: >-
+      Every note goes into every request of every conversation the caller has after it, so a
+      cap keeps what they cost in tokens bounded.
