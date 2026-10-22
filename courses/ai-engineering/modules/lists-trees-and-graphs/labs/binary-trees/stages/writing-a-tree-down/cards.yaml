@@ -1,0 +1,8 @@
+cards:
+  - id: crd_v1vmqf
+    front: >-
+      Why does a preorder list of a tree's values need a mark for each missing child to rebuild
+      it?
+    back: >-
+      The marks say where each subtree ends, so reading back in the same order puts every node
+      in its place; without them, different shapes give the same values.

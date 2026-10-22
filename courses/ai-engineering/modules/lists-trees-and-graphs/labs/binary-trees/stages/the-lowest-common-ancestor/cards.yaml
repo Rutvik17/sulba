@@ -1,0 +1,7 @@
+cards:
+  - id: crd_lndk8y
+    front: >-
+      In one walk, how does each call find the lowest common ancestor of nodes a and b?
+    back: >-
+      A call returns None if its subtree holds neither, itself if it is a or b, itself if both
+      children found one, and otherwise whatever one child found.

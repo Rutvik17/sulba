@@ -1,0 +1,6 @@
+id: stg_hf2kcr
+kind: problem
+title: A tree's levels
+builds: A new `levels.py`.
+file: levels.py
+minutes: 15

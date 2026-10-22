@@ -1,0 +1,6 @@
+id: stg_e3exfm
+kind: problem
+title: The lowest common ancestor
+builds: A new `ancestor.py`.
+file: ancestor.py
+minutes: 20
