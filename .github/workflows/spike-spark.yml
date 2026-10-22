@@ -1,0 +1,23 @@
+# Spike: runs the same PySpark cases with PySpark 4.2.0 on a Temurin 21 JRE and with Sail 0.7.2,
+# on each system a learner may have.
+name: Spike Spark
+on:
+  push:
+    branches: [spike/spark]
+    paths: [spike/spark/**, .github/workflows/spike-spark.yml]
+permissions:
+  contents: read
+jobs:
+  spark:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, windows-11-arm, macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - run: uv run --no-project --python 3.14 spike/spark/run.py
