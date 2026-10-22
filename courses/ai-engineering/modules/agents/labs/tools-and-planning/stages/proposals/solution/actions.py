@@ -111,10 +111,20 @@ class Actions:
         )
 
     def confirm(self) -> str:
-        """Makes the pending proposal, now the caller has said yes, and says what was done."""
+        """Makes the pending proposal, now the caller has said yes, and says what was done. The
+        time is checked again first, since it may have gone since it was proposed, and a write
+        that can't be made makes nothing."""
         proposal, self.pending = self.pending, None
         if proposal is None:
             return "Nothing was waiting for the caller's yes."
+        if proposal.day and proposal.time:
+            free = self.desk.free[proposal.service][proposal.day]
+            if proposal.time not in free:
+                return (
+                    f"The desk couldn't do it: the {SERVICES[proposal.service]} advisers are no "
+                    f"longer free on {DAYS[proposal.day]} {proposal.day} at {proposal.time}. "
+                    f"They're free at {', '.join(free) or 'no time that day'}."
+                )
         ticket = proposal.ticket
         try:
             if ticket is None:

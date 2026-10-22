@@ -217,9 +217,13 @@ class Desk:
         """Cancels a booked callback, and frees its time for the ticket's service."""
         booked = {"ticket": ticket, "day": day, "time": time}
         if booked not in self.callbacks:
-            raise ToolError(f"The caller has no callback about {ticket} on {day} at {time}.")
+            raise ToolError(
+                f"The caller has no callback about {ticket} on {day} at {time}."
+            )
         self.callbacks.remove(booked)
-        service = next(each["service"] for each in self.tickets if each["ticket"] == ticket)
+        service = next(
+            each["service"] for each in self.tickets if each["ticket"] == ticket
+        )
         self.free[service][day] = sorted([*self.free[service][day], time])
         self.writes.append(
             {
@@ -249,7 +253,9 @@ def run(
     that says how to call again: from the spec, or the ToolError the tool raises."""
     spec = specs.get(name)
     if spec is None:
-        return f"Error: there is no tool named {name!r}. The tools are {', '.join(specs)}."
+        return (
+            f"Error: there is no tool named {name!r}. The tools are {', '.join(specs)}."
+        )
     example = json.dumps(examples[name])
     try:
         given = json.loads(arguments or "{}")

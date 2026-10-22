@@ -1,7 +1,7 @@
 # Spike: records the help desk's 120 tasks done by the Agents module's variants named
 # in VARIANTS, with Qwen3.5-4B and nomic-embed-text-v1.5 in llama-server b11734, and commits the
 # runs to spike/agents-runs/<VARIANTS>.jsonl on this branch. A push made with the workflow's own
-# token starts no run.
+# token starts no run. Run 2: the agent proposes first, then asks.
 name: Record agents
 on:
   push:
