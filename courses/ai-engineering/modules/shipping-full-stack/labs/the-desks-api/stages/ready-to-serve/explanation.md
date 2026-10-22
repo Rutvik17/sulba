@@ -1,0 +1,7 @@
+The settings come from the environment, so the same code serves on a laptop, in a container or on a host, each with its own model address and limits, and none of them written in the code. A setting that doesn't fit stops the app as it starts, naming every variable that's wrong. Otherwise the app would fail on its first request, or run with a limit no one chose.
+
+The client and the help pages are made once, in the lifespan. FastAPI's documentation says code there is "executed once, before the application starts receiving requests", and is "very useful for setting up resources that you need to use for the whole app, and that are shared among requests, and/or that you need to clean up afterwards". One client keeps its connections to the model open from one request to the next. httpx says a client "uses HTTP connection pooling", which brings "Reduced latency across requests (no handshaking)". The help pages and their vectors load once, rather than on every message.
+
+The client's timeout matters. httpx's default is "to raise a TimeoutException after 5 seconds of network inactivity", and a model reading a long conversation on a laptop's processor can take longer than that before it sends anything. So the client waits for each read as long as a reply's limit, and the gate's deadline, not httpx's, ends a slow reply.
+
+The health check asks nothing of the gate or the model, so it answers while every place is taken. A health check that waited at the gate would report a busy desk as a broken one.

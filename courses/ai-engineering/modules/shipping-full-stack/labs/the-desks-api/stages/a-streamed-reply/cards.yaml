@@ -1,0 +1,14 @@
+cards:
+  - id: crd_d0dhoe
+    front: >-
+      Why do the 404, 409 and 503 of a streamed reply come from a dependency, not from the route
+      that streams?
+    back: >-
+      A route that yields answers 200 whatever its body does; only a dependency runs before the
+      response is made.
+  - id: crd_3x1oig
+    front: >-
+      Why does the desk keep nothing of a reply that didn't finish?
+    back: >-
+      Half a reply isn't something the desk said: kept, the model would read it on the next
+      turn. Without it, the caller can send their message again.

@@ -1,0 +1,56 @@
+id: stg_eub8iv
+kind: catch
+title: The assistant's replies
+builds: A new `desk_replies.py`, which uses your `conversations.py` and `gate.py`.
+file: desk_replies.py
+packages: [fastapi, httpx, numpy]
+minutes: 35
+problems:
+  - check: tst_9kh92l
+    title: A message that couldn't be answered took a place
+    cost: >-
+      `turn` took a place at the gate before looking up the conversation, and never gave it
+      back when the lookup failed. Each message to a conversation that wasn't there, or that
+      was still being replied in, kept a place for good: with one running place, the first
+      such message left the desk replying to no one, and every caller after it waited for a
+      place that never came.
+    fix: >-
+      The fix: look the conversation up, and mark it replying, before taking a place, and mark
+      it free again when no place comes, because the line is full or the caller left.
+    edit:
+      replace: "    try:\n        await gate.enter()\n    except Busy as busy:\n        raise HTTPException(\n            503,\n            \"The desk is answering as many callers as it can.\",\n            {\"Retry-After\": str(busy.retry_after)},\n        ) from None\n    conversation = conversations.get(conversation_id)\n    if conversation is None:\n        raise HTTPException(404, \"There's no conversation with this id.\")\n    if conversation.id in agents.replying:\n        raise HTTPException(409, \"The desk is still replying in this conversation.\")\n    agents.replying.add(conversation.id)\n    return conversation, say.content\n"
+      with: "    conversation = conversations.get(conversation_id)\n    if conversation is None:\n        raise HTTPException(404, \"There's no conversation with this id.\")\n    if conversation.id in agents.replying:\n        raise HTTPException(409, \"The desk is still replying in this conversation.\")\n    agents.replying.add(conversation.id)\n    try:\n        await gate.enter()\n    except BaseException as error:\n        agents.replying.discard(conversation.id)\n        if isinstance(error, Busy):\n            raise HTTPException(\n                503,\n                \"The desk is answering as many callers as it can.\",\n                {\"Retry-After\": str(error.retry_after)},\n            ) from None\n        raise\n    return conversation, say.content\n"
+  - check: tst_l5gc9f
+    title: A failed reply kept its place
+    cost: >-
+      `say` gave the place back only on a done event. A reply that failed, from the model's
+      error, its time limit or a caller who left, kept its place for good, so after the
+      model's first error the desk replied to no one.
+    fix: >-
+      The fix: give the place back in `finally`, whichever way the reply ends.
+    edit:
+      replace: "                kept = True\n                gate.leave()\n                yield ServerSentEvent(event=\"done\", data={\"content\": event.text})\n    except TimeoutError:\n        yield ServerSentEvent(event=\"error\", data={\"title\": \"The reply took too long.\"})\n    except ModelError, OutOfRounds, httpx.HTTPError:\n        yield ServerSentEvent(event=\"error\", data={\"title\": \"The desk couldn't reply.\"})\n    finally:\n        if not kept:\n            del agent.messages[before:]\n        agents.replying.discard(conversation.id)\n"
+      with: "                kept = True\n                yield ServerSentEvent(event=\"done\", data={\"content\": event.text})\n    except TimeoutError:\n        yield ServerSentEvent(event=\"error\", data={\"title\": \"The reply took too long.\"})\n    except ModelError, OutOfRounds, httpx.HTTPError:\n        yield ServerSentEvent(event=\"error\", data={\"title\": \"The desk couldn't reply.\"})\n    finally:\n        if not kept:\n            del agent.messages[before:]\n        agents.replying.discard(conversation.id)\n        gate.leave()\n"
+  - check: tst_0gnhf2
+    title: Every message got a new agent
+    cost: >-
+      `say` made a new agent for every message, so the desk forgot each conversation as it
+      went: the model never read the caller's earlier messages, and a yes to a callback the
+      desk had proposed made nothing, since the proposal was the old agent's.
+    fix: >-
+      The fix: take the conversation's own agent with `agents.of(conversation)`, which makes
+      one on the first message and keeps it.
+    edit:
+      replace: "    agent = agents.make(conversation.page)\n"
+      with: "    agent = agents.of(conversation)\n"
+  - check: tst_ugth4x
+    title: A reply had no time limit
+    cost: >-
+      `say` read the agent's events without a limit. A model that never answered held the
+      caller's request open, and its place at the gate, for as long as the connection lasted.
+    fix: >-
+      The fix: read the events through `within(agent.reply(content), gate.seconds)`, which
+      ends them with `TimeoutError` at the gate's limit, and `say` sends the error event.
+    edit:
+      replace: "        async for event in agent.reply(content):\n"
+      with: "        async for event in within(agent.reply(content), gate.seconds):\n"
