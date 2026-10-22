@@ -112,7 +112,7 @@ test('a test without an id is a problem', async () => {
     {
       path: share,
       message:
-        'Pyodide: "Two of three votes for yes" needs an id: @pytest.mark.id("tst_" and 6 letters or digits).',
+        'Pyodide: "Two of three votes for yes" needs an id, "tst_" and 6 letters or digits: in Python, @pytest.mark.id("tst_..."), and in TypeScript, at the start of the test\'s name.',
     },
   ]);
 });
@@ -242,11 +242,14 @@ test('two courses that share an id is a problem', async () => {
     `The id stg_demo08 is already used by ${ledger}/close/stage.yaml.`,
     `The id tst_demo24 is already used by ${ledger}/close/tests/test_books.py.`,
     `The id tst_demo25 is already used by ${ledger}/close/checks/test_books.py.`,
+    `The id stg_demo09 is already used by ${ledger}/statement/stage.yaml.`,
+    `The id tst_demo27 is already used by ${ledger}/statement/tests/statement.test.ts.`,
+    `The id tst_demo28 is already used by ${ledger}/statement/tests/statement.test.ts.`,
   ]);
 });
 
 test('the stages are dealt in turn to the parts of a check, each to one', async () => {
-  // The tallies lab's four stages, the pairs lab's one, then the ledger lab's three.
+  // The tallies lab's four stages, the pairs lab's one, then the ledger lab's four.
   const course = await load(fixtures);
   const ids = (part: number, parts: number) => [...shard([course], part, parts)];
   expect(ids(1, 1)).toEqual([
@@ -258,8 +261,9 @@ test('the stages are dealt in turn to the parts of a check, each to one', async 
     'stg_demo06',
     'stg_demo07',
     'stg_demo08',
+    'stg_demo09',
   ]);
-  expect(ids(1, 2)).toEqual(['stg_demo01', 'stg_demo03', 'stg_demo05', 'stg_demo07']);
+  expect(ids(1, 2)).toEqual(['stg_demo01', 'stg_demo03', 'stg_demo05', 'stg_demo07', 'stg_demo09']);
   expect(ids(2, 2)).toEqual(['stg_demo02', 'stg_demo04', 'stg_demo06', 'stg_demo08']);
   expect(ids(3, 4)).toEqual(['stg_demo03', 'stg_demo07']);
 });

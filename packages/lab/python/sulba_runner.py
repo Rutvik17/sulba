@@ -25,18 +25,79 @@ from typing import Any
 import pytest
 
 import sulba_fixtures
-from sulba_fixtures import check_types
+from sulba_fixtures import cache_folder, check_types, fetched_package
 
 # The longest value or message a result carries. A failed check on a large array would
 # otherwise send all of it.
 LIMIT = 1000
+# The release of Node.js that runs a session's TypeScript tests on the learner's machine (decision
+# record 39), where its releases are, and its build for each system, by the names Python gives the
+# system and the machine: the build's archive, its size and its sha256.
+NODE = "24.22.1"
+NODE_RELEASES = "https://nodejs.org/dist"
+NODE_BUILDS = {
+    ("Windows", "AMD64"): (
+        "win-x64.zip",
+        37748064,
+        "d2046d28c2c3dcd211ac5145c0bf30e2047ef9dfb306693c8c6e2eccd8b95fa5",
+    ),
+    ("Windows", "ARM64"): (
+        "win-arm64.zip",
+        33786263,
+        "a0c807319fede24c4a0d8f84564c82a619bd313b16b10c007c383c2609e99171",
+    ),
+    ("Darwin", "arm64"): (
+        "darwin-arm64.tar.gz",
+        53062778,
+        "89c682593d76cd44233fa53b1563264e7de9cbb189cad169135c5b4fadfbc0a7",
+    ),
+    ("Darwin", "x86_64"): (
+        "darwin-x64.tar.gz",
+        54382566,
+        "d132557e7ee2b85af08b0c8c34338e65c6430f2238d01f727728ef42dc83b035",
+    ),
+    ("Linux", "x86_64"): (
+        "linux-x64.tar.xz",
+        32026916,
+        "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6",
+    ),
+    ("Linux", "aarch64"): (
+        "linux-arm64.tar.xz",
+        30978868,
+        "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e",
+    ),
+}
+# The reporter Node's test runner writes each result with, as a line of JSON.
+REPORTER = Path(__file__).with_name("sulba_reporter.mjs")
 
 
 def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
     """Write the files to a new folder, with the linked files beside them, run the test files
-    there, and return the result."""
+    there, and return the result. Python's tests run with pytest and TypeScript's with Node, and
+    a run with both gives the results of each."""
     files: dict[str, str] = json.loads(files_json)
     tests: list[str] = json.loads(tests_json)
+    links: dict[str, str] = json.loads(links_json)
+    scripts = [name for name in tests if name.endswith(".ts")]
+    python = [name for name in tests if not name.endswith(".ts")]
+    results = []
+    if python or not scripts:
+        results.append(pytest_run(files, python, links))
+    if scripts:
+        results.append(typescript(files, scripts, links))
+    problem = next((result["problem"] for result in results if result["problem"]), None)
+    return json.dumps(
+        {
+            "tests": [] if problem else [test for result in results for test in result["tests"]],
+            "problem": problem,
+            "output": "".join(result["output"] for result in results),
+            "durationMs": sum(result["durationMs"] for result in results),
+        }
+    )
+
+
+def pytest_run(files: dict[str, str], tests: list[str], links: dict[str, str]) -> dict[str, Any]:
+    """Run the Python test files with pytest."""
     with session_folder() as folder:
         # An empty config file beside the session, so pytest never picks up one from a folder
         # above it.
@@ -44,7 +105,7 @@ def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
         config.write_text("[pytest]\n", encoding="utf-8")
         root = Path(folder, "session").resolve()
         write(root, files)
-        link(root, json.loads(links_json))
+        link(root, links)
         report = Report(root)
         started = time.perf_counter()
         # The fixtures are a plugin of their own, so a run inside a test can load them too.
@@ -52,7 +113,250 @@ def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
         exit_code = within(root, lambda: pytest.main(arguments(tests, config), plugins=plugins))
         result = report.result(int(exit_code))
         result["durationMs"] = round((time.perf_counter() - started) * 1000)
-    return json.dumps(result)
+    return result
+
+
+def typescript(files: dict[str, str], tests: list[str], links: dict[str, str]) -> dict[str, Any]:
+    """Run TypeScript tests with Node's test runner, once tsc finds no error in the session's
+    files (decision record 39). A session's packages are those its package-lock.json pins, and
+    the session runs in a folder inside theirs, where Node and tsc find them."""
+    import subprocess
+
+    try:
+        node, npm = node_program()
+        packages = node_packages(node, npm, files)
+    except RuntimeError as error:
+        return {
+            "tests": [],
+            "problem": {"kind": "RunError", "message": clip(str(error)), "location": None},
+            "output": "",
+            "durationMs": 0,
+        }
+    runs = packages / "runs"
+    runs.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="sulba-", dir=runs, ignore_cleanup_errors=True) as at:
+        root = Path(at, "session").resolve()
+        write(root, files)
+        link(root, links)
+        started = time.perf_counter()
+        tsc = packages / "node_modules" / "typescript" / "bin" / "tsc"
+        checked = subprocess.run(
+            [node, tsc, "-p", ".", "--pretty", "false"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if checked.returncode != 0:
+            result = type_errors(checked.stdout + checked.stderr, root)
+        else:
+            ran = subprocess.run(
+                [node, "--test", f"--test-reporter={REPORTER.as_uri()}", *tests],
+                cwd=root,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            result = reported(ran.stdout, ran.stderr, root, tests)
+        result["durationMs"] = round((time.perf_counter() - started) * 1000)
+    return result
+
+
+def fetches_first(files: dict[str, str]) -> bool:
+    """Whether a TypeScript run of these files fetches Node.js or the packages it pins first."""
+    try:
+        node, _ = node_files(node_place()[1])
+        packages = packages_folder(files)
+    except RuntimeError:
+        # The run stops before it fetches anything, and says why.
+        return False
+    return not (node.is_file() and (packages / "node_modules").is_dir())
+
+
+def node_place() -> tuple[tuple[str, int, str], Path]:
+    """Node.js's build for this system, and the folder of the cache folder it's unpacked into,
+    named as the build's own folder is."""
+    import platform
+
+    system, machine = platform.system(), platform.machine()
+    if (system, machine) not in NODE_BUILDS:
+        raise RuntimeError(f"Node.js {NODE} has no build for {system} on {machine}.")
+    build = NODE_BUILDS[(system, machine)]
+    return build, cache_folder() / "node" / f"node-v{NODE}-{build[0].split('.')[0]}"
+
+
+def node_files(folder: Path) -> tuple[Path, Path]:
+    """Node.js and the script that runs npm, in the folder of a build of Node.js."""
+    if os.name == "nt":
+        return folder / "node.exe", folder / "node_modules" / "npm" / "bin" / "npm-cli.js"
+    return folder / "bin" / "node", folder / "lib" / "node_modules" / "npm" / "bin" / "npm-cli.js"
+
+
+def node_program() -> tuple[Path, Path]:
+    """Node.js, and the script that runs npm, from Node's build for this system, fetched into the
+    cache folder the first time."""
+    import io
+    import tarfile
+    import zipfile
+
+    (archive, size, sha256), folder = node_place()
+    node, npm = node_files(folder)
+    if node.is_file():
+        return node, npm
+    name = f"node-v{NODE}-{archive}"
+    packed = fetched_package(f"{NODE_RELEASES}/v{NODE}/{name}", size, sha256, "Node.js")
+    folder.parent.mkdir(parents=True, exist_ok=True)
+    # Unpacked beside its place first, so a run stopped halfway leaves no Node.js to find.
+    unpacking = Path(tempfile.mkdtemp(dir=folder.parent))
+    try:
+        if archive.endswith(".zip"):
+            with zipfile.ZipFile(io.BytesIO(packed)) as files:
+                files.extractall(unpacking)
+        else:
+            with tarfile.open(fileobj=io.BytesIO(packed)) as files:
+                files.extractall(unpacking, filter="data")
+        try:
+            os.replace(unpacking / folder.name, folder)
+        except OSError:
+            # Another run put it there first.
+            if not node.is_file():
+                raise
+    finally:
+        shutil.rmtree(unpacking, ignore_errors=True)
+    return node, npm
+
+
+def node_packages(node: Path, npm: Path, files: dict[str, str]) -> Path:
+    """The folder whose node_modules holds the packages the session's package-lock.json pins,
+    installed with npm into the cache folder the first time, without running their scripts."""
+    import subprocess
+
+    folder = packages_folder(files)
+    if (folder / "node_modules").is_dir():
+        return folder
+    folder.parent.mkdir(parents=True, exist_ok=True)
+    installing = Path(tempfile.mkdtemp(dir=folder.parent))
+    try:
+        write(installing, {name: files[name] for name in ("package.json", "package-lock.json")})
+        # npm keeps what it fetches in the cache folder too.
+        installed = subprocess.run(
+            [
+                node,
+                npm,
+                "ci",
+                "--ignore-scripts",
+                "--no-audit",
+                "--no-fund",
+                "--no-update-notifier",
+                "--loglevel=error",
+                f"--cache={folder.parent / 'cache'}",
+            ],
+            cwd=installing,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if installed.returncode != 0:
+            said = (installed.stderr or installed.stdout).strip().splitlines()
+            raise RuntimeError("npm didn't install the lab's packages: " + " ".join(said[-3:]))
+        try:
+            os.replace(installing, folder)
+        except OSError:
+            # Another run put them there first.
+            if not (folder / "node_modules").is_dir():
+                raise
+    finally:
+        shutil.rmtree(installing, ignore_errors=True)
+    return folder
+
+
+def packages_folder(files: dict[str, str]) -> Path:
+    """Where the packages the session's package.json and package-lock.json pin are installed, in
+    a folder of the cache folder named for the two."""
+    import hashlib
+
+    manifest, lock = files.get("package.json"), files.get("package-lock.json")
+    if manifest is None or lock is None:
+        raise RuntimeError("A TypeScript run needs the lab's package.json and package-lock.json.")
+    pinned = hashlib.sha256(f"{NODE}\0{manifest}\0{lock}".encode()).hexdigest()
+    return cache_folder() / "npm" / pinned
+
+
+def type_errors(printed: str, root: Path) -> dict[str, Any]:
+    """tsc's first error as the run's problem, with every error it found as the run's output."""
+    import re
+
+    lines = printed.splitlines()
+    for line in lines:
+        found = re.match(r"^(.+)\((\d+),\d+\): error (TS\d+): (.*)$", line)
+        if found:
+            problem = {
+                "kind": found[3],
+                "message": clip(found[4]),
+                "location": {"file": found[1], "line": int(found[2])},
+            }
+            break
+    else:
+        said = printed.strip() or "tsc stopped without saying why."
+        problem = {"kind": "RunError", "message": clip(said), "location": None}
+    return {"tests": [], "problem": problem, "output": cleaned(printed, root)}
+
+
+def reported(printed: str, errors: str, root: Path, tests: list[str]) -> dict[str, Any]:
+    """The run's result from the reporter's lines: each test's, in the order of their files, the
+    error that stopped a file loading, and what the tests printed."""
+    import re
+
+    results: list[dict[str, Any]] = []
+    problem: dict[str, Any] | None = None
+    output = ""
+    for line in printed.splitlines():
+        if not line.startswith("{"):
+            continue
+        event = json.loads(line)
+        if event["kind"] == "output":
+            output += event["text"]
+        elif event["kind"] == "problem":
+            problem = problem or event["problem"]
+        else:
+            results.append(event)
+    if problem is None and not results:
+        said = errors.strip() or "No tests ran."
+        problem = {"kind": "RunError", "message": clip(cleaned(said, root)), "location": None}
+    if problem is not None:
+        problem["message"] = clip(cleaned(problem["message"], root))
+        return {"tests": [], "problem": problem, "output": cleaned(output, root)}
+    order = {name: index for index, name in enumerate(tests)}
+    results.sort(key=lambda result: order.get(result["file"], len(order)))
+    entries = []
+    for result in results:
+        # A test's name starts with its permanent id, as in "tst_abc123 Finds the user".
+        named = re.fullmatch(r"(tst_[0-9a-z]{6}) (.+)", result["name"], re.DOTALL)
+        entries.append(
+            {
+                "id": named[1] if named else None,
+                "name": named[2] if named else result["name"],
+                "status": result["status"],
+                "message": None
+                if result["message"] is None
+                else clip(cleaned(result["message"], root)),
+                "expected": None if result["expected"] is None else clip(result["expected"]),
+                "actual": None if result["actual"] is None else clip(result["actual"]),
+                "location": result["location"],
+                "output": "",
+                "note": None,
+                "durationMs": result["durationMs"],
+            }
+        )
+    return {"tests": entries, "problem": None, "output": cleaned(output, root)}
+
+
+def cleaned(text: str, root: Path) -> str:
+    """Paths and addresses shown from the session's folder, as the learner sees their files."""
+    return text.replace(f"{root.as_uri()}/", "").replace(f"{root}{os.sep}", "")
 
 
 def prepare(files_json: str, packages_json: str) -> None:

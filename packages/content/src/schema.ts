@@ -151,11 +151,18 @@ export const labFile = z.strictObject({
    */
   references: z.array(z.string().regex(/^[a-z0-9-]+\.json$/)).default([]),
   /**
-   * Python files the lab gives its learner to build on, each in `given/`, beside the learner's
-   * files in every run and in the download (decision record 37).
+   * Python or TypeScript files the lab gives its learner to build on, each in `given/`, beside the
+   * learner's files in every run and in the download (decision records 37 and 39).
    */
   given: z
-    .array(z.string().regex(/^[a-z_][a-z0-9_]*\.py$/, 'Expected a Python file name, in lowercase'))
+    .array(
+      z
+        .string()
+        .regex(
+          /^[a-z_][a-z0-9_]*\.(py|ts)$/,
+          'Expected a Python or TypeScript file name, in lowercase',
+        ),
+    )
     .refine((files) => new Set(files).size === files.length, {
       message: 'Each file is listed once.',
     })
@@ -227,8 +234,11 @@ const stageFields = {
   title,
   /** What the stage builds on, a line of Markdoc above its brief. */
   builds: title,
-  /** The file the learner works in. A later stage on the same file adds to their code. */
-  file: z.string().regex(/^[a-z_][a-z0-9_]*\.py$/),
+  /**
+   * The file the learner works in, in Python or, on the learner's machine, TypeScript (decision
+   * record 39). A later stage on the same file adds to their code.
+   */
+  file: z.string().regex(/^[a-z_][a-z0-9_]*\.(py|ts)$/),
   packages: z.array(z.enum([...pythonPackages, ...machinePackages])).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),

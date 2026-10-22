@@ -5,6 +5,7 @@
     uv run sulba.py next     start the next stage, once this one is done
     uv run sulba.py model    start the lab's models, for your code to call
     uv run sulba.py db       start the lab's database, for your code to use
+    uv run sulba.py build    build the lab's TypeScript into JavaScript for the browser
 
 When a stage is done, it gives you a link to the lab's page, which marks the stage done there.
 Before the first run, it fetches into data/ any files the lab needs that are too large for the
@@ -17,6 +18,10 @@ finds them.
 A lab with a database runs Postgres, with pgvector, until you press Ctrl+C. It keeps what you
 put in it in .sulba/database, and answers only programs on this computer. On Linux, the first
 time, it fetches pgvector into sulba in your cache folder.
+
+A lab with TypeScript stages runs their tests in Node.js. The first time, it fetches Node.js and
+the lab's packages into sulba in your cache folder. Its build compiles the TypeScript its
+tsconfig.build.json names, with the lab's own TypeScript, for a browser to load.
 """
 
 # A lab that runs on the learner's machine downloads with this file at its top and its stages in
@@ -114,6 +119,9 @@ LLAMA_BUILDS = {
 }
 # Where the models answer, at llama.cpp's own port.
 PORT = 9931
+# The project's files a lab's TypeScript runs with, beside the learner's: the packages Node runs
+# the tests with, and tsc's settings (decision record 39).
+NODE_FILES = ["package.json", "package-lock.json", "tsconfig.json"]
 # The headers about one connection, not the request or the answer they come with, which the
 # forwarder sets for each of its connections itself.
 HOP_BY_HOP = {
@@ -170,7 +178,10 @@ def main(argv: list[str]) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "command", nargs="?", choices=["run", "finish", "next", "model", "db"], default="run"
+        "command",
+        nargs="?",
+        choices=["run", "finish", "next", "model", "db", "build"],
+        default="run",
     )
     parser.add_argument(
         "--port",
@@ -192,6 +203,8 @@ def main(argv: list[str]) -> int:
         return serve_model(lab, args.port or PORT, check=args.check)
     if command == "db":
         return serve_database(args.port or DATABASE_PORT)
+    if command == "build":
+        return build()
     progress = load_progress(lab)
     if command == "next":
         code = start_next(lab, progress)
@@ -199,6 +212,36 @@ def main(argv: list[str]) -> int:
         code = run_stage(lab, progress, finishing=command == "finish")
     (RUNNER / "progress.json").write_text(json.dumps(progress, indent=2), encoding="utf-8")
     return code
+
+
+def build() -> int:
+    """Compiles the lab's TypeScript into JavaScript for the browser, as its tsconfig.build.json
+    says, with the TypeScript its package-lock.json pins, fetched the first time as for a run."""
+    if not (HERE / "tsconfig.build.json").is_file():
+        print("This lab has no TypeScript to build for the browser.")
+        return 1
+    import sulba_fixtures
+    import sulba_runner
+
+    files = {name: (HERE / name).read_text(encoding="utf-8") for name in NODE_FILES}
+    if sulba_runner.fetches_first(files):
+        print(f"Fetching Node.js {sulba_runner.NODE} and the lab's packages for TypeScript into")
+        print(f"{sulba_fixtures.cache_folder()}, the first time.\n")
+    try:
+        node, npm = sulba_runner.node_program()
+        packages = sulba_runner.node_packages(node, npm, files)
+    except RuntimeError as error:
+        print(error)
+        return 1
+    tsc = packages / "node_modules" / "typescript" / "bin" / "tsc"
+    # tsc writes its errors to the terminal itself, after what this has printed.
+    sys.stdout.flush()
+    built = subprocess.run([node, tsc, "-p", "tsconfig.build.json"], cwd=HERE, check=False)
+    if built.returncode != 0:
+        print("\nFix the errors, then build again.")
+        return 1
+    print("Built the lab's TypeScript for the browser.")
+    return 0
 
 
 def load_progress(lab: dict[str, Any]) -> dict[str, Any]:
@@ -223,13 +266,16 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
         return 0
     if not fetched(lab):
         return 1
+    import sulba_fixtures
     import sulba_runner
 
+    files = session_files(lab, index)
+    if any(name.endswith(".ts") for name in stage["tests"]) and sulba_runner.fetches_first(files):
+        print(f"Fetching Node.js {sulba_runner.NODE} and the lab's packages for TypeScript into")
+        print(f"{sulba_fixtures.cache_folder()}, the first time.\n")
     result = json.loads(
         sulba_runner.run(
-            json.dumps(session_files(lab, index)),
-            json.dumps(list(stage["tests"])),
-            json.dumps(session_links(lab)),
+            json.dumps(files), json.dumps(list(stage["tests"])), json.dumps(session_links(lab))
         )
     )
     report(stage, result)
@@ -263,11 +309,12 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
 
 
 def session_files(lab: dict[str, Any], index: int) -> dict[str, str]:
-    """A run's files: the lab's datasets and references, the files it gives, the learner's files
-    up to this stage, and the stage's tests and checks. Of data/, only the lab's own datasets are
-    read: it also holds the files the lab fetches, and whatever the learner puts there."""
+    """A run's files: the lab's datasets and references, the files it gives, the project's files
+    for TypeScript, the learner's files up to this stage, and the stage's tests and checks. Of
+    data/, only the lab's own datasets are read: it also holds the files the lab fetches, and
+    whatever the learner puts there."""
     files: dict[str, str] = {}
-    for name in [*lab["data"], *lab["given"]]:
+    for name in [*lab["data"], *lab["given"], *NODE_FILES]:
         if (HERE / name).is_file():
             files[name] = (HERE / name).read_text(encoding="utf-8")
     folder = RUNNER / "references"
