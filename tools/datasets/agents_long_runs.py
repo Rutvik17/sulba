@@ -18,9 +18,10 @@ nth conversation. Each run is a line of JSON: the variant, the conversation, the
 seed, each part of the conversation with whether the desk did it, as `grade` says, the desk's
 writes with the caller's message each came in reply to, the desk's replies, the notes and the
 summary the memory held at the end, the error that ended the run if one did, the seconds it
-took, and each request to the chat model, with the caller's message it came in reply to, whose
-request it was, the agent's, a summary's or a researcher's, and what `agents_runs.py` keeps of
-each.
+took, what the memory did before each of the agent's requests, cleared or summarised, and each
+request to the chat model, with the caller's message it came in reply to, whose request it was,
+the agent's, a summary's or a researcher's, what `agents_runs.py` keeps of each, a summary's
+reply, and the start of the server's answer to a request it refused.
 
 A part is done, as `grade` says, from the desk's writes and replies while it lasted:
 
@@ -101,7 +102,8 @@ def grade(part: dict[str, Any], writes: list[dict[str, Any]], replies: list[str]
 class Tagged(agents_runs.Recorded):
     """Recorded, which also keeps with each chat request the caller's message it came in reply
     to, and whose request it was: a summary's, which sends no system message, a researcher's,
-    or the agent's."""
+    or the agent's; with a summary's reply, and the start of the server's answer to a request
+    it refused."""
 
     turn = 0
 
@@ -114,7 +116,12 @@ class Tagged(agents_runs.Recorded):
             role = "summary" if not system else "agent"
             if system.startswith("You research"):
                 role = "researcher"
-            self.requests[-1] |= {"turn": self.turn, "role": role}
+            kept: dict[str, Any] = {"turn": self.turn, "role": role}
+            if response.status_code >= 400:
+                kept["refused"] = response.content.decode("utf-8", "replace")[:300]
+            elif role == "summary":
+                kept["said"] = json.loads(response.content)["choices"][0]["message"].get("content")
+            self.requests[-1] |= kept
         return response
 
 
@@ -225,6 +232,9 @@ def record(
                     "notes": kept.notes if kept else [],
                     "summary": kept.summary if kept else "",
                     "error": error,
+                    "fitted": [request.fitted for request in getattr(held, "requests", [])]
+                    if kept
+                    else [],
                     "requests": transport.requests,
                 }
                 file.write(json.dumps(line, ensure_ascii=False) + "\n")
