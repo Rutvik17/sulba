@@ -675,6 +675,21 @@ test("a lab with TypeScript runs on the learner's machine", async () => {
   ]);
 });
 
+test("a stage's file can be a Dockerfile, in a lab that runs on the learner's machine", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const count = join(root, stages, 'count');
+    await edit(join(count, 'stage.yaml'), 'file: tally.py', 'file: Dockerfile');
+    for (const folder of ['starter', 'solution']) {
+      await cp(join(count, folder, 'tally.py'), join(count, folder, 'Dockerfile'));
+    }
+  });
+  expect(problems).toContainEqual({
+    path: 'demo/modules/counting/labs/tallies/lab.yaml',
+    message: "runs: a Dockerfile stage runs on the learner's machine: set runs: machine.",
+  });
+  expect(problems.map(({ message }) => message).join('\n')).not.toContain('file: Invalid');
+});
+
 test("a lab's TypeScript runs with its project's package.json, package-lock.json and tsconfig.json", async () => {
   const { problems } = await loadChanged((root) =>
     rm(join(root, ledger, 'project/package-lock.json')),

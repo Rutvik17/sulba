@@ -7,10 +7,11 @@ import {
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
-import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
+import { bracketMatching, indentOnInput, indentUnit, StreamLanguage } from '@codemirror/language';
+import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
 import { forEachDiagnostic, lintGutter, lintKeymap } from '@codemirror/lint';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
-import { Compartment, EditorState } from '@codemirror/state';
+import { Compartment, EditorState, type Extension } from '@codemirror/state';
 import {
   drawSelection,
   EditorView,
@@ -31,6 +32,7 @@ import {
 } from 'react';
 import { chosenPalette, onChoice } from './choice.ts';
 import styles from './editor.module.css';
+import type { Language } from './language.ts';
 import { sulba } from './palettes.ts';
 import { formatCode, ruffLint } from './ruff.ts';
 import { paletteTheme } from './themes.ts';
@@ -67,12 +69,11 @@ export interface EditorHandle {
  * Each language the editor reads: how it highlights it, the spaces of an indent, and its name.
  * Ruff checks and formats Python only.
  */
-const languages = {
+const languages: Record<Language, { highlight: () => Extension; spaces: number; name: string }> = {
   python: { highlight: () => python(), spaces: 4, name: 'Python' },
   typescript: { highlight: () => javascript({ typescript: true }), spaces: 2, name: 'TypeScript' },
+  dockerfile: { highlight: () => StreamLanguage.define(dockerFile), spaces: 4, name: 'Dockerfile' },
 };
-
-export type Language = keyof typeof languages;
 
 export interface EditorProps {
   /** The code the editor opens with. */
