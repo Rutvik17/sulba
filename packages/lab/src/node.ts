@@ -2,6 +2,7 @@
 // `pnpm --filter @sulba/lab pyodide` puts together, and CPython through uv.
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { once } from 'node:events';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -126,7 +127,6 @@ async function inCPython(
       ),
     ),
   );
-  const lines = requests.map((request) => JSON.stringify({ ...request, links }));
   return new Promise((resolve, reject) => {
     const where = project === undefined ? [] : ['--project', project.folder];
     const child = spawn(
@@ -164,8 +164,17 @@ async function inCPython(
       }
       resolve(answers);
     });
-    for (const line of lines) child.stdin.write(`${line}\n`);
-    child.stdin.end();
+    // A machine lab's runs each carry its data, so each is written once the last has gone and
+    // only one is held at a time. A process that stops early fails the write, and its close
+    // above says why.
+    (async () => {
+      for (const request of requests) {
+        if (!child.stdin.write(`${JSON.stringify({ ...request, links })}\n`)) {
+          await once(child.stdin, 'drain');
+        }
+      }
+      child.stdin.end();
+    })().catch(() => {});
   });
 }
 
