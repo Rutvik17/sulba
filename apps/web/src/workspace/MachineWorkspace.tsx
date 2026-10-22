@@ -1,5 +1,6 @@
 import type { Event } from '@sulba/data/outbox';
 import { Editor } from '@sulba/editor/editor';
+import { languageOf } from '@sulba/editor/language';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
@@ -318,7 +319,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
               <Editor
                 defaultValue={stage.solution}
                 label={`Solution: ${stage.file}`}
-                language={stage.file.endsWith('.ts') ? 'typescript' : 'python'}
+                language={languageOf(stage.file)}
                 readOnly
               />
             </div>
