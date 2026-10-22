@@ -578,19 +578,35 @@ def test_a_fetch_cut_short_goes_on_from_where_it_stopped(
     assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
 
 
-def test_a_fetch_the_publisher_stops_early_keeps_what_came(
+def test_a_fetch_the_publisher_stops_early_asks_again_for_the_rest(
     folder: Path, publisher: Publisher
 ) -> None:
     fetching(folder, f"{publisher.address}/ballots.bin")
     publisher.stops = 8000
     ran = command(folder)
+    assert "✓ Reads the fetched ballots" in ran.stdout
+    assert publisher.requests == [
+        ("/ballots.bin", None),
+        ("/ballots.bin", "bytes=8000-"),
+        ("/ballots.bin", "bytes=16000-"),
+    ]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_fetch_the_publisher_stops_early_too_often_keeps_what_came(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.stops = 1000
+    ran = command(folder)
     assert ran.returncode == 1
-    assert "The fetch stopped: 127.0.0.1 stopped after 8.0 kB of 16.4 kB" in ran.stdout
+    assert "The fetch stopped: 127.0.0.1 stopped after 5.0 kB of 16.4 kB" in ran.stdout
     assert "Run uv run sulba.py again to go on from where it stopped." in ran.stdout
-    assert (folder / "data" / "ballots.bin.partial").read_bytes() == BALLOTS[:8000]
+    assert len(publisher.requests) == 5
+    assert (folder / "data" / "ballots.bin.partial").read_bytes() == BALLOTS[:5000]
     publisher.stops = None
     command(folder)
-    assert publisher.requests == [("/ballots.bin", None), ("/ballots.bin", "bytes=8000-")]
+    assert publisher.requests[5:] == [("/ballots.bin", "bytes=5000-")]
     assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
 
 
@@ -665,6 +681,7 @@ def test_a_file_the_publisher_does_not_have_is_said(folder: Path, publisher: Pub
     ran = command(folder)
     assert ran.returncode == 1
     assert "127.0.0.1 answered 404 Not Found. Try again later." in ran.stdout
+    assert len(publisher.requests) == 1
 
 
 def test_a_publisher_out_of_reach_stops_the_run(folder: Path) -> None:

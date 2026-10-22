@@ -80,6 +80,9 @@ MAX_LINK = 2000
 CHUNK = 1 << 20
 # How long a fetch waits on its publisher to connect or send more, in seconds.
 TIMEOUT = 60
+# How many times a run asks a publisher for a file, each time for the rest of it, before it leaves
+# what came for the next run to go on from.
+TRIES = 5
 # The release of llama.cpp whose server serves a lab's models, where its releases are, and its CPU
 # build for each system, by the names Python gives the system and the machine: the build's archive,
 # its size and its sha256.
@@ -388,15 +391,27 @@ def fetch(file: dict[str, Any], path: Path, about: str) -> None:
     # A fetch stopped after all of its file had come has only to move it into place.
     if not whole(partial, file):
         kept = partial.is_file()
-        receive(file, partial, about)
+        receive_all(file, partial, about)
         if kept and not whole(partial, file):
             # What a fetch cut short kept may not be the start of this file, so it starts again.
             partial.unlink()
-            receive(file, partial, about)
+            receive_all(file, partial, about)
         if not whole(partial, file):
             partial.unlink()
             raise Mismatch(file["url"])
     os.replace(partial, path)
+
+
+def receive_all(file: dict[str, Any], partial: Path, about: str) -> None:
+    """Receives the file into partial, asking again for the rest when the publisher stops sending
+    or can't be reached, up to TRIES times in all. An answer with an error is final."""
+    for tried in range(1, TRIES + 1):
+        try:
+            receive(file, partial, about)
+            return
+        except (OSError, http.client.HTTPException) as error:
+            if isinstance(error, urllib.error.HTTPError) or tried == TRIES:
+                raise
 
 
 def receive(file: dict[str, Any], partial: Path, about: str) -> None:
