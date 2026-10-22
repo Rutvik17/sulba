@@ -1,0 +1,9 @@
+psycopg's connections wait for Postgres in plain function calls, and the event loop can do nothing else while one waits. FastAPI's documentation explains what it does with a route written with `def`: "it is run in an external threadpool that is then awaited, instead of being called directly (as it would block the server)". The replies route is `async`, since it streams, so its database work goes to the threadpool through `run_in_threadpool`. Called on the loop, every store call would hold up every other caller's stream while it waited.
+
+An agent holds what the model reads, and a new run of the app starts with none. An agent made for a conversation the database already holds takes its messages, so the model goes on from where the caller left off, rather than from nothing.
+
+A turn that's done is kept before its `done` event goes out, so the event means the reply is in the conversation. A turn that isn't done is kept too, with what it used: it took the caller's time and the model's tokens, and the dashboard counts them. One that ran out of time is kept with the limit as its seconds.
+
+A caller who leaves is the outcome no `except` sees. FastAPI runs a streaming route's events in an anyio task group, and anyio cancels with what its documentation calls level cancellation: "as long as a task remains within an effectively cancelled cancel scope, it will get hit with a cancellation exception any time it hits a yield point". So the `await` in `finally` would be cancelled too, and the turn lost. A shielded scope lets it finish. The documentation calls "performing shutdown procedures on asynchronous resources" the most important use for a shield.
+
+The seconds come from the event loop's clock, which Python's documentation calls "the event loop's internal monotonic clock": unlike the time of day, it never moves back when the system's clock is set.

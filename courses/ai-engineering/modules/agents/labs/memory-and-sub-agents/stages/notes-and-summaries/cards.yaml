@@ -1,0 +1,13 @@
+cards:
+  - id: crd_acag3n
+    front: >-
+      Why keep what the caller said in notes, rather than trust the summary to keep it?
+    back: >-
+      A summary is the model's choice of what matters, written again at each compaction; a
+      note stays word for word in the system message, through every summary after it.
+  - id: crd_uladi4
+    front: >-
+      Why does a summary take whole turns, from a caller's message on?
+    back: >-
+      A turn's tool calls and results belong together. A cut inside one leaves a result without
+      its call, which the server refuses.

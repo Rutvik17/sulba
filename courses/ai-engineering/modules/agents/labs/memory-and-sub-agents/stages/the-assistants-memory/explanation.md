@@ -1,0 +1,3 @@
+Each problem passed the assistant's tests because each test used a conversation where it made no difference. Three results leave one to clear from either end. The replies were too short to count. Turns of four messages each put the last eight messages at a turn's start. And the notes were checked before anything had been summarised.
+
+A memory's mistakes rarely fail loudly. A result cleared while the model still needs it costs a search. A reply left uncounted lets one request go over the budget. Notes that drop out of the system message lose what the caller said, with no error at all. Only the cut inside a turn fails at once, when the server refuses a tool result whose call is gone, and it fails in the middle of the caller's conversation.

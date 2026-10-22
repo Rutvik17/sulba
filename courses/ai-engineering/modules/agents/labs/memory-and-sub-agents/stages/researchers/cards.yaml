@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ovt33e
+    front: >-
+      What does a researcher keep out of the agent's conversation?
+    back: >-
+      Its searches: the passages it read and its own calls stay in its own conversation, and
+      the agent gets only its short answer and the ids it cites.
+  - id: crd_bhn1k5
+    front: >-
+      Why is a researcher's last request sent without tools?
+    back: >-
+      So that the model has to answer from what it has found, instead of searching again and
+      running out of requests.

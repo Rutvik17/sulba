@@ -1,0 +1,13 @@
+cards:
+  - id: crd_pylhoc
+    front: >-
+      Why does `keep` lock the conversation's row before it counts the messages?
+    back: >-
+      Two turns kept at once would otherwise count the same messages and write at the same
+      position; with the lock, the second counts once the first has committed.
+  - id: crd_ty34rp
+    front: >-
+      Why are the pool's connections in autocommit mode?
+    back: >-
+      Otherwise the first statement opens a transaction that stays open, holding locks, until a
+      commit; in autocommit, a transaction is a block that says where it starts and ends.

@@ -1,0 +1,7 @@
+id: stg_8gntnj
+kind: build
+title: Kept turns
+builds: "`replies.py` as The desk's API left it, on your `store.py`."
+file: replies.py
+packages: [fastapi, httpx, numpy, psycopg, psycopg-pool]
+minutes: 45

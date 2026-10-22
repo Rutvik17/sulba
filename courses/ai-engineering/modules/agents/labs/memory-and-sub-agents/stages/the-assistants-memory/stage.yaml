@@ -1,0 +1,52 @@
+id: stg_hakxi5
+kind: catch
+title: The assistant's memory
+builds: A new `desk_memory.py`.
+file: desk_memory.py
+packages: [httpx]
+minutes: 35
+problems:
+  - check: tst_9mvsts
+    title: The newest results were cleared
+    cost: >-
+      `clear` cleared every result after the first two and kept the oldest. The passages
+      the model had just searched for were gone before it answered from them, so it
+      searched again, while results it no longer needed stayed.
+    fix: >-
+      The fix: keep the most recent results, and clear the ones before them.
+    edit:
+      replace: "        for message in results[self.keep :]:\n"
+      with: "        for message in results[: max(len(results) - self.keep, 0)]:\n"
+  - check: tst_gtmot0
+    title: The reply wasn't counted
+    cost: >-
+      `count` kept the prompt's tokens and not the reply's, which the next request sends
+      again. A long reply took the conversation over its budget unnoticed, and the next
+      request went out over it.
+    fix: >-
+      The fix: count the prompt and the reply together.
+    edit:
+      replace: "        self.used = usage.get(\"prompt_tokens\", 0)\n"
+      with: "        self.used = usage.get(\"prompt_tokens\", 0) + usage.get(\"completion_tokens\", 0)\n"
+  - check: tst_i6kazh
+    title: A summary cut a turn in two
+    cost: >-
+      `compact` kept the last eight messages, whatever they were. When they began inside a
+      turn, the conversation sent tool results without the calls they answer, which the
+      server refuses, and the caller's turn failed.
+    fix: >-
+      The fix: cut where a turn starts, at a caller's message.
+    edit:
+      replace: "        cut = max(len(self.messages) - 4 * self.turns, 0)\n"
+      with: "        cut = starts[-self.turns]\n"
+  - check: tst_vbys8c
+    title: A summary pushed the notes out
+    cost: >-
+      `request` gave the summary in place of the notes. Once the conversation had been
+      summarised, what the caller had said about when they can take a call was gone from
+      every request.
+    fix: >-
+      The fix: list the notes, then the summary.
+    edit:
+      replace: "        if self.summary:\n            system += f\"\\n\\nThe conversation before the messages below, summarised:\\n{self.summary}\"\n        elif self.notes:\n            system += \"\\n\\nNotes:\\n\" + \"\\n\".join(f\"- {fact}\" for fact in self.notes)\n"
+      with: "        if self.notes:\n            system += \"\\n\\nNotes:\\n\" + \"\\n\".join(f\"- {fact}\" for fact in self.notes)\n        if self.summary:\n            system += f\"\\n\\nThe conversation before the messages below, summarised:\\n{self.summary}\"\n"
