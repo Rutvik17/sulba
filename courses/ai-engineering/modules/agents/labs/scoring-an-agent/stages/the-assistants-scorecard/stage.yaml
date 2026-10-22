@@ -1,0 +1,67 @@
+id: stg_qllmqk
+kind: catch
+title: The assistant's scorecard
+builds: A new `scorecard.py`.
+file: scorecard.py
+packages: []
+minutes: 35
+problems:
+  - check: tst_02cqbl
+    title: pass^k drew trials again
+    cost: >-
+      `reliability` took a task's pass^k as `(c / n) ** k`, the chance of k successes in a row
+      at the task's rate, as if each trial were drawn again after it was used. That gives a
+      task a chance of k in a row though no k of its trials were all done, and for k above 1
+      overstates every task done on some trials and not others. On the desk's runs it put
+      pass^{% $fig.k %} at {% $fig.last_plugged %} on the first tools, against
+      {% $fig.last_every %}, and at {% $fig.this_plugged %} on the new, against
+      {% $fig.this_every %}.
+    fix: >-
+      The fix: `math.comb(c, k) / math.comb(n, k)`, the chance that k of the task's trials,
+      drawn without replacement, were all done.
+    edit:
+      replace: "    values = [(c / n) ** k for n, c in counts.values()]\n"
+      with: "    values = [math.comb(c, k) / math.comb(n, k) for n, c in counts.values()]\n"
+  - check: tst_dkw07u
+    title: The 95% interval was a 90% one
+    cost: >-
+      `reliability` took z as `inv_cdf(confidence)`, the z of a one-sided bound. An interval
+      with two ends leaves `(1 - confidence) / 2` beyond each, so at 95% it held 90%:
+      pass^{% $fig.k %}'s margin on the first tools came out {% $fig.last_margin_90 %} for
+      {% $fig.last_margin_95 %}, and on the new {% $fig.this_margin_90 %} for
+      {% $fig.this_margin_95 %}.
+    fix: >-
+      The fix: `inv_cdf((1 + confidence) / 2)`.
+    edit:
+      replace: "    z = NormalDist().inv_cdf(confidence)\n"
+      with: "    z = NormalDist().inv_cdf((1 + confidence) / 2)\n"
+  - check: tst_titsli
+    title: Percentiles counted runs, not tasks
+    cost: >-
+      `percentile` took each percentile over every run, every trial of each task, as if each
+      were a draw of its own. A task's trials are alike, so the intervals came out narrower
+      than the runs can show: the 90th percentile of seconds on the first tools from
+      {% $fig.last_pooled_p90_low %} to {% $fig.last_pooled_p90_high %}, against
+      {% $fig.last_tasks_p90_low %} to {% $fig.last_tasks_p90_high %} over the tasks' medians,
+      and on the new from {% $fig.this_pooled_p90_low %} to {% $fig.this_pooled_p90_high %},
+      against {% $fig.this_tasks_p90_low %} to {% $fig.this_tasks_p90_high %}.
+    fix: >-
+      The fix: take each percentile over `costs`, each task's median.
+    edit:
+      replace: "    values = [measured(run, measure) for run in runs if run[\"variant\"] == variant]\n"
+      with: "    values = list(costs(runs, variant, measure).values())\n"
+  - check: tst_dljy4e
+    title: Failed runs cost nothing
+    cost: >-
+      `costs` kept only the runs that were done. A failed run takes its seconds and tokens all
+      the same, and on the desk's runs the failed ones were the slower:
+      {% $fig.last_failed_runs %} on the first tools, with a median of
+      {% $fig.last_failed_median %} seconds against {% $fig.last_done_median %} for those
+      done, and {% $fig.this_failed_runs %} on the new, with {% $fig.this_failed_median %}
+      against {% $fig.this_done_median %}. The {% $fig.last_never %} tasks the first tools
+      never did, and the new tools' {% $fig.this_never %}, had no cost at all.
+    fix: >-
+      The fix: count every run of the task.
+    edit:
+      replace: "        if run[\"variant\"] == variant and run[\"outcome\"] == \"done\":\n"
+      with: "        if run[\"variant\"] == variant:\n"

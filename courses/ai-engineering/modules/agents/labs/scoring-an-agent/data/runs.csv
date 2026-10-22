@@ -1,0 +1,1201 @@
+variant,path,task,kind,trial,outcome,seconds,requests,prompt_tokens,completion_tokens,calls
+agent,agent,t1,question,1,cited no passage,131.419,2,3908,239,search_help|
+agent,agent,t1,question,2,done,118.803,2,3908,342,search_help|
+agent,agent,t1,question,3,done,126.978,2,3962,362,search_help|
+agent,agent,t1,question,4,cited no passage,94.119,2,3929,225,search_help|
+agent,agent,t1,question,5,cited no passage,98.573,2,3908,247,search_help|
+agent,agent,t2,question,1,cited no passage,136.412,2,3923,181,search_help|
+agent,agent,t2,question,2,cited no passage,85.372,2,3951,179,search_help|
+agent,agent,t2,question,3,cited no passage,111.587,2,3952,357,search_help|
+agent,agent,t2,question,4,done,107.568,2,3952,332,search_help|
+agent,agent,t2,question,5,cited no passage with the answer,94.318,2,3952,244,search_help|
+agent,agent,t3,question,1,cited no passage with the answer,99.284,2,4123,297,search_help|
+agent,agent,t3,question,2,cited no passage,58.536,2,4065,206,search_help|
+agent,agent,t3,question,3,cited no passage with the answer,68.842,2,4065,305,search_help|
+agent,agent,t3,question,4,cited no passage,57.026,2,4011,208,search_help|
+agent,agent,t3,question,5,cited no passage,49.596,2,4010,135,search_help|
+agent,agent,t4,question,1,cited no passage,172.269,2,4202,346,search_help|
+agent,agent,t4,question,2,done,133.969,2,4202,437,search_help|
+agent,agent,t4,question,3,done,128.881,2,4202,409,search_help|
+agent,agent,t4,question,4,done,122.962,2,4202,371,search_help|
+agent,agent,t4,question,5,cited no passage,122.247,2,4202,365,search_help|
+agent,agent,t5,question,1,cited no passage with the answer,143.979,2,3973,205,search_help|
+agent,agent,t5,question,2,cited no passage with the answer,92.601,2,3973,235,search_help|
+agent,agent,t5,question,3,cited no passage with the answer,91.049,2,3973,223,search_help|
+agent,agent,t5,question,4,cited no passage,98.969,2,4094,239,search_help|
+agent,agent,t5,question,5,cited no passage,103.744,2,4094,278,search_help|
+agent,agent,t6,question,1,cited no passage,177.848,2,4145,434,search_help|
+agent,agent,t6,question,2,cited no passage,84.468,2,3696,285,search_help|
+agent,agent,t6,question,3,cited no passage,86.483,2,3716,303,search_help|
+agent,agent,t6,question,4,cited no passage,87.143,2,3696,303,search_help|
+agent,agent,t6,question,5,cited no passage,90.053,2,3725,331,search_help|
+agent,agent,t7,question,1,cited no passage with the answer,72.495,2,3987,310,search_help|
+agent,agent,t7,question,2,cited no passage,53.828,2,3987,341,search_help|
+agent,agent,t7,question,3,cited no passage,54.918,2,3987,342,search_help|
+agent,agent,t7,question,4,cited no passage,55.884,2,3987,365,search_help|
+agent,agent,t7,question,5,cited no passage with the answer,65.442,2,3987,453,search_help|
+agent,agent,t8,question,1,cited no passage,174.693,2,4120,360,search_help|
+agent,agent,t8,question,2,cited no passage with the answer,144.539,2,4120,552,search_help|
+agent,agent,t8,question,3,cited no passage with the answer,113.218,2,4119,330,search_help|
+agent,agent,t8,question,4,cited no passage,108.719,2,4120,296,search_help|
+agent,agent,t8,question,5,cited no passage,123.587,2,4120,407,search_help|
+agent,agent,t9,question,1,done,82.196,2,3918,150,search_help|
+agent,agent,t9,question,2,done,50.777,2,3918,111,search_help|
+agent,agent,t9,question,3,cited no passage,57.758,2,3917,145,search_help|
+agent,agent,t9,question,4,done,68.537,2,3918,198,search_help|
+agent,agent,t9,question,5,done,53.660,2,3918,126,search_help|
+agent,agent,t10,question,1,done,133.666,2,3667,209,search_help|
+agent,agent,t10,question,2,done,90.352,2,3665,304,search_help|
+agent,agent,t10,question,3,done,76.174,2,3665,203,search_help|
+agent,agent,t10,question,4,done,91.576,2,3710,304,search_help|
+agent,agent,t10,question,5,done,76.575,2,3668,209,search_help|
+agent,agent,t11,question,1,cited no passage with the answer,137.445,2,3691,232,search_help|
+agent,agent,t11,question,2,cited no passage,95.072,2,3650,352,search_help|
+agent,agent,t11,question,3,cited no passage with the answer,80.783,2,3691,230,search_help|
+agent,agent,t11,question,4,cited no passage with the answer,101.099,2,3729,375,search_help|
+agent,agent,t11,question,5,cited no passage with the answer,74.005,2,3693,178,search_help|
+agent,agent,t12,question,1,done,81.708,2,3764,464,search_help|
+agent,agent,t12,question,2,cited no passage,53.921,2,3929,357,search_help|
+agent,agent,t12,question,3,done,44.768,2,3771,285,search_help|
+agent,agent,t12,question,4,done,57.544,2,3789,437,search_help|
+agent,agent,t12,question,5,cited no passage,50.871,2,3943,347,search_help|
+agent,agent,t13,question,1,cited no passage,88.067,2,3768,558,search_help|
+agent,agent,t13,question,2,done,68.133,2,3768,548,search_help|
+agent,agent,t13,question,3,cited no passage,60.982,2,3768,464,search_help|
+agent,agent,t13,question,4,done,68.095,2,3768,536,search_help|
+agent,agent,t13,question,5,cited no passage,54.101,2,3768,383,search_help|
+agent,agent,t14,question,1,cited no passage,155.003,2,4032,273,search_help|
+agent,agent,t14,question,2,cited no passage,111.852,2,4032,372,search_help|
+agent,agent,t14,question,3,cited no passage,110.571,2,4032,363,search_help|
+agent,agent,t14,question,4,cited no passage,106.394,2,4032,328,search_help|
+agent,agent,t14,question,5,done,103.180,2,4032,302,search_help|
+agent,agent,t15,question,1,cited no passage,75.575,2,3923,407,search_help|
+agent,agent,t15,question,2,cited no passage with the answer,108.222,2,6214,557,search_help search_help search_help|
+agent,agent,t15,question,3,done,59.805,2,3917,443,search_help|
+agent,agent,t15,question,4,done,55.438,2,3918,411,search_help|
+agent,agent,t15,question,5,done,52.317,2,3898,379,search_help|
+agent,agent,t16,question,1,cited no passage with the answer,82.458,2,3927,465,search_help|
+agent,agent,t16,question,2,done,71.310,2,4075,513,search_help|
+agent,agent,t16,question,3,cited no passage with the answer,73.917,2,4076,550,search_help|
+agent,agent,t16,question,4,done,75.613,2,4060,569,search_help|
+agent,agent,t16,question,5,cited no passage with the answer,73.139,2,3912,576,search_help|
+agent,agent,t17,question,1,cited no passage,132.732,2,3719,203,search_help|
+agent,agent,t17,question,2,cited no passage with the answer,101.798,2,3719,337,search_help|
+agent,agent,t17,question,3,cited no passage with the answer,97.425,2,3719,305,search_help|
+agent,agent,t17,question,4,cited no passage with the answer,87.342,2,3719,247,search_help|
+agent,agent,t17,question,5,cited no passage with the answer,92.976,2,3719,289,search_help|
+agent,agent,t18,question,1,done,151.647,2,3832,311,search_help|
+agent,agent,t18,question,2,done,99.491,2,3832,334,search_help|
+agent,agent,t18,question,3,done,91.667,2,3832,275,search_help|
+agent,agent,t18,question,4,done,98.135,2,3832,327,search_help|
+agent,agent,t18,question,5,done,101.176,2,3848,351,search_help|
+agent,agent,t19,question,1,cited no passage with the answer,138.792,2,3938,693,search_help|
+agent,agent,t19,question,2,cited no passage with the answer,81.209,2,3956,430,search_help|
+agent,agent,t19,question,3,cited no passage with the answer,81.173,2,3956,429,search_help|
+agent,agent,t19,question,4,cited no passage with the answer,80.405,2,3956,422,search_help|
+agent,agent,t19,question,5,cited no passage with the answer,75.925,2,3956,373,search_help|
+agent,agent,t20,question,1,cited no passage with the answer,162.401,2,3849,344,search_help|
+agent,agent,t20,question,2,cited no passage with the answer,116.521,2,3868,420,search_help|
+agent,agent,t20,question,3,cited no passage with the answer,114.913,2,3849,408,search_help|
+agent,agent,t20,question,4,cited no passage with the answer,109.111,2,3849,375,search_help|
+agent,agent,t20,question,5,cited no passage with the answer,117.002,2,3849,429,search_help|
+agent,agent,t21,question,1,done,79.147,2,3515,153,search_help|
+agent,agent,t21,question,2,done,80.673,2,3869,180,search_help|
+agent,agent,t21,question,3,done,71.926,2,3869,139,search_help|
+agent,agent,t21,question,4,done,73.549,2,3815,154,search_help|
+agent,agent,t21,question,5,done,61.734,2,3619,128,search_help|
+agent,agent,t22,question,1,done,138.310,2,3984,377,search_help|
+agent,agent,t22,question,2,done,118.340,2,3984,389,search_help|
+agent,agent,t22,question,3,done,114.387,2,3984,362,search_help|
+agent,agent,t22,question,4,done,118.242,2,4002,389,search_help|
+agent,agent,t22,question,5,done,119.428,2,3984,393,search_help|
+agent,agent,t23,question,1,done,89.184,2,3985,406,search_help|
+agent,agent,t23,question,2,done,76.462,2,3985,405,search_help|
+agent,agent,t23,question,3,done,66.055,2,3985,303,search_help|
+agent,agent,t23,question,4,done,77.687,2,3985,416,search_help|
+agent,agent,t23,question,5,cited no passage,66.788,2,3942,320,search_help|
+agent,agent,t24,question,1,done,115.849,2,3827,286,search_help|
+agent,agent,t24,question,2,cited no passage,91.271,2,3763,284,search_help|
+agent,agent,t24,question,3,done,110.035,2,3843,385,search_help|
+agent,agent,t24,question,4,done,95.727,2,3827,294,search_help|
+agent,agent,t24,question,5,done,85.173,2,3827,225,search_help|
+agent,agent,t25,question,1,cited no passage with the answer,124.054,2,4003,289,search_help|
+agent,agent,t25,question,2,cited no passage with the answer,108.200,2,4003,346,search_help|
+agent,agent,t25,question,3,done,108.083,2,4003,344,search_help|
+agent,agent,t25,question,4,cited no passage,108.540,2,4020,346,search_help|
+agent,agent,t25,question,5,done,115.226,2,3937,424,search_help|
+agent,agent,t26,question,1,done,115.181,2,4039,210,search_help|
+agent,agent,t26,question,2,done,93.273,2,4039,219,search_help|
+agent,agent,t26,question,3,done,86.253,2,3875,222,search_help|
+agent,agent,t26,question,4,done,91.317,2,4039,200,search_help|
+agent,agent,t26,question,5,cited no passage,94.341,2,4039,225,search_help|
+agent,agent,t27,question,1,done,62.694,2,3997,321,search_help|
+agent,agent,t27,question,2,cited no passage with the answer,64.056,2,3997,436,search_help|
+agent,agent,t27,question,3,cited no passage with the answer,56.179,2,3997,360,search_help|
+agent,agent,t27,question,4,done,54.894,2,3997,362,search_help|
+agent,agent,t27,question,5,done,53.513,2,3997,341,search_help|
+agent,agent,t28,question,1,cited no passage,115.123,2,3898,250,search_help|
+agent,agent,t28,question,2,done,91.195,2,3897,245,search_help|
+agent,agent,t28,question,3,done,96.784,2,3817,318,search_help|
+agent,agent,t28,question,4,done,84.661,2,3763,245,search_help|
+agent,agent,t28,question,5,done,97.649,2,3816,325,search_help|
+agent,agent,t29,question,1,cited no passage,132.162,2,3834,475,search_help|
+agent,agent,t29,question,2,cited no passage,125.561,2,3833,488,search_help|
+agent,agent,t29,question,3,done,140.186,2,3833,557,search_help|
+agent,agent,t29,question,4,done,102.099,2,3834,376,search_help|
+agent,agent,t29,question,5,cited no passage,123.433,2,3833,488,search_help|
+agent,agent,t30,question,1,done,123.883,2,3875,318,search_help|
+agent,agent,t30,question,2,cited no passage,93.501,2,3875,264,search_help|
+agent,agent,t30,question,3,done,92.094,2,3875,251,search_help|
+agent,agent,t30,question,4,cited no passage,88.813,2,3875,228,search_help|
+agent,agent,t30,question,5,done,87.738,2,3875,218,search_help|
+agent,agent,t31,question,1,done,147.762,2,3994,456,search_help|
+agent,agent,t31,question,2,done,123.642,2,3994,450,search_help|
+agent,agent,t31,question,3,cited no passage,131.565,2,3994,506,search_help|
+agent,agent,t31,question,4,done,130.618,2,3994,497,search_help|
+agent,agent,t31,question,5,done,131.236,2,3994,500,search_help|
+agent,agent,t32,question,1,cited no passage,74.688,2,3950,519,search_help|
+agent,agent,t32,question,2,cited no passage,61.559,2,3950,461,search_help|
+agent,agent,t32,question,3,cited no passage,57.510,2,3950,413,search_help|
+agent,agent,t32,question,4,cited no passage with the answer,75.211,2,3950,617,search_help|
+agent,agent,t32,question,5,cited no passage,64.744,2,3950,488,search_help|
+agent,agent,t33,question,1,cited no passage,74.599,2,4088,445,search_help|
+agent,agent,t33,question,2,cited no passage,61.098,2,4087,400,search_help|
+agent,agent,t33,question,3,done,77.311,2,4071,590,search_help|
+agent,agent,t33,question,4,cited no passage,66.761,2,4088,484,search_help|
+agent,agent,t33,question,5,done,70.511,2,4088,522,search_help|
+agent,agent,t34,question,1,cited no passage,135.324,2,3953,415,search_help|
+agent,agent,t34,question,2,cited no passage,103.304,2,3948,344,search_help|
+agent,agent,t34,question,3,cited no passage,99.450,2,3923,311,search_help|
+agent,agent,t34,question,4,cited no passage,115.979,2,3948,448,search_help|
+agent,agent,t34,question,5,done,112.674,2,3947,414,search_help|
+agent,agent,t35,question,1,done,60.442,2,4017,360,search_help|
+agent,agent,t35,question,2,done,52.831,2,4017,361,search_help|
+agent,agent,t35,question,3,done,58.358,2,4017,426,search_help|
+agent,agent,t35,question,4,done,56.074,2,4017,406,search_help|
+agent,agent,t35,question,5,done,58.421,2,4017,425,search_help|
+agent,agent,t36,question,1,cited no passage,48.950,2,3870,210,search_help|
+agent,agent,t36,question,2,cited no passage,54.756,2,4110,332,search_help|
+agent,agent,t36,question,3,cited no passage,58.298,2,4110,361,search_help|
+agent,agent,t36,question,4,cited no passage,53.629,2,3873,363,search_help|
+agent,agent,t36,question,5,cited no passage with the answer,48.358,2,3871,302,search_help|
+agent,agent,t37,question,1,cited no passage,146.352,2,4111,379,search_help|
+agent,agent,t37,question,2,cited no passage,133.345,2,4076,450,search_help|
+agent,agent,t37,question,3,cited no passage with the answer,102.821,2,4076,252,search_help|
+agent,agent,t37,question,4,cited no passage with the answer,118.071,2,4111,344,search_help|
+agent,agent,t37,question,5,cited no passage with the answer,148.860,2,4111,531,search_help|
+agent,agent,t38,question,1,cited no passage,124.427,2,3944,309,search_help|
+agent,agent,t38,question,2,cited no passage,97.784,2,3944,284,search_help|
+agent,agent,t38,question,3,done,87.974,2,3944,209,search_help|
+agent,agent,t38,question,4,cited no passage,104.592,2,3960,341,search_help|
+agent,agent,t38,question,5,done,107.970,2,3960,366,search_help|
+agent,agent,t39,question,1,cited no passage with the answer,75.473,2,4139,213,search_help|
+agent,agent,t39,question,2,cited no passage,76.783,2,4047,369,search_help|
+agent,agent,t39,question,3,cited no passage,68.318,2,4139,261,search_help|
+agent,agent,t39,question,4,cited no passage,67.503,2,4139,255,search_help|
+agent,agent,t39,question,5,cited no passage,62.476,2,4139,203,search_help|
+agent,agent,t40,question,1,cited no passage with the answer,145.071,2,4040,415,search_help|
+agent,agent,t40,question,2,cited no passage with the answer,140.161,2,4032,564,search_help|
+agent,agent,t40,question,3,cited no passage with the answer,127.214,2,4043,462,search_help|
+agent,agent,t40,question,4,cited no passage with the answer,130.371,2,4046,481,search_help|
+agent,agent,t40,question,5,cited no passage with the answer,133.388,2,4038,500,search_help|
+agent,agent,t41,case,1,done,42.700,4,5427,158,list_tickets||open_ticket|
+agent,agent,t41,case,2,done,142.471,5,11995,246,search_help|list_tickets||open_ticket|
+agent,agent,t41,case,3,done,44.595,3,4098,178,|open_ticket|
+agent,agent,t41,case,4,wrote before the caller's yes,45.767,4,5518,175,open_ticket||open_ticket|
+agent,agent,t41,case,5,done,199.627,4,10163,437,search_help||open_ticket|
+agent,agent,t42,case,1,done,192.223,5,12062,486,search_help|list_tickets||open_ticket|
+agent,agent,t42,case,2,done,172.318,4,9128,414,search_help||open_ticket|
+agent,agent,t42,case,3,done,197.648,5,12138,509,search_help|list_tickets||open_ticket|
+agent,agent,t42,case,4,done,165.463,4,9047,392,search_help||open_ticket|
+agent,agent,t42,case,5,done,180.210,4,9338,426,search_help||open_ticket|
+agent,agent,t43,case,1,done,120.422,4,9818,431,search_help||open_ticket|
+agent,agent,t43,case,2,done,197.047,6,21495,346,search_help|search_help|list_tickets||open_ticket|
+agent,agent,t43,case,3,error,325.806,8,48444,328,search_help|search_help|search_help|search_help|search_help|search_help|search_help|search_help
+agent,agent,t43,case,4,done,117.488,4,9618,440,search_help||open_ticket|
+agent,agent,t43,case,5,done,200.499,5,16697,503,search_help|search_help||open_ticket|
+agent,agent,t44,case,1,done,53.942,3,4245,314,|open_ticket|
+agent,agent,t44,case,2,done,168.273,4,9238,388,search_help||open_ticket|
+agent,agent,t44,case,3,done,454.502,6,23957,611,search_help|search_help|search_help||open_ticket|
+agent,agent,t44,case,4,done,31.737,3,4077,181,|open_ticket|
+agent,agent,t44,case,5,done,452.373,7,29587,571,search_help|search_help|search_help|list_tickets||open_ticket|
+agent,agent,t45,case,1,done,167.997,4,9156,386,search_help||open_ticket|
+agent,agent,t45,case,2,done,161.549,4,9180,343,search_help||open_ticket|
+agent,agent,t45,case,3,done,157.108,4,9080,324,search_help||open_ticket|
+agent,agent,t45,case,4,done,315.476,5,15843,493,search_help|search_help||open_ticket|
+agent,agent,t45,case,5,done,163.957,4,9426,297,search_help||open_ticket|
+agent,agent,t46,case,1,done,49.502,3,4075,169,|open_ticket|
+agent,agent,t46,case,2,done,172.692,4,9596,341,search_help||open_ticket|
+agent,agent,t46,case,3,done,36.836,4,5538,223,list_tickets||open_ticket|
+agent,agent,t46,case,4,done,170.482,4,9548,334,search_help||open_ticket|
+agent,agent,t46,case,5,wrote before the caller's yes,198.119,4,9716,485,search_help|open_ticket||
+agent,agent,t47,case,1,done,24.771,3,4058,167,|open_ticket|
+agent,agent,t47,case,2,done,74.034,4,8729,425,search_help||open_ticket|
+agent,agent,t47,case,3,wrote before the caller's yes,23.290,4,5564,212,list_tickets|open_ticket||
+agent,agent,t47,case,4,done,20.675,3,4073,217,|open_ticket|
+agent,agent,t47,case,5,wrote before the caller's yes,37.667,5,7381,346,list_tickets|open_ticket|free_callbacks||
+agent,agent,t48,case,1,done,225.572,4,10032,435,search_help||open_ticket|
+agent,agent,t48,case,2,done,207.544,4,10046,487,search_help||open_ticket|
+agent,agent,t48,case,3,done,202.618,4,10051,451,search_help||open_ticket|
+agent,agent,t48,case,4,done,189.621,4,10098,324,search_help||open_ticket|
+agent,agent,t48,case,5,done,37.086,4,5527,217,list_tickets||open_ticket|
+agent,agent,t49,case,1,done,157.375,4,10434,361,search_help||open_ticket|
+agent,agent,t49,case,2,done,173.446,4,10696,472,search_help||open_ticket|
+agent,agent,t49,case,3,done,154.513,4,10488,389,search_help||open_ticket|
+agent,agent,t49,case,4,done,162.072,4,10446,426,search_help||open_ticket|
+agent,agent,t49,case,5,done,58.890,4,5648,266,list_tickets||open_ticket|
+agent,agent,t50,case,1,done,61.515,3,4093,247,|open_ticket|
+agent,agent,t50,case,2,done,167.387,4,9128,391,search_help||open_ticket|
+agent,agent,t50,case,3,done,163.928,4,9046,371,search_help||open_ticket|
+agent,agent,t50,case,4,wrote before the caller's yes,66.265,4,5808,364,list_tickets|open_ticket||
+agent,agent,t50,case,5,done,27.449,3,4039,165,|open_ticket|
+agent,agent,t51,case,1,done,209.112,4,9685,389,search_help||open_ticket|
+agent,agent,t51,case,2,done,207.277,4,9727,552,search_help||open_ticket|
+agent,agent,t51,case,3,done,183.626,4,9730,361,search_help||open_ticket|
+agent,agent,t51,case,4,done,188.089,4,9635,429,search_help||open_ticket|
+agent,agent,t51,case,5,done,174.324,4,9604,326,search_help||open_ticket|
+agent,agent,t52,case,1,done,95.141,4,9735,454,search_help||open_ticket|
+agent,agent,t52,case,2,done,86.265,4,9817,455,search_help||open_ticket|
+agent,agent,t52,case,3,done,97.550,4,10170,527,search_help||open_ticket|
+agent,agent,t52,case,4,done,94.716,4,9936,542,search_help||open_ticket|
+agent,agent,t52,case,5,done,91.456,4,9760,518,search_help||open_ticket|
+agent,agent,t53,case,1,done,143.653,5,16197,440,search_help|search_help||open_ticket|
+agent,agent,t53,case,2,done,147.823,5,16319,573,search_help|search_help||open_ticket|
+agent,agent,t53,case,3,done,72.963,4,9101,342,search_help||open_ticket|
+agent,agent,t53,case,4,done,150.703,5,16337,600,search_help|search_help||open_ticket|
+agent,agent,t53,case,5,done,77.161,4,9163,378,search_help||open_ticket|
+agent,agent,t54,case,1,wrote before the caller's yes,196.707,4,9282,393,search_help|open_ticket||
+agent,agent,t54,case,2,done,174.797,4,9380,418,search_help||open_ticket|
+agent,agent,t54,case,3,done,206.813,4,9629,628,search_help||open_ticket|
+agent,agent,t54,case,4,done,311.186,5,15717,553,search_help|search_help||open_ticket|
+agent,agent,t54,case,5,done,194.352,4,9602,537,search_help||open_ticket|
+agent,agent,t55,case,1,done,92.975,4,9811,453,search_help||open_ticket|
+agent,agent,t55,case,2,wrote before the caller's yes,81.957,4,9681,405,search_help|open_ticket||
+agent,agent,t55,case,3,wrote before the caller's yes,98.795,5,13019,574,search_help|open_ticket||open_ticket|
+agent,agent,t55,case,4,done,74.112,4,9018,425,search_help||open_ticket|
+agent,agent,t55,case,5,done,81.643,4,9152,507,search_help||open_ticket|
+agent,agent,t56,case,1,done,101.929,4,9764,603,search_help||open_ticket|
+agent,agent,t56,case,2,done,106.021,4,9919,616,search_help||open_ticket|
+agent,agent,t56,case,3,done,96.774,4,9741,536,search_help||open_ticket|
+agent,agent,t56,case,4,done,98.763,4,9795,546,search_help||open_ticket|
+agent,agent,t56,case,5,done,78.532,4,9762,547,search_help||open_ticket|
+agent,agent,t57,case,1,done,258.447,5,13766,581,search_help||open_ticket|free_callbacks|
+agent,agent,t57,case,2,done,348.246,5,17816,451,search_help|search_help||open_ticket|
+agent,agent,t57,case,3,wrote before the caller's yes,56.524,4,5649,277,list_tickets|open_ticket||
+agent,agent,t57,case,4,done,183.277,4,10143,282,search_help||open_ticket|
+agent,agent,t57,case,5,done,215.449,4,10348,444,search_help||open_ticket|
+agent,agent,t58,case,1,done,202.594,4,10311,383,search_help||open_ticket|
+agent,agent,t58,case,2,done,178.865,4,10094,243,search_help||open_ticket|
+agent,agent,t58,case,3,done,206.427,4,10371,414,search_help||open_ticket|
+agent,agent,t58,case,4,wrote before the caller's yes,37.342,3,4114,229,open_ticket||
+agent,agent,t58,case,5,wrote before the caller's yes,184.451,4,10140,262,search_help|open_ticket||
+agent,agent,t59,case,1,done,117.774,4,9538,422,search_help||open_ticket|
+agent,agent,t59,case,2,done,134.826,4,9912,521,search_help||open_ticket|
+agent,agent,t59,case,3,booked a callback,43.075,5,7411,331,|open_ticket|free_callbacks|book_callback|
+agent,agent,t59,case,4,done,223.164,5,17123,579,search_help|search_help||open_ticket|
+agent,agent,t59,case,5,done,229.159,5,17349,601,search_help|search_help||open_ticket|
+agent,agent,t60,case,1,done,238.480,4,10299,456,search_help||open_ticket|
+agent,agent,t60,case,2,done,214.201,4,10118,501,search_help||open_ticket|
+agent,agent,t60,case,3,done,222.045,4,10188,556,search_help||open_ticket|
+agent,agent,t60,case,4,done,217.452,4,10328,483,search_help||open_ticket|
+agent,agent,t60,case,5,done,205.339,4,9979,452,search_help||open_ticket|
+agent,agent,t61,callback,1,wrote before the caller's yes,78.999,4,5917,276,list_tickets|book_callback||
+agent,agent,t61,callback,2,done,89.567,4,6200,324,list_tickets free_callbacks||book_callback|
+agent,agent,t61,callback,3,done,120.516,6,9639,468,free_callbacks||book_callback|list_tickets|book_callback|
+agent,agent,t61,callback,4,wrote before the caller's yes,112.118,5,7904,396,list_tickets|free_callbacks|book_callback||
+agent,agent,t61,callback,5,wrote before the caller's yes,104.128,5,7823,363,list_tickets|free_callbacks|book_callback||
+agent,agent,t62,callback,1,done,93.163,4,6186,327,list_tickets free_callbacks||book_callback|
+agent,agent,t62,callback,2,done,98.853,5,7993,476,list_tickets|free_callbacks||book_callback|
+agent,agent,t62,callback,3,done,72.992,4,6218,340,list_tickets free_callbacks||book_callback|
+agent,agent,t62,callback,4,done,94.017,5,7988,494,list_tickets||free_callbacks|book_callback|
+agent,agent,t62,callback,5,done,70.974,5,7648,353,list_tickets||free_callbacks|book_callback|
+agent,agent,t63,callback,1,done,41.675,4,5925,301,list_tickets||book_callback|
+agent,agent,t63,callback,2,done,34.957,4,5830,256,list_tickets||book_callback|
+agent,agent,t63,callback,3,done,35.157,4,5853,254,list_tickets||book_callback|
+agent,agent,t63,callback,4,done,49.923,5,7715,350,list_tickets|free_callbacks||book_callback|
+agent,agent,t63,callback,5,done,37.003,5,7492,285,|list_tickets|free_callbacks|book_callback|
+agent,agent,t64,callback,1,done,120.202,5,7950,465,list_tickets|free_callbacks||book_callback|
+agent,agent,t64,callback,2,opened a ticket,54.011,5,7334,291,|open_ticket|free_callbacks|book_callback|
+agent,agent,t64,callback,3,booked 0 callbacks,61.026,4,5856,338,|list_tickets|free_callbacks|
+agent,agent,t64,callback,4,opened a ticket,51.465,5,7264,283,|open_ticket|free_callbacks|book_callback|
+agent,agent,t64,callback,5,done,100.628,5,7985,473,list_tickets|free_callbacks||book_callback|
+agent,agent,t65,callback,1,done,80.849,5,7814,406,list_tickets|free_callbacks||book_callback|
+agent,agent,t65,callback,2,wrote before the caller's yes,86.553,5,7950,423,list_tickets|free_callbacks|book_callback||
+agent,agent,t65,callback,3,done,77.300,5,7846,402,list_tickets|free_callbacks||book_callback|
+agent,agent,t65,callback,4,done,74.227,5,7793,377,list_tickets|free_callbacks||book_callback|
+agent,agent,t65,callback,5,done,48.255,5,7422,276,|list_tickets|free_callbacks|book_callback|
+agent,agent,t66,callback,1,done,118.237,5,8023,518,list_tickets|free_callbacks||book_callback|
+agent,agent,t66,callback,2,done,100.165,5,8145,567,list_tickets|free_callbacks||book_callback|
+agent,agent,t66,callback,3,done,77.340,5,7811,404,list_tickets|free_callbacks||book_callback|
+agent,agent,t66,callback,4,done,82.787,5,7890,440,list_tickets|free_callbacks||book_callback|
+agent,agent,t66,callback,5,done,90.904,5,7949,499,list_tickets|free_callbacks||book_callback|
+agent,agent,t67,callback,1,done,45.251,5,7799,382,list_tickets|free_callbacks||book_callback|
+agent,agent,t67,callback,2,done,29.628,5,7436,276,|list_tickets|free_callbacks|book_callback|
+agent,agent,t67,callback,3,done,28.926,4,5815,257,list_tickets||book_callback|
+agent,agent,t67,callback,4,wrong day,43.872,5,7797,382,list_tickets|free_callbacks||book_callback|
+agent,agent,t67,callback,5,wrote before the caller's yes,47.386,5,7893,397,list_tickets|free_callbacks|book_callback||
+agent,agent,t68,callback,1,done,112.353,5,7921,448,list_tickets|free_callbacks||book_callback|
+agent,agent,t68,callback,2,done,67.414,5,7685,351,list_tickets||free_callbacks|book_callback|
+agent,agent,t68,callback,3,done,46.600,5,7349,254,|list_tickets|free_callbacks|book_callback|
+agent,agent,t68,callback,4,done,81.908,5,7865,410,list_tickets|free_callbacks||book_callback|
+agent,agent,t68,callback,5,done,77.742,5,7780,387,list_tickets|free_callbacks||book_callback|
+agent,agent,t69,callback,1,done,56.736,5,7322,244,|list_tickets|free_callbacks|book_callback|
+agent,agent,t69,callback,2,done,96.141,5,7897,413,list_tickets|free_callbacks||book_callback|
+agent,agent,t69,callback,3,done,204.805,6,16362,635,search_help|list_tickets|free_callbacks||book_callback|
+agent,agent,t69,callback,4,wrote before the caller's yes,95.859,5,7881,395,list_tickets|free_callbacks|book_callback||
+agent,agent,t69,callback,5,done,67.658,5,7519,291,list_tickets||free_callbacks|book_callback|
+agent,agent,t70,callback,1,done,242.026,6,15970,613,search_help|list_tickets|free_callbacks||book_callback|
+agent,agent,t70,callback,2,done,98.133,5,8057,493,list_tickets|free_callbacks||book_callback|
+agent,agent,t70,callback,3,done,89.365,5,7848,431,list_tickets|free_callbacks||book_callback|
+agent,agent,t70,callback,4,done,89.001,5,7859,432,list_tickets|free_callbacks||book_callback|
+agent,agent,t70,callback,5,done,226.678,5,13173,559,list_tickets search_help|free_callbacks||book_callback|
+agent,agent,t71,callback,1,wrote before the caller's yes,83.358,4,5930,279,list_tickets|book_callback||
+agent,agent,t71,callback,2,done,56.591,4,5915,298,list_tickets||book_callback|
+agent,agent,t71,callback,3,done,53.671,5,7458,319,|book_callback|list_tickets|book_callback|
+agent,agent,t71,callback,4,done,47.452,4,5798,243,list_tickets||book_callback|
+agent,agent,t71,callback,5,booked 0 callbacks,21.151,2,2650,133,|
+agent,agent,t72,callback,1,opened a ticket,93.708,6,15324,453,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t72,callback,2,wrote before the caller's yes,44.022,5,7756,373,list_tickets|free_callbacks|book_callback||
+agent,agent,t72,callback,3,opened a ticket,22.275,4,5589,224,|open_ticket|book_callback|
+agent,agent,t72,callback,4,opened a ticket,94.227,6,15608,535,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t72,callback,5,opened a ticket,26.634,5,7197,261,|open_ticket|free_callbacks|book_callback|
+agent,agent,t73,callback,1,done,36.765,5,7351,253,|list_tickets|free_callbacks|book_callback|
+agent,agent,t73,callback,2,done,34.659,5,7566,311,list_tickets||free_callbacks|book_callback|
+agent,agent,t73,callback,3,wrote before the caller's yes,59.035,5,8059,496,list_tickets|free_callbacks|book_callback||
+agent,agent,t73,callback,4,wrote before the caller's yes,57.559,5,8018,475,list_tickets|free_callbacks|book_callback||
+agent,agent,t73,callback,5,wrote before the caller's yes,61.280,6,9816,485,free_callbacks|book_callback|list_tickets|book_callback||
+agent,agent,t74,callback,1,booked 0 callbacks,47.173,3,4210,284,|list_tickets free_callbacks|
+agent,agent,t74,callback,2,booked 0 callbacks,66.600,4,6125,401,|list_tickets|free_callbacks|
+agent,agent,t74,callback,3,booked 0 callbacks,56.181,3,4355,347,|list_tickets|
+agent,agent,t74,callback,4,booked 0 callbacks,66.313,4,5944,424,|list_tickets|free_callbacks|
+agent,agent,t74,callback,5,booked 0 callbacks,43.521,4,5743,262,|list_tickets|free_callbacks|
+agent,agent,t75,callback,1,wrote before the caller's yes,31.587,4,5844,294,open_ticket|book_callback||
+agent,agent,t75,callback,2,done,26.149,5,7340,256,|list_tickets|free_callbacks|book_callback|
+agent,agent,t75,callback,3,done,28.013,4,5832,261,list_tickets||book_callback|
+agent,agent,t75,callback,4,done,25.932,4,5803,246,list_tickets||book_callback|
+agent,agent,t75,callback,5,done,26.043,5,7368,254,|list_tickets|free_callbacks|book_callback|
+agent,agent,t76,callback,1,done,54.380,6,9790,470,list_tickets|free_callbacks||book_callback|book_callback|
+agent,agent,t76,callback,2,done,26.419,5,7281,242,|list_tickets|free_callbacks|book_callback|
+agent,agent,t76,callback,3,done,43.404,5,7758,374,list_tickets|free_callbacks||book_callback|
+agent,agent,t76,callback,4,booked 0 callbacks,87.794,5,12091,457,search_help||list_tickets|free_callbacks|
+agent,agent,t76,callback,5,opened a ticket,29.089,5,7215,278,|open_ticket|free_callbacks|book_callback|
+agent,agent,t77,callback,1,done,87.263,6,9177,329,|free_callbacks|book_callback|list_tickets|book_callback|
+agent,agent,t77,callback,2,done,76.129,5,7683,336,list_tickets|free_callbacks||book_callback|
+agent,agent,t77,callback,3,done,85.249,6,9387,424,free_callbacks||book_callback|list_tickets|book_callback|
+agent,agent,t77,callback,4,done,57.457,4,5845,268,list_tickets||book_callback|
+agent,agent,t77,callback,5,done,67.046,5,7510,360,|book_callback|list_tickets|book_callback|
+agent,agent,t78,callback,1,done,101.679,5,8143,549,list_tickets|free_callbacks||book_callback|
+agent,agent,t78,callback,2,done,63.955,4,6165,324,list_tickets free_callbacks||book_callback|
+agent,agent,t78,callback,3,done,71.533,5,7769,414,list_tickets||free_callbacks|book_callback|
+agent,agent,t78,callback,4,booked 0 callbacks,36.521,4,5631,210,|list_tickets|free_callbacks|
+agent,agent,t78,callback,5,done,97.111,5,8040,534,list_tickets|free_callbacks||book_callback|
+agent,agent,t79,callback,1,done,54.414,5,7455,309,|book_callback|list_tickets|book_callback|
+agent,agent,t79,callback,2,done,33.088,5,7284,233,|list_tickets|free_callbacks|book_callback|
+agent,agent,t79,callback,3,done,45.349,5,7594,353,|book_callback|list_tickets|book_callback|
+agent,agent,t79,callback,4,done,35.996,5,7372,257,|list_tickets|free_callbacks|book_callback|
+agent,agent,t79,callback,5,done,35.415,5,7388,249,|list_tickets|free_callbacks|book_callback|
+agent,agent,t80,callback,1,wrote before the caller's yes,103.273,5,8065,484,list_tickets|free_callbacks|book_callback||
+agent,agent,t80,callback,2,done,65.413,5,7661,330,list_tickets||free_callbacks|book_callback|
+agent,agent,t80,callback,3,done,66.226,4,6160,320,list_tickets free_callbacks||book_callback|
+agent,agent,t80,callback,4,booked 0 callbacks,39.939,4,5653,218,|list_tickets|free_callbacks|
+agent,agent,t80,callback,5,done,60.996,5,7539,307,list_tickets||free_callbacks|book_callback|
+agent,agent,t81,new,1,booked 0 callbacks,321.028,9,26261,925,search_help||open_ticket|free_callbacks|free_callbacks|free_callbacks|free_callbacks|free_callbacks|
+agent,agent,t81,new,2,wrote before the caller's yes,143.104,5,7970,529,open_ticket|free_callbacks|book_callback||
+agent,agent,t81,new,3,done,118.749,4,6304,480,|open_ticket free_callbacks|book_callback|
+agent,agent,t81,new,4,booked 0 callbacks,76.942,5,7323,304,|open_ticket|book_callback|free_callbacks|
+agent,agent,t81,new,5,wrong day,80.988,5,7454,320,|open_ticket|free_callbacks|book_callback|
+agent,agent,t82,new,1,done,94.860,5,8087,462,list_tickets free_callbacks||open_ticket|book_callback|
+agent,agent,t82,new,2,done,75.013,5,7767,403,|open_ticket|free_callbacks|book_callback|
+agent,agent,t82,new,3,done,66.299,4,6097,363,|open_ticket free_callbacks|book_callback|
+agent,agent,t82,new,4,done,105.241,6,9770,515,list_tickets|free_callbacks||open_ticket|book_callback|
+agent,agent,t82,new,5,booked 0 callbacks,53.901,5,7310,298,|open_ticket|free_callbacks|book_callback|
+agent,agent,t83,new,1,done,47.236,5,7589,381,|open_ticket|free_callbacks|book_callback|
+agent,agent,t83,new,2,done,39.054,5,7490,314,|open_ticket|free_callbacks|book_callback|
+agent,agent,t83,new,3,done,42.102,5,7504,345,|open_ticket|free_callbacks|book_callback|
+agent,agent,t83,new,4,done,37.902,5,7427,306,|open_ticket|free_callbacks|book_callback|
+agent,agent,t83,new,5,done,48.323,5,7724,395,|open_ticket|free_callbacks|book_callback|
+agent,agent,t84,new,1,done,124.173,6,9977,613,list_tickets|free_callbacks||open_ticket|book_callback|
+agent,agent,t84,new,2,done,109.247,6,9722,602,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t84,new,3,done,73.929,5,7658,383,free_callbacks||open_ticket|book_callback|
+agent,agent,t84,new,4,done,60.992,5,7498,332,|open_ticket|free_callbacks|book_callback|
+agent,agent,t84,new,5,done,85.991,6,9514,444,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t85,new,1,done,69.611,4,6201,446,|open_ticket free_callbacks|book_callback|
+agent,agent,t85,new,2,done,49.501,5,7421,305,|open_ticket|free_callbacks|book_callback|
+agent,agent,t85,new,3,done,53.375,5,7493,332,|open_ticket|free_callbacks|book_callback|
+agent,agent,t85,new,4,done,57.393,5,7617,358,|open_ticket|free_callbacks|book_callback|
+agent,agent,t85,new,5,done,61.149,5,7773,375,|open_ticket|free_callbacks|book_callback|
+agent,agent,t86,new,1,booked 0 callbacks,39.145,4,5629,237,|open_ticket|free_callbacks|
+agent,agent,t86,new,2,wrote before the caller's yes,73.892,4,5921,429,open_ticket|free_callbacks||
+agent,agent,t86,new,3,booked 0 callbacks,24.728,3,4051,147,|list_tickets|
+agent,agent,t86,new,4,booked 0 callbacks,65.491,3,4454,437,|open_ticket free_callbacks|
+agent,agent,t86,new,5,booked 0 callbacks,22.424,2,2657,151,|
+agent,agent,t87,new,1,wrong day,38.750,5,7669,363,|open_ticket|free_callbacks|book_callback|
+agent,agent,t87,new,2,done,31.805,5,7409,308,|open_ticket|free_callbacks|book_callback|
+agent,agent,t87,new,3,done,39.983,5,7762,386,|open_ticket|free_callbacks|book_callback|
+agent,agent,t87,new,4,wrong day,33.502,5,7509,330,|open_ticket|free_callbacks|book_callback|
+agent,agent,t87,new,5,wrong day,32.153,5,7457,317,|open_ticket|free_callbacks|book_callback|
+agent,agent,t88,new,1,done,72.121,5,7730,387,free_callbacks||open_ticket|book_callback|
+agent,agent,t88,new,2,done,57.196,5,7546,342,|open_ticket|free_callbacks|book_callback|
+agent,agent,t88,new,3,done,62.705,5,7650,374,|open_ticket|free_callbacks|book_callback|
+agent,agent,t88,new,4,done,59.008,5,7583,349,|open_ticket|free_callbacks|book_callback|
+agent,agent,t88,new,5,done,92.963,6,9562,567,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t89,new,1,done,66.565,5,7362,296,|open_ticket|free_callbacks|book_callback|
+agent,agent,t89,new,2,wrote before the caller's yes,98.650,5,7785,436,open_ticket|free_callbacks||book_callback|
+agent,agent,t89,new,3,done,92.848,5,7639,439,|open_ticket|free_callbacks|book_callback|
+agent,agent,t89,new,4,done,65.808,5,7378,300,|open_ticket|free_callbacks|book_callback|
+agent,agent,t89,new,5,done,53.197,4,5695,244,|open_ticket|book_callback|
+agent,agent,t90,new,1,done,80.343,5,7492,333,|open_ticket|free_callbacks|book_callback|
+agent,agent,t90,new,2,done,69.732,5,7804,415,|open_ticket|free_callbacks|book_callback|
+agent,agent,t90,new,3,done,88.322,6,9585,502,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t90,new,4,done,74.605,6,9423,405,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t90,new,5,booked 0 callbacks,49.053,3,4206,301,|list_tickets|
+agent,agent,t91,new,1,done,78.267,4,6278,489,|open_ticket free_callbacks|book_callback|
+agent,agent,t91,new,2,done,79.990,6,9540,442,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t91,new,3,done,196.504,6,15876,415,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t91,new,4,done,52.517,5,7422,307,|open_ticket|free_callbacks|book_callback|
+agent,agent,t91,new,5,wrong day,59.303,5,7554,356,|open_ticket|free_callbacks|book_callback|
+agent,agent,t92,new,1,done,39.646,5,7744,387,|open_ticket|free_callbacks|book_callback|
+agent,agent,t92,new,2,wrote before the caller's yes,125.622,6,16486,755,search_help|open_ticket|free_callbacks||book_callback|
+agent,agent,t92,new,3,done,40.322,5,7734,368,free_callbacks||open_ticket|book_callback|
+agent,agent,t92,new,4,done,38.731,5,7638,357,free_callbacks||open_ticket|book_callback|
+agent,agent,t92,new,5,done,46.553,6,9483,429,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t93,new,1,done,50.622,5,7819,406,free_callbacks||open_ticket|book_callback|
+agent,agent,t93,new,2,done,38.317,5,7566,336,|open_ticket|free_callbacks|book_callback|
+agent,agent,t93,new,3,done,43.319,5,7705,382,|open_ticket|free_callbacks|book_callback|
+agent,agent,t93,new,4,done,30.411,5,7294,271,|open_ticket|free_callbacks|book_callback|
+agent,agent,t93,new,5,done,32.616,4,5906,302,|open_ticket free_callbacks|book_callback|
+agent,agent,t94,new,1,done,98.075,6,9844,590,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t94,new,2,done,119.857,6,10314,771,list_tickets||free_callbacks|open_ticket|book_callback|
+agent,agent,t94,new,3,done,187.954,6,15212,471,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t94,new,4,done,79.624,6,9570,453,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t94,new,5,done,60.479,5,7655,361,|open_ticket|free_callbacks|book_callback|
+agent,agent,t95,new,1,done,30.034,5,7361,308,|open_ticket|free_callbacks|book_callback|
+agent,agent,t95,new,2,done,91.793,6,16299,488,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t95,new,3,done,31.580,5,7433,324,|open_ticket|free_callbacks|book_callback|
+agent,agent,t95,new,4,done,21.840,4,5648,230,|open_ticket|book_callback|
+agent,agent,t95,new,5,done,33.159,5,7562,347,|open_ticket|free_callbacks|book_callback|
+agent,agent,t96,new,1,done,77.820,6,10126,722,list_tickets|free_callbacks||open_ticket|book_callback|
+agent,agent,t96,new,2,done,47.272,6,9455,422,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t96,new,3,done,46.317,5,7880,428,|open_ticket|free_callbacks|book_callback|
+agent,agent,t96,new,4,done,45.427,6,9334,404,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t96,new,5,booked 0 callbacks,27.264,3,4108,262,|list_tickets|
+agent,agent,t97,new,1,done,54.946,5,7298,264,|open_ticket|free_callbacks|book_callback|
+agent,agent,t97,new,2,done,69.781,5,7526,363,|open_ticket|free_callbacks|book_callback|
+agent,agent,t97,new,3,done,78.855,5,7582,431,|open_ticket|free_callbacks|book_callback|
+agent,agent,t97,new,4,done,215.186,6,15830,501,search_help|free_callbacks||open_ticket|book_callback|
+agent,agent,t97,new,5,done,48.079,4,5719,251,|open_ticket|book_callback|
+agent,agent,t98,new,1,done,56.337,5,7459,343,|open_ticket|free_callbacks|book_callback|
+agent,agent,t98,new,2,done,56.850,5,7507,359,|open_ticket|free_callbacks|book_callback|
+agent,agent,t98,new,3,done,58.070,5,7607,363,|open_ticket|free_callbacks|book_callback|
+agent,agent,t98,new,4,done,56.750,5,7577,353,|open_ticket|free_callbacks|book_callback|
+agent,agent,t98,new,5,done,52.880,5,7490,327,|open_ticket|free_callbacks|book_callback|
+agent,agent,t99,new,1,done,75.460,6,9910,553,list_tickets||open_ticket|free_callbacks|book_callback|
+agent,agent,t99,new,2,done,31.568,4,5720,249,|open_ticket|book_callback|
+agent,agent,t99,new,3,done,118.791,6,14898,481,search_help||open_ticket|free_callbacks|book_callback|
+agent,agent,t99,new,4,done,49.566,5,7743,385,|open_ticket|free_callbacks|book_callback|
+agent,agent,t99,new,5,wrote before the caller's yes,146.248,6,15590,640,search_help|free_callbacks|open_ticket||book_callback|
+agent,agent,t100,new,1,done,299.445,6,17976,855,search_help|free_callbacks||open_ticket|book_callback|
+agent,agent,t100,new,2,done,55.652,5,7421,335,|open_ticket|free_callbacks|book_callback|
+agent,agent,t100,new,3,booked 0 callbacks,24.221,2,2657,150,|
+agent,agent,t100,new,4,done,71.298,5,7615,463,|open_ticket|free_callbacks|book_callback|
+agent,agent,t100,new,5,done,52.800,5,7375,305,|open_ticket|free_callbacks|book_callback|
+agent,agent,t101,vague,1,done,88.219,4,5718,290,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t101,vague,2,done,76.315,4,5766,302,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t101,vague,3,done,34.095,2,2647,138,|
+agent,agent,t101,vague,4,done,32.406,2,2600,136,|
+agent,agent,t101,vague,5,done,46.686,3,4077,186,|list_tickets|
+agent,agent,t102,vague,1,done,41.284,2,2607,112,|
+agent,agent,t102,vague,2,done,25.741,2,2619,152,|
+agent,agent,t102,vague,3,done,21.418,2,2602,124,|
+agent,agent,t102,vague,4,done,25.135,2,2644,142,|
+agent,agent,t102,vague,5,done,24.318,2,2616,144,|
+agent,agent,t103,vague,1,done,30.373,2,2620,153,|
+agent,agent,t103,vague,2,done,45.401,4,5782,380,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t103,vague,3,done,42.623,4,5779,352,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t103,vague,4,done,40.740,4,5767,334,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t103,vague,5,done,27.344,2,2665,244,|
+agent,agent,t104,vague,1,done,50.003,2,2628,180,|
+agent,agent,t104,vague,2,done,38.523,3,4093,230,|list_tickets|
+agent,agent,t104,vague,3,done,32.830,2,2689,194,|
+agent,agent,t104,vague,4,done,51.395,2,2719,326,|
+agent,agent,t104,vague,5,done,68.771,4,5898,395,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t105,vague,1,done,89.556,3,4417,453,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t105,vague,2,done,20.200,2,2608,140,|
+agent,agent,t105,vague,3,done,23.304,2,2643,153,|
+agent,agent,t105,vague,4,done,17.123,2,2613,110,|
+agent,agent,t105,vague,5,done,57.405,4,5820,366,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t106,vague,1,done,44.068,2,2621,141,|
+agent,agent,t106,vague,2,done,19.222,2,2610,130,|
+agent,agent,t106,vague,3,done,37.857,3,4100,265,|free_callbacks|
+agent,agent,t106,vague,4,done,68.940,3,4398,472,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t106,vague,5,done,85.507,4,6239,426,list_tickets|free_callbacks free_callbacks||
+agent,agent,t107,vague,1,done,34.328,2,2700,253,|
+agent,agent,t107,vague,2,done,34.773,4,5696,325,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t107,vague,3,done,17.552,2,2597,175,|
+agent,agent,t107,vague,4,done,41.247,4,5870,407,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t107,vague,5,done,30.051,3,4212,306,|list_tickets|
+agent,agent,t108,vague,1,done,49.229,2,2663,163,|
+agent,agent,t108,vague,2,done,33.076,3,4093,194,|list_tickets|
+agent,agent,t108,vague,3,done,28.655,2,2646,187,|
+agent,agent,t108,vague,4,done,31.232,3,4047,191,|free_callbacks|
+agent,agent,t108,vague,5,done,21.580,2,2640,130,|
+agent,agent,t109,vague,1,done,82.060,4,5832,328,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t109,vague,2,done,89.535,4,5901,413,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t109,vague,3,done,43.690,2,2691,206,|
+agent,agent,t109,vague,4,done,95.778,3,4460,447,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t109,vague,5,done,88.361,3,4388,411,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t110,vague,1,done,40.475,2,2598,107,|
+agent,agent,t110,vague,2,done,23.614,2,2632,143,|
+agent,agent,t110,vague,3,done,51.474,4,5652,300,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t110,vague,4,done,33.332,2,2645,207,|
+agent,agent,t110,vague,5,done,19.964,2,2608,119,|
+agent,agent,t111,vague,1,done,79.916,3,4194,368,|list_tickets|
+agent,agent,t111,vague,2,done,53.685,4,5707,324,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t111,vague,3,done,27.603,2,2646,177,|
+agent,agent,t111,vague,4,done,55.735,4,5674,344,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t111,vague,5,done,24.318,2,2617,160,|
+agent,agent,t112,vague,1,done,24.820,2,2641,168,|
+agent,agent,t112,vague,2,done,23.692,3,4171,227,|list_tickets|
+agent,agent,t112,vague,3,done,24.324,3,4193,227,|list_tickets|
+agent,agent,t112,vague,4,done,82.758,4,6486,777,list_tickets|free_callbacks free_callbacks||
+agent,agent,t112,vague,5,done,71.026,4,6487,652,list_tickets|free_callbacks free_callbacks||
+agent,agent,t113,vague,1,done,55.011,3,4388,484,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t113,vague,2,done,11.797,2,2593,121,|
+agent,agent,t113,vague,3,done,48.167,3,4464,484,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t113,vague,4,done,18.839,2,2657,188,|
+agent,agent,t113,vague,5,done,60.644,4,6289,519,list_tickets|free_callbacks free_callbacks||
+agent,agent,t114,vague,1,done,49.201,2,2650,173,|
+agent,agent,t114,vague,2,done,56.546,4,5815,356,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t114,vague,3,done,19.212,2,2609,129,|
+agent,agent,t114,vague,4,done,72.775,5,7704,424,list_tickets||free_callbacks free_callbacks|book_callback|
+agent,agent,t114,vague,5,done,18.680,2,2602,126,|
+agent,agent,t115,vague,1,done,39.527,4,5741,332,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t115,vague,2,done,15.686,2,2634,172,|
+agent,agent,t115,vague,3,done,28.797,4,5720,300,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t115,vague,4,done,14.754,2,2596,167,|
+agent,agent,t115,vague,5,done,12.295,2,2639,129,|
+agent,agent,t116,vague,1,done,56.956,3,4442,503,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t116,vague,2,done,33.567,4,5752,329,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t116,vague,3,done,18.061,2,2655,188,|
+agent,agent,t116,vague,4,done,35.469,4,5812,349,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t116,vague,5,done,20.839,2,2680,217,|
+agent,agent,t117,vague,1,done,51.351,2,2649,160,|
+agent,agent,t117,vague,2,done,45.110,2,2715,248,|
+agent,agent,t117,vague,3,done,83.613,3,4448,462,|free_callbacks free_callbacks free_callbacks free_callbacks|
+agent,agent,t117,vague,4,done,35.479,2,2681,196,|
+agent,agent,t117,vague,5,done,52.708,3,4191,279,|list_tickets|
+agent,agent,t118,vague,1,done,41.243,2,2610,117,|
+agent,agent,t118,vague,2,done,25.014,3,4054,142,|list_tickets|
+agent,agent,t118,vague,3,done,18.173,2,2604,120,|
+agent,agent,t118,vague,4,done,25.292,3,4038,147,|list_tickets|
+agent,agent,t118,vague,5,done,19.827,2,2610,133,|
+agent,agent,t119,vague,1,done,32.048,2,2629,158,|
+agent,agent,t119,vague,2,done,45.944,4,5784,364,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t119,vague,3,done,20.493,3,4047,152,|list_tickets|
+agent,agent,t119,vague,4,done,49.535,4,5886,393,|list_tickets|free_callbacks free_callbacks|
+agent,agent,t119,vague,5,done,16.649,2,2602,138,|
+agent,agent,t120,vague,1,done,59.664,3,4117,218,|list_tickets|
+agent,agent,t120,vague,2,done,80.853,5,7781,502,|list_tickets|free_callbacks|free_callbacks|
+agent,agent,t120,vague,3,done,23.057,2,2627,145,|
+agent,agent,t120,vague,4,done,22.838,2,2641,138,|
+agent,agent,t120,vague,5,done,34.575,2,2673,222,|
+proposals,agent,t1,question,1,done,61.504,2,4047,239,search_help|
+proposals,agent,t1,question,2,cited no passage,42.002,2,4087,262,search_help|
+proposals,agent,t1,question,3,done,46.777,2,4087,308,search_help|
+proposals,agent,t1,question,4,cited no passage,43.892,2,4059,286,search_help|
+proposals,agent,t1,question,5,done,45.983,2,4079,308,search_help|
+proposals,agent,t2,question,1,cited no passage,88.269,2,4126,443,search_help|
+proposals,agent,t2,question,2,done,54.948,2,4125,324,search_help|
+proposals,agent,t2,question,3,cited no passage with the answer,45.313,2,4126,236,search_help|
+proposals,agent,t2,question,4,cited no passage with the answer,59.027,2,4126,383,search_help|
+proposals,agent,t2,question,5,cited no passage with the answer,47.011,2,4126,258,search_help|
+proposals,agent,t3,question,1,cited no passage with the answer,93.379,2,4288,161,search_help|
+proposals,agent,t3,question,2,cited no passage with the answer,76.461,2,4288,210,search_help|
+proposals,agent,t3,question,3,cited no passage with the answer,63.852,2,4288,152,search_help|
+proposals,agent,t3,question,4,cited no passage with the answer,69.258,2,4288,174,search_help|
+proposals,agent,t3,question,5,cited no passage with the answer,73.747,2,4177,208,search_help|
+proposals,agent,t4,question,1,cited no passage,158.176,2,4375,285,search_help|
+proposals,agent,t4,question,2,done,107.922,2,4375,322,search_help|
+proposals,agent,t4,question,3,cited no passage,110.126,2,4375,338,search_help|
+proposals,agent,t4,question,4,done,119.481,2,4375,403,search_help|
+proposals,agent,t4,question,5,cited no passage,116.200,2,4375,376,search_help|
+proposals,agent,t5,question,1,cited no passage with the answer,163.081,2,4169,286,search_help|
+proposals,agent,t5,question,2,cited no passage with the answer,88.864,2,4149,209,search_help|
+proposals,agent,t5,question,3,done,98.431,2,4263,242,search_help|
+proposals,agent,t5,question,4,cited no passage with the answer,91.592,2,4149,231,search_help|
+proposals,agent,t5,question,5,cited no passage with the answer,100.013,2,4274,250,search_help|
+proposals,agent,t6,question,1,cited no passage,147.763,2,3878,273,search_help|
+proposals,agent,t6,question,2,cited no passage,81.151,2,3878,243,search_help|
+proposals,agent,t6,question,3,cited no passage with the answer,93.584,2,3878,331,search_help|
+proposals,agent,t6,question,4,cited no passage,88.963,2,3878,312,search_help|
+proposals,agent,t6,question,5,cited no passage,85.648,2,3878,283,search_help|
+proposals,agent,t7,question,1,cited no passage with the answer,167.307,2,4145,368,search_help|
+proposals,agent,t7,question,2,cited no passage,112.748,2,4145,379,search_help|
+proposals,agent,t7,question,3,cited no passage with the answer,106.903,2,4145,338,search_help|
+proposals,agent,t7,question,4,cited no passage with the answer,103.149,2,4145,318,search_help|
+proposals,agent,t7,question,5,cited no passage with the answer,109.521,2,4145,360,search_help|
+proposals,agent,t8,question,1,cited no passage with the answer,121.399,2,4288,489,search_help|
+proposals,agent,t8,question,2,cited no passage,80.775,2,4288,418,search_help|
+proposals,agent,t8,question,3,cited no passage,86.212,2,4288,470,search_help|
+proposals,agent,t8,question,4,cited no passage with the answer,91.780,2,4288,509,search_help|
+proposals,agent,t8,question,5,cited no passage with the answer,88.632,2,4288,501,search_help|
+proposals,agent,t9,question,1,cited no passage with the answer,135.407,2,4122,102,search_help|
+proposals,agent,t9,question,2,done,74.494,2,4122,111,search_help|
+proposals,agent,t9,question,3,done,78.917,2,4122,140,search_help|
+proposals,agent,t9,question,4,cited no passage,74.298,2,4122,107,search_help|
+proposals,agent,t9,question,5,done,75.024,2,4122,111,search_help|
+proposals,agent,t10,question,1,done,65.310,2,3883,264,search_help|
+proposals,agent,t10,question,2,done,42.362,2,3835,272,search_help|
+proposals,agent,t10,question,3,done,38.206,2,3835,224,search_help|
+proposals,agent,t10,question,4,done,46.507,2,3883,314,search_help|
+proposals,agent,t10,question,5,done,35.234,2,3837,206,search_help|
+proposals,agent,t11,question,1,cited no passage with the answer,79.346,2,3876,208,search_help|
+proposals,agent,t11,question,2,cited no passage,54.049,2,3876,191,search_help|
+proposals,agent,t11,question,3,cited no passage with the answer,60.820,2,3876,226,search_help|
+proposals,agent,t11,question,4,cited no passage with the answer,56.639,2,3876,202,search_help|
+proposals,agent,t11,question,5,cited no passage with the answer,74.387,2,3876,295,search_help|
+proposals,agent,t12,question,1,done,67.637,2,3930,346,search_help|
+proposals,agent,t12,question,2,done,52.263,2,3949,414,search_help|
+proposals,agent,t12,question,3,done,46.464,2,3903,343,search_help|
+proposals,agent,t12,question,4,done,61.619,2,3966,520,search_help|
+proposals,agent,t12,question,5,done,47.785,2,3960,360,search_help|
+proposals,agent,t13,question,1,done,88.129,2,3951,593,search_help|
+proposals,agent,t13,question,2,done,56.906,2,3951,465,search_help|
+proposals,agent,t13,question,3,done,62.807,2,3951,526,search_help|
+proposals,agent,t13,question,4,done,68.582,2,3951,591,search_help|
+proposals,agent,t13,question,5,done,57.937,2,3951,484,search_help|
+proposals,agent,t14,question,1,done,190.622,2,4220,442,search_help|
+proposals,agent,t14,question,2,cited no passage,127.616,2,4220,397,search_help|
+proposals,agent,t14,question,3,done,131.881,2,4220,446,search_help|
+proposals,agent,t14,question,4,done,126.509,2,4220,406,search_help|
+proposals,agent,t14,question,5,cited no passage,120.035,2,4220,368,search_help|
+proposals,agent,t15,question,1,done,76.371,2,4013,393,search_help|
+proposals,agent,t15,question,2,done,61.480,2,4079,450,search_help|
+proposals,agent,t15,question,3,done,56.234,2,4079,392,search_help|
+proposals,agent,t15,question,4,done,52.153,2,4013,357,search_help|
+proposals,agent,t15,question,5,done,53.033,2,4079,359,search_help|
+proposals,agent,t16,question,1,cited no passage with the answer,194.143,2,4215,557,search_help|
+proposals,agent,t16,question,2,done,140.426,2,4215,589,search_help|
+proposals,agent,t16,question,3,done,135.222,2,4235,533,search_help|
+proposals,agent,t16,question,4,done,151.477,2,4235,648,search_help|
+proposals,agent,t16,question,5,cited no passage,161.261,2,4235,735,search_help|
+proposals,agent,t17,question,1,cited no passage with the answer,167.227,2,3909,407,search_help|
+proposals,agent,t17,question,2,cited no passage with the answer,95.436,2,3909,332,search_help|
+proposals,agent,t17,question,3,cited no passage with the answer,94.278,2,3909,307,search_help|
+proposals,agent,t17,question,4,cited no passage with the answer,91.914,2,3909,303,search_help|
+proposals,agent,t17,question,5,cited no passage with the answer,79.414,2,3909,219,search_help|
+proposals,agent,t18,question,1,done,100.167,2,3998,349,search_help|
+proposals,agent,t18,question,2,done,60.976,2,3998,298,search_help|
+proposals,agent,t18,question,3,done,62.080,2,3998,309,search_help|
+proposals,agent,t18,question,4,done,63.156,2,3998,318,search_help|
+proposals,agent,t18,question,5,done,71.159,2,3998,394,search_help|
+proposals,agent,t19,question,1,cited no passage with the answer,170.543,2,4120,358,search_help|
+proposals,agent,t19,question,2,cited no passage with the answer,136.343,2,4120,552,search_help|
+proposals,agent,t19,question,3,cited no passage with the answer,115.369,2,4120,403,search_help|
+proposals,agent,t19,question,4,cited no passage with the answer,117.269,2,4120,409,search_help|
+proposals,agent,t19,question,5,cited no passage with the answer,119.817,2,4120,418,search_help|
+proposals,agent,t20,question,1,cited no passage with the answer,77.240,2,4022,433,search_help|
+proposals,agent,t20,question,2,cited no passage with the answer,50.211,2,4022,363,search_help|
+proposals,agent,t20,question,3,cited no passage with the answer,48.792,2,4022,350,search_help|
+proposals,agent,t20,question,4,cited no passage with the answer,42.297,2,4022,271,search_help|
+proposals,agent,t20,question,5,cited no passage with the answer,46.226,2,4022,314,search_help|
+proposals,agent,t21,question,1,done,40.430,2,4041,142,search_help|
+proposals,agent,t21,question,2,done,35.017,2,3995,184,search_help|
+proposals,agent,t21,question,3,done,34.813,2,3995,185,search_help|
+proposals,agent,t21,question,4,done,32.827,2,3995,168,search_help|
+proposals,agent,t21,question,5,done,34.881,2,4041,180,search_help|
+proposals,agent,t22,question,1,done,73.643,2,4151,450,search_help|
+proposals,agent,t22,question,2,done,64.099,2,4151,439,search_help|
+proposals,agent,t22,question,3,done,74.904,2,4151,587,search_help|
+proposals,agent,t22,question,4,cited no passage,51.783,2,4151,330,search_help|
+proposals,agent,t22,question,5,done,65.815,2,4151,496,search_help|
+proposals,agent,t23,question,1,done,116.696,2,4179,356,search_help|
+proposals,agent,t23,question,2,done,131.974,2,4179,473,search_help|
+proposals,agent,t23,question,3,cited no passage,126.795,2,4122,453,search_help|
+proposals,agent,t23,question,4,done,96.282,2,4122,315,search_help|
+proposals,agent,t23,question,5,done,75.114,2,4122,219,search_help|
+proposals,agent,t24,question,1,done,123.953,2,3966,401,search_help|
+proposals,agent,t24,question,2,cited no passage,88.847,2,3966,306,search_help|
+proposals,agent,t24,question,3,cited no passage,97.025,2,3967,366,search_help|
+proposals,agent,t24,question,4,done,101.779,2,3966,399,search_help|
+proposals,agent,t24,question,5,done,93.714,2,3966,333,search_help|
+proposals,agent,t25,question,1,done,136.091,2,4129,390,search_help|
+proposals,agent,t25,question,2,done,103.353,2,4129,324,search_help|
+proposals,agent,t25,question,3,done,103.159,2,4129,334,search_help|
+proposals,agent,t25,question,4,cited no passage with the answer,88.055,2,4126,221,search_help|
+proposals,agent,t25,question,5,done,111.953,2,4129,409,search_help|
+proposals,agent,t26,question,1,done,110.859,2,4204,180,search_help|
+proposals,agent,t26,question,2,done,93.538,2,4204,222,search_help|
+proposals,agent,t26,question,3,done,98.591,2,4047,313,search_help|
+proposals,agent,t26,question,4,done,92.149,2,4204,212,search_help|
+proposals,agent,t26,question,5,cited no passage,92.113,2,4204,219,search_help|
+proposals,agent,t27,question,1,done,124.239,2,4122,319,search_help|
+proposals,agent,t27,question,2,cited no passage with the answer,97.515,2,4122,283,search_help|
+proposals,agent,t27,question,3,cited no passage with the answer,99.683,2,4169,285,search_help|
+proposals,agent,t27,question,4,done,111.098,2,4171,361,search_help|
+proposals,agent,t27,question,5,done,105.606,2,4122,333,search_help|
+proposals,agent,t28,question,1,done,72.335,2,4013,291,search_help|
+proposals,agent,t28,question,2,done,60.070,2,3966,316,search_help|
+proposals,agent,t28,question,3,cited no passage,60.216,2,3975,311,search_help|
+proposals,agent,t28,question,4,cited no passage,50.025,2,3966,219,search_help|
+proposals,agent,t28,question,5,done,65.165,2,3975,364,search_help|
+proposals,agent,t29,question,1,done,135.304,2,4003,404,search_help|
+proposals,agent,t29,question,2,done,124.202,2,4003,480,search_help|
+proposals,agent,t29,question,3,done,123.265,2,4003,465,search_help|
+proposals,agent,t29,question,4,done,113.521,2,4003,404,search_help|
+proposals,agent,t29,question,5,done,122.616,2,4003,473,search_help|
+proposals,agent,t30,question,1,done,51.735,2,4047,261,search_help|
+proposals,agent,t30,question,2,cited no passage,39.253,2,4049,215,search_help|
+proposals,agent,t30,question,3,cited no passage,43.746,2,4047,265,search_help|
+proposals,agent,t30,question,4,done,46.340,2,4049,303,search_help|
+proposals,agent,t30,question,5,done,45.048,2,4049,287,search_help|
+proposals,agent,t31,question,1,done,120.170,2,4168,458,search_help|
+proposals,agent,t31,question,2,cited no passage,122.154,2,4168,509,search_help|
+proposals,agent,t31,question,3,done,117.022,2,4168,479,search_help|
+proposals,agent,t31,question,4,done,129.147,2,4168,542,search_help|
+proposals,agent,t31,question,5,done,106.173,2,4168,430,search_help|
+proposals,agent,t32,question,1,cited no passage with the answer,54.006,2,4127,300,search_help|
+proposals,agent,t32,question,2,cited no passage with the answer,49.873,2,4127,332,search_help|
+proposals,agent,t32,question,3,cited no passage,62.021,2,4127,474,search_help|
+proposals,agent,t32,question,4,cited no passage with the answer,51.125,2,4127,353,search_help|
+proposals,agent,t32,question,5,cited no passage with the answer,56.704,2,4127,410,search_help|
+proposals,agent,t33,question,1,cited no passage,65.774,2,4281,422,search_help|
+proposals,agent,t33,question,2,done,55.763,2,4282,398,search_help|
+proposals,agent,t33,question,3,done,70.089,2,4281,577,search_help|
+proposals,agent,t33,question,4,done,68.729,2,4281,556,search_help|
+proposals,agent,t33,question,5,done,77.924,2,4281,663,search_help|
+proposals,agent,t34,question,1,cited no passage,139.009,2,4107,379,search_help|
+proposals,agent,t34,question,2,cited no passage with the answer,114.595,2,4104,374,search_help|
+proposals,agent,t34,question,3,cited no passage,122.684,2,4107,438,search_help|
+proposals,agent,t34,question,4,cited no passage,116.157,2,4107,380,search_help|
+proposals,agent,t34,question,5,cited no passage with the answer,127.566,2,4104,445,search_help|
+proposals,agent,t35,question,1,done,69.038,2,4178,419,search_help|
+proposals,agent,t35,question,2,done,53.228,2,4178,337,search_help|
+proposals,agent,t35,question,3,done,62.575,2,4178,441,search_help|
+proposals,agent,t35,question,4,done,51.483,2,4178,318,search_help|
+proposals,agent,t35,question,5,done,58.903,2,4178,415,search_help|
+proposals,agent,t36,question,1,cited no passage with the answer,109.871,2,4031,279,search_help|
+proposals,agent,t36,question,2,cited no passage with the answer,89.471,2,4031,280,search_help|
+proposals,agent,t36,question,3,cited no passage with the answer,81.444,2,4031,222,search_help|
+proposals,agent,t36,question,4,cited no passage with the answer,118.194,2,4031,479,search_help|
+proposals,agent,t36,question,5,cited no passage with the answer,83.018,2,4031,237,search_help|
+proposals,agent,t37,question,1,cited no passage with the answer,136.229,2,4282,338,search_help|
+proposals,agent,t37,question,2,cited no passage,127.418,2,4282,455,search_help|
+proposals,agent,t37,question,3,cited no passage,123.884,2,4281,430,search_help|
+proposals,agent,t37,question,4,cited no passage with the answer,129.869,2,4282,465,search_help|
+proposals,agent,t37,question,5,cited no passage,141.905,2,4282,542,search_help|
+proposals,agent,t38,question,1,cited no passage,78.152,2,4125,308,search_help|
+proposals,agent,t38,question,2,done,61.710,2,4125,282,search_help|
+proposals,agent,t38,question,3,done,57.638,2,4125,239,search_help|
+proposals,agent,t38,question,4,done,64.793,2,4125,299,search_help|
+proposals,agent,t38,question,5,done,57.069,2,4125,236,search_help|
+proposals,agent,t39,question,1,done,123.540,2,4301,239,search_help|
+proposals,agent,t39,question,2,done,122.357,2,4214,430,search_help|
+proposals,agent,t39,question,3,cited no passage with the answer,104.182,2,4301,260,search_help|
+proposals,agent,t39,question,4,cited no passage,110.349,2,4253,312,search_help|
+proposals,agent,t39,question,5,cited no passage,96.215,2,4301,199,search_help|
+proposals,agent,t40,question,1,cited no passage,18.048,1,1413,109,
+proposals,agent,t40,question,2,cited no passage with the answer,66.813,2,4210,496,search_help|
+proposals,agent,t40,question,3,cited no passage with the answer,62.388,2,4218,418,search_help|
+proposals,agent,t40,question,4,cited no passage with the answer,69.705,2,4215,560,search_help|
+proposals,agent,t40,question,5,cited no passage with the answer,72.600,2,4215,599,search_help|
+proposals,agent,t41,case,1,done,27.021,3,4515,175,propose_ticket||
+proposals,agent,t41,case,2,done,14.567,3,4513,127,propose_ticket||
+proposals,agent,t41,case,3,done,16.053,3,4530,143,propose_ticket||
+proposals,agent,t41,case,4,done,24.384,4,6315,226,propose_ticket||propose_callback|
+proposals,agent,t41,case,5,done,14.758,3,4511,129,propose_ticket||
+proposals,agent,t42,case,1,opened 0 tickets,80.696,4,9640,409,search_help||propose_ticket|
+proposals,agent,t42,case,2,opened 0 tickets,72.098,4,9600,301,search_help||propose_ticket|
+proposals,agent,t42,case,3,done,65.554,4,9454,219,search_help|propose_ticket||
+proposals,agent,t42,case,4,opened 0 tickets,79.531,4,9555,414,search_help||propose_ticket|
+proposals,agent,t42,case,5,done,85.965,4,9867,422,search_help|propose_ticket||
+proposals,agent,t43,case,1,opened 0 tickets,137.708,4,9878,309,search_help||propose_ticket|
+proposals,agent,t43,case,2,error,315.135,8,46523,353,search_help|search_help|search_help|search_help|search_help|search_help|search_help|search_help
+proposals,agent,t43,case,3,done,106.070,4,9399,230,search_help|propose_ticket||
+proposals,agent,t43,case,4,opened 0 tickets,119.669,4,9723,289,search_help||propose_ticket|
+proposals,agent,t43,case,5,opened 0 tickets,121.713,4,9492,311,search_help||propose_ticket|
+proposals,agent,t44,case,1,opened 0 tickets,188.916,4,9930,362,search_help||propose_ticket|
+proposals,agent,t44,case,2,done,151.061,4,9913,204,search_help|propose_ticket||
+proposals,agent,t44,case,3,opened 0 tickets,151.844,4,9827,260,search_help||propose_ticket|
+proposals,agent,t44,case,4,done,184.497,4,10073,402,search_help|propose_ticket||
+proposals,agent,t44,case,5,done,181.897,5,12945,379,search_help|propose_ticket||propose_callback|
+proposals,agent,t45,case,1,done,178.367,4,9972,340,search_help|propose_ticket||
+proposals,agent,t45,case,2,done,168.493,4,9864,280,search_help|propose_ticket||
+proposals,agent,t45,case,3,opened 0 tickets,168.047,4,9861,297,search_help||propose_ticket|
+proposals,agent,t45,case,4,opened 0 tickets,153.933,4,9733,221,search_help||propose_ticket|
+proposals,agent,t45,case,5,done,212.253,6,16235,520,search_help|propose_ticket||propose_callback|propose_callback|
+proposals,agent,t46,case,1,done,57.178,3,4503,161,propose_ticket||
+proposals,agent,t46,case,2,done,27.503,3,4484,119,propose_ticket||
+proposals,agent,t46,case,3,done,48.741,4,6247,247,propose_ticket||propose_callback|
+proposals,agent,t46,case,4,done,30.741,3,4496,141,propose_ticket||
+proposals,agent,t46,case,5,done,28.544,3,4489,125,propose_ticket||
+proposals,agent,t47,case,1,opened 0 tickets,170.818,5,11772,319,search_help|list_tickets||propose_ticket|
+proposals,agent,t47,case,2,done,43.704,4,6069,195,list_tickets|propose_ticket||
+proposals,agent,t47,case,3,done,50.547,4,6137,243,list_tickets|propose_ticket||
+proposals,agent,t47,case,4,done,38.190,4,6066,166,list_tickets|propose_ticket||
+proposals,agent,t47,case,5,opened 0 tickets,148.452,5,11647,344,search_help|list_tickets||propose_ticket|
+proposals,agent,t48,case,1,opened 0 tickets,139.232,4,10595,425,search_help||propose_ticket|
+proposals,agent,t48,case,2,opened 0 tickets,80.430,4,10357,296,search_help||propose_ticket|
+proposals,agent,t48,case,3,opened 0 tickets,113.838,4,10413,321,search_help||propose_ticket|
+proposals,agent,t48,case,4,opened 0 tickets,98.374,4,10627,431,search_help||propose_ticket|
+proposals,agent,t48,case,5,done,80.868,4,10294,275,search_help|propose_ticket||
+proposals,agent,t49,case,1,done,242.761,5,13882,410,search_help|propose_ticket||propose_callback|
+proposals,agent,t49,case,2,done,152.977,6,16812,351,search_help|list_tickets|propose_ticket||propose_callback|
+proposals,agent,t49,case,3,done,149.018,5,13775,340,search_help|propose_ticket||propose_callback|
+proposals,agent,t49,case,4,opened 0 tickets,141.567,4,10638,335,search_help||propose_ticket|
+proposals,agent,t49,case,5,done,144.503,5,13634,307,search_help|list_tickets|propose_ticket||
+proposals,agent,t50,case,1,opened 0 tickets,75.381,5,11747,309,search_help|list_tickets||propose_ticket|
+proposals,agent,t50,case,2,opened 0 tickets,67.303,4,9283,321,search_help||propose_ticket|
+proposals,agent,t50,case,3,done,102.799,6,17680,391,search_help|list_tickets|search_help|propose_ticket||
+proposals,agent,t50,case,4,opened 0 tickets,71.743,5,11815,362,search_help|list_tickets||propose_ticket|
+proposals,agent,t50,case,5,opened 0 tickets,73.008,5,11865,376,search_help|list_tickets||propose_ticket|
+proposals,agent,t51,case,1,opened 0 tickets,156.001,4,10288,495,search_help||propose_ticket|
+proposals,agent,t51,case,2,opened 0 tickets,112.238,4,10085,321,search_help||propose_ticket|
+proposals,agent,t51,case,3,done,165.812,7,19376,563,search_help|propose_ticket||propose_callback|propose_callback|propose_callback|
+proposals,agent,t51,case,4,error,356.520,11,33451,1523,search_help|propose_ticket||propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback
+proposals,agent,t51,case,5,done,96.467,4,9966,307,search_help|propose_ticket||
+proposals,agent,t52,case,1,opened 0 tickets,89.014,4,10030,407,search_help||propose_ticket|
+proposals,agent,t52,case,2,done,70.329,4,10000,252,search_help|propose_ticket||
+proposals,agent,t52,case,3,done,73.137,6,16094,474,search_help|propose_ticket||propose_callback|propose_callback|
+proposals,agent,t52,case,4,done,103.075,6,16820,576,search_help|propose_ticket||propose_callback|propose_callback|
+proposals,agent,t52,case,5,done,71.992,4,10118,260,search_help|propose_ticket||
+proposals,agent,t53,case,1,done,194.064,7,28238,708,search_help|search_help|search_help|propose_ticket||propose_callback|
+proposals,agent,t53,case,2,done,57.343,4,9338,189,search_help|propose_ticket||
+proposals,agent,t53,case,3,opened 0 tickets,65.284,4,9457,317,search_help||propose_ticket|
+proposals,agent,t53,case,4,opened 0 tickets,65.591,4,9439,311,search_help||propose_ticket|
+proposals,agent,t53,case,5,done,61.756,4,9399,252,search_help|propose_ticket||
+proposals,agent,t54,case,1,opened 0 tickets,196.208,4,9640,397,search_help||propose_ticket|
+proposals,agent,t54,case,2,done,159.466,4,9457,285,search_help|propose_ticket||
+proposals,agent,t54,case,3,opened 0 tickets,167.289,4,9654,362,search_help||propose_ticket|
+proposals,agent,t54,case,4,done,146.638,4,9421,221,search_help|propose_ticket||
+proposals,agent,t54,case,5,opened 0 tickets,177.076,4,9642,406,search_help||propose_ticket|
+proposals,agent,t55,case,1,done,69.109,4,9298,197,search_help|propose_ticket||
+proposals,agent,t55,case,2,done,77.386,5,12070,357,search_help|propose_ticket||propose_callback|
+proposals,agent,t55,case,3,done,81.863,5,13097,301,search_help|propose_ticket||propose_callback|
+proposals,agent,t55,case,4,done,66.763,5,13140,339,search_help|propose_ticket||propose_callback|
+proposals,agent,t55,case,5,done,75.587,5,11946,390,search_help|propose_ticket||propose_callback|
+proposals,agent,t56,case,1,opened 0 tickets,168.726,4,9805,380,search_help||propose_ticket|
+proposals,agent,t56,case,2,opened 0 tickets,142.249,4,9953,452,search_help||propose_ticket|
+proposals,agent,t56,case,3,opened 0 tickets,154.051,4,9647,316,search_help||propose_ticket|
+proposals,agent,t56,case,4,opened 0 tickets,189.017,4,10029,503,search_help||propose_ticket|
+proposals,agent,t56,case,5,opened 0 tickets,168.462,4,9808,385,search_help||propose_ticket|
+proposals,agent,t57,case,1,opened 0 tickets,167.251,4,10155,212,search_help||propose_ticket|
+proposals,agent,t57,case,2,opened 0 tickets,176.615,4,10333,254,search_help||propose_ticket|
+proposals,agent,t57,case,3,done,172.350,6,16993,473,search_help|propose_ticket||propose_callback|propose_callback|
+proposals,agent,t57,case,4,done,199.125,4,10508,350,search_help|propose_ticket||
+proposals,agent,t57,case,5,opened 0 tickets,158.874,4,9843,238,search_help||propose_ticket|
+proposals,agent,t58,case,1,done,121.952,4,10631,330,search_help|propose_ticket||
+proposals,agent,t58,case,2,opened 0 tickets,120.113,4,10596,357,search_help||propose_ticket|
+proposals,agent,t58,case,3,done,118.833,4,10594,323,search_help|propose_ticket||
+proposals,agent,t58,case,4,done,134.818,4,10829,440,search_help|propose_ticket||
+proposals,agent,t58,case,5,done,115.609,4,10530,290,search_help|propose_ticket||
+proposals,agent,t59,case,1,done,172.131,4,9850,265,search_help|propose_ticket||
+proposals,agent,t59,case,2,error,502.941,8,46704,337,search_help|search_help|search_help|search_help|search_help|search_help|search_help|search_help
+proposals,agent,t59,case,3,opened 0 tickets,191.110,4,10366,360,search_help||propose_ticket|
+proposals,agent,t59,case,4,error,512.530,8,47742,363,search_help|search_help|search_help|search_help|search_help|search_help|search_help|search_help
+proposals,agent,t59,case,5,done,167.388,4,10052,213,search_help|propose_ticket||
+proposals,agent,t60,case,1,done,64.504,4,9948,198,search_help|propose_ticket||
+proposals,agent,t60,case,2,done,80.745,4,10547,325,search_help|propose_ticket||
+proposals,agent,t60,case,3,done,78.766,5,13121,341,search_help|propose_ticket||propose_callback|
+proposals,agent,t60,case,4,done,82.860,4,10346,343,search_help|propose_ticket||
+proposals,agent,t60,case,5,opened 0 tickets,82.667,4,10367,354,search_help||propose_ticket|
+proposals,agent,t61,callback,1,done,26.704,4,6316,219,list_tickets|propose_callback||
+proposals,agent,t61,callback,2,done,20.743,3,4644,183,propose_callback||
+proposals,agent,t61,callback,3,done,21.987,3,4666,198,propose_callback||
+proposals,agent,t61,callback,4,done,26.131,4,6295,219,list_tickets|propose_callback||
+proposals,agent,t61,callback,5,done,20.854,3,4638,187,propose_callback||
+proposals,agent,t62,callback,1,done,31.000,3,4644,185,propose_callback||
+proposals,agent,t62,callback,2,done,27.417,4,6284,211,list_tickets|propose_callback||
+proposals,agent,t62,callback,3,done,26.411,4,6284,195,list_tickets|propose_callback||
+proposals,agent,t62,callback,4,done,28.745,3,4771,248,propose_callback||
+proposals,agent,t62,callback,5,done,23.132,3,4636,195,propose_callback||
+proposals,agent,t63,callback,1,done,53.122,3,4687,205,propose_callback||
+proposals,agent,t63,callback,2,done,60.678,4,6361,234,list_tickets|propose_callback||
+proposals,agent,t63,callback,3,done,52.959,3,4688,211,propose_callback||
+proposals,agent,t63,callback,4,done,60.896,4,6340,234,list_tickets|propose_callback||
+proposals,agent,t63,callback,5,booked 0 callbacks,71.036,4,6289,310,|list_tickets|propose_callback|
+proposals,agent,t64,callback,1,done,77.227,3,4769,254,propose_callback||
+proposals,agent,t64,callback,2,done,52.258,3,4695,225,propose_callback||
+proposals,agent,t64,callback,3,done,50.396,3,4678,211,propose_callback||
+proposals,agent,t64,callback,4,done,59.182,4,6330,231,list_tickets|propose_callback||
+proposals,agent,t64,callback,5,done,54.631,3,4724,237,propose_callback||
+proposals,agent,t65,callback,1,done,42.430,3,4629,180,propose_callback||
+proposals,agent,t65,callback,2,done,42.970,3,4661,196,propose_callback||
+proposals,agent,t65,callback,3,done,42.890,3,4667,202,propose_callback||
+proposals,agent,t65,callback,4,done,42.028,3,4664,192,propose_callback||
+proposals,agent,t65,callback,5,booked 0 callbacks,33.255,3,4509,201,|propose_callback|
+proposals,agent,t66,callback,1,done,52.337,3,4732,238,propose_callback||
+proposals,agent,t66,callback,2,done,51.213,3,4743,236,propose_callback||
+proposals,agent,t66,callback,3,done,57.335,3,4801,269,propose_callback||
+proposals,agent,t66,callback,4,done,53.849,4,6280,228,list_tickets|propose_callback||
+proposals,agent,t66,callback,5,booked 0 callbacks,43.929,3,4626,255,|propose_callback|
+proposals,agent,t67,callback,1,booked 0 callbacks,60.680,4,6121,208,|list_tickets|propose_callback|
+proposals,agent,t67,callback,2,done,59.329,4,6374,252,list_tickets|propose_callback||
+proposals,agent,t67,callback,3,done,56.776,4,6347,238,list_tickets|propose_callback||
+proposals,agent,t67,callback,4,done,58.913,4,6372,249,list_tickets|propose_callback||
+proposals,agent,t67,callback,5,done,63.920,4,6468,278,list_tickets|propose_callback||
+proposals,agent,t68,callback,1,done,48.515,3,4723,246,propose_callback||
+proposals,agent,t68,callback,2,done,29.168,3,4640,189,propose_callback||
+proposals,agent,t68,callback,3,done,28.131,3,4620,180,propose_callback||
+proposals,agent,t68,callback,4,done,37.269,4,6300,228,list_tickets|propose_callback||
+proposals,agent,t68,callback,5,done,36.320,4,6299,223,list_tickets|propose_callback||
+proposals,agent,t69,callback,1,booked 0 callbacks,36.278,3,4523,200,|propose_callback|
+proposals,agent,t69,callback,2,done,53.388,4,6319,224,list_tickets|propose_callback||
+proposals,agent,t69,callback,3,done,42.147,3,4664,190,propose_callback||
+proposals,agent,t69,callback,4,done,53.741,3,4767,255,propose_callback||
+proposals,agent,t69,callback,5,done,49.144,3,4730,225,propose_callback||
+proposals,agent,t70,callback,1,done,28.579,4,6317,228,list_tickets|propose_callback||
+proposals,agent,t70,callback,2,done,25.724,3,4714,233,propose_callback||
+proposals,agent,t70,callback,3,done,28.056,4,6323,227,list_tickets|propose_callback||
+proposals,agent,t70,callback,4,done,26.240,3,4736,233,propose_callback||
+proposals,agent,t70,callback,5,done,18.970,3,4626,155,propose_callback||
+proposals,agent,t71,callback,1,done,57.358,4,6360,246,list_tickets|propose_callback||
+proposals,agent,t71,callback,2,done,53.785,4,6358,235,list_tickets|propose_callback||
+proposals,agent,t71,callback,3,done,46.364,3,4690,211,propose_callback||
+proposals,agent,t71,callback,4,done,55.362,4,6358,244,list_tickets|propose_callback||
+proposals,agent,t71,callback,5,done,48.792,3,4737,225,propose_callback||
+proposals,agent,t72,callback,1,done,27.359,4,6293,219,list_tickets|propose_callback||
+proposals,agent,t72,callback,2,done,25.643,4,6292,213,list_tickets|propose_callback||
+proposals,agent,t72,callback,3,wrong day,54.980,5,8781,485,list_tickets|propose_callback|propose_callback||
+proposals,agent,t72,callback,4,booked 0 callbacks,23.163,4,6176,229,|list_tickets|propose_callback|
+proposals,agent,t72,callback,5,done,25.435,4,6285,207,list_tickets|propose_callback||
+proposals,agent,t73,callback,1,done,33.201,3,4732,236,propose_callback||
+proposals,agent,t73,callback,2,done,25.798,3,4752,244,propose_callback||
+proposals,agent,t73,callback,3,done,22.011,3,4670,203,propose_callback||
+proposals,agent,t73,callback,4,done,22.224,3,4672,207,propose_callback||
+proposals,agent,t73,callback,5,done,21.589,3,4668,202,propose_callback||
+proposals,agent,t74,callback,1,done,69.334,3,4612,184,propose_callback||
+proposals,agent,t74,callback,2,done,58.843,3,4738,249,propose_callback||
+proposals,agent,t74,callback,3,done,57.318,4,6294,221,list_tickets|propose_callback||
+proposals,agent,t74,callback,4,done,86.755,4,6639,363,list_tickets|propose_callback||
+proposals,agent,t74,callback,5,done,63.284,4,6339,254,list_tickets|propose_callback||
+proposals,agent,t75,callback,1,done,31.118,3,4816,271,propose_callback||
+proposals,agent,t75,callback,2,booked 0 callbacks,19.700,3,4525,193,|propose_callback|
+proposals,agent,t75,callback,3,done,36.123,4,6508,304,list_tickets|propose_callback||
+proposals,agent,t75,callback,4,booked 0 callbacks,24.910,4,6198,247,|list_tickets|propose_callback|
+proposals,agent,t75,callback,5,done,25.722,3,4721,225,propose_callback||
+proposals,agent,t76,callback,1,didn't say the time,88.600,5,8746,448,propose_callback||propose_callback|propose_callback|
+proposals,agent,t76,callback,2,done,54.337,4,6327,226,list_tickets|propose_callback||
+proposals,agent,t76,callback,3,done,51.905,4,6291,218,list_tickets|propose_callback||
+proposals,agent,t76,callback,4,done,65.735,4,6585,285,propose_callback|propose_callback||
+proposals,agent,t76,callback,5,done,68.811,4,6595,302,propose_callback|propose_callback||
+proposals,agent,t77,callback,1,done,74.404,4,6269,212,list_tickets|propose_callback||
+proposals,agent,t77,callback,2,done,44.867,3,4701,212,propose_callback||
+proposals,agent,t77,callback,3,done,50.659,4,6294,210,list_tickets|propose_callback||
+proposals,agent,t77,callback,4,done,49.889,4,6292,207,list_tickets|propose_callback||
+proposals,agent,t77,callback,5,done,56.926,4,6331,247,list_tickets|propose_callback||
+proposals,agent,t78,callback,1,done,40.316,4,6357,242,list_tickets|propose_callback||
+proposals,agent,t78,callback,2,done,33.978,3,4721,228,propose_callback||
+proposals,agent,t78,callback,3,done,34.228,4,6277,206,list_tickets|propose_callback||
+proposals,agent,t78,callback,4,done,36.990,4,6285,229,list_tickets|propose_callback||
+proposals,agent,t78,callback,5,done,44.915,4,6486,292,list_tickets|propose_callback||
+proposals,agent,t79,callback,1,done,122.647,4,6978,490,list_tickets|propose_callback||
+proposals,agent,t79,callback,2,done,52.237,4,6339,221,list_tickets|propose_callback||
+proposals,agent,t79,callback,3,done,44.868,3,4694,211,propose_callback||
+proposals,agent,t79,callback,4,done,53.698,4,6343,226,list_tickets|propose_callback||
+proposals,agent,t79,callback,5,done,53.757,4,6339,229,list_tickets|propose_callback||
+proposals,agent,t80,callback,1,done,24.274,3,4654,200,propose_callback||
+proposals,agent,t80,callback,2,didn't say the time,31.529,4,6474,277,propose_callback||propose_callback|
+proposals,agent,t80,callback,3,didn't say the time,111.975,7,14439,1073,propose_callback|propose_callback||propose_callback|propose_callback|propose_callback|
+proposals,agent,t80,callback,4,done,29.282,4,6328,239,list_tickets|propose_callback||
+proposals,agent,t80,callback,5,done,23.363,3,4700,206,propose_callback||
+proposals,agent,t81,new,1,booked 0 callbacks,23.077,3,4625,239,|propose_callback|
+proposals,agent,t81,new,2,done,22.817,3,4694,204,propose_callback||
+proposals,agent,t81,new,3,done,28.927,3,4825,266,propose_callback||
+proposals,agent,t81,new,4,done,22.023,3,4688,195,propose_callback||
+proposals,agent,t81,new,5,done,21.918,3,4689,193,propose_callback||
+proposals,agent,t82,new,1,done,29.202,3,4768,248,propose_callback||
+proposals,agent,t82,new,2,booked 0 callbacks,22.912,3,4611,225,|propose_callback|
+proposals,agent,t82,new,3,done,28.904,3,4771,250,propose_callback||
+proposals,agent,t82,new,4,booked 0 callbacks,19.754,3,4541,198,|propose_callback|
+proposals,agent,t82,new,5,done,28.923,3,4773,248,propose_callback||
+proposals,agent,t83,new,1,done,55.511,3,4711,214,propose_callback||
+proposals,agent,t83,new,2,booked 0 callbacks,50.713,3,4609,220,|propose_callback|
+proposals,agent,t83,new,3,done,48.288,3,4685,190,propose_callback||
+proposals,agent,t83,new,4,done,63.246,3,4814,256,propose_callback||
+proposals,agent,t83,new,5,done,49.225,3,4685,196,propose_callback||
+proposals,agent,t84,new,1,done,49.605,3,4696,201,propose_callback||
+proposals,agent,t84,new,2,done,65.673,4,6643,287,propose_callback||list_tickets|
+proposals,agent,t84,new,3,booked 0 callbacks,46.045,4,6130,221,list_tickets||propose_ticket|
+proposals,agent,t84,new,4,booked 0 callbacks,44.065,3,4630,232,|propose_ticket|
+proposals,agent,t84,new,5,booked 0 callbacks,32.257,3,4535,158,|propose_ticket|
+proposals,agent,t85,new,1,done,49.927,3,4754,225,propose_callback||
+proposals,agent,t85,new,2,booked 0 callbacks,40.978,3,4614,253,|propose_callback|
+proposals,agent,t85,new,3,booked 0 callbacks,52.414,4,6426,273,propose_ticket||propose_callback|
+proposals,agent,t85,new,4,done,42.299,3,4679,196,propose_callback||
+proposals,agent,t85,new,5,done,54.848,3,4810,267,propose_callback||
+proposals,agent,t86,new,1,done,45.042,3,4702,194,propose_callback||
+proposals,agent,t86,new,2,done,54.348,3,4788,259,propose_callback||
+proposals,agent,t86,new,3,done,51.495,3,4762,243,propose_callback||
+proposals,agent,t86,new,4,done,45.917,3,4672,213,propose_callback||
+proposals,agent,t86,new,5,booked 0 callbacks,58.365,3,4762,346,|propose_ticket propose_callback|
+proposals,agent,t87,new,1,done,50.727,3,4767,221,propose_callback||
+proposals,agent,t87,new,2,done,54.894,3,4811,254,propose_callback||
+proposals,agent,t87,new,3,done,52.947,3,4791,246,propose_callback||
+proposals,agent,t87,new,4,done,42.732,3,4666,185,propose_callback||
+proposals,agent,t87,new,5,done,40.403,3,4665,169,propose_callback||
+proposals,agent,t88,new,1,done,32.785,3,4708,215,propose_callback||
+proposals,agent,t88,new,2,booked 0 callbacks,40.563,4,6445,320,|propose_ticket|propose_callback|
+proposals,agent,t88,new,3,booked 0 callbacks,32.743,3,4663,266,|propose_callback|
+proposals,agent,t88,new,4,done,29.736,3,4692,201,propose_callback||
+proposals,agent,t88,new,5,done,38.651,3,4836,272,propose_callback||
+proposals,agent,t89,new,1,done,54.541,3,4779,242,propose_callback||
+proposals,agent,t89,new,2,done,40.925,3,4660,180,propose_callback||
+proposals,agent,t89,new,3,done,53.713,3,4794,248,propose_callback||
+proposals,agent,t89,new,4,done,45.869,3,4689,204,propose_callback||
+proposals,agent,t89,new,5,done,58.130,3,4806,270,propose_callback||
+proposals,agent,t90,new,1,done,27.839,3,4763,243,propose_callback||
+proposals,agent,t90,new,2,booked 0 callbacks,21.523,3,4592,219,|propose_callback|
+proposals,agent,t90,new,3,done,26.613,3,4751,234,propose_callback||
+proposals,agent,t90,new,4,booked 0 callbacks,20.008,3,4564,204,|propose_callback|
+proposals,agent,t90,new,5,booked 0 callbacks,32.243,3,4787,329,|propose_ticket propose_callback|
+proposals,agent,t91,new,1,done,85.704,3,4954,395,propose_callback||
+proposals,agent,t91,new,2,booked 0 callbacks,83.349,4,6770,402,propose_callback||propose_callback|
+proposals,agent,t91,new,3,booked 0 callbacks,62.574,4,6469,292,propose_ticket||propose_callback|
+proposals,agent,t91,new,4,done,62.739,3,4860,289,propose_callback||
+proposals,agent,t91,new,5,done,56.460,3,4816,262,propose_callback||
+proposals,agent,t92,new,1,booked 0 callbacks,26.988,3,4667,272,|propose_callback|
+proposals,agent,t92,new,2,booked 0 callbacks,79.489,6,11459,770,propose_ticket|propose_callback||propose_callback|propose_callback|
+proposals,agent,t92,new,3,done,29.570,3,4775,264,propose_callback||
+proposals,agent,t92,new,4,done,24.469,3,4702,210,propose_callback||
+proposals,agent,t92,new,5,done,24.188,3,4712,204,propose_callback||
+proposals,agent,t93,new,1,done,25.036,3,4743,227,propose_callback||
+proposals,agent,t93,new,2,done,22.342,3,4694,203,propose_callback||
+proposals,agent,t93,new,3,done,22.257,3,4712,204,propose_callback||
+proposals,agent,t93,new,4,didn't say the time,20.952,3,4706,185,propose_callback||
+proposals,agent,t93,new,5,done,24.078,3,4716,221,propose_callback||
+proposals,agent,t94,new,1,booked 0 callbacks,35.400,3,4521,164,|propose_ticket|
+proposals,agent,t94,new,2,booked 0 callbacks,83.982,4,6592,405,propose_ticket||propose_callback|
+proposals,agent,t94,new,3,booked 0 callbacks,46.581,3,4596,226,|propose_callback|
+proposals,agent,t94,new,4,booked 0 callbacks,86.982,3,4914,418,|propose_ticket propose_callback|
+proposals,agent,t94,new,5,done,63.229,3,4785,252,propose_callback||
+proposals,agent,t95,new,1,booked 0 callbacks,21.821,3,4593,202,|propose_callback|
+proposals,agent,t95,new,2,booked 0 callbacks,26.664,3,4679,260,|propose_callback|
+proposals,agent,t95,new,3,done,21.884,3,4671,184,propose_callback||
+proposals,agent,t95,new,4,booked 0 callbacks,41.698,4,6597,399,propose_ticket||propose_callback|
+proposals,agent,t95,new,5,done,29.140,3,4836,258,propose_callback||
+proposals,agent,t96,new,1,done,44.684,3,4686,197,propose_callback||
+proposals,agent,t96,new,2,booked 0 callbacks,55.189,3,4779,312,|propose_callback|
+proposals,agent,t96,new,3,booked 0 callbacks,65.699,4,6547,326,propose_ticket||propose_callback|
+proposals,agent,t96,new,4,booked 0 callbacks,34.671,3,4586,185,|propose_ticket|
+proposals,agent,t96,new,5,done,44.882,3,4702,199,propose_callback||
+proposals,agent,t97,new,1,done,46.155,3,4700,198,propose_callback||
+proposals,agent,t97,new,2,done,38.181,3,4657,170,propose_callback||
+proposals,agent,t97,new,3,booked 0 callbacks,35.986,3,4594,211,|propose_callback|
+proposals,agent,t97,new,4,done,41.759,3,4678,186,propose_callback||
+proposals,agent,t97,new,5,done,43.406,3,4676,200,propose_callback||
+proposals,agent,t98,new,1,done,40.718,3,4809,278,propose_callback||
+proposals,agent,t98,new,2,booked 0 callbacks,33.760,3,4670,270,|propose_callback|
+proposals,agent,t98,new,3,done,35.057,3,4754,238,propose_callback||
+proposals,agent,t98,new,4,done,39.664,3,4810,272,propose_callback||
+proposals,agent,t98,new,5,booked 0 callbacks,31.873,3,4671,255,|propose_callback|
+proposals,agent,t99,new,1,done,63.477,3,4881,299,propose_callback||
+proposals,agent,t99,new,2,booked 0 callbacks,72.113,3,4832,449,|propose_ticket|
+proposals,agent,t99,new,3,done,57.988,3,4854,284,propose_callback||
+proposals,agent,t99,new,4,done,50.775,3,4823,234,propose_callback||
+proposals,agent,t99,new,5,done,56.452,3,4838,273,propose_callback||
+proposals,agent,t100,new,1,done,29.095,3,4803,258,propose_callback||
+proposals,agent,t100,new,2,done,24.845,3,4714,228,propose_callback||
+proposals,agent,t100,new,3,didn't say the time,28.968,4,6524,261,propose_callback||propose_callback|
+proposals,agent,t100,new,4,done,22.581,3,4676,199,propose_callback||
+proposals,agent,t100,new,5,done,24.567,3,4702,217,propose_callback||
+proposals,agent,t101,vague,1,done,34.392,4,6204,273,|list_tickets|propose_callback|
+proposals,agent,t101,vague,2,done,25.679,4,6192,265,|list_tickets|propose_callback|
+proposals,agent,t101,vague,3,done,22.510,4,6135,232,|list_tickets|propose_callback|
+proposals,agent,t101,vague,4,done,12.322,2,2889,132,|
+proposals,agent,t101,vague,5,done,27.436,4,6282,284,|list_tickets|propose_callback|
+proposals,agent,t102,vague,1,done,42.221,5,8002,315,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t102,vague,2,done,9.194,2,2853,86,|
+proposals,agent,t102,vague,3,done,18.523,2,2919,176,|
+proposals,agent,t102,vague,4,done,13.543,3,4374,124,|list_tickets|
+proposals,agent,t102,vague,5,done,38.150,5,8091,362,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t103,vague,1,done,46.651,3,4391,156,|list_tickets|
+proposals,agent,t103,vague,2,done,92.808,5,8288,401,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t103,vague,3,done,86.537,5,8097,375,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t103,vague,4,done,68.233,4,6292,294,|list_tickets|propose_callback|
+proposals,agent,t103,vague,5,done,87.107,5,8168,375,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t104,vague,1,done,59.366,3,4512,202,|propose_callback|
+proposals,agent,t104,vague,2,done,38.030,2,2916,222,|
+proposals,agent,t104,vague,3,done,19.957,2,2856,113,|
+proposals,agent,t104,vague,4,done,46.268,3,4512,255,|list_tickets|
+proposals,agent,t104,vague,5,done,52.541,4,6212,252,list_tickets||propose_callback|
+proposals,agent,t105,vague,1,done,71.713,3,4511,305,|list_tickets|
+proposals,agent,t105,vague,2,done,32.894,2,2911,206,|
+proposals,agent,t105,vague,3,done,62.462,5,8117,355,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t105,vague,4,changed the desk,47.884,4,6192,193,list_tickets|propose_callback||
+proposals,agent,t105,vague,5,done,39.718,3,4572,228,|propose_callback|
+proposals,agent,t106,vague,1,done,76.826,5,7948,307,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t106,vague,2,done,37.742,4,6084,215,|list_tickets|propose_callback|
+proposals,agent,t106,vague,3,done,42.214,4,6168,240,|list_tickets|propose_callback|
+proposals,agent,t106,vague,4,done,23.659,2,2879,149,|
+proposals,agent,t106,vague,5,done,23.776,2,2879,148,|
+proposals,agent,t107,vague,1,done,87.163,5,8172,351,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t107,vague,2,done,40.569,3,4428,236,|list_tickets|
+proposals,agent,t107,vague,3,done,21.194,2,2854,124,|
+proposals,agent,t107,vague,4,done,31.686,3,4442,176,|list_tickets|
+proposals,agent,t107,vague,5,done,35.020,3,4406,199,|list_tickets|
+proposals,agent,t108,vague,1,done,26.379,2,2869,113,|
+proposals,agent,t108,vague,2,done,125.060,10,20944,912,list_tickets|propose_callback|propose_callback||propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|
+proposals,agent,t108,vague,3,error,84.872,8,15492,688,list_tickets|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback|propose_callback
+proposals,agent,t108,vague,4,done,41.033,5,7993,301,list_tickets||propose_callback|propose_callback|
+proposals,agent,t108,vague,5,done,15.595,3,4382,116,|list_tickets|
+proposals,agent,t109,vague,1,done,47.687,2,2866,148,|
+proposals,agent,t109,vague,2,done,30.680,3,4453,169,|list_tickets|
+proposals,agent,t109,vague,3,done,47.755,4,6216,264,|list_tickets|propose_callback|
+proposals,agent,t109,vague,4,done,33.108,3,4435,194,|list_tickets|
+proposals,agent,t109,vague,5,done,31.355,3,4431,182,|list_tickets|
+proposals,agent,t110,vague,1,done,16.732,2,2843,81,|
+proposals,agent,t110,vague,2,done,13.233,2,2846,141,|
+proposals,agent,t110,vague,3,done,24.763,4,6120,242,|list_tickets|propose_callback|
+proposals,agent,t110,vague,4,done,16.104,2,2870,162,|
+proposals,agent,t110,vague,5,done,15.824,3,4431,148,|propose_callback|
+proposals,agent,t111,vague,1,done,60.148,4,6173,249,|list_tickets|propose_callback|
+proposals,agent,t111,vague,2,done,49.393,4,6122,237,|list_tickets|propose_callback|
+proposals,agent,t111,vague,3,done,58.525,4,6241,285,|list_tickets|propose_callback|
+proposals,agent,t111,vague,4,done,38.844,3,4459,190,|propose_callback|
+proposals,agent,t111,vague,5,done,26.968,3,4372,127,|list_tickets|
+proposals,agent,t112,vague,1,done,25.884,3,4448,178,|propose_callback|
+proposals,agent,t112,vague,2,done,21.965,4,6114,213,|list_tickets|propose_callback|
+proposals,agent,t112,vague,3,done,25.993,4,6203,255,|list_tickets|propose_callback|
+proposals,agent,t112,vague,4,done,23.484,4,6104,233,|list_tickets|propose_callback|
+proposals,agent,t112,vague,5,done,26.491,4,6188,264,|list_tickets|propose_callback|
+proposals,agent,t113,vague,1,done,21.390,2,2865,151,|
+proposals,agent,t113,vague,2,done,18.327,4,6043,187,|list_tickets|propose_callback|
+proposals,agent,t113,vague,3,done,22.400,3,4540,238,|list_tickets|
+proposals,agent,t113,vague,4,done,21.792,4,6144,230,|list_tickets|propose_callback|
+proposals,agent,t113,vague,5,done,20.832,3,4498,232,|list_tickets|
+proposals,agent,t114,vague,1,done,82.599,4,6280,277,|list_tickets|propose_callback|
+proposals,agent,t114,vague,2,done,27.439,3,4366,120,|list_tickets|
+proposals,agent,t114,vague,3,done,41.492,3,4508,191,|list_tickets|
+proposals,agent,t114,vague,4,done,19.533,2,2858,100,|
+proposals,agent,t114,vague,5,done,67.407,5,8082,340,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t115,vague,1,done,24.192,3,4444,160,|list_tickets|
+proposals,agent,t115,vague,2,done,12.600,3,4354,125,|list_tickets|
+proposals,agent,t115,vague,3,done,18.415,3,4455,194,|propose_callback|
+proposals,agent,t115,vague,4,done,19.476,2,2935,210,|
+proposals,agent,t115,vague,5,done,38.836,5,8206,397,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t116,vague,1,done,95.255,5,8320,400,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t116,vague,2,done,69.178,4,6363,396,|list_tickets|propose_callback propose_callback|
+proposals,agent,t116,vague,3,done,62.979,5,8124,349,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t116,vague,4,done,34.556,3,4503,195,|list_tickets|
+proposals,agent,t116,vague,5,done,39.044,4,6125,212,|list_tickets|propose_callback|
+proposals,agent,t117,vague,1,done,73.019,4,6183,261,list_tickets||propose_callback|
+proposals,agent,t117,vague,2,done,43.513,3,4569,259,|list_tickets|
+proposals,agent,t117,vague,3,done,23.546,2,2868,153,|
+proposals,agent,t117,vague,4,done,46.158,4,6206,262,|list_tickets|propose_callback|
+proposals,agent,t117,vague,5,done,45.384,4,6212,254,|list_tickets|propose_callback|
+proposals,agent,t118,vague,1,done,34.889,2,2889,191,|
+proposals,agent,t118,vague,2,done,30.518,4,6140,237,|list_tickets|propose_callback|
+proposals,agent,t118,vague,3,done,34.892,4,6240,272,|list_tickets|propose_callback|
+proposals,agent,t118,vague,4,done,18.373,3,4427,138,|list_tickets|
+proposals,agent,t118,vague,5,done,17.911,3,4400,144,|propose_callback|
+proposals,agent,t119,vague,1,done,70.511,4,6214,279,|list_tickets|propose_callback|
+proposals,agent,t119,vague,2,done,23.108,2,2897,138,|
+proposals,agent,t119,vague,3,done,29.976,3,4452,173,|list_tickets|
+proposals,agent,t119,vague,4,done,36.205,4,6056,202,|list_tickets|propose_callback|
+proposals,agent,t119,vague,5,done,29.853,3,4420,176,|list_tickets|
+proposals,agent,t120,vague,1,done,50.617,5,8335,426,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t120,vague,2,done,34.618,5,8109,345,|list_tickets|propose_callback|propose_callback|
+proposals,agent,t120,vague,3,done,22.590,4,6112,222,|list_tickets|propose_callback|
+proposals,agent,t120,vague,4,done,16.330,3,4450,163,|list_tickets|
+proposals,agent,t120,vague,5,done,35.803,5,8103,360,|list_tickets|propose_callback|propose_callback|

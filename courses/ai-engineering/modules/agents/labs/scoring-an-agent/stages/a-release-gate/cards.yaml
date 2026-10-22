@@ -1,0 +1,14 @@
+cards:
+  - id: crd_b2p5ne
+    front: >-
+      Why compare two agents' pass^k task by task rather than by their two intervals?
+    back: >-
+      Most of each score's spread is between easy and hard tasks, which the two agents share.
+      The differences on each task cancel it, so their interval is narrower and fits the
+      question asked.
+  - id: crd_mdgx32
+    front: >-
+      When does a release gate hold a candidate for reliability with a tolerance t?
+    back: >-
+      When the low end of the interval for its pass^k less the current agent's is below -t:
+      the runs can't rule out that it's worse by more than t. A better candidate ships.
