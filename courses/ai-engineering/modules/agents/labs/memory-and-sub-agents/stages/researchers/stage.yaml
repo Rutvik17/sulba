@@ -1,0 +1,7 @@
+id: stg_kmxw1x
+kind: build
+title: Researchers
+builds: A new `researchers.py`, which uses your `memory.py`.
+file: researchers.py
+packages: [httpx]
+minutes: 40

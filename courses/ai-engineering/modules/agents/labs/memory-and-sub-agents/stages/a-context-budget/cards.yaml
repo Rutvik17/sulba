@@ -1,0 +1,13 @@
+cards:
+  - id: crd_eycf4w
+    front: >-
+      Why clear tool results before anything else when a conversation goes over its budget?
+    back: >-
+      They're most of its tokens, the model has already read them and replied from them, and a
+      cleared one can be seen again by calling the tool.
+  - id: crd_5aawjs
+    front: >-
+      What does clearing a tool result keep, and why?
+    back: >-
+      The call and the result's place, with its id: a tool message must follow the call it
+      answers, and the model still sees what it called and how to see it again.
