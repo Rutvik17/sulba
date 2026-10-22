@@ -1,0 +1,14 @@
+cards:
+  - id: crd_9df6cc
+    front: >-
+      What does an agent's loop send back after a reply that calls tools?
+    back: >-
+      The model's message with its calls, then each call's result in a `tool` message with the
+      call's id, in the order of the calls, and then it asks the model again.
+  - id: crd_8y13pr
+    front: >-
+      Why does an agent keep the whole conversation, tool calls and results included, from turn
+      to turn?
+    back: >-
+      The API keeps nothing between requests: a caller's yes means something only next to the
+      offer it answers, and the tickets the agent looked up are only in the results it was sent.

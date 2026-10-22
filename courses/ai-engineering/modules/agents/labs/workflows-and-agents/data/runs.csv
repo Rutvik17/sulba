@@ -1,0 +1,1321 @@
+variant,path,task,kind,trial,outcome,seconds,requests,prompt_tokens,completion_tokens,tool_calls
+workflow,workflow,t1,question,1,done,38.297,2,1499,158,0
+workflow,workflow,t1,question,2,done,12.273,2,1499,150,0
+workflow,workflow,t1,question,3,done,10.781,2,1499,132,0
+workflow,workflow,t2,question,1,done,85.834,2,1606,147,0
+workflow,workflow,t2,question,2,done,16.588,2,1606,143,0
+workflow,workflow,t2,question,3,done,15.167,2,1606,133,0
+workflow,workflow,t3,question,1,done,87.860,2,1650,115,0
+workflow,workflow,t3,question,2,done,18.262,2,1650,141,0
+workflow,workflow,t3,question,3,done,17.220,2,1650,133,0
+workflow,workflow,t4,question,1,done,104.710,2,1879,158,0
+workflow,workflow,t4,question,2,done,23.677,2,1879,174,0
+workflow,workflow,t4,question,3,done,25.129,2,1879,184,0
+workflow,workflow,t5,question,1,done,41.637,2,1683,178,0
+workflow,workflow,t5,question,2,done,15.810,2,1683,186,0
+workflow,workflow,t5,question,3,cited no passage with the answer,10.848,2,1683,126,0
+workflow,workflow,t6,question,1,cited no passage with the answer,93.274,2,1580,192,0
+workflow,workflow,t6,question,2,cited no passage with the answer,25.252,2,1580,204,0
+workflow,workflow,t6,question,3,cited no passage with the answer,30.918,2,1580,251,0
+workflow,workflow,t7,question,1,cited no passage with the answer,96.055,2,1603,214,0
+workflow,workflow,t7,question,2,cited no passage with the answer,22.296,2,1603,156,0
+workflow,workflow,t7,question,3,cited no passage with the answer,25.901,2,1603,179,0
+workflow,workflow,t8,question,1,cited no passage with the answer,107.435,2,1742,247,0
+workflow,workflow,t8,question,2,cited no passage with the answer,28.659,2,1742,193,0
+workflow,workflow,t8,question,3,cited no passage with the answer,32.877,2,1742,218,0
+workflow,workflow,t9,question,1,done,73.732,2,1666,119,0
+workflow,workflow,t9,question,2,done,34.020,2,1666,173,0
+workflow,workflow,t9,question,3,done,27.844,2,1666,141,0
+workflow,workflow,t10,question,1,done,84.248,2,1529,160,0
+workflow,workflow,t10,question,2,done,22.228,2,1529,159,0
+workflow,workflow,t10,question,3,done,23.597,2,1529,170,0
+workflow,workflow,t11,question,1,cited no passage with the answer,34.370,2,1360,145,0
+workflow,workflow,t11,question,2,cited no passage with the answer,14.653,2,1360,167,0
+workflow,workflow,t11,question,3,cited no passage with the answer,12.194,2,1360,140,0
+workflow,workflow,t12,question,1,done,59.616,2,1672,181,0
+workflow,workflow,t12,question,2,done,17.252,2,1672,160,0
+workflow,workflow,t12,question,3,done,17.991,2,1672,171,0
+workflow,workflow,t13,question,1,done,43.229,2,1621,201,0
+workflow,workflow,t13,question,2,done,17.075,2,1621,185,0
+workflow,workflow,t13,question,3,done,16.888,2,1621,179,0
+workflow,workflow,t14,question,1,done,85.765,2,1507,180,0
+workflow,workflow,t14,question,2,done,23.275,2,1507,170,0
+workflow,workflow,t14,question,3,done,24.514,2,1507,179,0
+workflow,workflow,t15,question,1,done,42.220,2,1629,173,0
+workflow,workflow,t15,question,2,done,15.289,2,1629,179,0
+workflow,workflow,t15,question,3,done,14.982,2,1629,177,0
+workflow,workflow,t16,question,1,done,90.983,2,1676,169,0
+workflow,workflow,t16,question,2,done,17.078,2,1676,128,0
+workflow,workflow,t16,question,3,done,22.374,2,1676,169,0
+workflow,workflow,t17,question,1,cited no passage with the answer,76.261,2,1394,136,0
+workflow,workflow,t17,question,2,cited no passage with the answer,17.149,2,1394,122,0
+workflow,workflow,t17,question,3,cited no passage with the answer,26.394,2,1394,188,0
+workflow,workflow,t18,question,1,done,88.788,2,1559,153,0
+workflow,workflow,t18,question,2,done,24.992,2,1559,192,0
+workflow,workflow,t18,question,3,done,22.854,2,1559,177,0
+workflow,workflow,t19,question,1,cited no passage with the answer,84.369,2,1574,150,0
+workflow,workflow,t19,question,2,done,21.249,2,1574,157,0
+workflow,workflow,t19,question,3,cited no passage with the answer,19.301,2,1574,141,0
+workflow,workflow,t20,question,1,cited no passage with the answer,85.910,2,1613,138,0
+workflow,workflow,t20,question,2,cited no passage with the answer,22.301,2,1613,153,0
+workflow,workflow,t20,question,3,cited no passage with the answer,16.754,2,1613,117,0
+workflow,workflow,t21,question,1,done,34.006,2,1475,112,0
+workflow,workflow,t21,question,2,done,12.009,2,1475,141,0
+workflow,workflow,t21,question,3,done,11.325,2,1475,137,0
+workflow,workflow,t22,question,1,done,90.163,2,1652,166,0
+workflow,workflow,t22,question,2,done,18.639,2,1652,164,0
+workflow,workflow,t22,question,3,done,25.263,2,1652,223,0
+workflow,workflow,t23,question,1,done,91.076,2,1596,160,0
+workflow,workflow,t23,question,2,done,25.832,2,1596,203,0
+workflow,workflow,t23,question,3,done,23.748,2,1596,182,0
+workflow,workflow,t24,question,1,done,86.378,2,1448,168,0
+workflow,workflow,t24,question,2,done,24.064,2,1448,177,0
+workflow,workflow,t24,question,3,done,16.717,2,1448,125,0
+workflow,workflow,t25,question,1,done,38.158,2,1622,136,0
+workflow,workflow,t25,question,2,done,12.046,2,1622,141,0
+workflow,workflow,t25,question,3,done,12.342,2,1622,146,0
+workflow,workflow,t26,question,1,done,96.025,2,1781,138,0
+workflow,workflow,t26,question,2,done,16.224,2,1781,130,0
+workflow,workflow,t26,question,3,done,15.869,2,1781,128,0
+workflow,workflow,t27,question,1,done,86.895,2,1601,150,0
+workflow,workflow,t27,question,2,cited no passage with the answer,20.230,2,1601,137,0
+workflow,workflow,t27,question,3,done,20.537,2,1601,140,0
+workflow,workflow,t28,question,1,done,78.650,2,1500,119,0
+workflow,workflow,t28,question,2,done,20.581,2,1500,140,0
+workflow,workflow,t28,question,3,done,22.233,2,1500,149,0
+workflow,workflow,t29,question,1,done,80.256,2,1460,190,0
+workflow,workflow,t29,question,2,done,31.518,2,1460,161,0
+workflow,workflow,t29,question,3,done,30.297,2,1460,154,0
+workflow,workflow,t30,question,1,done,82.966,2,1531,147,0
+workflow,workflow,t30,question,2,done,21.751,2,1531,156,0
+workflow,workflow,t30,question,3,done,22.757,2,1531,163,0
+workflow,workflow,t31,question,1,done,41.950,2,1534,195,0
+workflow,workflow,t31,question,2,done,19.524,2,1534,224,0
+workflow,workflow,t31,question,3,done,19.613,2,1534,226,0
+workflow,workflow,t32,question,1,done,60.330,2,1565,214,0
+workflow,workflow,t32,question,2,done,12.587,2,1565,122,0
+workflow,workflow,t32,question,3,done,13.772,2,1565,132,0
+workflow,workflow,t33,question,1,done,37.812,2,1760,133,0
+workflow,workflow,t33,question,2,done,15.603,2,1760,183,0
+workflow,workflow,t33,question,3,done,17.020,2,1760,200,0
+workflow,workflow,t34,question,1,cited no passage with the answer,82.706,2,1585,131,0
+workflow,workflow,t34,question,2,cited no passage with the answer,23.528,2,1585,172,0
+workflow,workflow,t34,question,3,cited no passage with the answer,20.222,2,1585,145,0
+workflow,workflow,t35,question,1,done,51.389,2,1660,276,0
+workflow,workflow,t35,question,2,done,15.981,2,1660,188,0
+workflow,workflow,t35,question,3,done,17.032,2,1660,201,0
+workflow,workflow,t36,question,1,cited no passage with the answer,95.404,2,1692,197,0
+workflow,workflow,t36,question,2,cited no passage with the answer,24.237,2,1692,183,0
+workflow,workflow,t36,question,3,cited no passage with the answer,24.706,2,1692,186,0
+workflow,workflow,t37,question,1,cited no passage with the answer,99.847,2,1742,198,0
+workflow,workflow,t37,question,2,cited no passage with the answer,22.329,2,1742,153,0
+workflow,workflow,t37,question,3,cited no passage with the answer,26.175,2,1742,183,0
+workflow,workflow,t38,question,1,done,91.861,2,1704,125,0
+workflow,workflow,t38,question,2,done,19.892,2,1704,152,0
+workflow,workflow,t38,question,3,done,23.361,2,1704,181,0
+workflow,workflow,t39,question,1,done,93.859,2,1695,180,0
+workflow,workflow,t39,question,2,done,22.116,2,1695,160,0
+workflow,workflow,t39,question,3,done,20.871,2,1695,151,0
+workflow,workflow,t40,question,1,cited no passage with the answer,86.000,2,1650,126,0
+workflow,workflow,t40,question,2,cited no passage with the answer,23.884,2,1650,162,0
+workflow,workflow,t40,question,3,cited no passage with the answer,17.360,2,1650,116,0
+workflow,workflow,t41,case,1,done,7.596,1,246,44,0
+workflow,workflow,t41,case,2,done,3.091,1,246,38,0
+workflow,workflow,t41,case,3,done,3.160,1,246,38,0
+workflow,workflow,t42,case,1,done,15.371,1,241,44,0
+workflow,workflow,t42,case,2,done,4.263,1,241,38,0
+workflow,workflow,t42,case,3,done,4.243,1,241,38,0
+workflow,workflow,t43,case,1,wrong service,16.395,1,242,45,0
+workflow,workflow,t43,case,2,wrong service,4.951,1,242,39,0
+workflow,workflow,t43,case,3,wrong service,4.921,1,242,39,0
+workflow,workflow,t44,case,1,done,15.876,1,250,38,0
+workflow,workflow,t44,case,2,done,4.824,1,250,38,0
+workflow,workflow,t44,case,3,done,4.835,1,250,38,0
+workflow,workflow,t45,case,1,done,7.486,1,242,44,0
+workflow,workflow,t45,case,2,done,3.281,1,242,38,0
+workflow,workflow,t45,case,3,done,3.312,1,242,38,0
+workflow,workflow,t46,case,1,done,15.370,1,243,38,0
+workflow,workflow,t46,case,2,done,5.188,1,243,44,0
+workflow,workflow,t46,case,3,done,4.520,1,243,38,0
+workflow,workflow,t47,case,1,done,15.473,1,244,38,0
+workflow,workflow,t47,case,2,done,6.124,1,244,44,0
+workflow,workflow,t47,case,3,done,5.222,1,244,38,0
+workflow,workflow,t48,case,1,done,16.418,1,244,44,0
+workflow,workflow,t48,case,2,done,5.369,1,244,38,0
+workflow,workflow,t48,case,3,done,6.101,1,244,44,0
+workflow,workflow,t49,case,1,done,14.439,1,239,38,0
+workflow,workflow,t49,case,2,done,7.231,1,239,38,0
+workflow,workflow,t49,case,3,done,7.170,1,239,38,0
+workflow,workflow,t50,case,1,done,15.911,1,241,44,0
+workflow,workflow,t50,case,2,done,5.138,1,241,38,0
+workflow,workflow,t50,case,3,done,5.062,1,241,38,0
+workflow,workflow,t51,case,1,done,7.736,1,242,45,0
+workflow,workflow,t51,case,2,done,3.865,1,242,45,0
+workflow,workflow,t51,case,3,done,3.304,1,242,39,0
+workflow,workflow,t52,case,1,done,10.003,1,247,39,0
+workflow,workflow,t52,case,2,done,4.006,1,247,39,0
+workflow,workflow,t52,case,3,done,4.550,1,247,45,0
+workflow,workflow,t53,case,1,done,7.636,1,240,45,0
+workflow,workflow,t53,case,2,done,3.204,1,240,39,0
+workflow,workflow,t53,case,3,done,3.688,1,240,45,0
+workflow,workflow,t54,case,1,done,15.155,1,242,39,0
+workflow,workflow,t54,case,2,done,5.112,1,242,39,0
+workflow,workflow,t54,case,3,done,5.875,1,242,45,0
+workflow,workflow,t55,case,1,done,7.262,1,243,39,0
+workflow,workflow,t55,case,2,done,3.192,1,243,39,0
+workflow,workflow,t55,case,3,done,3.200,1,243,39,0
+workflow,workflow,t56,case,1,done,6.901,1,242,45,0
+workflow,workflow,t56,case,2,done,5.598,1,242,45,0
+workflow,workflow,t56,case,3,done,5.562,1,242,45,0
+workflow,workflow,t57,case,1,done,6.748,1,245,39,0
+workflow,workflow,t57,case,2,done,5.249,1,245,39,0
+workflow,workflow,t57,case,3,done,5.267,1,245,39,0
+workflow,workflow,t58,case,1,done,5.887,1,238,39,0
+workflow,workflow,t58,case,2,done,5.515,1,238,45,0
+workflow,workflow,t58,case,3,done,4.772,1,238,39,0
+workflow,workflow,t59,case,1,done,6.420,1,243,39,0
+workflow,workflow,t59,case,2,done,5.751,1,243,45,0
+workflow,workflow,t59,case,3,done,5.719,1,243,45,0
+workflow,workflow,t60,case,1,done,6.923,1,244,39,0
+workflow,workflow,t60,case,2,done,5.570,1,244,39,0
+workflow,workflow,t60,case,3,done,6.326,1,244,45,0
+workflow,workflow,t61,callback,1,done,4.568,1,246,50,0
+workflow,workflow,t61,callback,2,done,4.020,1,246,50,0
+workflow,workflow,t61,callback,3,done,4.009,1,246,50,0
+workflow,workflow,t62,callback,1,done,15.559,1,244,46,0
+workflow,workflow,t62,callback,2,done,5.075,1,244,46,0
+workflow,workflow,t62,callback,3,done,4.477,1,244,40,0
+workflow,workflow,t63,callback,1,done,17.094,1,250,51,0
+workflow,workflow,t63,callback,2,done,5.531,1,250,45,0
+workflow,workflow,t63,callback,3,done,6.304,1,250,51,0
+workflow,workflow,t64,callback,1,done,16.635,1,242,47,0
+workflow,workflow,t64,callback,2,done,5.897,1,242,47,0
+workflow,workflow,t64,callback,3,done,5.189,1,242,41,0
+workflow,workflow,t65,callback,1,done,4.711,1,245,50,0
+workflow,workflow,t65,callback,2,done,4.183,1,245,50,0
+workflow,workflow,t65,callback,3,done,4.203,1,245,50,0
+workflow,workflow,t66,callback,1,done,6.867,1,243,46,0
+workflow,workflow,t66,callback,2,done,4.712,1,243,40,0
+workflow,workflow,t66,callback,3,done,5.370,1,243,46,0
+workflow,workflow,t67,callback,1,done,17.200,1,250,51,0
+workflow,workflow,t67,callback,2,done,6.266,1,250,45,0
+workflow,workflow,t67,callback,3,done,7.112,1,250,51,0
+workflow,workflow,t68,callback,1,done,15.754,1,242,41,0
+workflow,workflow,t68,callback,2,done,6.589,1,242,47,0
+workflow,workflow,t68,callback,3,done,6.718,1,242,47,0
+workflow,workflow,t69,callback,1,done,16.689,1,246,50,0
+workflow,workflow,t69,callback,2,done,9.512,1,246,50,0
+workflow,workflow,t69,callback,3,done,8.380,1,246,44,0
+workflow,workflow,t70,callback,1,done,7.502,1,244,46,0
+workflow,workflow,t70,callback,2,done,6.145,1,244,46,0
+workflow,workflow,t70,callback,3,done,5.428,1,244,40,0
+workflow,workflow,t71,callback,1,done,4.878,1,249,51,0
+workflow,workflow,t71,callback,2,done,4.354,1,249,51,0
+workflow,workflow,t71,callback,3,done,3.870,1,249,45,0
+workflow,workflow,t72,callback,1,done,9.987,1,241,41,0
+workflow,workflow,t72,callback,2,done,4.201,1,241,41,0
+workflow,workflow,t72,callback,3,done,4.324,1,241,41,0
+workflow,workflow,t73,callback,1,done,7.191,1,245,44,0
+workflow,workflow,t73,callback,2,done,3.628,1,245,44,0
+workflow,workflow,t73,callback,3,done,4.138,1,245,50,0
+workflow,workflow,t74,callback,1,done,15.187,1,242,40,0
+workflow,workflow,t74,callback,2,done,5.860,1,242,44,0
+workflow,workflow,t74,callback,3,done,6.039,1,242,46,0
+workflow,workflow,t75,callback,1,done,4.287,1,249,45,0
+workflow,workflow,t75,callback,2,done,3.737,1,249,45,0
+workflow,workflow,t75,callback,3,done,3.707,1,249,45,0
+workflow,workflow,t76,callback,1,done,6.294,1,242,41,0
+workflow,workflow,t76,callback,2,done,5.934,1,242,47,0
+workflow,workflow,t76,callback,3,done,5.851,1,242,47,0
+workflow,workflow,t77,callback,1,done,16.204,1,244,44,0
+workflow,workflow,t77,callback,2,done,5.853,1,244,44,0
+workflow,workflow,t77,callback,3,booked 0 callbacks,11.734,2,475,82,0
+workflow,workflow,t78,callback,1,done,15.797,1,243,40,0
+workflow,workflow,t78,callback,2,done,5.033,1,243,40,0
+workflow,workflow,t78,callback,3,done,5.089,1,243,40,0
+workflow,workflow,t79,callback,1,done,15.838,1,250,45,0
+workflow,workflow,t79,callback,2,done,5.901,1,250,45,0
+workflow,workflow,t79,callback,3,done,5.846,1,250,45,0
+workflow,workflow,t80,callback,1,done,6.980,1,242,41,0
+workflow,workflow,t80,callback,2,done,6.750,1,242,47,0
+workflow,workflow,t80,callback,3,done,6.566,1,242,47,0
+workflow,workflow,t81,new,1,done,4.443,1,253,46,0
+workflow,workflow,t81,new,2,done,3.807,1,253,46,0
+workflow,workflow,t81,new,3,done,3.357,1,253,40,0
+workflow,workflow,t82,new,1,done,6.049,1,249,40,0
+workflow,workflow,t82,new,2,done,5.285,1,249,46,0
+workflow,workflow,t82,new,3,done,4.502,1,249,40,0
+workflow,workflow,t83,new,1,done,6.698,1,253,41,0
+workflow,workflow,t83,new,2,done,5.004,1,253,41,0
+workflow,workflow,t83,new,3,done,5.522,1,253,45,0
+workflow,workflow,t84,new,1,done,6.634,1,250,41,0
+workflow,workflow,t84,new,2,done,5.251,1,250,41,0
+workflow,workflow,t84,new,3,done,5.200,1,250,41,0
+workflow,workflow,t85,new,1,done,4.331,1,252,40,0
+workflow,workflow,t85,new,2,done,3.449,1,252,40,0
+workflow,workflow,t85,new,3,done,4.004,1,252,46,0
+workflow,workflow,t86,new,1,done,6.967,1,247,46,0
+workflow,workflow,t86,new,2,done,4.701,1,247,40,0
+workflow,workflow,t86,new,3,done,4.670,1,247,40,0
+workflow,workflow,t87,new,1,booked 0 callbacks,8.298,1,253,47,0
+workflow,workflow,t87,new,2,done,5.719,1,253,41,0
+workflow,workflow,t87,new,3,done,5.928,1,253,41,0
+workflow,workflow,t88,new,1,done,7.306,1,251,41,0
+workflow,workflow,t88,new,2,done,5.802,1,251,41,0
+workflow,workflow,t88,new,3,done,5.980,1,251,41,0
+workflow,workflow,t89,new,1,done,8.856,1,251,40,0
+workflow,workflow,t89,new,2,done,7.638,1,251,40,0
+workflow,workflow,t89,new,3,done,7.637,1,251,40,0
+workflow,workflow,t90,new,1,done,6.872,1,248,40,0
+workflow,workflow,t90,new,2,done,6.228,1,248,46,0
+workflow,workflow,t90,new,3,done,5.424,1,248,40,0
+workflow,workflow,t91,new,1,done,4.221,1,254,41,0
+workflow,workflow,t91,new,2,done,3.543,1,254,41,0
+workflow,workflow,t91,new,3,done,3.997,1,254,47,0
+workflow,workflow,t92,new,1,done,5.289,1,251,41,0
+workflow,workflow,t92,new,2,done,4.934,1,251,47,0
+workflow,workflow,t92,new,3,done,4.872,1,251,47,0
+workflow,workflow,t93,new,1,done,4.426,1,253,46,0
+workflow,workflow,t93,new,2,done,3.343,1,253,40,0
+workflow,workflow,t93,new,3,done,3.786,1,253,46,0
+workflow,workflow,t94,new,1,done,6.840,1,249,40,0
+workflow,workflow,t94,new,2,done,5.311,1,249,40,0
+workflow,workflow,t94,new,3,done,5.804,1,249,44,0
+workflow,workflow,t95,new,1,done,4.097,1,254,41,0
+workflow,workflow,t95,new,2,done,3.529,1,254,41,0
+workflow,workflow,t95,new,3,done,4.013,1,254,47,0
+workflow,workflow,t96,new,1,done,7.376,1,251,47,0
+workflow,workflow,t96,new,2,done,5.180,1,251,41,0
+workflow,workflow,t96,new,3,done,5.164,1,251,41,0
+workflow,workflow,t97,new,1,done,7.169,1,252,40,0
+workflow,workflow,t97,new,2,done,6.137,1,252,46,0
+workflow,workflow,t97,new,3,done,6.082,1,252,46,0
+workflow,workflow,t98,new,1,done,6.542,1,248,40,0
+workflow,workflow,t98,new,2,done,5.788,1,248,46,0
+workflow,workflow,t98,new,3,done,4.998,1,248,40,0
+workflow,workflow,t99,new,1,done,7.099,1,254,41,0
+workflow,workflow,t99,new,2,booked 0 callbacks,70.268,3,1598,180,0
+workflow,workflow,t99,new,3,done,7.833,1,254,47,0
+workflow,workflow,t100,new,1,done,7.287,1,251,41,0
+workflow,workflow,t100,new,2,done,6.602,1,251,47,0
+workflow,workflow,t100,new,3,done,6.358,1,251,45,0
+workflow,workflow,t101,vague,1,changed the desk,7.183,1,225,41,0
+workflow,workflow,t101,vague,2,done,7.142,2,444,84,0
+workflow,workflow,t101,vague,3,done,7.480,2,444,85,0
+workflow,workflow,t102,vague,1,done,18.933,2,444,78,0
+workflow,workflow,t102,vague,2,done,10.974,2,444,84,0
+workflow,workflow,t102,vague,3,done,10.935,2,444,84,0
+workflow,workflow,t103,vague,1,done,20.453,2,441,84,0
+workflow,workflow,t103,vague,2,done,11.550,2,441,84,0
+workflow,workflow,t103,vague,3,done,11.676,2,441,84,0
+workflow,workflow,t104,vague,1,done,21.195,2,446,84,0
+workflow,workflow,t104,vague,2,done,12.245,2,446,84,0
+workflow,workflow,t104,vague,3,done,12.336,2,446,84,0
+workflow,workflow,t105,vague,1,done,10.952,2,444,90,0
+workflow,workflow,t105,vague,2,done,6.960,2,444,78,0
+workflow,workflow,t105,vague,3,done,6.984,2,444,78,0
+workflow,workflow,t106,vague,1,done,20.450,2,444,84,0
+workflow,workflow,t106,vague,2,done,11.358,2,444,84,0
+workflow,workflow,t106,vague,3,done,11.383,2,444,84,0
+workflow,workflow,t107,vague,1,done,21.559,2,441,84,0
+workflow,workflow,t107,vague,2,done,13.457,2,441,84,0
+workflow,workflow,t107,vague,3,done,13.078,2,441,84,0
+workflow,workflow,t108,vague,1,done,21.594,2,446,85,0
+workflow,workflow,t108,vague,2,done,13.283,2,446,84,0
+workflow,workflow,t108,vague,3,done,13.717,2,446,85,0
+workflow,workflow,t109,vague,1,done,22.162,2,444,79,0
+workflow,workflow,t109,vague,2,done,18.230,2,444,90,0
+workflow,workflow,t109,vague,3,changed the desk,8.514,1,225,41,0
+workflow,workflow,t110,vague,1,done,21.733,2,444,90,0
+workflow,workflow,t110,vague,2,done,13.637,2,444,90,0
+workflow,workflow,t110,vague,3,done,12.018,2,444,78,0
+workflow,workflow,t111,vague,1,done,10.678,2,441,78,0
+workflow,workflow,t111,vague,2,done,7.272,2,441,78,0
+workflow,workflow,t111,vague,3,done,8.301,2,441,90,0
+workflow,workflow,t112,vague,1,done,14.133,2,446,79,0
+workflow,workflow,t112,vague,2,done,9.152,2,446,78,0
+workflow,workflow,t112,vague,3,done,10.363,2,446,90,0
+workflow,workflow,t113,vague,1,done,10.423,2,444,84,0
+workflow,workflow,t113,vague,2,done,8.451,2,444,90,0
+workflow,workflow,t113,vague,3,done,8.171,2,444,90,0
+workflow,workflow,t114,vague,1,done,20.761,2,444,84,0
+workflow,workflow,t114,vague,2,done,12.514,2,444,84,0
+workflow,workflow,t114,vague,3,done,12.529,2,444,84,0
+workflow,workflow,t115,vague,1,done,10.717,2,441,78,0
+workflow,workflow,t115,vague,2,done,7.550,2,441,78,0
+workflow,workflow,t115,vague,3,done,7.351,2,441,78,0
+workflow,workflow,t116,vague,1,done,20.334,2,446,84,0
+workflow,workflow,t116,vague,2,done,12.157,2,446,84,0
+workflow,workflow,t116,vague,3,done,12.122,2,446,84,0
+workflow,workflow,t117,vague,1,done,21.132,2,444,84,0
+workflow,workflow,t117,vague,2,changed the desk,6.545,1,225,41,0
+workflow,workflow,t117,vague,3,done,11.807,2,444,84,0
+workflow,workflow,t118,vague,1,done,21.603,2,444,90,0
+workflow,workflow,t118,vague,2,done,12.737,2,444,90,0
+workflow,workflow,t118,vague,3,done,11.926,2,444,84,0
+workflow,workflow,t119,vague,1,done,20.586,2,441,84,0
+workflow,workflow,t119,vague,2,done,11.702,2,441,78,0
+workflow,workflow,t119,vague,3,done,12.354,2,441,84,0
+workflow,workflow,t120,vague,1,done,21.635,2,446,84,0
+workflow,workflow,t120,vague,2,done,13.416,2,446,84,0
+workflow,workflow,t120,vague,3,done,13.371,2,446,84,0
+agent,agent,t1,question,1,cited no passage,131.419,2,3908,239,1
+agent,agent,t1,question,2,done,118.803,2,3908,342,1
+agent,agent,t1,question,3,done,126.978,2,3962,362,1
+agent,agent,t1,question,4,cited no passage,94.119,2,3929,225,1
+agent,agent,t1,question,5,cited no passage,98.573,2,3908,247,1
+agent,agent,t2,question,1,cited no passage,136.412,2,3923,181,1
+agent,agent,t2,question,2,cited no passage,85.372,2,3951,179,1
+agent,agent,t2,question,3,cited no passage,111.587,2,3952,357,1
+agent,agent,t2,question,4,done,107.568,2,3952,332,1
+agent,agent,t2,question,5,cited no passage with the answer,94.318,2,3952,244,1
+agent,agent,t3,question,1,cited no passage with the answer,99.284,2,4123,297,1
+agent,agent,t3,question,2,cited no passage,58.536,2,4065,206,1
+agent,agent,t3,question,3,cited no passage with the answer,68.842,2,4065,305,1
+agent,agent,t3,question,4,cited no passage,57.026,2,4011,208,1
+agent,agent,t3,question,5,cited no passage,49.596,2,4010,135,1
+agent,agent,t4,question,1,cited no passage,172.269,2,4202,346,1
+agent,agent,t4,question,2,done,133.969,2,4202,437,1
+agent,agent,t4,question,3,done,128.881,2,4202,409,1
+agent,agent,t4,question,4,done,122.962,2,4202,371,1
+agent,agent,t4,question,5,cited no passage,122.247,2,4202,365,1
+agent,agent,t5,question,1,cited no passage with the answer,143.979,2,3973,205,1
+agent,agent,t5,question,2,cited no passage with the answer,92.601,2,3973,235,1
+agent,agent,t5,question,3,cited no passage with the answer,91.049,2,3973,223,1
+agent,agent,t5,question,4,cited no passage,98.969,2,4094,239,1
+agent,agent,t5,question,5,cited no passage,103.744,2,4094,278,1
+agent,agent,t6,question,1,cited no passage,177.848,2,4145,434,1
+agent,agent,t6,question,2,cited no passage,84.468,2,3696,285,1
+agent,agent,t6,question,3,cited no passage,86.483,2,3716,303,1
+agent,agent,t6,question,4,cited no passage,87.143,2,3696,303,1
+agent,agent,t6,question,5,cited no passage,90.053,2,3725,331,1
+agent,agent,t7,question,1,cited no passage with the answer,72.495,2,3987,310,1
+agent,agent,t7,question,2,cited no passage,53.828,2,3987,341,1
+agent,agent,t7,question,3,cited no passage,54.918,2,3987,342,1
+agent,agent,t7,question,4,cited no passage,55.884,2,3987,365,1
+agent,agent,t7,question,5,cited no passage with the answer,65.442,2,3987,453,1
+agent,agent,t8,question,1,cited no passage,174.693,2,4120,360,1
+agent,agent,t8,question,2,cited no passage with the answer,144.539,2,4120,552,1
+agent,agent,t8,question,3,cited no passage with the answer,113.218,2,4119,330,1
+agent,agent,t8,question,4,cited no passage,108.719,2,4120,296,1
+agent,agent,t8,question,5,cited no passage,123.587,2,4120,407,1
+agent,agent,t9,question,1,done,82.196,2,3918,150,1
+agent,agent,t9,question,2,done,50.777,2,3918,111,1
+agent,agent,t9,question,3,cited no passage,57.758,2,3917,145,1
+agent,agent,t9,question,4,done,68.537,2,3918,198,1
+agent,agent,t9,question,5,done,53.660,2,3918,126,1
+agent,agent,t10,question,1,done,133.666,2,3667,209,1
+agent,agent,t10,question,2,done,90.352,2,3665,304,1
+agent,agent,t10,question,3,done,76.174,2,3665,203,1
+agent,agent,t10,question,4,done,91.576,2,3710,304,1
+agent,agent,t10,question,5,done,76.575,2,3668,209,1
+agent,agent,t11,question,1,cited no passage with the answer,137.445,2,3691,232,1
+agent,agent,t11,question,2,cited no passage,95.072,2,3650,352,1
+agent,agent,t11,question,3,cited no passage with the answer,80.783,2,3691,230,1
+agent,agent,t11,question,4,cited no passage with the answer,101.099,2,3729,375,1
+agent,agent,t11,question,5,cited no passage with the answer,74.005,2,3693,178,1
+agent,agent,t12,question,1,done,81.708,2,3764,464,1
+agent,agent,t12,question,2,cited no passage,53.921,2,3929,357,1
+agent,agent,t12,question,3,done,44.768,2,3771,285,1
+agent,agent,t12,question,4,done,57.544,2,3789,437,1
+agent,agent,t12,question,5,cited no passage,50.871,2,3943,347,1
+agent,agent,t13,question,1,cited no passage,88.067,2,3768,558,1
+agent,agent,t13,question,2,done,68.133,2,3768,548,1
+agent,agent,t13,question,3,cited no passage,60.982,2,3768,464,1
+agent,agent,t13,question,4,done,68.095,2,3768,536,1
+agent,agent,t13,question,5,cited no passage,54.101,2,3768,383,1
+agent,agent,t14,question,1,cited no passage,155.003,2,4032,273,1
+agent,agent,t14,question,2,cited no passage,111.852,2,4032,372,1
+agent,agent,t14,question,3,cited no passage,110.571,2,4032,363,1
+agent,agent,t14,question,4,cited no passage,106.394,2,4032,328,1
+agent,agent,t14,question,5,done,103.180,2,4032,302,1
+agent,agent,t15,question,1,cited no passage,75.575,2,3923,407,1
+agent,agent,t15,question,2,cited no passage with the answer,108.222,2,6214,557,3
+agent,agent,t15,question,3,done,59.805,2,3917,443,1
+agent,agent,t15,question,4,done,55.438,2,3918,411,1
+agent,agent,t15,question,5,done,52.317,2,3898,379,1
+agent,agent,t16,question,1,cited no passage with the answer,82.458,2,3927,465,1
+agent,agent,t16,question,2,done,71.310,2,4075,513,1
+agent,agent,t16,question,3,cited no passage with the answer,73.917,2,4076,550,1
+agent,agent,t16,question,4,done,75.613,2,4060,569,1
+agent,agent,t16,question,5,cited no passage with the answer,73.139,2,3912,576,1
+agent,agent,t17,question,1,cited no passage,132.732,2,3719,203,1
+agent,agent,t17,question,2,cited no passage with the answer,101.798,2,3719,337,1
+agent,agent,t17,question,3,cited no passage with the answer,97.425,2,3719,305,1
+agent,agent,t17,question,4,cited no passage with the answer,87.342,2,3719,247,1
+agent,agent,t17,question,5,cited no passage with the answer,92.976,2,3719,289,1
+agent,agent,t18,question,1,done,151.647,2,3832,311,1
+agent,agent,t18,question,2,done,99.491,2,3832,334,1
+agent,agent,t18,question,3,done,91.667,2,3832,275,1
+agent,agent,t18,question,4,done,98.135,2,3832,327,1
+agent,agent,t18,question,5,done,101.176,2,3848,351,1
+agent,agent,t19,question,1,cited no passage with the answer,138.792,2,3938,693,1
+agent,agent,t19,question,2,cited no passage with the answer,81.209,2,3956,430,1
+agent,agent,t19,question,3,cited no passage with the answer,81.173,2,3956,429,1
+agent,agent,t19,question,4,cited no passage with the answer,80.405,2,3956,422,1
+agent,agent,t19,question,5,cited no passage with the answer,75.925,2,3956,373,1
+agent,agent,t20,question,1,cited no passage with the answer,162.401,2,3849,344,1
+agent,agent,t20,question,2,cited no passage with the answer,116.521,2,3868,420,1
+agent,agent,t20,question,3,cited no passage with the answer,114.913,2,3849,408,1
+agent,agent,t20,question,4,cited no passage with the answer,109.111,2,3849,375,1
+agent,agent,t20,question,5,cited no passage with the answer,117.002,2,3849,429,1
+agent,agent,t21,question,1,done,79.147,2,3515,153,1
+agent,agent,t21,question,2,done,80.673,2,3869,180,1
+agent,agent,t21,question,3,done,71.926,2,3869,139,1
+agent,agent,t21,question,4,done,73.549,2,3815,154,1
+agent,agent,t21,question,5,done,61.734,2,3619,128,1
+agent,agent,t22,question,1,done,138.310,2,3984,377,1
+agent,agent,t22,question,2,done,118.340,2,3984,389,1
+agent,agent,t22,question,3,done,114.387,2,3984,362,1
+agent,agent,t22,question,4,done,118.242,2,4002,389,1
+agent,agent,t22,question,5,done,119.428,2,3984,393,1
+agent,agent,t23,question,1,done,89.184,2,3985,406,1
+agent,agent,t23,question,2,done,76.462,2,3985,405,1
+agent,agent,t23,question,3,done,66.055,2,3985,303,1
+agent,agent,t23,question,4,done,77.687,2,3985,416,1
+agent,agent,t23,question,5,cited no passage,66.788,2,3942,320,1
+agent,agent,t24,question,1,done,115.849,2,3827,286,1
+agent,agent,t24,question,2,cited no passage,91.271,2,3763,284,1
+agent,agent,t24,question,3,done,110.035,2,3843,385,1
+agent,agent,t24,question,4,done,95.727,2,3827,294,1
+agent,agent,t24,question,5,done,85.173,2,3827,225,1
+agent,agent,t25,question,1,cited no passage with the answer,124.054,2,4003,289,1
+agent,agent,t25,question,2,cited no passage with the answer,108.200,2,4003,346,1
+agent,agent,t25,question,3,done,108.083,2,4003,344,1
+agent,agent,t25,question,4,cited no passage,108.540,2,4020,346,1
+agent,agent,t25,question,5,done,115.226,2,3937,424,1
+agent,agent,t26,question,1,done,115.181,2,4039,210,1
+agent,agent,t26,question,2,done,93.273,2,4039,219,1
+agent,agent,t26,question,3,done,86.253,2,3875,222,1
+agent,agent,t26,question,4,done,91.317,2,4039,200,1
+agent,agent,t26,question,5,cited no passage,94.341,2,4039,225,1
+agent,agent,t27,question,1,done,62.694,2,3997,321,1
+agent,agent,t27,question,2,cited no passage with the answer,64.056,2,3997,436,1
+agent,agent,t27,question,3,cited no passage with the answer,56.179,2,3997,360,1
+agent,agent,t27,question,4,done,54.894,2,3997,362,1
+agent,agent,t27,question,5,done,53.513,2,3997,341,1
+agent,agent,t28,question,1,cited no passage,115.123,2,3898,250,1
+agent,agent,t28,question,2,done,91.195,2,3897,245,1
+agent,agent,t28,question,3,done,96.784,2,3817,318,1
+agent,agent,t28,question,4,done,84.661,2,3763,245,1
+agent,agent,t28,question,5,done,97.649,2,3816,325,1
+agent,agent,t29,question,1,cited no passage,132.162,2,3834,475,1
+agent,agent,t29,question,2,cited no passage,125.561,2,3833,488,1
+agent,agent,t29,question,3,done,140.186,2,3833,557,1
+agent,agent,t29,question,4,done,102.099,2,3834,376,1
+agent,agent,t29,question,5,cited no passage,123.433,2,3833,488,1
+agent,agent,t30,question,1,done,123.883,2,3875,318,1
+agent,agent,t30,question,2,cited no passage,93.501,2,3875,264,1
+agent,agent,t30,question,3,done,92.094,2,3875,251,1
+agent,agent,t30,question,4,cited no passage,88.813,2,3875,228,1
+agent,agent,t30,question,5,done,87.738,2,3875,218,1
+agent,agent,t31,question,1,done,147.762,2,3994,456,1
+agent,agent,t31,question,2,done,123.642,2,3994,450,1
+agent,agent,t31,question,3,cited no passage,131.565,2,3994,506,1
+agent,agent,t31,question,4,done,130.618,2,3994,497,1
+agent,agent,t31,question,5,done,131.236,2,3994,500,1
+agent,agent,t32,question,1,cited no passage,74.688,2,3950,519,1
+agent,agent,t32,question,2,cited no passage,61.559,2,3950,461,1
+agent,agent,t32,question,3,cited no passage,57.510,2,3950,413,1
+agent,agent,t32,question,4,cited no passage with the answer,75.211,2,3950,617,1
+agent,agent,t32,question,5,cited no passage,64.744,2,3950,488,1
+agent,agent,t33,question,1,cited no passage,74.599,2,4088,445,1
+agent,agent,t33,question,2,cited no passage,61.098,2,4087,400,1
+agent,agent,t33,question,3,done,77.311,2,4071,590,1
+agent,agent,t33,question,4,cited no passage,66.761,2,4088,484,1
+agent,agent,t33,question,5,done,70.511,2,4088,522,1
+agent,agent,t34,question,1,cited no passage,135.324,2,3953,415,1
+agent,agent,t34,question,2,cited no passage,103.304,2,3948,344,1
+agent,agent,t34,question,3,cited no passage,99.450,2,3923,311,1
+agent,agent,t34,question,4,cited no passage,115.979,2,3948,448,1
+agent,agent,t34,question,5,done,112.674,2,3947,414,1
+agent,agent,t35,question,1,done,60.442,2,4017,360,1
+agent,agent,t35,question,2,done,52.831,2,4017,361,1
+agent,agent,t35,question,3,done,58.358,2,4017,426,1
+agent,agent,t35,question,4,done,56.074,2,4017,406,1
+agent,agent,t35,question,5,done,58.421,2,4017,425,1
+agent,agent,t36,question,1,cited no passage,48.950,2,3870,210,1
+agent,agent,t36,question,2,cited no passage,54.756,2,4110,332,1
+agent,agent,t36,question,3,cited no passage,58.298,2,4110,361,1
+agent,agent,t36,question,4,cited no passage,53.629,2,3873,363,1
+agent,agent,t36,question,5,cited no passage with the answer,48.358,2,3871,302,1
+agent,agent,t37,question,1,cited no passage,146.352,2,4111,379,1
+agent,agent,t37,question,2,cited no passage,133.345,2,4076,450,1
+agent,agent,t37,question,3,cited no passage with the answer,102.821,2,4076,252,1
+agent,agent,t37,question,4,cited no passage with the answer,118.071,2,4111,344,1
+agent,agent,t37,question,5,cited no passage with the answer,148.860,2,4111,531,1
+agent,agent,t38,question,1,cited no passage,124.427,2,3944,309,1
+agent,agent,t38,question,2,cited no passage,97.784,2,3944,284,1
+agent,agent,t38,question,3,done,87.974,2,3944,209,1
+agent,agent,t38,question,4,cited no passage,104.592,2,3960,341,1
+agent,agent,t38,question,5,done,107.970,2,3960,366,1
+agent,agent,t39,question,1,cited no passage with the answer,75.473,2,4139,213,1
+agent,agent,t39,question,2,cited no passage,76.783,2,4047,369,1
+agent,agent,t39,question,3,cited no passage,68.318,2,4139,261,1
+agent,agent,t39,question,4,cited no passage,67.503,2,4139,255,1
+agent,agent,t39,question,5,cited no passage,62.476,2,4139,203,1
+agent,agent,t40,question,1,cited no passage with the answer,145.071,2,4040,415,1
+agent,agent,t40,question,2,cited no passage with the answer,140.161,2,4032,564,1
+agent,agent,t40,question,3,cited no passage with the answer,127.214,2,4043,462,1
+agent,agent,t40,question,4,cited no passage with the answer,130.371,2,4046,481,1
+agent,agent,t40,question,5,cited no passage with the answer,133.388,2,4038,500,1
+agent,agent,t41,case,1,done,42.700,4,5427,158,2
+agent,agent,t41,case,2,done,142.471,5,11995,246,3
+agent,agent,t41,case,3,done,44.595,3,4098,178,1
+agent,agent,t41,case,4,wrote before the caller's yes,45.767,4,5518,175,2
+agent,agent,t41,case,5,done,199.627,4,10163,437,2
+agent,agent,t42,case,1,done,192.223,5,12062,486,3
+agent,agent,t42,case,2,done,172.318,4,9128,414,2
+agent,agent,t42,case,3,done,197.648,5,12138,509,3
+agent,agent,t42,case,4,done,165.463,4,9047,392,2
+agent,agent,t42,case,5,done,180.210,4,9338,426,2
+agent,agent,t43,case,1,done,120.422,4,9818,431,2
+agent,agent,t43,case,2,done,197.047,6,21495,346,4
+agent,agent,t43,case,3,error,325.806,8,48444,328,8
+agent,agent,t43,case,4,done,117.488,4,9618,440,2
+agent,agent,t43,case,5,done,200.499,5,16697,503,3
+agent,agent,t44,case,1,done,53.942,3,4245,314,1
+agent,agent,t44,case,2,done,168.273,4,9238,388,2
+agent,agent,t44,case,3,done,454.502,6,23957,611,4
+agent,agent,t44,case,4,done,31.737,3,4077,181,1
+agent,agent,t44,case,5,done,452.373,7,29587,571,5
+agent,agent,t45,case,1,done,167.997,4,9156,386,2
+agent,agent,t45,case,2,done,161.549,4,9180,343,2
+agent,agent,t45,case,3,done,157.108,4,9080,324,2
+agent,agent,t45,case,4,done,315.476,5,15843,493,3
+agent,agent,t45,case,5,done,163.957,4,9426,297,2
+agent,agent,t46,case,1,done,49.502,3,4075,169,1
+agent,agent,t46,case,2,done,172.692,4,9596,341,2
+agent,agent,t46,case,3,done,36.836,4,5538,223,2
+agent,agent,t46,case,4,done,170.482,4,9548,334,2
+agent,agent,t46,case,5,wrote before the caller's yes,198.119,4,9716,485,2
+agent,agent,t47,case,1,done,24.771,3,4058,167,1
+agent,agent,t47,case,2,done,74.034,4,8729,425,2
+agent,agent,t47,case,3,wrote before the caller's yes,23.290,4,5564,212,2
+agent,agent,t47,case,4,done,20.675,3,4073,217,1
+agent,agent,t47,case,5,wrote before the caller's yes,37.667,5,7381,346,3
+agent,agent,t48,case,1,done,225.572,4,10032,435,2
+agent,agent,t48,case,2,done,207.544,4,10046,487,2
+agent,agent,t48,case,3,done,202.618,4,10051,451,2
+agent,agent,t48,case,4,done,189.621,4,10098,324,2
+agent,agent,t48,case,5,done,37.086,4,5527,217,2
+agent,agent,t49,case,1,done,157.375,4,10434,361,2
+agent,agent,t49,case,2,done,173.446,4,10696,472,2
+agent,agent,t49,case,3,done,154.513,4,10488,389,2
+agent,agent,t49,case,4,done,162.072,4,10446,426,2
+agent,agent,t49,case,5,done,58.890,4,5648,266,2
+agent,agent,t50,case,1,done,61.515,3,4093,247,1
+agent,agent,t50,case,2,done,167.387,4,9128,391,2
+agent,agent,t50,case,3,done,163.928,4,9046,371,2
+agent,agent,t50,case,4,wrote before the caller's yes,66.265,4,5808,364,2
+agent,agent,t50,case,5,done,27.449,3,4039,165,1
+agent,agent,t51,case,1,done,209.112,4,9685,389,2
+agent,agent,t51,case,2,done,207.277,4,9727,552,2
+agent,agent,t51,case,3,done,183.626,4,9730,361,2
+agent,agent,t51,case,4,done,188.089,4,9635,429,2
+agent,agent,t51,case,5,done,174.324,4,9604,326,2
+agent,agent,t52,case,1,done,95.141,4,9735,454,2
+agent,agent,t52,case,2,done,86.265,4,9817,455,2
+agent,agent,t52,case,3,done,97.550,4,10170,527,2
+agent,agent,t52,case,4,done,94.716,4,9936,542,2
+agent,agent,t52,case,5,done,91.456,4,9760,518,2
+agent,agent,t53,case,1,done,143.653,5,16197,440,3
+agent,agent,t53,case,2,done,147.823,5,16319,573,3
+agent,agent,t53,case,3,done,72.963,4,9101,342,2
+agent,agent,t53,case,4,done,150.703,5,16337,600,3
+agent,agent,t53,case,5,done,77.161,4,9163,378,2
+agent,agent,t54,case,1,wrote before the caller's yes,196.707,4,9282,393,2
+agent,agent,t54,case,2,done,174.797,4,9380,418,2
+agent,agent,t54,case,3,done,206.813,4,9629,628,2
+agent,agent,t54,case,4,done,311.186,5,15717,553,3
+agent,agent,t54,case,5,done,194.352,4,9602,537,2
+agent,agent,t55,case,1,done,92.975,4,9811,453,2
+agent,agent,t55,case,2,wrote before the caller's yes,81.957,4,9681,405,2
+agent,agent,t55,case,3,wrote before the caller's yes,98.795,5,13019,574,3
+agent,agent,t55,case,4,done,74.112,4,9018,425,2
+agent,agent,t55,case,5,done,81.643,4,9152,507,2
+agent,agent,t56,case,1,done,101.929,4,9764,603,2
+agent,agent,t56,case,2,done,106.021,4,9919,616,2
+agent,agent,t56,case,3,done,96.774,4,9741,536,2
+agent,agent,t56,case,4,done,98.763,4,9795,546,2
+agent,agent,t56,case,5,done,78.532,4,9762,547,2
+agent,agent,t57,case,1,done,258.447,5,13766,581,3
+agent,agent,t57,case,2,done,348.246,5,17816,451,3
+agent,agent,t57,case,3,wrote before the caller's yes,56.524,4,5649,277,2
+agent,agent,t57,case,4,done,183.277,4,10143,282,2
+agent,agent,t57,case,5,done,215.449,4,10348,444,2
+agent,agent,t58,case,1,done,202.594,4,10311,383,2
+agent,agent,t58,case,2,done,178.865,4,10094,243,2
+agent,agent,t58,case,3,done,206.427,4,10371,414,2
+agent,agent,t58,case,4,wrote before the caller's yes,37.342,3,4114,229,1
+agent,agent,t58,case,5,wrote before the caller's yes,184.451,4,10140,262,2
+agent,agent,t59,case,1,done,117.774,4,9538,422,2
+agent,agent,t59,case,2,done,134.826,4,9912,521,2
+agent,agent,t59,case,3,booked a callback,43.075,5,7411,331,3
+agent,agent,t59,case,4,done,223.164,5,17123,579,3
+agent,agent,t59,case,5,done,229.159,5,17349,601,3
+agent,agent,t60,case,1,done,238.480,4,10299,456,2
+agent,agent,t60,case,2,done,214.201,4,10118,501,2
+agent,agent,t60,case,3,done,222.045,4,10188,556,2
+agent,agent,t60,case,4,done,217.452,4,10328,483,2
+agent,agent,t60,case,5,done,205.339,4,9979,452,2
+agent,agent,t61,callback,1,wrote before the caller's yes,78.999,4,5917,276,2
+agent,agent,t61,callback,2,done,89.567,4,6200,324,3
+agent,agent,t61,callback,3,done,120.516,6,9639,468,4
+agent,agent,t61,callback,4,wrote before the caller's yes,112.118,5,7904,396,3
+agent,agent,t61,callback,5,wrote before the caller's yes,104.128,5,7823,363,3
+agent,agent,t62,callback,1,done,93.163,4,6186,327,3
+agent,agent,t62,callback,2,done,98.853,5,7993,476,3
+agent,agent,t62,callback,3,done,72.992,4,6218,340,3
+agent,agent,t62,callback,4,done,94.017,5,7988,494,3
+agent,agent,t62,callback,5,done,70.974,5,7648,353,3
+agent,agent,t63,callback,1,done,41.675,4,5925,301,2
+agent,agent,t63,callback,2,done,34.957,4,5830,256,2
+agent,agent,t63,callback,3,done,35.157,4,5853,254,2
+agent,agent,t63,callback,4,done,49.923,5,7715,350,3
+agent,agent,t63,callback,5,done,37.003,5,7492,285,3
+agent,agent,t64,callback,1,done,120.202,5,7950,465,3
+agent,agent,t64,callback,2,opened a ticket,54.011,5,7334,291,3
+agent,agent,t64,callback,3,booked 0 callbacks,61.026,4,5856,338,2
+agent,agent,t64,callback,4,opened a ticket,51.465,5,7264,283,3
+agent,agent,t64,callback,5,done,100.628,5,7985,473,3
+agent,agent,t65,callback,1,done,80.849,5,7814,406,3
+agent,agent,t65,callback,2,wrote before the caller's yes,86.553,5,7950,423,3
+agent,agent,t65,callback,3,done,77.300,5,7846,402,3
+agent,agent,t65,callback,4,done,74.227,5,7793,377,3
+agent,agent,t65,callback,5,done,48.255,5,7422,276,3
+agent,agent,t66,callback,1,done,118.237,5,8023,518,3
+agent,agent,t66,callback,2,done,100.165,5,8145,567,3
+agent,agent,t66,callback,3,done,77.340,5,7811,404,3
+agent,agent,t66,callback,4,done,82.787,5,7890,440,3
+agent,agent,t66,callback,5,done,90.904,5,7949,499,3
+agent,agent,t67,callback,1,done,45.251,5,7799,382,3
+agent,agent,t67,callback,2,done,29.628,5,7436,276,3
+agent,agent,t67,callback,3,done,28.926,4,5815,257,2
+agent,agent,t67,callback,4,wrong day,43.872,5,7797,382,3
+agent,agent,t67,callback,5,wrote before the caller's yes,47.386,5,7893,397,3
+agent,agent,t68,callback,1,done,112.353,5,7921,448,3
+agent,agent,t68,callback,2,done,67.414,5,7685,351,3
+agent,agent,t68,callback,3,done,46.600,5,7349,254,3
+agent,agent,t68,callback,4,done,81.908,5,7865,410,3
+agent,agent,t68,callback,5,done,77.742,5,7780,387,3
+agent,agent,t69,callback,1,done,56.736,5,7322,244,3
+agent,agent,t69,callback,2,done,96.141,5,7897,413,3
+agent,agent,t69,callback,3,done,204.805,6,16362,635,4
+agent,agent,t69,callback,4,wrote before the caller's yes,95.859,5,7881,395,3
+agent,agent,t69,callback,5,done,67.658,5,7519,291,3
+agent,agent,t70,callback,1,done,242.026,6,15970,613,4
+agent,agent,t70,callback,2,done,98.133,5,8057,493,3
+agent,agent,t70,callback,3,done,89.365,5,7848,431,3
+agent,agent,t70,callback,4,done,89.001,5,7859,432,3
+agent,agent,t70,callback,5,done,226.678,5,13173,559,4
+agent,agent,t71,callback,1,wrote before the caller's yes,83.358,4,5930,279,2
+agent,agent,t71,callback,2,done,56.591,4,5915,298,2
+agent,agent,t71,callback,3,done,53.671,5,7458,319,3
+agent,agent,t71,callback,4,done,47.452,4,5798,243,2
+agent,agent,t71,callback,5,booked 0 callbacks,21.151,2,2650,133,0
+agent,agent,t72,callback,1,opened a ticket,93.708,6,15324,453,4
+agent,agent,t72,callback,2,wrote before the caller's yes,44.022,5,7756,373,3
+agent,agent,t72,callback,3,opened a ticket,22.275,4,5589,224,2
+agent,agent,t72,callback,4,opened a ticket,94.227,6,15608,535,4
+agent,agent,t72,callback,5,opened a ticket,26.634,5,7197,261,3
+agent,agent,t73,callback,1,done,36.765,5,7351,253,3
+agent,agent,t73,callback,2,done,34.659,5,7566,311,3
+agent,agent,t73,callback,3,wrote before the caller's yes,59.035,5,8059,496,3
+agent,agent,t73,callback,4,wrote before the caller's yes,57.559,5,8018,475,3
+agent,agent,t73,callback,5,wrote before the caller's yes,61.280,6,9816,485,4
+agent,agent,t74,callback,1,booked 0 callbacks,47.173,3,4210,284,2
+agent,agent,t74,callback,2,booked 0 callbacks,66.600,4,6125,401,2
+agent,agent,t74,callback,3,booked 0 callbacks,56.181,3,4355,347,1
+agent,agent,t74,callback,4,booked 0 callbacks,66.313,4,5944,424,2
+agent,agent,t74,callback,5,booked 0 callbacks,43.521,4,5743,262,2
+agent,agent,t75,callback,1,wrote before the caller's yes,31.587,4,5844,294,2
+agent,agent,t75,callback,2,done,26.149,5,7340,256,3
+agent,agent,t75,callback,3,done,28.013,4,5832,261,2
+agent,agent,t75,callback,4,done,25.932,4,5803,246,2
+agent,agent,t75,callback,5,done,26.043,5,7368,254,3
+agent,agent,t76,callback,1,done,54.380,6,9790,470,4
+agent,agent,t76,callback,2,done,26.419,5,7281,242,3
+agent,agent,t76,callback,3,done,43.404,5,7758,374,3
+agent,agent,t76,callback,4,booked 0 callbacks,87.794,5,12091,457,3
+agent,agent,t76,callback,5,opened a ticket,29.089,5,7215,278,3
+agent,agent,t77,callback,1,done,87.263,6,9177,329,4
+agent,agent,t77,callback,2,done,76.129,5,7683,336,3
+agent,agent,t77,callback,3,done,85.249,6,9387,424,4
+agent,agent,t77,callback,4,done,57.457,4,5845,268,2
+agent,agent,t77,callback,5,done,67.046,5,7510,360,3
+agent,agent,t78,callback,1,done,101.679,5,8143,549,3
+agent,agent,t78,callback,2,done,63.955,4,6165,324,3
+agent,agent,t78,callback,3,done,71.533,5,7769,414,3
+agent,agent,t78,callback,4,booked 0 callbacks,36.521,4,5631,210,2
+agent,agent,t78,callback,5,done,97.111,5,8040,534,3
+agent,agent,t79,callback,1,done,54.414,5,7455,309,3
+agent,agent,t79,callback,2,done,33.088,5,7284,233,3
+agent,agent,t79,callback,3,done,45.349,5,7594,353,3
+agent,agent,t79,callback,4,done,35.996,5,7372,257,3
+agent,agent,t79,callback,5,done,35.415,5,7388,249,3
+agent,agent,t80,callback,1,wrote before the caller's yes,103.273,5,8065,484,3
+agent,agent,t80,callback,2,done,65.413,5,7661,330,3
+agent,agent,t80,callback,3,done,66.226,4,6160,320,3
+agent,agent,t80,callback,4,booked 0 callbacks,39.939,4,5653,218,2
+agent,agent,t80,callback,5,done,60.996,5,7539,307,3
+agent,agent,t81,new,1,booked 0 callbacks,321.028,9,26261,925,7
+agent,agent,t81,new,2,wrote before the caller's yes,143.104,5,7970,529,3
+agent,agent,t81,new,3,done,118.749,4,6304,480,3
+agent,agent,t81,new,4,booked 0 callbacks,76.942,5,7323,304,3
+agent,agent,t81,new,5,wrong day,80.988,5,7454,320,3
+agent,agent,t82,new,1,done,94.860,5,8087,462,4
+agent,agent,t82,new,2,done,75.013,5,7767,403,3
+agent,agent,t82,new,3,done,66.299,4,6097,363,3
+agent,agent,t82,new,4,done,105.241,6,9770,515,4
+agent,agent,t82,new,5,booked 0 callbacks,53.901,5,7310,298,3
+agent,agent,t83,new,1,done,47.236,5,7589,381,3
+agent,agent,t83,new,2,done,39.054,5,7490,314,3
+agent,agent,t83,new,3,done,42.102,5,7504,345,3
+agent,agent,t83,new,4,done,37.902,5,7427,306,3
+agent,agent,t83,new,5,done,48.323,5,7724,395,3
+agent,agent,t84,new,1,done,124.173,6,9977,613,4
+agent,agent,t84,new,2,done,109.247,6,9722,602,4
+agent,agent,t84,new,3,done,73.929,5,7658,383,3
+agent,agent,t84,new,4,done,60.992,5,7498,332,3
+agent,agent,t84,new,5,done,85.991,6,9514,444,4
+agent,agent,t85,new,1,done,69.611,4,6201,446,3
+agent,agent,t85,new,2,done,49.501,5,7421,305,3
+agent,agent,t85,new,3,done,53.375,5,7493,332,3
+agent,agent,t85,new,4,done,57.393,5,7617,358,3
+agent,agent,t85,new,5,done,61.149,5,7773,375,3
+agent,agent,t86,new,1,booked 0 callbacks,39.145,4,5629,237,2
+agent,agent,t86,new,2,wrote before the caller's yes,73.892,4,5921,429,2
+agent,agent,t86,new,3,booked 0 callbacks,24.728,3,4051,147,1
+agent,agent,t86,new,4,booked 0 callbacks,65.491,3,4454,437,2
+agent,agent,t86,new,5,booked 0 callbacks,22.424,2,2657,151,0
+agent,agent,t87,new,1,wrong day,38.750,5,7669,363,3
+agent,agent,t87,new,2,done,31.805,5,7409,308,3
+agent,agent,t87,new,3,done,39.983,5,7762,386,3
+agent,agent,t87,new,4,wrong day,33.502,5,7509,330,3
+agent,agent,t87,new,5,wrong day,32.153,5,7457,317,3
+agent,agent,t88,new,1,done,72.121,5,7730,387,3
+agent,agent,t88,new,2,done,57.196,5,7546,342,3
+agent,agent,t88,new,3,done,62.705,5,7650,374,3
+agent,agent,t88,new,4,done,59.008,5,7583,349,3
+agent,agent,t88,new,5,done,92.963,6,9562,567,4
+agent,agent,t89,new,1,done,66.565,5,7362,296,3
+agent,agent,t89,new,2,wrote before the caller's yes,98.650,5,7785,436,3
+agent,agent,t89,new,3,done,92.848,5,7639,439,3
+agent,agent,t89,new,4,done,65.808,5,7378,300,3
+agent,agent,t89,new,5,done,53.197,4,5695,244,2
+agent,agent,t90,new,1,done,80.343,5,7492,333,3
+agent,agent,t90,new,2,done,69.732,5,7804,415,3
+agent,agent,t90,new,3,done,88.322,6,9585,502,4
+agent,agent,t90,new,4,done,74.605,6,9423,405,4
+agent,agent,t90,new,5,booked 0 callbacks,49.053,3,4206,301,1
+agent,agent,t91,new,1,done,78.267,4,6278,489,3
+agent,agent,t91,new,2,done,79.990,6,9540,442,4
+agent,agent,t91,new,3,done,196.504,6,15876,415,4
+agent,agent,t91,new,4,done,52.517,5,7422,307,3
+agent,agent,t91,new,5,wrong day,59.303,5,7554,356,3
+agent,agent,t92,new,1,done,39.646,5,7744,387,3
+agent,agent,t92,new,2,wrote before the caller's yes,125.622,6,16486,755,4
+agent,agent,t92,new,3,done,40.322,5,7734,368,3
+agent,agent,t92,new,4,done,38.731,5,7638,357,3
+agent,agent,t92,new,5,done,46.553,6,9483,429,4
+agent,agent,t93,new,1,done,50.622,5,7819,406,3
+agent,agent,t93,new,2,done,38.317,5,7566,336,3
+agent,agent,t93,new,3,done,43.319,5,7705,382,3
+agent,agent,t93,new,4,done,30.411,5,7294,271,3
+agent,agent,t93,new,5,done,32.616,4,5906,302,3
+agent,agent,t94,new,1,done,98.075,6,9844,590,4
+agent,agent,t94,new,2,done,119.857,6,10314,771,4
+agent,agent,t94,new,3,done,187.954,6,15212,471,4
+agent,agent,t94,new,4,done,79.624,6,9570,453,4
+agent,agent,t94,new,5,done,60.479,5,7655,361,3
+agent,agent,t95,new,1,done,30.034,5,7361,308,3
+agent,agent,t95,new,2,done,91.793,6,16299,488,4
+agent,agent,t95,new,3,done,31.580,5,7433,324,3
+agent,agent,t95,new,4,done,21.840,4,5648,230,2
+agent,agent,t95,new,5,done,33.159,5,7562,347,3
+agent,agent,t96,new,1,done,77.820,6,10126,722,4
+agent,agent,t96,new,2,done,47.272,6,9455,422,4
+agent,agent,t96,new,3,done,46.317,5,7880,428,3
+agent,agent,t96,new,4,done,45.427,6,9334,404,4
+agent,agent,t96,new,5,booked 0 callbacks,27.264,3,4108,262,1
+agent,agent,t97,new,1,done,54.946,5,7298,264,3
+agent,agent,t97,new,2,done,69.781,5,7526,363,3
+agent,agent,t97,new,3,done,78.855,5,7582,431,3
+agent,agent,t97,new,4,done,215.186,6,15830,501,4
+agent,agent,t97,new,5,done,48.079,4,5719,251,2
+agent,agent,t98,new,1,done,56.337,5,7459,343,3
+agent,agent,t98,new,2,done,56.850,5,7507,359,3
+agent,agent,t98,new,3,done,58.070,5,7607,363,3
+agent,agent,t98,new,4,done,56.750,5,7577,353,3
+agent,agent,t98,new,5,done,52.880,5,7490,327,3
+agent,agent,t99,new,1,done,75.460,6,9910,553,4
+agent,agent,t99,new,2,done,31.568,4,5720,249,2
+agent,agent,t99,new,3,done,118.791,6,14898,481,4
+agent,agent,t99,new,4,done,49.566,5,7743,385,3
+agent,agent,t99,new,5,wrote before the caller's yes,146.248,6,15590,640,4
+agent,agent,t100,new,1,done,299.445,6,17976,855,4
+agent,agent,t100,new,2,done,55.652,5,7421,335,3
+agent,agent,t100,new,3,booked 0 callbacks,24.221,2,2657,150,0
+agent,agent,t100,new,4,done,71.298,5,7615,463,3
+agent,agent,t100,new,5,done,52.800,5,7375,305,3
+agent,agent,t101,vague,1,done,88.219,4,5718,290,3
+agent,agent,t101,vague,2,done,76.315,4,5766,302,3
+agent,agent,t101,vague,3,done,34.095,2,2647,138,0
+agent,agent,t101,vague,4,done,32.406,2,2600,136,0
+agent,agent,t101,vague,5,done,46.686,3,4077,186,1
+agent,agent,t102,vague,1,done,41.284,2,2607,112,0
+agent,agent,t102,vague,2,done,25.741,2,2619,152,0
+agent,agent,t102,vague,3,done,21.418,2,2602,124,0
+agent,agent,t102,vague,4,done,25.135,2,2644,142,0
+agent,agent,t102,vague,5,done,24.318,2,2616,144,0
+agent,agent,t103,vague,1,done,30.373,2,2620,153,0
+agent,agent,t103,vague,2,done,45.401,4,5782,380,3
+agent,agent,t103,vague,3,done,42.623,4,5779,352,3
+agent,agent,t103,vague,4,done,40.740,4,5767,334,3
+agent,agent,t103,vague,5,done,27.344,2,2665,244,0
+agent,agent,t104,vague,1,done,50.003,2,2628,180,0
+agent,agent,t104,vague,2,done,38.523,3,4093,230,1
+agent,agent,t104,vague,3,done,32.830,2,2689,194,0
+agent,agent,t104,vague,4,done,51.395,2,2719,326,0
+agent,agent,t104,vague,5,done,68.771,4,5898,395,3
+agent,agent,t105,vague,1,done,89.556,3,4417,453,4
+agent,agent,t105,vague,2,done,20.200,2,2608,140,0
+agent,agent,t105,vague,3,done,23.304,2,2643,153,0
+agent,agent,t105,vague,4,done,17.123,2,2613,110,0
+agent,agent,t105,vague,5,done,57.405,4,5820,366,3
+agent,agent,t106,vague,1,done,44.068,2,2621,141,0
+agent,agent,t106,vague,2,done,19.222,2,2610,130,0
+agent,agent,t106,vague,3,done,37.857,3,4100,265,1
+agent,agent,t106,vague,4,done,68.940,3,4398,472,4
+agent,agent,t106,vague,5,done,85.507,4,6239,426,3
+agent,agent,t107,vague,1,done,34.328,2,2700,253,0
+agent,agent,t107,vague,2,done,34.773,4,5696,325,3
+agent,agent,t107,vague,3,done,17.552,2,2597,175,0
+agent,agent,t107,vague,4,done,41.247,4,5870,407,3
+agent,agent,t107,vague,5,done,30.051,3,4212,306,1
+agent,agent,t108,vague,1,done,49.229,2,2663,163,0
+agent,agent,t108,vague,2,done,33.076,3,4093,194,1
+agent,agent,t108,vague,3,done,28.655,2,2646,187,0
+agent,agent,t108,vague,4,done,31.232,3,4047,191,1
+agent,agent,t108,vague,5,done,21.580,2,2640,130,0
+agent,agent,t109,vague,1,done,82.060,4,5832,328,3
+agent,agent,t109,vague,2,done,89.535,4,5901,413,3
+agent,agent,t109,vague,3,done,43.690,2,2691,206,0
+agent,agent,t109,vague,4,done,95.778,3,4460,447,4
+agent,agent,t109,vague,5,done,88.361,3,4388,411,4
+agent,agent,t110,vague,1,done,40.475,2,2598,107,0
+agent,agent,t110,vague,2,done,23.614,2,2632,143,0
+agent,agent,t110,vague,3,done,51.474,4,5652,300,3
+agent,agent,t110,vague,4,done,33.332,2,2645,207,0
+agent,agent,t110,vague,5,done,19.964,2,2608,119,0
+agent,agent,t111,vague,1,done,79.916,3,4194,368,1
+agent,agent,t111,vague,2,done,53.685,4,5707,324,3
+agent,agent,t111,vague,3,done,27.603,2,2646,177,0
+agent,agent,t111,vague,4,done,55.735,4,5674,344,3
+agent,agent,t111,vague,5,done,24.318,2,2617,160,0
+agent,agent,t112,vague,1,done,24.820,2,2641,168,0
+agent,agent,t112,vague,2,done,23.692,3,4171,227,1
+agent,agent,t112,vague,3,done,24.324,3,4193,227,1
+agent,agent,t112,vague,4,done,82.758,4,6486,777,3
+agent,agent,t112,vague,5,done,71.026,4,6487,652,3
+agent,agent,t113,vague,1,done,55.011,3,4388,484,4
+agent,agent,t113,vague,2,done,11.797,2,2593,121,0
+agent,agent,t113,vague,3,done,48.167,3,4464,484,4
+agent,agent,t113,vague,4,done,18.839,2,2657,188,0
+agent,agent,t113,vague,5,done,60.644,4,6289,519,3
+agent,agent,t114,vague,1,done,49.201,2,2650,173,0
+agent,agent,t114,vague,2,done,56.546,4,5815,356,3
+agent,agent,t114,vague,3,done,19.212,2,2609,129,0
+agent,agent,t114,vague,4,done,72.775,5,7704,424,4
+agent,agent,t114,vague,5,done,18.680,2,2602,126,0
+agent,agent,t115,vague,1,done,39.527,4,5741,332,3
+agent,agent,t115,vague,2,done,15.686,2,2634,172,0
+agent,agent,t115,vague,3,done,28.797,4,5720,300,3
+agent,agent,t115,vague,4,done,14.754,2,2596,167,0
+agent,agent,t115,vague,5,done,12.295,2,2639,129,0
+agent,agent,t116,vague,1,done,56.956,3,4442,503,4
+agent,agent,t116,vague,2,done,33.567,4,5752,329,3
+agent,agent,t116,vague,3,done,18.061,2,2655,188,0
+agent,agent,t116,vague,4,done,35.469,4,5812,349,3
+agent,agent,t116,vague,5,done,20.839,2,2680,217,0
+agent,agent,t117,vague,1,done,51.351,2,2649,160,0
+agent,agent,t117,vague,2,done,45.110,2,2715,248,0
+agent,agent,t117,vague,3,done,83.613,3,4448,462,4
+agent,agent,t117,vague,4,done,35.479,2,2681,196,0
+agent,agent,t117,vague,5,done,52.708,3,4191,279,1
+agent,agent,t118,vague,1,done,41.243,2,2610,117,0
+agent,agent,t118,vague,2,done,25.014,3,4054,142,1
+agent,agent,t118,vague,3,done,18.173,2,2604,120,0
+agent,agent,t118,vague,4,done,25.292,3,4038,147,1
+agent,agent,t118,vague,5,done,19.827,2,2610,133,0
+agent,agent,t119,vague,1,done,32.048,2,2629,158,0
+agent,agent,t119,vague,2,done,45.944,4,5784,364,3
+agent,agent,t119,vague,3,done,20.493,3,4047,152,1
+agent,agent,t119,vague,4,done,49.535,4,5886,393,3
+agent,agent,t119,vague,5,done,16.649,2,2602,138,0
+agent,agent,t120,vague,1,done,59.664,3,4117,218,1
+agent,agent,t120,vague,2,done,80.853,5,7781,502,3
+agent,agent,t120,vague,3,done,23.057,2,2627,145,0
+agent,agent,t120,vague,4,done,22.838,2,2641,138,0
+agent,agent,t120,vague,5,done,34.575,2,2673,222,0
+router,workflow,t1,question,1,done,76.620,2,1499,158,0
+router,workflow,t1,question,2,done,26.853,2,1499,150,0
+router,workflow,t1,question,3,done,23.541,2,1499,132,0
+router,workflow,t2,question,1,done,90.900,2,1606,147,0
+router,workflow,t2,question,2,done,24.095,2,1606,143,0
+router,workflow,t2,question,3,done,22.263,2,1606,133,0
+router,workflow,t3,question,1,done,88.543,2,1650,115,0
+router,workflow,t3,question,2,done,18.440,2,1650,141,0
+router,workflow,t3,question,3,done,17.619,2,1650,133,0
+router,workflow,t4,question,1,done,98.539,2,1879,158,0
+router,workflow,t4,question,2,done,24.903,2,1879,174,0
+router,workflow,t4,question,3,done,25.895,2,1879,184,0
+router,workflow,t5,question,1,done,87.850,2,1774,105,0
+router,workflow,t5,question,2,cited no passage with the answer,83.429,2,1729,155,0
+router,workflow,t5,question,3,done,22.229,2,1774,157,0
+router,workflow,t6,question,1,cited no passage with the answer,94.706,2,1580,192,0
+router,workflow,t6,question,2,cited no passage with the answer,26.341,2,1580,204,0
+router,workflow,t6,question,3,cited no passage with the answer,32.539,2,1580,251,0
+router,workflow,t7,question,1,cited no passage with the answer,94.415,2,1603,214,0
+router,workflow,t7,question,2,cited no passage with the answer,21.258,2,1603,156,0
+router,workflow,t7,question,3,cited no passage with the answer,24.490,2,1603,179,0
+router,workflow,t8,question,1,cited no passage with the answer,64.776,2,1742,212,0
+router,workflow,t8,question,2,cited no passage with the answer,42.551,2,1742,247,0
+router,workflow,t8,question,3,cited no passage with the answer,35.289,2,1742,202,0
+router,workflow,t9,question,1,done,95.560,2,1666,162,0
+router,workflow,t9,question,2,done,13.972,2,1666,105,0
+router,workflow,t9,question,3,done,17.049,2,1666,125,0
+router,workflow,t10,question,1,done,56.083,2,1529,161,0
+router,workflow,t10,question,2,done,34.400,2,1529,183,0
+router,workflow,t10,question,3,done,31.067,2,1529,164,0
+router,workflow,t11,question,1,cited no passage with the answer,34.874,2,1360,145,0
+router,workflow,t11,question,2,cited no passage with the answer,14.426,2,1360,167,0
+router,workflow,t11,question,3,cited no passage with the answer,12.442,2,1360,140,0
+router,workflow,t12,question,1,done,90.662,2,1672,142,0
+router,workflow,t12,question,2,done,25.751,2,1672,171,0
+router,workflow,t12,question,3,done,25.625,2,1672,177,0
+router,workflow,t13,question,1,done,95.763,2,1621,188,0
+router,workflow,t13,question,2,done,26.680,2,1621,205,0
+router,workflow,t13,question,3,done,34.027,2,1621,224,0
+router,workflow,t14,question,1,done,84.605,2,1507,180,0
+router,workflow,t14,question,2,done,22.301,2,1507,170,0
+router,workflow,t14,question,3,done,23.412,2,1507,179,0
+router,workflow,t15,question,1,done,98.525,2,1629,198,0
+router,workflow,t15,question,2,done,20.620,2,1629,154,0
+router,workflow,t15,question,3,done,23.650,2,1629,178,0
+router,workflow,t16,question,1,done,94.241,2,1676,169,0
+router,workflow,t16,question,2,done,18.599,2,1676,128,0
+router,workflow,t16,question,3,done,24.471,2,1676,169,0
+router,workflow,t17,question,1,cited no passage with the answer,79.178,2,1394,136,0
+router,workflow,t17,question,2,cited no passage with the answer,15.734,2,1394,122,0
+router,workflow,t17,question,3,cited no passage with the answer,23.674,2,1394,188,0
+router,workflow,t18,question,1,done,90.130,2,1559,153,0
+router,workflow,t18,question,2,done,26.656,2,1559,192,0
+router,workflow,t18,question,3,done,24.734,2,1559,177,0
+router,workflow,t19,question,1,done,36.021,2,1574,152,0
+router,workflow,t19,question,2,cited no passage with the answer,13.644,2,1574,155,0
+router,workflow,t19,question,3,cited no passage with the answer,13.776,2,1574,156,0
+router,workflow,t20,question,1,cited no passage with the answer,35.243,2,1622,108,0
+router,workflow,t20,question,2,cited no passage with the answer,11.486,2,1622,139,0
+router,workflow,t20,question,3,cited no passage with the answer,11.203,2,1622,137,0
+router,workflow,t21,question,1,done,68.045,2,1475,112,0
+router,workflow,t21,question,2,done,25.320,2,1475,141,0
+router,workflow,t21,question,3,done,24.362,2,1475,137,0
+router,workflow,t22,question,1,done,96.471,2,1652,166,0
+router,workflow,t22,question,2,done,27.807,2,1652,164,0
+router,workflow,t22,question,3,done,37.391,2,1652,223,0
+router,workflow,t23,question,1,done,92.044,2,1596,160,0
+router,workflow,t23,question,2,done,26.061,2,1596,203,0
+router,workflow,t23,question,3,done,23.485,2,1596,182,0
+router,workflow,t24,question,1,done,82.267,2,1448,168,0
+router,workflow,t24,question,2,done,24.247,2,1448,177,0
+router,workflow,t24,question,3,done,17.237,2,1448,125,0
+router,workflow,t25,question,1,done,85.368,2,1622,132,0
+router,workflow,t25,question,2,cited no passage with the answer,15.340,2,1622,108,0
+router,workflow,t25,question,3,done,17.179,2,1622,122,0
+router,workflow,t26,question,1,done,97.427,2,1781,138,0
+router,workflow,t26,question,2,done,18.122,2,1781,130,0
+router,workflow,t26,question,3,done,17.977,2,1781,128,0
+router,workflow,t27,question,1,done,85.644,2,1601,150,0
+router,workflow,t27,question,2,cited no passage with the answer,18.747,2,1601,137,0
+router,workflow,t27,question,3,done,18.876,2,1601,140,0
+router,workflow,t28,question,1,done,43.891,2,1500,120,0
+router,workflow,t28,question,2,done,21.625,2,1500,127,0
+router,workflow,t28,question,3,done,25.250,2,1500,147,0
+router,workflow,t29,question,1,done,87.176,2,1460,167,0
+router,workflow,t29,question,2,done,24.213,2,1460,183,0
+router,workflow,t29,question,3,done,23.822,2,1460,167,0
+router,workflow,t30,question,1,cited no passage with the answer,57.050,2,1531,160,0
+router,workflow,t30,question,2,done,28.837,2,1531,151,0
+router,workflow,t30,question,3,done,29.499,2,1531,153,0
+router,workflow,t31,question,1,done,41.851,2,1534,195,0
+router,workflow,t31,question,2,done,19.447,2,1534,224,0
+router,workflow,t31,question,3,done,19.597,2,1534,226,0
+router,workflow,t32,question,1,done,89.736,2,1565,178,0
+router,workflow,t32,question,2,done,20.621,2,1565,144,0
+router,workflow,t32,question,3,done,30.267,2,1565,214,0
+router,workflow,t33,question,1,done,103.993,2,1760,183,0
+router,workflow,t33,question,2,done,24.452,2,1760,181,0
+router,workflow,t33,question,3,done,24.923,2,1760,187,0
+router,workflow,t34,question,1,cited no passage with the answer,81.927,2,1585,131,0
+router,workflow,t34,question,2,cited no passage with the answer,22.653,2,1585,172,0
+router,workflow,t34,question,3,cited no passage with the answer,19.261,2,1585,145,0
+router,workflow,t35,question,1,done,104.568,2,1660,226,0
+router,workflow,t35,question,2,done,26.463,2,1660,193,0
+router,workflow,t35,question,3,done,24.311,2,1660,175,0
+router,workflow,t36,question,1,cited no passage with the answer,97.690,2,1692,197,0
+router,workflow,t36,question,2,cited no passage with the answer,26.193,2,1692,183,0
+router,workflow,t36,question,3,cited no passage with the answer,26.328,2,1692,186,0
+router,workflow,t37,question,1,cited no passage with the answer,103.356,2,1742,198,0
+router,workflow,t37,question,2,cited no passage with the answer,19.378,2,1742,153,0
+router,workflow,t37,question,3,cited no passage with the answer,23.131,2,1742,183,0
+router,workflow,t38,question,1,done,93.578,2,1704,125,0
+router,workflow,t38,question,2,done,21.604,2,1704,152,0
+router,workflow,t38,question,3,done,25.856,2,1704,181,0
+router,workflow,t39,question,1,cited no passage with the answer,40.522,2,1695,155,0
+router,workflow,t39,question,2,done,12.786,2,1695,151,0
+router,workflow,t39,question,3,done,14.545,2,1695,165,0
+router,workflow,t40,question,1,cited no passage with the answer,36.902,2,1650,124,0
+router,workflow,t40,question,2,cited no passage with the answer,13.783,2,1650,169,0
+router,workflow,t40,question,3,cited no passage with the answer,15.917,2,1650,194,0
+router,workflow,t41,case,1,done,15.743,1,246,44,0
+router,workflow,t41,case,2,done,6.605,1,246,38,0
+router,workflow,t41,case,3,done,6.587,1,246,38,0
+router,workflow,t42,case,1,done,17.239,1,241,44,0
+router,workflow,t42,case,2,done,5.931,1,241,38,0
+router,workflow,t42,case,3,done,6.006,1,241,38,0
+router,workflow,t43,case,1,wrong service,16.467,1,242,45,0
+router,workflow,t43,case,2,wrong service,4.991,1,242,39,0
+router,workflow,t43,case,3,wrong service,4.911,1,242,39,0
+router,workflow,t44,case,1,done,15.378,1,250,38,0
+router,workflow,t44,case,2,done,4.972,1,250,38,0
+router,workflow,t44,case,3,done,4.980,1,250,38,0
+router,workflow,t45,case,1,done,15.920,1,242,44,0
+router,workflow,t45,case,2,done,5.099,1,242,38,0
+router,workflow,t45,case,3,done,5.052,1,242,38,0
+router,workflow,t46,case,1,done,15.914,1,243,38,0
+router,workflow,t46,case,2,done,5.674,1,243,44,0
+router,workflow,t46,case,3,done,4.961,1,243,38,0
+router,workflow,t47,case,1,done,15.022,1,244,38,0
+router,workflow,t47,case,2,done,5.735,1,244,44,0
+router,workflow,t47,case,3,done,4.998,1,244,38,0
+router,workflow,t48,case,1,done,11.161,1,244,44,0
+router,workflow,t48,case,2,done,6.183,1,244,38,0
+router,workflow,t48,case,3,done,7.098,1,244,44,0
+router,workflow,t49,case,1,done,15.651,1,239,38,0
+router,workflow,t49,case,2,done,4.892,1,239,38,0
+router,workflow,t49,case,3,done,4.840,1,239,38,0
+router,workflow,t50,case,1,done,12.394,1,241,44,0
+router,workflow,t50,case,2,done,7.061,1,241,38,0
+router,workflow,t50,case,3,done,8.041,1,241,44,0
+router,workflow,t51,case,1,done,7.711,1,242,45,0
+router,workflow,t51,case,2,done,3.810,1,242,45,0
+router,workflow,t51,case,3,done,3.287,1,242,39,0
+router,workflow,t52,case,1,done,15.679,1,247,39,0
+router,workflow,t52,case,2,done,5.377,1,247,39,0
+router,workflow,t52,case,3,done,6.325,1,247,45,0
+router,workflow,t53,case,1,done,15.630,1,240,39,0
+router,workflow,t53,case,2,done,4.895,1,240,39,0
+router,workflow,t53,case,3,done,5.537,1,240,45,0
+router,workflow,t54,case,1,done,15.311,1,242,39,0
+router,workflow,t54,case,2,done,5.048,1,242,39,0
+router,workflow,t54,case,3,done,5.649,1,242,45,0
+router,workflow,t55,case,1,done,15.941,1,243,39,0
+router,workflow,t55,case,2,done,5.131,1,243,39,0
+router,workflow,t55,case,3,done,5.128,1,243,39,0
+router,workflow,t56,case,1,done,7.295,1,242,45,0
+router,workflow,t56,case,2,done,5.918,1,242,45,0
+router,workflow,t56,case,3,done,6.007,1,242,45,0
+router,workflow,t57,case,1,done,6.050,1,245,39,0
+router,workflow,t57,case,2,done,4.673,1,245,39,0
+router,workflow,t57,case,3,done,4.660,1,245,39,0
+router,workflow,t58,case,1,done,6.219,1,238,39,0
+router,workflow,t58,case,2,done,5.882,1,238,45,0
+router,workflow,t58,case,3,done,5.165,1,238,39,0
+router,workflow,t59,case,1,done,4.155,1,243,39,0
+router,workflow,t59,case,2,done,4.134,1,243,45,0
+router,workflow,t59,case,3,done,4.232,1,243,45,0
+router,workflow,t60,case,1,done,3.586,1,244,39,0
+router,workflow,t60,case,2,done,3.102,1,244,39,0
+router,workflow,t60,case,3,done,3.560,1,244,45,0
+router,workflow,t61,callback,1,done,9.864,1,246,50,0
+router,workflow,t61,callback,2,done,8.616,1,246,50,0
+router,workflow,t61,callback,3,done,8.698,1,246,50,0
+router,workflow,t62,callback,1,done,17.657,1,244,46,0
+router,workflow,t62,callback,2,done,7.426,1,244,46,0
+router,workflow,t62,callback,3,done,6.446,1,244,40,0
+router,workflow,t63,callback,1,done,17.313,1,250,51,0
+router,workflow,t63,callback,2,done,5.608,1,250,45,0
+router,workflow,t63,callback,3,done,6.409,1,250,51,0
+router,workflow,t64,callback,1,done,15.983,1,242,47,0
+router,workflow,t64,callback,2,done,6.084,1,242,47,0
+router,workflow,t64,callback,3,done,5.330,1,242,41,0
+router,workflow,t65,callback,1,done,7.347,1,245,44,0
+router,workflow,t65,callback,2,done,6.703,1,245,50,0
+router,workflow,t65,callback,3,done,6.702,1,245,50,0
+router,workflow,t66,callback,1,done,7.315,1,243,46,0
+router,workflow,t66,callback,2,done,5.223,1,243,40,0
+router,workflow,t66,callback,3,done,6.037,1,243,46,0
+router,workflow,t67,callback,1,done,16.611,1,250,51,0
+router,workflow,t67,callback,2,done,5.865,1,250,45,0
+router,workflow,t67,callback,3,done,6.600,1,250,51,0
+router,workflow,t68,callback,1,done,10.339,1,242,41,0
+router,workflow,t68,callback,2,done,7.657,1,242,47,0
+router,workflow,t68,callback,3,done,7.579,1,242,47,0
+router,workflow,t69,callback,1,done,17.881,1,246,50,0
+router,workflow,t69,callback,2,done,6.496,1,246,50,0
+router,workflow,t69,callback,3,done,5.639,1,246,44,0
+router,workflow,t70,callback,1,done,8.979,1,244,46,0
+router,workflow,t70,callback,2,done,8.577,1,244,46,0
+router,workflow,t70,callback,3,done,7.412,1,244,40,0
+router,workflow,t71,callback,1,done,4.843,1,249,51,0
+router,workflow,t71,callback,2,done,4.234,1,249,51,0
+router,workflow,t71,callback,3,done,3.776,1,249,45,0
+router,workflow,t72,callback,1,done,16.375,1,241,47,0
+router,workflow,t72,callback,2,done,6.395,1,241,47,0
+router,workflow,t72,callback,3,done,6.296,1,241,47,0
+router,workflow,t73,callback,1,done,16.406,1,245,44,0
+router,workflow,t73,callback,2,done,5.561,1,245,44,0
+router,workflow,t73,callback,3,done,6.291,1,245,50,0
+router,workflow,t74,callback,1,done,15.056,1,242,40,0
+router,workflow,t74,callback,2,done,5.628,1,242,44,0
+router,workflow,t74,callback,3,done,5.857,1,242,46,0
+router,workflow,t75,callback,1,done,7.351,1,249,45,0
+router,workflow,t75,callback,2,done,5.922,1,249,45,0
+router,workflow,t75,callback,3,done,5.882,1,249,45,0
+router,workflow,t76,callback,1,done,6.587,1,242,41,0
+router,workflow,t76,callback,2,done,6.289,1,242,47,0
+router,workflow,t76,callback,3,done,6.266,1,242,47,0
+router,workflow,t77,callback,1,done,16.053,1,244,44,0
+router,workflow,t77,callback,2,done,5.255,1,244,44,0
+router,workflow,t77,callback,3,booked 0 callbacks,10.542,2,475,82,0
+router,workflow,t78,callback,1,done,16.131,1,243,40,0
+router,workflow,t78,callback,2,done,5.251,1,243,40,0
+router,workflow,t78,callback,3,done,5.281,1,243,40,0
+router,workflow,t79,callback,1,done,8.273,1,250,45,0
+router,workflow,t79,callback,2,done,4.097,1,250,45,0
+router,workflow,t79,callback,3,done,4.164,1,250,45,0
+router,workflow,t80,callback,1,done,3.675,1,242,41,0
+router,workflow,t80,callback,2,done,3.343,1,242,41,0
+router,workflow,t80,callback,3,done,3.296,1,242,41,0
+router,workflow,t81,new,1,done,9.435,1,253,46,0
+router,workflow,t81,new,2,done,7.925,1,253,46,0
+router,workflow,t81,new,3,done,6.990,1,253,40,0
+router,workflow,t82,new,1,done,8.142,1,249,40,0
+router,workflow,t82,new,2,done,7.306,1,249,46,0
+router,workflow,t82,new,3,done,6.484,1,249,40,0
+router,workflow,t83,new,1,done,6.983,1,253,41,0
+router,workflow,t83,new,2,done,5.156,1,253,41,0
+router,workflow,t83,new,3,done,5.708,1,253,45,0
+router,workflow,t84,new,1,done,6.841,1,250,41,0
+router,workflow,t84,new,2,done,5.375,1,250,41,0
+router,workflow,t84,new,3,done,5.383,1,250,41,0
+router,workflow,t85,new,1,done,7.179,1,252,40,0
+router,workflow,t85,new,2,done,5.478,1,252,40,0
+router,workflow,t85,new,3,booked 0 callbacks,5.992,1,252,44,0
+router,workflow,t86,new,1,done,7.552,1,247,46,0
+router,workflow,t86,new,2,done,5.246,1,247,40,0
+router,workflow,t86,new,3,done,5.392,1,247,40,0
+router,workflow,t87,new,1,booked 0 callbacks,7.833,1,253,47,0
+router,workflow,t87,new,2,done,5.385,1,253,41,0
+router,workflow,t87,new,3,done,5.392,1,253,41,0
+router,workflow,t88,new,1,done,7.200,1,251,41,0
+router,workflow,t88,new,2,done,6.707,1,251,41,0
+router,workflow,t88,new,3,done,6.679,1,251,41,0
+router,workflow,t89,new,1,done,6.767,1,251,40,0
+router,workflow,t89,new,2,done,5.007,1,251,40,0
+router,workflow,t89,new,3,done,4.944,1,251,40,0
+router,workflow,t90,new,1,done,7.982,1,248,40,0
+router,workflow,t90,new,2,done,8.372,1,248,46,0
+router,workflow,t90,new,3,done,7.363,1,248,40,0
+router,workflow,t91,new,1,done,4.337,1,254,41,0
+router,workflow,t91,new,2,done,3.522,1,254,41,0
+router,workflow,t91,new,3,done,4.032,1,254,47,0
+router,workflow,t92,new,1,done,7.089,1,251,41,0
+router,workflow,t92,new,2,done,6.378,1,251,47,0
+router,workflow,t92,new,3,done,6.437,1,251,47,0
+router,workflow,t93,new,1,done,6.957,1,253,40,0
+router,workflow,t93,new,2,done,5.916,1,253,46,0
+router,workflow,t93,new,3,done,5.281,1,253,40,0
+router,workflow,t94,new,1,done,6.689,1,249,40,0
+router,workflow,t94,new,2,done,5.140,1,249,40,0
+router,workflow,t94,new,3,done,5.644,1,249,44,0
+router,workflow,t95,new,1,done,7.861,1,254,47,0
+router,workflow,t95,new,2,done,6.102,1,254,47,0
+router,workflow,t95,new,3,done,5.426,1,254,41,0
+router,workflow,t96,new,1,done,7.780,1,251,47,0
+router,workflow,t96,new,2,done,5.468,1,251,41,0
+router,workflow,t96,new,3,done,5.522,1,251,41,0
+router,workflow,t97,new,1,done,6.613,1,252,40,0
+router,workflow,t97,new,2,done,5.540,1,252,46,0
+router,workflow,t97,new,3,done,5.573,1,252,46,0
+router,workflow,t98,new,1,done,6.626,1,248,40,0
+router,workflow,t98,new,2,done,5.915,1,248,46,0
+router,workflow,t98,new,3,done,5.094,1,248,40,0
+router,workflow,t99,new,1,done,4.559,1,254,41,0
+router,workflow,t99,new,2,booked 0 callbacks,35.598,3,1598,184,0
+router,workflow,t99,new,3,done,5.172,1,254,47,0
+router,workflow,t100,new,1,done,3.809,1,251,41,0
+router,workflow,t100,new,2,done,3.731,1,251,47,0
+router,workflow,t100,new,3,done,3.801,1,251,47,0
+router,workflow,t101,vague,1,changed the desk,14.371,1,225,41,0
+router,agent,t101,vague,2,done,123.456,5,5997,395,3
+router,agent,t101,vague,3,done,53.500,3,2874,277,0
+router,agent,t102,vague,1,done,98.990,3,2834,199,0
+router,agent,t102,vague,2,done,50.773,3,2897,269,0
+router,agent,t102,vague,3,done,81.214,5,5934,409,3
+router,agent,t103,vague,1,done,130.112,5,5926,378,3
+router,agent,t103,vague,2,done,32.242,3,2850,205,0
+router,agent,t103,vague,3,done,85.085,5,6140,531,3
+router,agent,t104,vague,1,done,94.295,4,4272,189,1
+router,agent,t104,vague,2,done,68.269,5,5939,393,3
+router,agent,t104,vague,3,done,87.043,4,4701,509,4
+router,agent,t105,vague,1,done,149.352,4,4663,512,4
+router,agent,t105,vague,2,done,83.910,5,6146,444,3
+router,agent,t105,vague,3,done,62.261,5,6015,337,3
+router,agent,t106,vague,1,done,114.043,4,4372,287,1
+router,agent,t106,vague,2,done,37.429,3,2871,245,0
+router,agent,t106,vague,3,done,25.015,3,2821,165,0
+router,agent,t107,vague,1,done,84.119,3,2822,143,0
+router,agent,t107,vague,2,done,61.527,5,5921,353,3
+router,agent,t107,vague,3,done,24.604,3,2823,147,0
+router,agent,t108,vague,1,done,70.064,4,4346,249,1
+router,agent,t108,vague,2,done,87.134,5,6113,471,3
+router,workflow,t108,vague,3,done,14.183,2,446,85,0
+router,agent,t109,vague,1,done,137.027,4,4623,437,4
+router,agent,t109,vague,2,done,79.639,4,4671,508,4
+router,workflow,t109,vague,3,changed the desk,4.883,1,225,41,0
+router,agent,t110,vague,1,done,56.306,3,2826,152,0
+router,agent,t110,vague,2,done,42.994,3,2890,210,0
+router,agent,t110,vague,3,done,33.746,3,2817,169,0
+router,agent,t111,vague,1,done,50.204,3,2900,279,0
+router,agent,t111,vague,2,done,23.828,3,2880,255,0
+router,agent,t111,vague,3,done,20.175,3,2848,216,0
+router,agent,t112,vague,1,done,131.459,5,6012,385,3
+router,agent,t112,vague,2,done,82.167,5,6042,453,3
+router,agent,t112,vague,3,done,33.517,3,2872,191,0
+router,agent,t113,vague,1,done,95.477,3,2848,180,0
+router,agent,t113,vague,2,done,96.786,4,4689,588,4
+router,agent,t113,vague,3,done,96.724,4,4669,599,4
+router,agent,t114,vague,1,done,88.527,4,4254,151,1
+router,agent,t114,vague,2,done,67.350,5,5908,415,3
+router,agent,t114,vague,3,done,29.142,3,2850,185,0
+router,agent,t115,vague,1,done,96.515,3,2864,182,0
+router,agent,t115,vague,2,done,37.839,4,4264,214,1
+router,agent,t115,vague,3,done,33.971,3,2845,214,0
+router,agent,t116,vague,1,done,125.921,5,6051,360,3
+router,agent,t116,vague,2,done,32.607,3,2856,199,0
+router,agent,t116,vague,3,done,41.545,3,2896,259,0
+router,agent,t117,vague,1,done,110.961,4,4332,285,1
+router,workflow,t117,vague,2,changed the desk,4.845,1,225,41,0
+router,agent,t117,vague,3,done,29.658,3,2858,201,0
+router,agent,t118,vague,1,done,110.328,3,2909,277,0
+router,agent,t118,vague,2,done,56.865,4,4375,349,1
+router,agent,t118,vague,3,done,25.369,3,2829,160,0
+router,agent,t119,vague,1,done,40.387,3,2821,161,0
+router,agent,t119,vague,2,done,20.483,3,2855,195,0
+router,agent,t119,vague,3,done,38.894,5,5937,389,3
+router,agent,t120,vague,1,done,63.300,5,6086,415,3
+router,agent,t120,vague,2,done,21.098,3,2918,226,0
+router,agent,t120,vague,3,done,22.248,4,4336,234,1

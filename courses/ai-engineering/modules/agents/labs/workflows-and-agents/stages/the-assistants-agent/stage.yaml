@@ -1,0 +1,54 @@
+id: stg_7erh49
+kind: catch
+title: The assistant's agent
+builds: A new `desk_agent.py`.
+file: desk_agent.py
+packages: [httpx, numpy]
+minutes: 35
+problems:
+  - check: tst_7a4whz
+    title: A turn never ended
+    cost: >-
+      `while True` asked the model again after every round of tool calls. A model that called
+      `list_tickets` again and again kept the caller waiting, and the model busy, until
+      something outside the desk stopped it.
+    fix: >-
+      The fix: `for _ in range(ROUNDS):`, which ends the turn with `OutOfRounds` once the
+      rounds are spent.
+    edit:
+      replace: "        while True:\n"
+      with: "        for _ in range(ROUNDS):\n"
+  - check: tst_emr0oh
+    title: Results went back without their calls
+    cost: >-
+      The model's message kept its text and lost its `tool_calls`, so each `tool` message that
+      followed answered a call the conversation no longer had. A real server refuses such a
+      request, and the caller gets no reply at all.
+    fix: >-
+      The fix: keep the model's `tool_calls` in its message, before the results.
+    edit:
+      replace: "            messages.append(kept)\n"
+      with: "            if calls:\n                kept[\"tool_calls\"] = calls\n            messages.append(kept)\n"
+  - check: tst_0fw73v
+    title: Arguments that weren't JSON stopped the desk
+    cost: >-
+      `run` read the arguments itself, with `json.loads`, before the desk's `call` could check
+      them, so arguments the model cut off raised `JSONDecodeError` and the caller's turn
+      ended in an error.
+    fix: >-
+      The fix: pass the model's text to `self.desk.call` as it is, which gives the model an error
+      to read for arguments it can't use.
+    edit:
+      replace: "        arguments = json.loads(call[\"function\"][\"arguments\"])\n        return self.desk.call(name, json.dumps(arguments))\n"
+      with: "        return self.desk.call(name, call[\"function\"][\"arguments\"])\n"
+  - check: tst_qkr2u6
+    title: Each turn started afresh
+    cost: >-
+      Each reply started from the system prompt and the caller's newest message, so "Yes, please
+      book it." reached the model without the offer it answered, and the desk never booked what
+      the caller had said yes to.
+    fix: >-
+      The fix: add each message to `self.messages`, and send that.
+    edit:
+      replace: "        messages = [self.system, {\"role\": \"user\", \"content\": message}]\n"
+      with: "        self.messages.append({\"role\": \"user\", \"content\": message})\n        messages = self.messages\n"
