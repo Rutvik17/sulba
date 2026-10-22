@@ -1,0 +1,7 @@
+id: lab_8ljbpi
+title: Linked lists
+summary: >-
+  Seven interview problems on linked lists: reversing one, finding where a cycle starts,
+  removing a node from the end, adding numbers held as digits, reordering a list from both
+  ends, copying a list with random links and a least recently used cache.
+stages: [reversing-a-list, the-cycles-start, removing-from-the-end, adding-digit-lists, reordering-a-list, copying-random-links, a-least-recently-used-cache]

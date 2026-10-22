@@ -1,0 +1,6 @@
+id: stg_v7bwp2
+kind: problem
+title: Reordering a list
+builds: A new `reorder.py`.
+file: reorder.py
+minutes: 25

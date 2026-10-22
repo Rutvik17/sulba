@@ -1,0 +1,6 @@
+id: stg_y3litc
+kind: problem
+title: Removing from the end
+builds: A new `remove.py`.
+file: remove.py
+minutes: 15

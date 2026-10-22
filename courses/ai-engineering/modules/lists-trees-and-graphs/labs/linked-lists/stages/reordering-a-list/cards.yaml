@@ -1,0 +1,7 @@
+cards:
+  - id: crd_s8ms6h
+    front: >-
+      How do you reorder a list as first, last, second, second to last, and so on, in place?
+    back: >-
+      Find the middle with slow and fast pointers, reverse the second half, then interleave the
+      two halves.
