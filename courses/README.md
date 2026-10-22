@@ -201,6 +201,22 @@ def test_nearest(database):
 
 The run starts one server for its tests, on 127.0.0.1 at a free port, with a password it makes, and stops it and deletes its files when they're done. Postgres doesn't run as root, so neither does a run that asks for a database. On Windows, pgvector needs a processor with AVX2, and Postgres needs the lab's folder to have a name the system's code page can write. `uv run sulba.py db` starts the lab's database for the learner's own code, at `postgresql://postgres:<password>@127.0.0.1:5432/postgres`, until Ctrl+C, and keeps what's in it in the download's `.sulba/database`. A test never uses that database, so a run gives the same result whatever the learner has put there.
 
+### A lab's Spark
+
+A lab that runs on the learner's machine can run Spark's DataFrame API and Spark SQL on Sail, an engine that speaks Spark Connect, which the run starts in its own process (decision record 41). Its project locks `pysail` and `pyspark-client` at the versions Sail's documentation pairs, and pandas below 3, which PySpark's client doesn't yet fully support, and a stage that imports pyspark lists `pyspark-client` under `packages`. A test asks for the `spark` fixture and gets a Spark session:
+
+```python
+def test_totals(spark):
+    orders = spark.createDataFrame(
+        [("UK", 120.5), ("US", 15.25)], "country STRING, amount DOUBLE"
+    )
+    ...
+```
+
+The run starts one Sail server for its tests, on 127.0.0.1 at a free port, which they share. It splits work into two partitions, so a sum of floats comes out the same on every machine, and the session's time zone is UTC. When a test ends, its temporary views are dropped. Sail has no build for Windows on Arm.
+
+`pnpm check:machine --spark`, which CI's Spark job runs on Linux, runs the lab's download on Spark itself, with PySpark in place of `pysail` and `pyspark-client`, and each stage's solution must pass there too. Sail and Spark differ in places, so a stage keeps to what both do alike: a CSV it reads has as many fields in each row as in its header, its integer sums stay within their type, and its tests check an exception's class but not its message, compare floats with a tolerance, and compare timestamps formatted as strings in Spark, since a collected timestamp is a datetime in the machine's own time zone.
+
 ### TypeScript stages
 
 A lab that runs on the learner's machine can have stages in TypeScript (decision record 39): the stage's file is a `.ts` file, its tests and checks are `<name>.test.ts` files, and the lab can give `.ts` files too. Its project then holds a `package.json`, which sets `"type": "module"` and names the packages the tests and the learner's code use, typescript and `@types/node` among them; the `package-lock.json` that `npm install --package-lock-only` writes from it; and a `tsconfig.json`, which includes the files tsc checks, with `"noEmit": true` and `"allowImportingTsExtensions": true`. Every run of the lab has the three beside the learner's files. Before a learner's first TypeScript run, the runner fetches Node.js, the build for their system that `sulba_runner.py` pins by its size and sha256, and installs the lock's packages with `npm ci --ignore-scripts`, each once, into `sulba` in their cache folder.

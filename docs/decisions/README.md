@@ -42,5 +42,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [36. Let a lab give its chat model a longer context](0036-let-a-lab-give-its-chat-model-a-longer-context.md) | Accepted |
 | [37. Give a machine lab code its learner builds on](0037-give-a-machine-lab-code-its-learner-builds-on.md) | Accepted |
 | [39. Run a machine lab's TypeScript stages in Node, pinned by the runner](0039-run-a-machine-labs-typescript-stages-in-node.md) | Accepted |
+| [41. Run a lab's Spark code on Sail, and check it against Spark](0041-run-a-labs-spark-code-on-sail-checked-against-spark.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

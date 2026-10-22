@@ -236,6 +236,7 @@ test('two courses that share an id is a problem', async () => {
     `The id tst_demo20 is already used by ${ledger}/balance/tests/test_ledger.py.`,
     `The id tst_demo21 is already used by ${ledger}/balance/tests/test_ledger.py.`,
     `The id tst_demo26 is already used by ${ledger}/balance/tests/test_ledger.py.`,
+    `The id tst_demo29 is already used by ${ledger}/balance/tests/test_ledger.py.`,
     `The id stg_demo07 is already used by ${ledger}/audit/stage.yaml.`,
     `The id tst_demo22 is already used by ${ledger}/audit/tests/test_audit.py.`,
     `The id tst_demo23 is already used by ${ledger}/audit/checks/test_audit.py.`,
