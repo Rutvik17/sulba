@@ -1,0 +1,6 @@
+id: stg_e8a95r
+kind: problem
+title: Fibonacci by halving
+builds: A new `fibonacci.py`.
+file: fibonacci.py
+minutes: 20

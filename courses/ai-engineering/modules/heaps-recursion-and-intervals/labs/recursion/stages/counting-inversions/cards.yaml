@@ -1,0 +1,7 @@
+cards:
+  - id: crd_e08ied
+    front: >-
+      How do you count a list's inversions in n log n time?
+    back: >-
+      Merge sort: while merging the sorted halves, a number taken from the right half crosses
+      every number still waiting in the left half.

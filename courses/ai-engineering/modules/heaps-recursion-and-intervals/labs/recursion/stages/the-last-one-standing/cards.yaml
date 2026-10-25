@@ -1,0 +1,7 @@
+cards:
+  - id: crd_cq2xoe
+    front: >-
+      How do you find the last person left when every kth person leaves a circle of n?
+    back: >-
+      Counting from 0, J(1) = 0 and J(n) = (J(n - 1) + k) mod n, worked out in a loop from 2 up
+      to n: as a recursion it goes a call deep per person.

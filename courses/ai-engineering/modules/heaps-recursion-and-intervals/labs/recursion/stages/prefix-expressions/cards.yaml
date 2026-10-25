@@ -1,0 +1,7 @@
+cards:
+  - id: crd_cgou18
+    front: >-
+      How do you evaluate a prefix expression such as (+ 1 (* 2 3))?
+    back: >-
+      Split it into parts, then read one expression with a function that reads a number, or an
+      operator and then expressions up to the ), calling itself for each.

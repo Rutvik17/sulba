@@ -1,0 +1,6 @@
+id: stg_hiwwe3
+kind: problem
+title: The closest pair
+builds: A new `closest.py`.
+file: closest.py
+minutes: 30

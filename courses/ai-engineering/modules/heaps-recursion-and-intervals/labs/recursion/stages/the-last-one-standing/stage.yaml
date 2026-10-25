@@ -1,0 +1,6 @@
+id: stg_li6zqq
+kind: problem
+title: The last one standing
+builds: A new `circle.py`.
+file: circle.py
+minutes: 20

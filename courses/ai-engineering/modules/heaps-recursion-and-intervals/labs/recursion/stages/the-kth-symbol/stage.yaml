@@ -1,0 +1,6 @@
+id: stg_3lk9tu
+kind: problem
+title: The kth symbol
+builds: A new `symbols.py`.
+file: symbols.py
+minutes: 15
