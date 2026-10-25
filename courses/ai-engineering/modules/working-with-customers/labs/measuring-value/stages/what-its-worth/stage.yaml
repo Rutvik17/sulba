@@ -1,0 +1,6 @@
+id: stg_dzgzwm
+kind: build
+title: What it's worth
+builds: A new `worth.py`, which uses your `kinds.py` and `mix.py`.
+file: worth.py
+minutes: 30

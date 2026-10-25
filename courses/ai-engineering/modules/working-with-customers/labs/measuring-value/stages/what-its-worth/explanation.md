@@ -1,0 +1,5 @@
+The desk does {% $fig.minutes %} of an agent's minutes a month, of the {% $fig.every %} the office's contacts take, which the office would pay {% $fig.saved %} for. Its machine runs {% $fig.hours %} hours on them, {% $fig.machine %}, and the support is most of what the desk costs. Net, it saves {% $fig.net %} a month, from {% $fig.net_low %} to {% $fig.net_high %}.
+
+The net is a sum of the shares, each multiplied by a fixed amount, so its standard error follows from theirs as the mix's did, and the machine and the support move it without widening it. The months are the price over the net, which isn't a sum, but it falls as the net rises: the net's ends map to the months' ends, swapped, from {% $fig.months_low %} to {% $fig.months_high %} months.
+
+These are the office's figures and the desk's trials, and the estimate is only as good as both. A minute an agent spends on a contact the desk got wrong, putting right a ticket opened before the caller's yes, isn't counted, and neither is a contact the desk does that an agent would have done faster. The interval covers the spread between tasks, not those.

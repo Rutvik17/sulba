@@ -1,0 +1,39 @@
+id: stg_qfrjrz
+kind: ship
+title: A summary for the office
+builds: A new `summary.py`, which uses your `kinds.py`, `mix.py` and `worth.py`.
+file: summary.py
+minutes: 35
+checks:
+  - check: tst_bvq6yx
+    title: Rounded outward
+    requires: >-
+      Each interval's low end is rounded down and its high end up, shares to a tenth of a
+      percent, dollars to the dollar and months to a tenth, so the interval shown holds the one
+      worked out.
+    failure: >-
+      Round the ends with `math.floor` and `math.ceil`, not `round`: an end rounded to the
+      nearest can claim more than the trials show.
+  - check: tst_f08s7k
+    title: Every trial, or none
+    requires: >-
+      A kind done in every trial, or in none, says so in words, with its number of tasks,
+      instead of giving an interval of no width.
+    failure: >-
+      A kind whose tasks never differ has no spread to measure, and an interval of 100.0% to
+      100.0% claims a certainty the tasks can't give.
+  - check: tst_e9zoo0
+    title: A pilot that may not pay
+    requires: >-
+      A pilot whose saving's low end is 0 or less says it may not pay at all, one whose saving
+      is 0 or less says it doesn't pay, and a loss is written with a minus sign before its
+      dollar sign.
+    failure: >-
+      `payback` gives `math.inf` where the net doesn't pay: test for it before writing a number
+      of months.
+  - check: tst_0mxsj6
+    title: Its own figures
+    requires: >-
+      The summary uses the contacts, minutes, rates, support, price and confidence it's given.
+    failure: >-
+      Pass every argument on to `weighted` and `monthly`, and the price to `payback`.

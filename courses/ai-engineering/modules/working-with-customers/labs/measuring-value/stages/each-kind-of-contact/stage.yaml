@@ -1,0 +1,6 @@
+id: stg_ulvag9
+kind: build
+title: Each kind of contact
+builds: A new `kinds.py`.
+file: kinds.py
+minutes: 25

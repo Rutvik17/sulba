@@ -1,0 +1,3 @@
+With the four fixes, the report gives the office the same numbers as your own stages: the desk does {% $fig.share %} of its contacts, saves {% $fig.net %} a month net, from {% $fig.net_low %} to {% $fig.net_high %}, and the pilot pays for itself in {% $fig.months %} months.
+
+Each problem made the desk look better or surer than the trials show. The test set's mix put the share up, the trials counted as samples narrowed every interval, and the missing support put the saving up by the most of what the desk costs. The swapped months didn't change the estimate, but an interval that runs backwards can't be read at all.

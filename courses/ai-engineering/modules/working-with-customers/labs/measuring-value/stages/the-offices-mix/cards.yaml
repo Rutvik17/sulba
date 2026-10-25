@@ -1,0 +1,14 @@
+cards:
+  - id: crd_x6hhk1
+    front: >-
+      An agent does 70% of a test set's tasks. Why can it do far fewer of a customer's
+      contacts?
+    back: >-
+      The share depends on the mix of kinds. Weighted by the customer's own contacts, the kinds
+      it does least often can weigh far more than they do in the test set.
+  - id: crd_3ey1gk
+    front: >-
+      What is the standard error of a weighted sum of separate shares, with weights `$w_k$` and
+      errors `$s_k$`?
+    back: >-
+      `$\sqrt{\sum_k w_k^2 s_k^2}$`: the variances add, each scaled by its weight squared.

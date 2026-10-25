@@ -1,0 +1,7 @@
+cards:
+  - id: crd_tjk0l4
+    front: >-
+      Why are an interval's ends rounded outward in a report for a customer?
+    back: >-
+      So the interval shown always holds the one worked out. Rounding to the nearest can move
+      an end inward and claim more certainty than the data gives.

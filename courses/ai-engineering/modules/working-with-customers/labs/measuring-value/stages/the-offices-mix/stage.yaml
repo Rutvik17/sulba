@@ -1,0 +1,6 @@
+id: stg_xjkyaw
+kind: build
+title: The office's mix
+builds: A new `mix.py`, for the shares your `kinds.py` gives.
+file: mix.py
+minutes: 25
