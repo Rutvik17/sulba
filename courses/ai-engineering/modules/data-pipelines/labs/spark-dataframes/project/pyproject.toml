@@ -1,0 +1,30 @@
+[project]
+name = "spark-dataframes"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = [
+  "pandas==2.3.3",
+  "pyarrow==22.0.0",
+  "pysail==0.7.2",
+  "pyspark-client==4.2.0",
+  "pytest==9.0.2",
+]
+
+[tool.uv]
+package = false
+# The versions the browser runs.
+constraint-dependencies = [
+  "iniconfig==2.3.0",
+  "numpy==2.4.6",
+  "packaging==26.1",
+  "pluggy==1.6.0",
+  "protobuf==7.34.1",
+  "pygments==2.20.0",
+  "python-dateutil==2.9.0.post0",
+  "pytz==2026.1.post1",
+  "pyyaml==6.0.3",
+  "six==1.17.0",
+  "typing-extensions==4.15.0",
+  "tzdata==2025.3",
+  "zstandard==0.25.0",
+]

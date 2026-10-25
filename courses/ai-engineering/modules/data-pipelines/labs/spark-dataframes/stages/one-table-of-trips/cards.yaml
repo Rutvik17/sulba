@@ -1,0 +1,8 @@
+cards:
+  - id: crd_zskrq7
+    front: >-
+      Two DataFrames have the same columns in different orders. What does `union` do with
+      them, and what does `unionByName` do?
+    back: >-
+      `union` matches the columns by position, so each value lands in whatever column sits
+      in its place. `unionByName` matches them by name.

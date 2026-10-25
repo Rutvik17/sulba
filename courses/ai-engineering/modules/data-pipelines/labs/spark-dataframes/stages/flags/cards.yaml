@@ -1,0 +1,8 @@
+cards:
+  - id: crd_k6di15
+    front: >-
+      A trip has no drop-off time. What is `F.col("dropoff_at") < F.col("pickup_at")` for
+      it, and what is `~` of that?
+    back: >-
+      Both are null: a comparison with a missing value is missing, and so is its negation.
+      `F.coalesce(flag, F.lit(False))` makes the flag false.

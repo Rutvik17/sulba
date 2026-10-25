@@ -1,0 +1,15 @@
+cards:
+  - id: crd_eb0bkc
+    front: >-
+      A zone's daily counts skip the days it had no trips. Which frame gives the seven days
+      ending each day: `rowsBetween(-6, 0)` or `rangeBetween(-6, 0)` over a day number?
+    back: >-
+      `rangeBetween(-6, 0)`, which takes the rows within 6 of the current day's number.
+      `rowsBetween` takes the last seven rows, whatever days they fall on.
+  - id: crd_nyibme
+    front: >-
+      Why divide a seven-day sum by 7 rather than take `avg` over the frame, when some days
+      have no row?
+    back: >-
+      `avg` divides by the rows the frame holds, so a missing day drops out instead of
+      counting as 0.

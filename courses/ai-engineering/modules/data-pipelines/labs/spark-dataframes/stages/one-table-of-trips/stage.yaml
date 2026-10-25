@@ -1,0 +1,7 @@
+id: stg_1o4hx0
+kind: build
+title: One table of trips
+builds: A new `trips.py`.
+file: trips.py
+packages: [pyspark-client]
+minutes: 30

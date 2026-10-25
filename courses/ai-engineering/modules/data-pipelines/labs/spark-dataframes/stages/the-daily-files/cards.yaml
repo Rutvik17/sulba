@@ -1,0 +1,15 @@
+cards:
+  - id: crd_5c0l9i
+    front: >-
+      A job rewrites a day's Parquet folder with `mode("overwrite")` and fails partway. What
+      is left, and how do you keep the old files until the new ones are complete?
+    back: >-
+      The old files are gone. Write the new folder elsewhere on the same disk, then rename
+      it into place once it's written.
+  - id: crd_wpnmo0
+    front: >-
+      Spark reads `trips/day=2025-08-05/` as a column `day`. What type is it, and why cast
+      it?
+    back: >-
+      Spark infers it from the name, a date here, and uses a string when type inference is
+      off. A cast makes it a date either way.

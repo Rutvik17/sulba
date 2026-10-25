@@ -1,0 +1,35 @@
+id: lab_v2ca1e
+title: Spark DataFrames
+summary: >-
+  Work through a month of New York's yellow and green cab trips with Spark's DataFrame API:
+  one table from two files laid out differently, a flag for each record that can't be taken
+  at its word, each zone's days with a seven-day mean over the calendar, a review of an
+  assistant's report, and daily Parquet files that a run replaces whole.
+fetch:
+  - kind: data
+    title: TLC Trip Record Data
+    creators: [NYC Taxi and Limousine Commission]
+    url: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+    licence:
+      name: NYC Open Data, no restrictions on use
+      url: https://www.nyc.gov/opendata/get-started/FAQs
+    files:
+      - file: yellow_tripdata_2025-08.parquet
+        url: https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-08.parquet
+        bytes: 62293743
+        sha256: b982ace703e3564d92e94edae5ec93515f4f1fb07a5b95e7404c32464c1a6a89
+      - file: green_tripdata_2025-08.parquet
+        url: https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2025-08.parquet
+        bytes: 1149707
+        sha256: ebaab192c199b850b0244e10c90622e472c1d4f2851168f950c9f75fe8db18d1
+      - file: taxi_zone_lookup.csv
+        url: https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
+        bytes: 12331
+        sha256: 1a99e105092230f8620f301edcca7f80d3080642ff404d28ed957d3fa222c8ed
+runs: machine
+stages:
+  - one-table-of-trips
+  - flags
+  - zone-days
+  - the-assistants-report
+  - the-daily-files
