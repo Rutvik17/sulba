@@ -1,0 +1,13 @@
+id: lab_drjv79
+title: Estimating the work
+summary: >-
+  Turn a team's three estimates of each task into a date and a price for a customer: the
+  triangular distribution's mean and quantiles, the project's finish over the tasks it waits
+  for, many runs of it drawn at random, a promise from their percentiles, a review of an
+  assistant's estimate, and a quote in working days and whole cents.
+stages:
+  - three-numbers-for-a-task
+  - the-projects-finish
+  - a-date-to-promise
+  - the-assistants-estimate
+  - a-quote-for-the-office

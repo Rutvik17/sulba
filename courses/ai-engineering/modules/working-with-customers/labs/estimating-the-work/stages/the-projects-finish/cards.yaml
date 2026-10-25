@@ -1,0 +1,13 @@
+cards:
+  - id: crd_vjjmcr
+    front: >-
+      Why is a project's average finish later than the finish you get from every task's average
+      days?
+    back: >-
+      Where paths meet, the project waits for the slowest. A delay on any path delays it, while
+      time saved on one is lost waiting for the others.
+  - id: crd_eokej2
+    front: >-
+      In what order does Python's `random.triangular` take its arguments?
+    back: >-
+      `triangular(low, high, mode)`: the mode comes last.

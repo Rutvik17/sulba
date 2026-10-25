@@ -1,0 +1,7 @@
+cards:
+  - id: crd_v82xrs
+    front: >-
+      A task is estimated at 3, 5 and 12 days. Why is its mean more than its likely 5 days?
+    back: >-
+      The triangle's long side runs towards 12, and the mean, the average of its three corners,
+      lies on that side of the peak.

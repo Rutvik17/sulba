@@ -1,0 +1,5 @@
+The distribution's density is a triangle of area 1 on `[low, high]` with its peak at `likely`, so its mean is the triangle's centroid, the average of the three corners. `F(likely)` is the share of the area left of the peak, `(likely - low) / (high - low)`; below it `q` is reached on the rising side, and above it on the falling side, where solving each half of `F` for `d` gives the two square roots. The same expression holds at the ends: `q = 0` gives `low` and `q = 1` gives `high`.
+
+SciPy's `triang` describes the same shape: it "can be represented with an up-sloping line from loc to (loc + c*scale) and then downsloping for (loc + c*scale) to (loc + scale)", so `loc` is `low`, `scale` is `high - low`, and `c` is `(likely - low) / (high - low)`. The tests compare your two functions with its `mean` and `ppf`.
+
+The mean is more than the likely days whenever `high` is further from `likely` than `low` is: the long side of the triangle pulls the average of its corners its way. Signing in is likely to take {% $fig.likely %} days, but its mean is {% $fig.mean %}.

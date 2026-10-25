@@ -1,0 +1,7 @@
+id: stg_8af9a0
+kind: build
+title: Three numbers for a task
+builds: A new `estimates.py`.
+file: estimates.py
+packages: [scipy]
+minutes: 30

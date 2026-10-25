@@ -1,0 +1,8 @@
+cards:
+  - id: crd_myghkw
+    front: >-
+      Every task is given its own 80% days, and they're added along the paths. Is the result
+      an 80% promise for the project?
+    back: >-
+      No, it's later than one: it needs every task to run late at once, which is rarer than one
+      run in five. The project's percentiles come from its own simulated runs.

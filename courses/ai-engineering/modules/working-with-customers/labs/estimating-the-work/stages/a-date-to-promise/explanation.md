@@ -1,0 +1,5 @@
+The plan's {% $fig.likely %} days come true in only {% $fig.on_likely %} of the runs, and the office's {% $fig.deadline %} in {% $fig.on_deadline %}. A promise is a choice of how often to be wrong: within {% $fig.p80 %} days the team keeps it four times in five, and within {% $fig.p95 %}, nineteen times in twenty.
+
+Giving every task its own 80% days doesn't make an 80% promise. Laid along the paths, those days put the end at day {% $fig.chained %}, later than {% $fig.p80 %}, since it takes every task running late at once, which happens far less often than one in five runs. The project's percentiles have to come from its own runs.
+
+Python's `statistics.quantiles` estimates cut points too, but interpolates between the sorted runs: by default its method is "exclusive", for which "The portion of the population falling below the i-th of m sorted data points is computed as i / (m + 1)". With {% $fig.runs %} runs the two agree to within a few hundredths of a day; the promise here is a finish that some run actually reached.

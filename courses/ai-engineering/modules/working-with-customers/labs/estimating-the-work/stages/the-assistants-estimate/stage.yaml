@@ -1,0 +1,59 @@
+id: stg_ykkk5q
+kind: catch
+title: The assistant's estimate
+builds: A new `estimate.py`.
+file: estimate.py
+minutes: 30
+problems:
+  - check: tst_26v22z
+    title: The likely and high days swapped
+    cost: >-
+      `rng.triangular(task.low, task.likely, task.high)` passed the likely days as the
+      distribution's high and the high days as its mode, since Python's `triangular` takes
+      `(low, high, mode)`. Every task's draws stopped short of its high days, and the office's
+      pilot looked far quicker than its estimates: the estimate promised
+      {% $fig.order_days %} days, with a chance of {% $fig.order_chance %} by day
+      {% $fig.deadline %}, against {% $fig.days %} days and {% $fig.chance %}.
+    fix: >-
+      The fix: `rng.triangular(task.low, task.high, task.likely)`.
+    edit:
+      replace: "rng.triangular(task.low, task.likely, task.high)"
+      with: "rng.triangular(task.low, task.high, task.likely)"
+  - check: tst_znmcfp
+    title: Every task drew the same numbers
+    cost: >-
+      A new `random.Random(seed)` for each task gave every task the same numbers in the same
+      order, so in each run every task fell at the same point of its distribution: a run in
+      which one task ran late was a run in which they all did. That put the promise at
+      {% $fig.seed_days %} days, against {% $fig.days %}, and the chance of day
+      {% $fig.deadline %} at {% $fig.seed_chance %}, against {% $fig.chance %}.
+    fix: >-
+      The fix: make one generator before drawing any task, so each task's draws carry on from
+      the last.
+    edit:
+      replace: "    for task in tasks:\n        rng = random.Random(seed)\n"
+      with: "    rng = random.Random(seed)\n    for task in tasks:\n"
+  - check: tst_a88syc
+    title: Every task done in turn
+    cost: >-
+      Each run's finish was the sum of every task's days, as if each task waited for the one
+      before it, though the pages and sign-in start together, and the answers and the test set
+      both start once the pages are done. The office would have been promised
+      {% $fig.summed_days %} days, with a chance of {% $fig.summed_chance %} by day
+      {% $fig.deadline %}.
+    fix: >-
+      The fix: `schedule.finish(tasks, days)`, the end of the longest path through the tasks.
+    edit:
+      replace: "finishes.append(sum(days.values()))"
+      with: "finishes.append(schedule.finish(tasks, days))"
+  - check: tst_v87shp
+    title: The promise rounded down
+    cost: >-
+      `int` cut the 80th percentile, {% $fig.eighty %} days, to {% $fig.rounded_days %}, by
+      which only {% $fig.rounded_met %} of the runs finish: fewer than the four in five the
+      promise is meant to keep.
+    fix: >-
+      The fix: `math.ceil(eighty)`, the first whole day by which four runs in five finish.
+    edit:
+      replace: "return int(eighty), chance"
+      with: "return math.ceil(eighty), chance"

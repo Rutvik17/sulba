@@ -1,0 +1,16 @@
+cards:
+  - id: crd_zc62ze
+    front: >-
+      A simulation makes a new `random.Random(seed)` for each task, with the same seed. What
+      happens to its runs?
+    back: >-
+      Every task draws the same numbers, so in each run all the tasks fall at the same point of
+      their distributions and run late or early together. One generator for the whole
+      simulation keeps the tasks apart.
+  - id: crd_neoc4b
+    front: >-
+      Four runs in five finish within {% $fig.eighty %} days. How many whole days can be
+      promised?
+    back: >-
+      {% $fig.days %}: the first whole day by which four runs in five have finished. Rounding
+      down to {% $fig.rounded_days %} promises a day fewer runs meet.

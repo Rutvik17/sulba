@@ -1,0 +1,12 @@
+cards:
+  - id: crd_i1f85i
+    front: >-
+      A price is split into milestone payments. How do they add up to the price exactly?
+    back: >-
+      In whole cents: each payment is its share rounded down, and the cents left over go one
+      each to the milestones with the largest remainders.
+  - id: crd_gz5kk6
+    front: >-
+      What does Python's `date.weekday()` return for a Saturday?
+    back: >-
+      5: it counts Monday as 0 and Sunday as 6, so the working days are those below 5.
