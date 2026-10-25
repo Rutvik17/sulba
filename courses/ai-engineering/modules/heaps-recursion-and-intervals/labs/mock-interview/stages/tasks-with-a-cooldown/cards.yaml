@@ -1,0 +1,7 @@
+cards:
+  - id: crd_5zozy1
+    front: >-
+      How long do tasks take on one machine when each task needs a cooldown between its runs?
+    back: >-
+      The larger of the number of tasks and (most - 1) * (cooldown + 1) plus the count of tasks
+      tied for the most, where most is the commonest task's runs.

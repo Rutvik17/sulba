@@ -1,0 +1,6 @@
+id: stg_mzqaz9
+kind: problem
+title: Tasks with a cooldown
+builds: A new `cooldown.py`.
+file: cooldown.py
+minutes: 20

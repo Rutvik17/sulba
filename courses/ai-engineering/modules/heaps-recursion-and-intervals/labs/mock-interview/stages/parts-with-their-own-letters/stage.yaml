@@ -1,0 +1,6 @@
+id: stg_fk75f7
+kind: problem
+title: Parts with their own letters
+builds: A new `parts.py`.
+file: parts.py
+minutes: 25
