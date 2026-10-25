@@ -1,0 +1,7 @@
+cards:
+  - id: crd_k00oi9
+    front: >-
+      How do two heaps give the median of a stream after each number?
+    back: >-
+      A max-heap holds the smaller half and a min-heap the larger, their sizes at most one apart,
+      so the median is a top or the mean of the two.

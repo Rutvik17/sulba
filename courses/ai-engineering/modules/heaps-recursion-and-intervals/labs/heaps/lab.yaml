@@ -1,0 +1,7 @@
+id: lab_6hqvdg
+title: Heaps
+summary: >-
+  Six interview problems a heap answers: the cheapest way to join ropes, the median of a stream
+  as it grows, many sorted streams merged into one, the kth largest of a stream so far, a string
+  rearranged so no two letters alike touch, and the pairs with the smallest sums.
+stages: [joining-ropes, a-running-median, merging-many-streams, the-kth-largest-so-far, no-two-alike, the-smallest-pair-sums]

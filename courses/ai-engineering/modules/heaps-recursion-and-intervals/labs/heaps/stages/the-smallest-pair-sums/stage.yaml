@@ -1,0 +1,6 @@
+id: stg_t9haiw
+kind: problem
+title: The smallest pair sums
+builds: A new `pairs.py`.
+file: pairs.py
+minutes: 25

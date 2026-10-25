@@ -1,0 +1,7 @@
+cards:
+  - id: crd_0023q5
+    front: >-
+      How do you merge many sorted streams, some endless, in order?
+    back: >-
+      Keep each stream's next item on a heap with the stream's place, give the smallest, and
+      replace it with its stream's next: one item per stream is read ahead, never more.

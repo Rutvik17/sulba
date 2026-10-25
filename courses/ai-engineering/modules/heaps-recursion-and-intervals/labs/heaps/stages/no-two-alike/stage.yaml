@@ -1,0 +1,6 @@
+id: stg_pfrn2k
+kind: problem
+title: No two alike
+builds: A new `reorganize.py`.
+file: reorganize.py
+minutes: 25

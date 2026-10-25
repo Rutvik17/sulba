@@ -1,0 +1,8 @@
+cards:
+  - id: crd_7j66gf
+    front: >-
+      Joining ropes costs their lengths together each time. Which two should be joined first,
+      and with what?
+    back: >-
+      The two shortest, taken from a heap, with the joined rope pushed back: a rope's length is
+      paid in every join it's part of, so the longest go through the fewest.

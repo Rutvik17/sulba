@@ -1,0 +1,6 @@
+id: stg_amz7sc
+kind: problem
+title: The kth largest so far
+builds: A new `kth.py`.
+file: kth.py
+minutes: 20

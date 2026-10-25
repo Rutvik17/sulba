@@ -1,0 +1,6 @@
+id: stg_77s0nr
+kind: problem
+title: Merging many streams
+builds: A new `merging.py`.
+file: merging.py
+minutes: 20

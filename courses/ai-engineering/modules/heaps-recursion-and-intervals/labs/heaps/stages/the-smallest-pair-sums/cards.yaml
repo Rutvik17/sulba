@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ciz5jw
+    front: >-
+      How do you find the k pairs from two sorted lists with the smallest sums?
+    back: >-
+      Treat the pairs as a grid whose rows grow: a heap holds each of the first k rows' next
+      pair, and taking one adds the pair after it in its row.
