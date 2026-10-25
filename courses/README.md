@@ -212,6 +212,22 @@ callback = await client.get(back)
 
 Code reaches the provider's discovery document, keys, token endpoint and userinfo through `identity.client()` or `identity.async_client()`, httpx clients whose base URL is the issuer. PyJWT's `PyJWKClient` fetches keys through urllib, which can't reach it, so code fetches them with its client and reads them with `jwt.PyJWKSet.from_dict`. The provider holds each request to the rules of OAuth 2.0 and PKCE: a request from a client it doesn't know or to a redirect URI it hasn't registered raises `ValueError`, one without `openid` or an S256 code challenge comes back with `invalid_request`, and a code works once, for the redirect URI and the verifier it was given for. `identity.declines(url)` sends the person back without signing in. For code that must refuse a token, `identity.id_token("ada", audience="another-app")` makes one with another audience, issuer, nonce or lifetime, or signed with a key the provider doesn't publish (`stranger=True`), and `identity.returns(id_token=...)` has the token endpoint give it next. `identity.rotate()` signs with a new key, and `identity.requests` holds what the code sent.
 
+### A lab's Spark
+
+A lab that runs on the learner's machine can run Spark's DataFrame API and Spark SQL on Sail, an engine that speaks Spark Connect, which the run starts in its own process (decision record 41). Its project locks `pysail` and `pyspark-client` at the versions Sail's documentation pairs, and pandas below 3, which PySpark's client doesn't yet fully support, and a stage that imports pyspark lists `pyspark-client` under `packages`. A test asks for the `spark` fixture and gets a Spark session:
+
+```python
+def test_totals(spark):
+    orders = spark.createDataFrame(
+        [("UK", 120.5), ("US", 15.25)], "country STRING, amount DOUBLE"
+    )
+    ...
+```
+
+The run starts one Sail server for its tests, on 127.0.0.1 at a free port, which they share. It splits work into two partitions, so a sum of floats comes out the same on every machine, and the session's time zone is UTC. When a test ends, its temporary views are dropped. Sail has no build for Windows on Arm.
+
+`pnpm check:machine --spark`, which CI's Spark job runs on Linux, runs the lab's download on Spark itself, with PySpark in place of `pysail` and `pyspark-client`, and each stage's solution must pass there too. Sail and Spark differ in places, so a stage keeps to what both do alike: a CSV it reads has as many fields in each row as in its header, its integer sums stay within their type, and its tests check an exception's class but not its message, compare floats with a tolerance, and compare timestamps formatted as strings in Spark, since a collected timestamp is a datetime in the machine's own time zone.
+
 ### TypeScript stages
 
 A lab that runs on the learner's machine can have stages in TypeScript (decision record 39): the stage's file is a `.ts` file, its tests and checks are `<name>.test.ts` files, and the lab can give `.ts` files too. Its project then holds a `package.json`, which sets `"type": "module"` and names the packages the tests and the learner's code use, typescript and `@types/node` among them; the `package-lock.json` that `npm install --package-lock-only` writes from it; and a `tsconfig.json`, which includes the files tsc checks, with `"noEmit": true` and `"allowImportingTsExtensions": true`. Every run of the lab has the three beside the learner's files. Before a learner's first TypeScript run, the runner fetches Node.js, the build for their system that `sulba_runner.py` pins by its size and sha256, and installs the lock's packages with `npm ci --ignore-scripts`, each once, into `sulba` in their cache folder.

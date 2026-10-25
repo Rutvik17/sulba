@@ -44,5 +44,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [38. Test a lab's sign-in against a scripted OpenID provider](0038-test-a-labs-sign-in-against-a-scripted-openid-provider.md) | Accepted |
 | [39. Run a machine lab's TypeScript stages in Node, pinned by the runner](0039-run-a-machine-labs-typescript-stages-in-node.md) | Accepted |
 | [40. Let a machine lab's stage be a Dockerfile, read by its tests and built in CI](0040-let-a-machine-labs-stage-be-a-dockerfile.md) | Accepted |
+| [41. Run a lab's Spark code on Sail, and check it against Spark](0041-run-a-labs-spark-code-on-sail-checked-against-spark.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
