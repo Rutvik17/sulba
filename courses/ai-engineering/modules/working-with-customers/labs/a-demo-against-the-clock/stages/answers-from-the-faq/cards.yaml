@@ -1,0 +1,14 @@
+cards:
+  - id: crd_5k5y4f
+    front: >-
+      A model answers from a customer's own answers and cites them by id. What is its reply
+      checked against before a caller sees it?
+    back: >-
+      The ids it was shown: a reply that cites none of them, or one it wasn't shown, gets the
+      customer's handover instead.
+  - id: crd_zvoh88
+    front: >-
+      How does a demo against a written brief show that it meets it?
+    back: >-
+      Each of the brief's criteria is a test, planned before the code, so every promise has run
+      before the demo.

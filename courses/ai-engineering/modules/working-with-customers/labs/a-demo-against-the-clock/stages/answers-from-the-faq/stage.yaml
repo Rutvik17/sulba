@@ -1,0 +1,7 @@
+id: stg_3miq88
+kind: problem
+title: Answers from the FAQ
+builds: A new `faq.py`.
+file: faq.py
+packages: [httpx]
+minutes: 50
