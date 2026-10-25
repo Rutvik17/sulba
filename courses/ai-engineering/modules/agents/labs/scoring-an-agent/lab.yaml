@@ -1,0 +1,33 @@
+id: lab_pgx8rg
+title: Scoring an agent
+summary: >-
+  Score the help desk's agents over repeated trials of each task: pass@k and pass^k, with
+  intervals that count each task once; the median and 90th percentile of the tasks' seconds and
+  tokens, with intervals from the order statistics; traces of an agent's runs in OpenTelemetry's
+  conventions for generative AI, and each run's row from them; a review of an assistant's
+  scorecard; and a release gate that compares a candidate with the current agent task by task.
+data:
+  - file: runs.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each of the Tools and planning lab's 120 tasks done five times by the Workflows and agents
+      lab's agent, on that lab's tools, and five times by the Tools and planning lab's agent, on
+      its tools, with Qwen3.5-4B at 4 bits and nomic-embed-text-v1.5 at 8 bits, through
+      llama.cpp's server, release b11734, on machines with 4 CPU cores and no GPU, on 21 and 22
+      October 2026, each run with a seed of its own, the same for both agents, at the sampling
+      settings Qwen3.5-4B's model card gives for its non-thinking mode, with whether the task was
+      done, the seconds the run took, its requests, their tokens of prompt and of reply, and the
+      tools the model called in each request.
+references: [quantiles.json]
+runs: machine
+stages:
+  - trials
+  - costs
+  - traces
+  - the-assistants-scorecard
+  - a-release-gate
