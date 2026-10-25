@@ -1,0 +1,57 @@
+id: stg_44lg3m
+kind: catch
+title: The assistant's setup
+builds: A new `desk_ops.py`, the assistant's logs, readiness and server settings in one module.
+file: desk_ops.py
+packages: [fastapi, httpx, psycopg, psycopg-pool, pyjwt]
+minutes: 35
+problems:
+  - check: tst_bp8k8o
+    title: The request line kept the query
+    cost: >-
+      `RequestIds` logged each request's path with its query. The provider sends each person who
+      signs in back to `/auth/callback?code=...&state=...`, so every sign-in put its code in the
+      logs, and a search, a link or a form sent with `GET` would put whatever it held there too,
+      for everyone who can read the logs.
+    fix: >-
+      The fix: log `scope["path"]`, which has no query.
+    edit:
+      replace: "            # The whole address, so a line shows exactly what the caller asked for.\n            target = scope[\"path\"]\n            if scope[\"query_string\"]:\n                target += \"?\" + scope[\"query_string\"].decode(\"latin-1\")\n            self.logger.info(\n                \"request\",\n                extra={\n                    \"method\": scope[\"method\"],\n                    \"path\": target,\n"
+      with: "            # The path without its query, which can hold a token or a person's details.\n            self.logger.info(\n                \"request\",\n                extra={\n                    \"method\": scope[\"method\"],\n                    \"path\": scope[\"path\"],\n"
+  - check: tst_gjp2tx
+    title: Readiness asked the model for a reply
+    cost: >-
+      The model check asked the model for a token at every check. A host asks every few seconds,
+      so the model kept answering checks between callers' replies, and a model paid for by the
+      token would charge for each one. It also failed while the server loaded the model, with an
+      error that didn't say so.
+    fix: >-
+      The fix: ask the server's `/health`, which says whether the model has loaded without
+      generating anything, and answers 503 while it loads.
+    edit:
+      replace: "    \"\"\"A check that the model answers.\"\"\"\n\n    async def check() -> None:\n        # A token from the model shows it answers, not only that its server is up.\n        response = await client.post(\n            \"/chat/completions\",\n            json={\"messages\": [{\"role\": \"user\", \"content\": \"Hi\"}], \"max_tokens\": 1},\n        )\n        response.raise_for_status()\n"
+      with: "    \"\"\"A check that the model's server has loaded the model: its /health answers 200, and\n    503 while it loads.\"\"\"\n\n    async def check() -> None:\n        response = await client.get(\"/health\")\n        if response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:\n            raise RuntimeError(\"The model is still loading.\")\n        response.raise_for_status()\n"
+  - check: tst_lh0vfw
+    title: A check that hung held up /ready
+    cost: >-
+      The checks had no limit of their own. The pool's timeout covers only the wait for a
+      connection, not a query to a database that has stopped answering, and the model's client
+      waits as long as a reply may take, two minutes. While either hung, `/ready` gave no
+      answer, so a host that waits five seconds saw a timeout and never which check was stuck.
+    fix: >-
+      The fix: give each check `CHECK_SECONDS` with `asyncio.wait_for`, and make its state say
+      so.
+    edit:
+      replace: "        # Each check has a timeout of its own: the pool's, and the client's.\n        try:\n            await check()\n        except Exception as error:"
+      with: "        try:\n            await asyncio.wait_for(check(), CHECK_SECONDS)\n        except TimeoutError:\n            return f\"No answer in {CHECK_SECONDS:g} seconds.\"\n        except Exception as error:"
+  - check: tst_cee6ch
+    title: The desk listened on 127.0.0.1 only
+    cost: >-
+      In a container, `127.0.0.1` is the container itself. The host's proxy reaches the desk
+      over the container's network, so no request ever reached it, and Render, which needs a web
+      service to bind to a port on `0.0.0.0`, couldn't send it any.
+    fix: >-
+      The fix: listen on `0.0.0.0`, every address of the container.
+    edit:
+      replace: "        # Only this machine reaches the desk: the host's proxy sends it the callers.\n        host=\"127.0.0.1\",\n"
+      with: "        host=\"0.0.0.0\",\n"

@@ -1,0 +1,20 @@
+cards:
+  - id: crd_19om7g
+    front: >-
+      Why does the desk listen on `0.0.0.0` in a container, not uvicorn's default of
+      `127.0.0.1`?
+    back: >-
+      Requests reach the container over its network, and only the container itself reaches
+      `127.0.0.1`.
+  - id: crd_oi8bwe
+    front: >-
+      Why does the desk believe `X-Forwarded-For` only from the proxies it's told to trust?
+    back: >-
+      Any caller can send the header, so trusting it from everyone lets a caller choose the
+      address the desk sees.
+  - id: crd_qtcpcn
+    front: >-
+      Why does the desk give open requests 25 seconds once it's told to stop?
+    back: >-
+      Hosts such as Render kill the process 30 seconds after SIGTERM, and the limit leaves time
+      for the desk's shutdown to close its pool and clients first.

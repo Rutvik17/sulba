@@ -1,0 +1,7 @@
+id: stg_5robp6
+kind: build
+title: Ready for callers
+builds: A new `health.py`, which says at `/ready` whether the desk's database and model answer.
+file: health.py
+packages: [fastapi, httpx, psycopg, psycopg-pool]
+minutes: 50

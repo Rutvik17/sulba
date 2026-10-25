@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xplu4q
+    front: >-
+      What does a multi-stage Dockerfile leave out of the desk's image?
+    back: >-
+      Whatever only the build needed, such as Node, npm, uv and the test packages: the last
+      stage gets only what's copied into it.
+  - id: crd_m2o8ie
+    front: >-
+      Why is the desk's `CMD` in exec form, `["python", "main.py"]`?
+    back: >-
+      The shell form runs the program under `/bin/sh -c`, which doesn't pass signals on, so the
+      desk would never get the host's SIGTERM and could never shut down cleanly.
+  - id: crd_iquazy
+    front: >-
+      Why does the image install packages with `uv sync --locked`?
+    back: >-
+      The build fails if the lock is out of date, so the image has the versions the tests ran
+      or doesn't build at all.

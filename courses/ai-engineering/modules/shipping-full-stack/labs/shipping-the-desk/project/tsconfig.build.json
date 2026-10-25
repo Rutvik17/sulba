@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "rewriteRelativeImportExtensions": true,
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "types": [],
+    "rootDir": ".",
+    "outDir": "static"
+  },
+  "files": ["page.ts"]
+}

@@ -1,0 +1,20 @@
+cards:
+  - id: crd_bkmsul
+    front: >-
+      A sign-in callback's address is `/auth/callback?code=...&state=...`. What does that mean
+      for a request log?
+    back: >-
+      Logging the whole address writes each sign-in's code into the logs, so the request line
+      logs the path without its query.
+  - id: crd_v4yd8f
+    front: >-
+      Why doesn't a pool's connection timeout keep a readiness check from hanging?
+    back: >-
+      It limits only the wait for a connection. A query to a database that has stopped answering
+      can wait on, so each check needs a limit of its own.
+  - id: crd_u3wgel
+    front: >-
+      Why does a desk that listens on `127.0.0.1` get no requests in a container?
+    back: >-
+      Inside a container, `127.0.0.1` is the container itself, and the host's proxy reaches it
+      over the container's network, so the desk has to listen on `0.0.0.0`.
