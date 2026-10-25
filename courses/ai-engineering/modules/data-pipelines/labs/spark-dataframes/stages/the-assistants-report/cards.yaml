@@ -1,0 +1,15 @@
+cards:
+  - id: crd_w76hil
+    front: >-
+      What does `F.count(F.when(F.col("payment_type") == 1, 1).otherwise(0))` count, and
+      what counts the card trips?
+    back: >-
+      Every row, since `.otherwise(0)` gives each one a value. `F.count_if(F.col(
+      "payment_type") == 1)` counts the rows where the condition is true.
+  - id: crd_q5w3au
+    front: >-
+      `congestion_surcharge` is missing on some trips. How do `F.sum(a + b)` and
+      `F.sum(a) + F.sum(b)` differ?
+    back: >-
+      `a + b` is missing when `a` is, so `F.sum(a + b)` drops those rows' `b` too.
+      `F.sum(a) + F.sum(b)` sums each column over the values it has.

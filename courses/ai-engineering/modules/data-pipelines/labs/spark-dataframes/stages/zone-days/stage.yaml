@@ -1,0 +1,7 @@
+id: stg_hr3gt7
+kind: build
+title: Each zone's days
+builds: A new `days.py`, which uses your `trips.py` and `flags.py`.
+file: days.py
+packages: [pyspark-client]
+minutes: 40

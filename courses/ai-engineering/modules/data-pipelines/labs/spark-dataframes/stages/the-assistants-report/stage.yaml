@@ -1,0 +1,60 @@
+id: stg_95nurf
+kind: catch
+title: The assistant's report
+builds: A new `report.py`.
+file: report.py
+packages: [pyspark-client]
+minutes: 30
+problems:
+  - check: tst_qk49wg
+    title: It joined green's columns to yellow's by position
+    cost: >-
+      `union` lines up columns by where they come, and green's file gives its amounts in
+      another order than yellow's, so green's tips landed under `fare_amount`, its totals
+      under `tip_amount` and its payment codes under `total_amount`: green's takings for
+      August came to {% $fig.green_payments %}, the sum of its payment codes, where its trips
+      took {% $fig.green_takings %}.
+    fix: >-
+      The fix: `yellow.unionByName(green)`, which matches the columns by their names.
+    edit:
+      replace: "trips = yellow.union(green)"
+      with: "trips = yellow.unionByName(green)"
+  - check: tst_z7125h
+    title: It counted every trip as a card trip
+    cost: >-
+      `F.count` counts the values that aren't missing, and `.otherwise(0)` gave each trip
+      not paid by card a 0 rather than nothing, so `card_trips` counted all
+      {% $fig.yellow_trips %} yellow trips in August, of which {% $fig.yellow_cards %} were
+      paid by card.
+    fix: >-
+      The fix: `F.count_if(F.col("payment_type") == 1)`, which counts the trips for which
+      the condition is true.
+    edit:
+      replace: 'F.count(F.when(F.col("payment_type") == 1, 1).otherwise(0))'
+      with: 'F.count_if(F.col("payment_type") == 1)'
+  - check: tst_tjegce
+    title: It lost the CBD fee of every trip with no congestion surcharge
+    cost: >-
+      Adding two columns gives a missing value when either is missing, and
+      {% $fig.no_surcharge %} yellow trips in August report no congestion surcharge, so
+      `sum` left out their CBD fees too: the yellow charges came to
+      {% $fig.charges_row_by_row %}, where the two columns hold {% $fig.charges %}.
+    fix: >-
+      The fix: `F.sum("congestion_surcharge") + F.sum("cbd_congestion_fee")`, which sums
+      each column over the values it has.
+    edit:
+      replace: 'F.sum(F.col("congestion_surcharge") + F.col("cbd_congestion_fee"))'
+      with: '(F.sum("congestion_surcharge") + F.sum("cbd_congestion_fee"))'
+  - check: tst_s68e7k
+    title: It counted trips from other months in August's days
+    cost: >-
+      `dayofmonth` gives the day of the month whatever the month, and the report kept every
+      trip in the files, so the {% $fig.outside %} trips they hold from before or after
+      August were counted under the days of August with their numbers, 31 July's under 31
+      August.
+    fix: >-
+      The fix: keep August's trips first, with `trips.where((F.year("pickup_at") == 2025) &
+      (F.month("pickup_at") == 8))`.
+    edit:
+      replace: "return trips.groupBy("
+      with: 'return trips.where((F.year("pickup_at") == 2025) & (F.month("pickup_at") == 8)).groupBy('

@@ -2,3 +2,4 @@ id: mod_5hf874
 title: Data pipelines
 labs:
   - analytical-sql
+  - spark-dataframes

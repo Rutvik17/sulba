@@ -1,0 +1,7 @@
+id: stg_pekgdv
+kind: build
+title: A flag for each problem
+builds: A new `flags.py`, which uses your `trips.py`.
+file: flags.py
+packages: [pyspark-client]
+minutes: 30

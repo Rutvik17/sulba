@@ -1,0 +1,42 @@
+id: stg_q4tgpk
+kind: ship
+title: The daily files
+builds: A new `store.py`, which uses your `trips.py` and `flags.py`.
+file: store.py
+packages: [pyspark-client]
+minutes: 40
+checks:
+  - check: tst_66tu9r
+    title: A day saved again
+    requires: >-
+      Saved twice, a day has its trips once.
+    failure: >-
+      Replace the day's folder rather than adding files to it, as `mode("append")` would.
+  - check: tst_ppatpk
+    title: Other days are kept
+    requires: >-
+      Saving one day leaves every other day's folder and files as they were.
+    failure: >-
+      Write only the day's own folder, `day_folder(folder, day)`, never the whole of
+      `folder`.
+  - check: tst_il5e40
+    title: All of it or none
+    requires: >-
+      A run that fails partway leaves the day's trips as they were before it.
+    failure: >-
+      Write the new files into a folder of their own outside `folder`, and move them into
+      place only once the write has finished.
+  - check: tst_cg64b1
+    title: A day with no clean trips
+    requires: >-
+      Saving a day with no clean trips leaves it no folder, and takes away what was saved
+      for it before.
+    failure: >-
+      When `trips.isEmpty()`, remove the day's folder and write nothing.
+  - check: tst_qelkzs
+    title: The day's trips, value for value
+    requires: >-
+      The saved trips are the day's clean trips, with every one of their values.
+    failure: >-
+      Keep the trips where `clean` is true and whose pickup falls on `day`, then drop the
+      flags.
