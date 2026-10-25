@@ -1,5 +1,6 @@
 import type { Event } from '@sulba/data/outbox';
 import { Editor } from '@sulba/editor/editor';
+import { languageOf } from '@sulba/editor/language';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
@@ -237,6 +238,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
   const solutionOpen = !isCatch || review !== null;
   const fetched = fetchedOf(lab);
   const served = servedOf(lab);
+  const typeScript = lab.stages.some((each) => each.file.endsWith('.ts'));
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
@@ -314,7 +316,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
           </TabPanel>
           <TabPanel id="solution">
             <div className={css.panel}>
-              <Editor defaultValue={stage.solution} label={`Solution: ${stage.file}`} readOnly />
+              <Editor
+                defaultValue={stage.solution}
+                label={`Solution: ${stage.file}`}
+                language={languageOf(stage.file)}
+                readOnly
+              />
             </div>
           </TabPanel>
         </Tabs>
@@ -371,6 +378,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
               <code>http://127.0.0.1:9931/v1</code>. The first time, it downloads the models,{' '}
               {served.size}, from {served.hosts}, and llama.cpp’s server for your system, from
               github.com.
+            </p>
+          )}
+          {typeScript && (
+            <p>
+              Its TypeScript stages run in Node.js. The first time, it downloads Node.js for your
+              system from nodejs.org, and the lab’s packages from registry.npmjs.org.
             </p>
           )}
           {isCatch && (

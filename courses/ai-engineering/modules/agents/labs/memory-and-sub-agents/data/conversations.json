@@ -1,0 +1,4671 @@
+[
+ {
+  "conversation": "c1",
+  "page": "ssa",
+  "tickets": [
+   {
+    "ticket": "T-3101",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement Social Security card"
+   },
+   {
+    "ticket": "T-3201",
+    "service": "va",
+    "status": "open",
+    "summary": "Disability compensation claim"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "13:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "13:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Will I still be able to continue with my eligibility for Disability benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p268"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What are the next steps if I do not qualify for benefits on someone else's records?"
+    ],
+    "expect": {
+     "cites": [
+      "p159",
+      "p163"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to apply for social security disablilty When do I Apply?"
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What are the original documents needed for getting an original social security card for a foreign-born U.S. citizen adopted child?."
+    ],
+    "expect": {
+     "cites": [
+      "p64",
+      "p475"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Do I need an original card for an aduly who is not a citizen?"
+    ],
+    "expect": {
+     "cites": [
+      "p56"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Tuesday about my replacement Social Security card?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3101",
+     "day": "2026-11-03",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "HEllo. could you tell me what documents i need to get a card?"
+    ],
+    "expect": {
+     "cites": [
+      "p97"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Please tell me about the benefits for disabled people."
+    ],
+    "expect": {
+     "cites": [
+      "p362"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+    ],
+    "expect": {
+     "cites": [
+      "p64",
+      "p475"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "whar is Monthly Medicare premiums for 2020?"
+    ],
+    "expect": {
+     "cites": [
+      "p403",
+      "p413"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How does an adult with a disability apply to the SII?"
+    ],
+    "expect": {
+     "cites": [
+      "p261"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my disability compensation claim on Monday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3201",
+     "day": "2026-11-02",
+     "part": "morning"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c2",
+  "page": "va",
+  "tickets": [
+   {
+    "ticket": "T-3102",
+    "service": "va",
+    "status": "open",
+    "summary": "Disability compensation claim"
+   },
+   {
+    "ticket": "T-3202",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "FAFSA correction"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "11:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "10:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I wanted to find out more about VA education aid for dependents"
+    ],
+    "expect": {
+     "cites": [
+      "p863"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What does VA assistance and home assistance and subsidy benefits provide?"
+    ],
+    "expect": {
+     "cites": [
+      "p675"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello there. I hope you're having a great day. Can you tell me about enhanced eligibility for returning combat veterans?"
+    ],
+    "expect": {
+     "cites": [
+      "p842"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to get some information about VA Survivors Pension, please."
+    ],
+    "expect": {
+     "cites": [
+      "p1037"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, I receive VA payments but need dates of previous payments. Is there a way I can view my VA payment history online?"
+    ],
+    "expect": {
+     "cites": [
+      "p896"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my disability compensation claim on Friday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3102",
+     "day": "2026-11-06",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I'm helping an Army vet who thinks that he was exposed to biological weapons while in the service and we want information"
+    ],
+    "expect": {
+     "cites": [
+      "p759"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, i'm helping a friend of mine looking for certain information about Rehab and employment, could you help me on that? She's on active duty."
+    ],
+    "expect": {
+     "cites": [
+      "p923"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I am looking to learn about co-op training."
+    ],
+    "expect": {
+     "cites": [
+      "p1012"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you tell me about Servicemembers Group LIfe Insurance?"
+    ],
+    "expect": {
+     "cites": [
+      "p946"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello I need information about the VA duty to help"
+    ],
+    "expect": {
+     "cites": [
+      "p880"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Wednesday about my FAFSA correction?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3202",
+     "day": "2026-11-04",
+     "part": "morning"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c3",
+  "page": "studentaid",
+  "tickets": [
+   {
+    "ticket": "T-3103",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "FAFSA correction"
+   },
+   {
+    "ticket": "T-3203",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Driver license renewal"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Is there a requirement for me to list any schools on my FAFSA form?"
+    ],
+    "expect": {
+     "cites": [
+      "p1490"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, can you tell me what the Extended Payment Plan consists of?"
+    ],
+    "expect": {
+     "cites": [
+      "p1436"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to correct my financial aid application and submit it right"
+    ],
+    "expect": {
+     "cites": [
+      "p1147"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can non-US citizens qualify to receive federal student aid?"
+    ],
+    "expect": {
+     "cites": [
+      "p1350"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Why would I need to provide required verification for my FAFSA application?"
+    ],
+    "expect": {
+     "cites": [
+      "p1150"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Thursday about my FAFSA correction?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3103",
+     "day": "2026-11-05",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How many colleges should list in my FAFSA form?"
+    ],
+    "expect": {
+     "cites": [
+      "p1490"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there. I would like to have some information related to receive financial aid as student."
+    ],
+    "expect": {
+     "cites": [
+      "p1406"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you give me details of the costs of the university and the professional career?"
+    ],
+    "expect": {
+     "cites": [
+      "p1125"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you help me renew my FAFSA application?"
+    ],
+    "expect": {
+     "cites": [
+      "p1154"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you help me with preparing for college?"
+    ],
+    "expect": {
+     "cites": [
+      "p1216"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my driver license renewal on Tuesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3203",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c4",
+  "page": "dmv",
+  "tickets": [
+   {
+    "ticket": "T-3104",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Driver license renewal"
+   },
+   {
+    "ticket": "T-3204",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Replacement Social Security card"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "13:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I lost my permit, how do I replace it?"
+    ],
+    "expect": {
+     "cites": [
+      "p1752"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what are some of the little things I need to take care of for medical certification?"
+    ],
+    "expect": {
+     "cites": [
+      "p2100"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How much does it cost to get a commercial registration?"
+    ],
+    "expect": {
+     "cites": [
+      "p1689"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hey, I'm 17 years old and I have some questions about restrictions for drivers under 18. Can you answer them?"
+    ],
+    "expect": {
+     "cites": [
+      "p2035"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I wanted to know more about the gold plates"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my driver license renewal on Wednesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3104",
+     "day": "2026-11-04",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to be certified as an escort driver"
+    ],
+    "expect": {
+     "cites": [
+      "p1809"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hello I need Information on Empire Gold plates"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I want to renew my license by mail"
+    ],
+    "expect": {
+     "cites": [
+      "p2146"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to get a replacement non-driver ID card."
+    ],
+    "expect": {
+     "cites": [
+      "p2225"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I have some questions regarding a suspended driving privilege. Perhaps you can answer some or even all of them."
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Friday about my replacement Social Security card?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3204",
+     "day": "2026-11-06",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c5",
+  "page": "ssa",
+  "tickets": [
+   {
+    "ticket": "T-3105",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Disability benefits application"
+   },
+   {
+    "ticket": "T-3205",
+    "service": "va",
+    "status": "open",
+    "summary": "GI Bill benefits"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "13:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What do the documents need to be about in order to get my social security card?"
+    ],
+    "expect": {
+     "cites": [
+      "p53",
+      "p469"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Will I need any kind of documentation to get a social security card?"
+    ],
+    "expect": {
+     "cites": [
+      "p84"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hi can you help me with retirement planning"
+    ],
+    "expect": {
+     "cites": [
+      "p390"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Could I apply online as an adult with a disability for SSI?"
+    ],
+    "expect": {
+     "cites": [
+      "p261"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What documents do I need to apply for a replacement card as a noncitizen adult?"
+    ],
+    "expect": {
+     "cites": [
+      "p86"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Friday about my disability benefits application?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3105",
+     "day": "2026-11-06",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "would you give me information about disability benefits"
+    ],
+    "expect": {
+     "cites": [
+      "p108"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what can you tell me about Social Security Credits"
+    ],
+    "expect": {
+     "cites": [
+      "p417",
+      "p421"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Will I continue to be eligible for disability after I first get it?"
+    ],
+    "expect": {
+     "cites": [
+      "p268"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what can you tell me about Social Security Credits"
+    ],
+    "expect": {
+     "cites": [
+      "p417",
+      "p421"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need a Social Security card or number for my daughter"
+    ],
+    "expect": {
+     "cites": [
+      "p79"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my GI Bill benefits on Tuesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3205",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c6",
+  "page": "va",
+  "tickets": [
+   {
+    "ticket": "T-3106",
+    "service": "va",
+    "status": "open",
+    "summary": "GI Bill benefits"
+   },
+   {
+    "ticket": "T-3206",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Loan repayment plan"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "12:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to know about Eligibility for Veterans Pension"
+    ],
+    "expect": {
+     "cites": [
+      "p815"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hey,i have questions about my VA welcome kit?"
+    ],
+    "expect": {
+     "cites": [
+      "p699"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can Active Duty Members Receive VA Health Care?"
+    ],
+    "expect": {
+     "cites": [
+      "p842"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I just wanted to know if there are any resources and/or support outside VA which I could access."
+    ],
+    "expect": {
+     "cites": [
+      "p592"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to learn about VA Health Care."
+    ],
+    "expect": {
+     "cites": [
+      "p842"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my GI Bill benefits on Tuesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3106",
+     "day": "2026-11-03",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need information about VA disability compensation and ratings"
+    ],
+    "expect": {
+     "cites": [
+      "p613",
+      "p617"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello there, I would like to learn more about the SGLI insurance you offer."
+    ],
+    "expect": {
+     "cites": [
+      "p946"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I think I have missed the deadline for submitting my request."
+    ],
+    "expect": {
+     "cites": [
+      "p881"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hi i need help about Exposure to ionizing radiation"
+    ],
+    "expect": {
+     "cites": [
+      "p818"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "please show me information about Enhanced eligibility for returning OEF/OIF/OND combat Veterans"
+    ],
+    "expect": {
+     "cites": [
+      "p842"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Wednesday about my loan repayment plan?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3206",
+     "day": "2026-11-04",
+     "part": "morning"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c7",
+  "page": "studentaid",
+  "tickets": [
+   {
+    "ticket": "T-3107",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Loan repayment plan"
+   },
+   {
+    "ticket": "T-3207",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Vehicle registration"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What is a good way to prepare for college?"
+    ],
+    "expect": {
+     "cites": [
+      "p1216"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Is there a way to spread the word about the availability of federal student aid for college?"
+    ],
+    "expect": {
+     "cites": [
+      "p1334"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "If my school closes while I enroll, can I be eligible to be discharged from my federal student loan?"
+    ],
+    "expect": {
+     "cites": [
+      "p1206"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "If I am not a US citizen, do I not qualify for federal student aid?"
+    ],
+    "expect": {
+     "cites": [
+      "p1350"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Why do I need to list schools on my FAFSA form?"
+    ],
+    "expect": {
+     "cites": [
+      "p1490"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Thursday about my loan repayment plan?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3107",
+     "day": "2026-11-05",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what will the college do with the fafsa?"
+    ],
+    "expect": {
+     "cites": [
+      "p1490"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Do I have to renew my FAFSA application?"
+    ],
+    "expect": {
+     "cites": [
+      "p1154"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Tell me about the FAFSA application renewal."
+    ],
+    "expect": {
+     "cites": [
+      "p1154"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there. I would like to know when a repayment plan can start."
+    ],
+    "expect": {
+     "cites": [
+      "p1277"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there. I'm looking information related to how to fill the the fafsa form, and the information that I need to put on it."
+    ],
+    "expect": {
+     "cites": [
+      "p1490"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my vehicle registration on Monday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3207",
+     "day": "2026-11-02",
+     "part": "morning"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c8",
+  "page": "dmv",
+  "tickets": [
+   {
+    "ticket": "T-3108",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Vehicle registration"
+   },
+   {
+    "ticket": "T-3208",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Disability benefits application"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "12:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "12:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How long will Driver's Ed courses be valid for?"
+    ],
+    "expect": {
+     "cites": [
+      "p1684"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need help with a road test."
+    ],
+    "expect": {
+     "cites": [
+      "p1720"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Where can I find how must the fee is to renew my license?"
+    ],
+    "expect": {
+     "cites": [
+      "p2147"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How to replace a driverless ID card"
+    ],
+    "expect": {
+     "cites": [
+      "p2225"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hello I need information on Empire Gold plates"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my vehicle registration on Wednesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3108",
+     "day": "2026-11-04",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello I need information about what the suspension implies and its risks"
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello I need information about the cost to renew the license"
+    ],
+    "expect": {
+     "cites": [
+      "p2147"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need information about Suspended Driving Privileges"
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need information about how much it'll cost me to renew my license."
+    ],
+    "expect": {
+     "cites": [
+      "p2147"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I want to become a driving school instructor and need to know what tests are involved in the process."
+    ],
+    "expect": {
+     "cites": [
+      "p2306"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Thursday about my disability benefits application?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3208",
+     "day": "2026-11-05",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c9",
+  "page": "ssa",
+  "tickets": [
+   {
+    "ticket": "T-3109",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Retirement benefits start date"
+   },
+   {
+    "ticket": "T-3209",
+    "service": "va",
+    "status": "open",
+    "summary": "VA home loan certificate"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "13:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, When I can To Apply For Social Security Disability Benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you tell me about how I can continue receiving my Disability benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p268"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "There are several things that I need explained about medicare premiums. Perhaps you can help me?"
+    ],
+    "expect": {
+     "cites": [
+      "p397"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What documents do I need to apply?"
+    ],
+    "expect": {
+     "cites": [
+      "p104"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How can I ensure that I keep receiving my disability benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p268"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Friday about my retirement benefits start date?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3109",
+     "day": "2026-11-06",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi', a relative have a disability and i'm searching for information in her behalf, could you help me?"
+    ],
+    "expect": {
+     "cites": [
+      "p362"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi. I'm trying to learn about disability benefits."
+    ],
+    "expect": {
+     "cites": [
+      "p268"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there, I need to Apply For Social Security Disability Benefits. When I can do it?"
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello I need information about when to apply for disability benefits"
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what can you tell me about Medicare Premiums: Rules For Higher-Income Beneficiaries"
+    ],
+    "expect": {
+     "cites": [
+      "p397"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my VA home loan certificate on Thursday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3209",
+     "day": "2026-11-05",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c10",
+  "page": "va",
+  "tickets": [
+   {
+    "ticket": "T-3110",
+    "service": "va",
+    "status": "open",
+    "summary": "VA home loan certificate"
+   },
+   {
+    "ticket": "T-3210",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Pell Grant eligibility"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "12:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "can you tell me more about housing grants for veterans"
+    ],
+    "expect": {
+     "cites": [
+      "p811"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Is there anything that will make me more likely to get these benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p724"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Good afternoon. I was reading about possible effects of certain radiations on veterans. That could be worth of a disability benefit?"
+    ],
+    "expect": {
+     "cites": [
+      "p818"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hey there, i'm in need of some info related to survivor pension, please."
+    ],
+    "expect": {
+     "cites": [
+      "p1037"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you get disability if you were exposed to ionizing radiation?"
+    ],
+    "expect": {
+     "cites": [
+      "p818"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my VA home loan certificate on Wednesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3110",
+     "day": "2026-11-04",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I would like to know about the Veterans Pension?"
+    ],
+    "expect": {
+     "cites": [
+      "p815"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What is Veterans Mortgage Life Insurance (VMLI?"
+    ],
+    "expect": {
+     "cites": [
+      "p716"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Is there something wrong with me not having VA health benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p1000"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How can I become eligible for VA home loan programs?"
+    ],
+    "expect": {
+     "cites": [
+      "p1026"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you help me with information on service members group life insurance?"
+    ],
+    "expect": {
+     "cites": [
+      "p946"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Tuesday about my Pell Grant eligibility?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3210",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c11",
+  "page": "studentaid",
+  "tickets": [
+   {
+    "ticket": "T-3111",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Pell Grant eligibility"
+   },
+   {
+    "ticket": "T-3211",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Learner permit test"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "11:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "12:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "13:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, I would like to know if you may be eligible for the cancellation of your federal student loans based on a false certification."
+    ],
+    "expect": {
+     "cites": [
+      "p1479"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How would I go about renewing my FAFSA Application?"
+    ],
+    "expect": {
+     "cites": [
+      "p1154"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I am looking for further information on the Income-Sensitive Repayment Plan and am wondering where I could go to get this information"
+    ],
+    "expect": {
+     "cites": [
+      "p1356"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I'm a student looking for help with preparing for college. Can you lend me a hand?"
+    ],
+    "expect": {
+     "cites": [
+      "p1216"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what forbearance is there for a student loan?"
+    ],
+    "expect": {
+     "cites": [
+      "p1192"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Tuesday about my Pell Grant eligibility?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3111",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "we might want to link your information on our site"
+    ],
+    "expect": {
+     "cites": [
+      "p1334"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, I want you to help me with information on the availability of federal student aid for college"
+    ],
+    "expect": {
+     "cites": [
+      "p1334"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need to get my kids ready for college so you can help me with that"
+    ],
+    "expect": {
+     "cites": [
+      "p1216"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How long would I have for repayment of my student loans under the Extended Repayment Plan?"
+    ],
+    "expect": {
+     "cites": [
+      "p1436"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, can you tell me how you can determine the amount of federal aid?"
+    ],
+    "expect": {
+     "cites": [
+      "p1272"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my learner permit test on Monday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3211",
+     "day": "2026-11-02",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c12",
+  "page": "dmv",
+  "tickets": [
+   {
+    "ticket": "T-3112",
+    "service": "dmv",
+    "status": "open",
+    "summary": "Learner permit test"
+   },
+   {
+    "ticket": "T-3212",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Retirement benefits start date"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What are the requirements to open a driving school?"
+    ],
+    "expect": {
+     "cites": [
+      "p2176"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, what can you tell me about those Empire Gold plates?"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, can you give me the email to Contact the Medical Certification Unit"
+    ],
+    "expect": {
+     "cites": [
+      "p2101"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you answer a few questions I have about exchanging my driver license from another state, please?"
+    ],
+    "expect": {
+     "cites": [
+      "p2011"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Good evening. Can i get information about gold plates, please?"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my learner permit test on Tuesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3112",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I have a repair problem with my van, can you answer a few questions about that?"
+    ],
+    "expect": {
+     "cites": [
+      "p1870"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you answer some questions I have about my suspended driving privilege, please?"
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What are the fees for commercial vehicles?"
+    ],
+    "expect": {
+     "cites": [
+      "p1689"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What are out of state insurance documents?"
+    ],
+    "expect": {
+     "cites": [
+      "p1701"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Greetings, now is it going there?. Hope great, really. Can you give me some light about a driving school setting?"
+    ],
+    "expect": {
+     "cites": [
+      "p2176"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Friday about my retirement benefits start date?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3212",
+     "day": "2026-11-06",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c13",
+  "page": "ssa",
+  "tickets": [
+   {
+    "ticket": "T-3113",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Medicare enrollment"
+   },
+   {
+    "ticket": "T-3213",
+    "service": "va",
+    "status": "open",
+    "summary": "Pension application"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what can you tell me about the disability benefits."
+    ],
+    "expect": {
+     "cites": [
+      "p230"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hello, When I can apply for Retirement Benefits Or Medicare?"
+    ],
+    "expect": {
+     "cites": [
+      "p339",
+      "p342"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "When do I apply for social security disablilty benefits?"
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "what can you tell me about Retirement Benefits"
+    ],
+    "expect": {
+     "cites": [
+      "p389"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, I need to know how soon I can apply for disability."
+    ],
+    "expect": {
+     "cites": [
+      "p132"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Thursday about my Medicare enrollment?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3113",
+     "day": "2026-11-05",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+    ],
+    "expect": {
+     "cites": [
+      "p61",
+      "p472"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there. I'm getting everything set for my retirement, but I need some information."
+    ],
+    "expect": {
+     "cites": [
+      "p158",
+      "p162"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, I'd like to know when a person is deemed disabled by your experts."
+    ],
+    "expect": {
+     "cites": [
+      "p130"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "If Applying for a child (under 18) what are the steps for Disability Benefits"
+    ],
+    "expect": {
+     "cites": [
+      "p378"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I have some questions regarding my social security credits and could use some help with that."
+    ],
+    "expect": {
+     "cites": [
+      "p417",
+      "p421"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my pension application on Monday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3213",
+     "day": "2026-11-02",
+     "part": "morning"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c14",
+  "page": "va",
+  "tickets": [
+   {
+    "ticket": "T-3114",
+    "service": "va",
+    "status": "open",
+    "summary": "Pension application"
+   },
+   {
+    "ticket": "T-3214",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Loan forgiveness application"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-03": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "11:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "14:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need some help with careers and employment through VA."
+    ],
+    "expect": {
+     "cites": [
+      "p594",
+      "p599"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "can you give me details of VA Survivors Pension"
+    ],
+    "expect": {
+     "cites": [
+      "p1037"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I want to know about enhanced eligibility for returning OEF/OIF/OND combat Veterans, please."
+    ],
+    "expect": {
+     "cites": [
+      "p842"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hi i need help about VA Survivors Pension"
+    ],
+    "expect": {
+     "cites": [
+      "p1037"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "can you give me details of VA education benefits for survivors and dependents"
+    ],
+    "expect": {
+     "cites": [
+      "p787"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my pension application on Thursday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3114",
+     "day": "2026-11-05",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need help with Ionizing radiation exposure"
+    ],
+    "expect": {
+     "cites": [
+      "p818"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "how is the fully developed Claim program for a VA pension"
+    ],
+    "expect": {
+     "cites": [
+      "p564"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Can you give me any information about servicemembers group life insurance?"
+    ],
+    "expect": {
+     "cites": [
+      "p946"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I wanted to know what comes next after an appealed claim?"
+    ],
+    "expect": {
+     "cites": [
+      "p496"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I want to know more about SGLI"
+    ],
+    "expect": {
+     "cites": [
+      "p946"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Wednesday about my loan forgiveness application?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3214",
+     "day": "2026-11-04",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c15",
+  "page": "studentaid",
+  "tickets": [
+   {
+    "ticket": "T-3115",
+    "service": "studentaid",
+    "status": "open",
+    "summary": "Loan forgiveness application"
+   },
+   {
+    "ticket": "T-3215",
+    "service": "dmv",
+    "status": "open",
+    "summary": "License plate replacement"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "11:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "09:00",
+     "11:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "14:00",
+     "16:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "13:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "12:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hello. Before anything else: I can only take calls in the afternoon."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Why would I need verification from the school?"
+    ],
+    "expect": {
+     "cites": [
+      "p1150"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "just wanted to know about getting financial aid"
+    ],
+    "expect": {
+     "cites": [
+      "p1357"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi there. I'm looking information about the contact ways there is with you, and I heard something about virtual assistant and things like that."
+    ],
+    "expect": {
+     "cites": [
+      "p1236"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "How can I share the voice about the availability of federal student aid for college or vocational school?"
+    ],
+    "expect": {
+     "cites": [
+      "p1334"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "how should I decide on what school aid to use?"
+    ],
+    "expect": {
+     "cites": [
+      "p1152"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Tuesday about my loan forgiveness application?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3115",
+     "day": "2026-11-03",
+     "part": "afternoon"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Could you give me some information about if there is any program that would allow me to temporarily stop making payments on my student loan?"
+    ],
+    "expect": {
+     "cites": [
+      "p1117"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, I would like you to guide me, I recently left the school and the school did not make the required return of the loan funds to the loan administrator, what proceeds?"
+    ],
+    "expect": {
+     "cites": [
+      "p1267"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hello, I want information about the Extended Payment Plan"
+    ],
+    "expect": {
+     "cites": [
+      "p1436"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Do I have to renew my FAFSA application?"
+    ],
+    "expect": {
+     "cites": [
+      "p1154"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Hi, I'd like to connect with you and help spread the word about the availability of federal student aid."
+    ],
+    "expect": {
+     "cites": [
+      "p1334"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my license plate replacement on Thursday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3215",
+     "day": "2026-11-05",
+     "part": "afternoon"
+    }
+   }
+  ]
+ },
+ {
+  "conversation": "c16",
+  "page": "dmv",
+  "tickets": [
+   {
+    "ticket": "T-3116",
+    "service": "dmv",
+    "status": "open",
+    "summary": "License plate replacement"
+   },
+   {
+    "ticket": "T-3216",
+    "service": "ssa",
+    "status": "open",
+    "summary": "Medicare enrollment"
+   }
+  ],
+  "free": {
+   "ssa": {
+    "2026-11-02": [
+     "09:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ]
+   },
+   "va": {
+    "2026-11-02": [
+     "10:00",
+     "12:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "10:00",
+     "13:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-04": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "15:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "13:00",
+     "14:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "10:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "studentaid": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "16:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "12:00",
+     "14:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "11:00",
+     "14:00",
+     "15:00",
+     "16:00"
+    ],
+    "2026-11-05": [
+     "09:00",
+     "11:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-06": [
+     "11:00",
+     "13:00",
+     "14:00",
+     "15:00"
+    ]
+   },
+   "dmv": {
+    "2026-11-02": [
+     "09:00",
+     "10:00",
+     "13:00",
+     "14:00"
+    ],
+    "2026-11-03": [
+     "09:00",
+     "10:00",
+     "11:00",
+     "15:00"
+    ],
+    "2026-11-04": [
+     "10:00",
+     "11:00",
+     "12:00",
+     "14:00"
+    ],
+    "2026-11-05": [
+     "11:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ],
+    "2026-11-06": [
+     "09:00",
+     "12:00",
+     "13:00",
+     "16:00"
+    ]
+   }
+  },
+  "parts": [
+   {
+    "kind": "preference",
+    "messages": [
+     "Hi. Just so you know, I'm only free to talk on the phone in the morning."
+    ],
+    "expect": {}
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "Good afternoon, May i have clarification about some doubts i have with colored plates?"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need some information about Empire Gold plates."
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I'm thinking about opening a driving school and need information about the requirements to do so."
+    ],
+    "expect": {
+     "cites": [
+      "p2176"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "My driver license has been suspended and I need help fixing this."
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "What can I do if I forgot to update my address?"
+    ],
+    "expect": {
+     "cites": [
+      "p1663"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "I'd like a call back about my license plate replacement on Wednesday, please.",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3116",
+     "day": "2026-11-04",
+     "part": "morning"
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "I need some guidance with replacing a non-driver ID card. Can you help me?"
+    ],
+    "expect": {
+     "cites": [
+      "p2225"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "When do I schedule and take the road test"
+    ],
+    "expect": {
+     "cites": [
+      "p1722"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "hi i would like to know if the suspension affects the driving privilege"
+    ],
+    "expect": {
+     "cites": [
+      "p2184"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "could you give me information about Empire Gold plates?"
+    ],
+    "expect": {
+     "cites": [
+      "p2105"
+     ]
+    }
+   },
+   {
+    "kind": "question",
+    "messages": [
+     "For the Medical Certification Requirements which are useful links"
+    ],
+    "expect": {
+     "cites": [
+      "p2101"
+     ]
+    }
+   },
+   {
+    "kind": "callback",
+    "messages": [
+     "Could an adviser call me on Thursday about my Medicare enrollment?",
+     "Yes, please."
+    ],
+    "expect": {
+     "ticket": "T-3216",
+     "day": "2026-11-05",
+     "part": "morning"
+    }
+   }
+  ]
+ }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "ledger",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./*"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

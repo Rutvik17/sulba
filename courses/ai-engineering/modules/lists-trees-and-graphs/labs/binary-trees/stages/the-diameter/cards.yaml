@@ -1,0 +1,7 @@
+cards:
+  - id: crd_u9n55i
+    front: >-
+      How do you find a binary tree's diameter in one walk?
+    back: >-
+      Work out each node's height from its children's, bottom up; the longest path through a
+      node as its highest has the two children's heights added, in edges. Keep the largest.

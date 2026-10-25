@@ -1,0 +1,14 @@
+cards:
+  - id: crd_mzzn4h
+    front: >-
+      What can an id do when it's written into a query's SQL with an f-string?
+    back: >-
+      Change the query: an id written as SQL, such as `x' OR 'x'='x`, can read another caller's
+      conversation.
+  - id: crd_217ndx
+    front: >-
+      Why take a pooled connection with `with pool.connection()` rather than `getconn` and
+      `putconn`?
+    back: >-
+      The block gives it back however it ends, an early return or an error included; `putconn`
+      gives it back only on the paths that call it.

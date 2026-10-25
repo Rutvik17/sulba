@@ -1,0 +1,7 @@
+id: stg_h9kd3n
+kind: build
+title: Notes and summaries
+builds: A new `memory.py`, which uses your `context.py`.
+file: memory.py
+packages: [httpx]
+minutes: 40

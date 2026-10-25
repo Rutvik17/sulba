@@ -163,6 +163,8 @@ export const machinePackages = [
   'psycopg',
   'psycopg-pool',
   'pgvector',
+  'opentelemetry-sdk',
+  'pyjwt',
 ] as const;
 export type MachinePackage = (typeof machinePackages)[number];
 
@@ -193,6 +195,8 @@ export const importNames: Readonly<Record<Package, string>> = {
   psycopg: 'psycopg',
   'psycopg-pool': 'psycopg_pool',
   pgvector: 'pgvector',
+  'opentelemetry-sdk': 'opentelemetry.sdk',
+  pyjwt: 'jwt',
 };
 
 /** The Pyodide release sessions run on. A test holds it to the npm package's version. */

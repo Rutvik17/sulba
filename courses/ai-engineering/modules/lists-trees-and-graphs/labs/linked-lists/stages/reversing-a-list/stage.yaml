@@ -1,0 +1,6 @@
+id: stg_jdic3c
+kind: problem
+title: Reversing a list
+builds: A new `reverse.py`.
+file: reverse.py
+minutes: 15

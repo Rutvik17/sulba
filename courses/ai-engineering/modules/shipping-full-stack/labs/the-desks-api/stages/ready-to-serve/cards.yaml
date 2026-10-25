@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ywk43t
+    front: >-
+      Why does the desk's app make its client to the model in the lifespan, not in each request?
+    back: >-
+      One client keeps its connections to the model open from one request to the next, and is
+      closed once, as the app stops.
+  - id: crd_pqgzgm
+    front: >-
+      Why does the client to the model wait for each read as long as a reply's limit?
+    back: >-
+      httpx's default gives up after a few seconds without data, and a model can take longer
+      than that before it sends anything; the gate's deadline ends a slow reply instead.

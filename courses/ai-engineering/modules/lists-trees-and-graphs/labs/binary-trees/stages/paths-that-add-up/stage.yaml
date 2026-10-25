@@ -1,0 +1,6 @@
+id: stg_ngxy0r
+kind: problem
+title: Paths that add up
+builds: A new `paths.py`.
+file: paths.py
+minutes: 25

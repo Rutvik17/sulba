@@ -13,7 +13,7 @@
   "scripts": {
     "pyodide": "node scripts/pyodide.ts",
     "typecheck": "tsc",
-    "test": "node scripts/pyodide.ts && vitest run"
+    "test": "node scripts/pyodide.ts && vitest run --dir src"
   },
   "dependencies": {
     "pyodide": "314.0.7"

@@ -1,0 +1,39 @@
+id: stg_yr4a9b
+kind: ship
+title: Notes that last
+builds: A new `notebook.py`, which uses your `memory.py`.
+file: notebook.py
+packages: [httpx]
+minutes: 40
+checks:
+  - check: tst_hpukeh
+    title: Notes that come back
+    requires: >-
+      Each conversation starts with the caller's notes from every one before, in the order
+      they were saved, and a note already held isn't kept twice.
+    failure: >-
+      Keep each caller's notes where their next conversation reads them, and check a note
+      isn't held already before keeping it.
+  - check: tst_1cep11
+    title: Callers kept apart
+    requires: >-
+      No caller's notes reach another's conversation, whatever their id, and nothing is
+      written outside the notebook's folder.
+    failure: >-
+      A caller's id is their input: built into a file's name as it is, one like `../a` names
+      another caller's file, or one outside the folder.
+  - check: tst_fgtagp
+    title: Forgotten for good
+    requires: >-
+      A note the caller asks the desk to forget is gone from this conversation and the next,
+      and one that isn't held gets an error that lists the notes there are.
+    failure: >-
+      Remove the note where it's kept as well as from the conversation's notes, and answer a
+      note you don't hold with the notes you do.
+  - check: tst_a4u6qn
+    title: A small notebook
+    requires: >-
+      A caller holds at most `MOST` notes, each of at most `LONGEST` characters, and a note
+      past either gets an error and isn't kept.
+    failure: >-
+      Check the number of notes and the note's length in `note`, before keeping anything.

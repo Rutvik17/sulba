@@ -5,11 +5,13 @@ import {
   completionKeymap,
 } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
-import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
+import { bracketMatching, indentOnInput, indentUnit, StreamLanguage } from '@codemirror/language';
+import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
 import { forEachDiagnostic, lintGutter, lintKeymap } from '@codemirror/lint';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
-import { Compartment, EditorState } from '@codemirror/state';
+import { Compartment, EditorState, type Extension } from '@codemirror/state';
 import {
   drawSelection,
   EditorView,
@@ -30,6 +32,7 @@ import {
 } from 'react';
 import { chosenPalette, onChoice } from './choice.ts';
 import styles from './editor.module.css';
+import type { Language } from './language.ts';
 import { sulba } from './palettes.ts';
 import { formatCode, ruffLint } from './ruff.ts';
 import { paletteTheme } from './themes.ts';
@@ -62,9 +65,21 @@ export interface EditorHandle {
   goTo(line: number): void;
 }
 
+/**
+ * Each language the editor reads: how it highlights it, the spaces of an indent, and its name.
+ * Ruff checks and formats Python only.
+ */
+const languages: Record<Language, { highlight: () => Extension; spaces: number; name: string }> = {
+  python: { highlight: () => python(), spaces: 4, name: 'Python' },
+  typescript: { highlight: () => javascript({ typescript: true }), spaces: 2, name: 'TypeScript' },
+  dockerfile: { highlight: () => StreamLanguage.define(dockerFile), spaces: 4, name: 'Dockerfile' },
+};
+
 export interface EditorProps {
   /** The code the editor opens with. */
   readonly defaultValue: string;
+  /** The code's language, Python unless it says otherwise. */
+  readonly language?: Language;
   /** The editor's name for screen readers, such as the file's name. */
   readonly label: string;
   readonly onChange?: (code: string) => void;
@@ -98,12 +113,13 @@ function count(n: number, one: string, many: string) {
 }
 
 /**
- * A Python editor: highlighting, completion, closing brackets, Ctrl+/ to comment, and Ruff's
- * checks as you type, with Shift+Alt+F to format. Tab indents; Escape then Tab leaves the editor.
- * It draws in the editor theme the learner chose (choice.ts).
+ * A code editor: highlighting, completion, closing brackets and Ctrl+/ to comment, and in Python,
+ * Ruff's checks as you type, with Shift+Alt+F to format. Tab indents; Escape then Tab leaves the
+ * editor. It draws in the editor theme the learner chose (choice.ts).
  */
 export function Editor({
   defaultValue,
+  language = 'python',
   label,
   onChange,
   onRun,
@@ -119,6 +135,8 @@ export function Editor({
   const run = useRef(onRun);
   run.current = onRun;
   const [status, setStatus] = useState<Status>({ line: 1, column: 1, errors: 0, warnings: 0 });
+  const { highlight, spaces, name } = languages[language];
+  const ruff = language === 'python';
 
   // The editor is made once. Its theme changes in place; its text changes only through it.
   // biome-ignore lint/correctness/useExhaustiveDependencies: later props reach the editor through refs and compartments.
@@ -133,17 +151,17 @@ export function Editor({
           highlightActiveLineGutter(),
           history(),
           drawSelection(),
-          indentUnit.of('    '),
-          EditorState.tabSize.of(4),
+          indentUnit.of(' '.repeat(spaces)),
+          EditorState.tabSize.of(spaces),
           indentOnInput(),
           bracketMatching(),
           closeBrackets(),
           autocompletion(),
           highlightActiveLine(),
           highlightSelectionMatches(),
-          python(),
+          highlight(),
           // Code that can't be changed, such as a solution, is shown without Ruff's marks.
-          readOnly ? [] : [ruffLint, lintGutter()],
+          ruff && !readOnly ? [ruffLint, lintGutter()] : [],
           keymap.of([
             {
               key: 'Mod-Enter',
@@ -152,7 +170,7 @@ export function Editor({
                 return run.current !== undefined;
               },
             },
-            { key: 'Shift-Alt-f', run: formatCode },
+            ...(ruff ? [{ key: 'Shift-Alt-f', run: formatCode }] : []),
             ...closeBracketsKeymap,
             ...defaultKeymap,
             ...searchKeymap,
@@ -214,8 +232,8 @@ export function Editor({
             {count(status.errors, 'error', 'errors')},{' '}
             {count(status.warnings, 'warning', 'warnings')}
           </span>
-          <span>Spaces: 4</span>
-          <span>Python</span>
+          <span>Spaces: {spaces}</span>
+          <span>{name}</span>
         </div>
       )}
     </div>

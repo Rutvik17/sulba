@@ -1,0 +1,9 @@
+An API's errors are part of its interface. When every error has one shape, a client reads them all the same way, whatever the status. RFC 9457 defines that shape, and `about:blank` as its type "indicates that the problem has no additional semantics beyond that of the HTTP status code". With that type, "the title SHOULD be the same as the recommended HTTP status phrase for that code", so `title` says nothing the status doesn't, and `detail` says what's particular to this request. The RFC says the detail "ought to focus on helping the client correct the problem, rather than giving debugging information": the 404 says there's no conversation with the id, not where the code looked.
+
+The 422's `errors` follow the RFC's own example of a validation error, in which each error is "an object containing "detail" to describe the issue and "pointer" to locate the problem within the request's content using a JSON Pointer". FastAPI's own 422 has a shape of its own, with each error's location as a list, so a client would need a second way to read errors.
+
+A body with a field the API doesn't take is refused. Pydantic's default for extra data is to ignore it, so a caller who sent `topic` would never learn that the desk had dropped it.
+
+The 201 says where the new conversation is. RFC 9110: "The primary resource created by the request is identified by either a Location header field in the response or, if no Location header field is received, by the target URI." The target here is `/conversations`, the collection, not the conversation.
+
+Anyone who has a conversation's id can read it, so the id comes from `secrets`, which Python's documentation says "should be used in preference to the default pseudo-random number generator in the random module, which is designed for modelling and simulation, not security or cryptography".

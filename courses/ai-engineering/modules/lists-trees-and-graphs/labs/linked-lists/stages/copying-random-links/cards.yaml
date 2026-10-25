@@ -1,0 +1,8 @@
+cards:
+  - id: crd_pt0pz7
+    front: >-
+      Copying a list whose nodes have random links, how do you find the copy of the node a
+      random link points to?
+    back: >-
+      Make every copy first, kept in a dict by its original node, then set each copy's links
+      from the dict.

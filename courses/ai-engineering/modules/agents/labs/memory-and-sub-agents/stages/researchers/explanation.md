@@ -1,0 +1,11 @@
+This stage's agent held the same conversations, with the same seeds and budget, with researchers in place of `search_help`. Its largest request had a median of {% $fig.researchers_largest %} tokens, against {% $fig.memory_largest %} with the memory alone, and a run's requests from the agent sent a median of {% $fig.researchers_agent %} tokens of prompt, against {% $fig.memory_agent %}. The researchers' own requests sent {% $fig.researched %} more, each in a conversation that ends with its answer.
+
+| Parts | With a memory | With researchers | This less the last | Its {% $fig.confidence %} interval |
+| --- | --- | --- | --- | --- |
+| Questions | {% $fig.question_memory %} | {% $fig.question_researchers %} | {% $fig.question_difference %} | {% $fig.question_interval %} |
+| Callbacks | {% $fig.callback_memory %} | {% $fig.callback_researchers %} | {% $fig.callback_difference %} | {% $fig.callback_interval %} |
+| All | {% $fig.all_memory %} | {% $fig.all_researchers %} | {% $fig.all_difference %} | {% $fig.all_interval %} |
+
+As before, each difference is worked out conversation by conversation. Each interval holds zero, so these runs don't show researchers doing more or less than the memory alone. They do show what researchers save. A part took {% $fig.researchers_seconds %} seconds on average, against {% $fig.memory_seconds %}: the agent's conversation stayed under its budget, so its memory cleared or summarised {% $fig.researchers_compacted %} times, against {% $fig.memory_compacted %}, and {% $fig.researchers_cached %} of its tokens of prompt came from the server's cache, against {% $fig.memory_cached %}.
+
+What the agent gives up is the passages themselves. It sees the researcher's answer and the ids it cites, not the text behind them, so it can cite only what the researcher chose, and when the researcher answers from the wrong passage, the agent has nothing to check it against. {% $fig.researchers_miscited %} of the questions with researchers cited only passages without the answer, against {% $fig.memory_miscited %} with the memory alone. Anthropic's guide to context engineering suits sub-agents to "complex research and analysis where parallel exploration pays dividends"; a help desk's single search for a question is a small case of that.

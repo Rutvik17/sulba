@@ -1,0 +1,5 @@
+id: mod_56ykgr
+title: Shipping full stack
+labs:
+  - the-desks-api
+  - conversations-in-postgres

@@ -1,0 +1,13 @@
+cards:
+  - id: crd_pkmhcp
+    front: >-
+      In a problem details object whose type is `about:blank`, what should the title be?
+    back: >-
+      The status code's phrase, such as `Not Found` for 404, since the type adds nothing to the
+      status.
+  - id: crd_pcptxf
+    front: >-
+      Why does `POST /conversations` answer 201 with a `Location` header?
+    back: >-
+      Without one, the client takes the new resource to be at the request's own address,
+      `/conversations`, which is the collection, not the conversation.

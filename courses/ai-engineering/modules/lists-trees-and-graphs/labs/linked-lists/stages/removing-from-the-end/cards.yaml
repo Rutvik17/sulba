@@ -1,0 +1,7 @@
+cards:
+  - id: crd_0hp7lh
+    front: >-
+      Why start with a node in front of the head when removing the nth node from a list's end?
+    back: >-
+      Every node, the head included, then has a node before it to relink, so removing the head
+      needs no branch of its own.

@@ -1,0 +1,55 @@
+id: stg_5htyi3
+kind: catch
+title: The assistant's store
+builds: A new `desk_store.py`, on the schema your `migrations.py` makes.
+file: desk_store.py
+packages: [fastapi, httpx, psycopg, psycopg-pool]
+minutes: 35
+problems:
+  - check: tst_ikyf0s
+    title: An id was written into the SQL
+    cost: >-
+      `get` put the conversation's id into its SQL as text. An id written as SQL, such as `x'
+      OR 'x'='x`, read the first conversation in the table, another caller's, and an id with a
+      quote in it failed with a 500.
+    fix: >-
+      The fix: pass the id as a parameter, `%s` with `[conversation_id]`, so that Postgres
+      reads it as a value and never as SQL.
+    edit:
+      replace: "        found = conn.execute(\n            f\"SELECT page FROM conversations WHERE id = '{conversation_id}'\"\n        ).fetchone()\n"
+      with: "        found = conn.execute(\n            \"SELECT page FROM conversations WHERE id = %s\", [conversation_id]\n        ).fetchone()\n"
+  - check: tst_jmdx41
+    title: The count came before the lock
+    cost: >-
+      `keep` counted the conversation's messages before it locked the conversation's row. Two
+      turns kept at once counted the same messages, and the second failed on a position the
+      first had taken.
+    fix: >-
+      The fix: lock the row first, then count, so the second turn counts once the first has
+      committed.
+    edit:
+      replace: "            count = conn.execute(\n                \"SELECT count(*) FROM messages WHERE conversation_id = %s\",\n                [conversation_id],\n            ).fetchone()[0]\n            found = conn.execute(\n                \"SELECT 1 FROM conversations WHERE id = %s FOR UPDATE\",\n                [conversation_id],\n            ).fetchone()\n            if found is None:\n                raise KeyError(conversation_id)\n"
+      with: "            found = conn.execute(\n                \"SELECT 1 FROM conversations WHERE id = %s FOR UPDATE\",\n                [conversation_id],\n            ).fetchone()\n            if found is None:\n                raise KeyError(conversation_id)\n            count = conn.execute(\n                \"SELECT count(*) FROM messages WHERE conversation_id = %s\",\n                [conversation_id],\n            ).fetchone()[0]\n"
+  - check: tst_j90z6g
+    title: The usage was kept in a transaction of its own
+    cost: >-
+      `keep` committed the turn's messages, then kept its usage on a second connection. A
+      usage the table refused left the messages kept with no record of the turn, as would any
+      failure between the two.
+    fix: >-
+      The fix: keep the usage in the same transaction as the messages.
+    edit:
+      replace: "        with self.pool.connection() as conn:\n            conn.execute(\n                \"INSERT INTO turns"
+      with: "            conn.execute(\n                \"INSERT INTO turns"
+  - check: tst_157xv7
+    title: A connection wasn't given back
+    cost: >-
+      `get` took a connection with `getconn` and gave it back only when the conversation was
+      there. Each request for one that wasn't kept a connection for good, and once the pool's
+      were all gone, every request waited, then failed.
+    fix: >-
+      The fix: take the connection with `with self.pool.connection() as conn:`, which gives it
+      back however the block ends.
+    edit:
+      replace: "        if found is None:\n            return None\n"
+      with: "        if found is None:\n            self.pool.putconn(conn)\n            return None\n"

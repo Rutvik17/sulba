@@ -1,0 +1,6 @@
+id: stg_demo09
+kind: build
+title: Statement
+builds: A new `statement.ts`, in TypeScript.
+file: statement.ts
+minutes: 10
