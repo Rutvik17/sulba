@@ -1,0 +1,6 @@
+id: stg_mruxb5
+kind: problem
+title: Two groups
+builds: A new `groups.py`.
+file: groups.py
+minutes: 25

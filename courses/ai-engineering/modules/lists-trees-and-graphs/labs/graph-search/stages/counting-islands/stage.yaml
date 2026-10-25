@@ -1,0 +1,6 @@
+id: stg_h6pxpi
+kind: problem
+title: Counting islands
+builds: A new `islands.py`.
+file: islands.py
+minutes: 20

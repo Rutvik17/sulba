@@ -1,0 +1,8 @@
+cards:
+  - id: crd_vxawsa
+    front: >-
+      Why does a breadth-first search find the shortest way through a grid, when a depth-first
+      one may not?
+    back: >-
+      It takes squares in the order they were reached, so it finishes every square n steps away
+      before any n + 1 away: the first time it reaches a square is by a shortest way.

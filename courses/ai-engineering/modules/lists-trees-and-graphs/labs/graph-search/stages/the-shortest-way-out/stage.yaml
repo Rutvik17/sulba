@@ -1,0 +1,6 @@
+id: stg_3kp5yd
+kind: problem
+title: The shortest way out
+builds: A new `maze.py`.
+file: maze.py
+minutes: 20

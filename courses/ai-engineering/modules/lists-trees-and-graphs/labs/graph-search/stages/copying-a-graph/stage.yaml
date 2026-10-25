@@ -1,0 +1,6 @@
+id: stg_1wyoap
+kind: problem
+title: Copying a graph
+builds: A new `copy_graph.py`.
+file: copy_graph.py
+minutes: 20

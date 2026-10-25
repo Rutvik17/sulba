@@ -1,0 +1,9 @@
+cards:
+  - id: crd_pjv1db
+    front: >-
+      Why does a flood fill of a large grid keep a list of squares to visit rather than call
+      itself on each neighbour?
+    back: >-
+      Each recursive call goes one level deeper, and a long island goes deeper than Python's
+      recursion limit. A list holds the same work as data, which can grow as far as memory
+      allows.

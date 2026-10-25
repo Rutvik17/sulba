@@ -1,0 +1,6 @@
+id: stg_5ol54p
+kind: problem
+title: A spreading fire
+builds: A new `fire.py`.
+file: fire.py
+minutes: 25

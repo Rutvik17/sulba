@@ -1,0 +1,8 @@
+cards:
+  - id: crd_einsn8
+    front: >-
+      How do you tell whether a graph's nodes can be split into two groups with every link
+      between the groups?
+    back: >-
+      Search from each node without a group, giving every node reached the group opposite to
+      the one it was reached from. A link between two nodes of one group means no split exists.
