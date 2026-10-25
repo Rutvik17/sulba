@@ -1,0 +1,8 @@
+cards:
+  - id: crd_30wnj4
+    front: >-
+      For a tree's largest path sum, what does each node give its parent, and what does it
+      check?
+    back: >-
+      It gives its value plus its better child's best way down, taking nothing below 0, and it
+      checks its value plus both children's best ways down against the largest so far.

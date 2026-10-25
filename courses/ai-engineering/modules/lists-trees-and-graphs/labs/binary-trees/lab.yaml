@@ -1,0 +1,7 @@
+id: lab_fjnas6
+title: Binary trees
+summary: >-
+  Six interview problems on binary trees: reading one level by level, its diameter, the
+  lowest common ancestor of two nodes, writing a tree down and reading it back, the paths
+  that add up to a target and the largest path sum.
+stages: [a-trees-levels, the-diameter, the-lowest-common-ancestor, writing-a-tree-down, paths-that-add-up, the-largest-path-sum]

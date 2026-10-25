@@ -1,0 +1,8 @@
+cards:
+  - id: crd_tk3a5g
+    front: >-
+      Counting a tree's downward paths that add up to a target, what do you look up at each
+      node?
+    back: >-
+      How many running totals on the way from the root equal the node's own total minus the
+      target: each starts a path that ends here.
