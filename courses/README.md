@@ -232,6 +232,25 @@ Tests import the learner's files, and the files the lab gives, through `"imports
 
 A lab whose TypeScript makes a page for the browser also has a `tsconfig.build.json` in its project, which names the files to compile, with `"rootDir"` and `"outDir"`, and `"rewriteRelativeImportExtensions": true` so that an import of `./chat.ts` loads `./chat.js`. `uv run sulba.py build` compiles them with the lab's tsc, and `pnpm check:machine` builds the stages' solutions so.
 
+### Dockerfile stages
+
+A lab that runs on the learner's machine can have a stage whose file is `Dockerfile` (decision record 40), the image of the lab's project. Its tests and checks are pytest files that read the `Dockerfile` in the run's folder, so a run needs no Docker:
+
+```python
+from pathlib import Path
+
+import pytest
+
+
+@pytest.mark.id("tst_xxxxxx")
+def test_runs_as_a_user_without_root():
+    """The image runs as a user without root."""
+    lines = Path("Dockerfile").read_text().splitlines()
+    assert any(line.startswith("USER ") for line in lines)
+```
+
+Where Docker runs Linux containers, `pnpm check:machine` builds the image from the stages' solutions with `docker build` in the download's folder, so the lab's Machine labs job on Linux fails on a solution that doesn't build. The Dockerfile copies the files it needs by name: the download's folder also holds the learner's `.venv` and the lab's data.
+
 ## Review cards
 
 Once a learner passes a stage, its cards come back for spaced review (decision record 20). `cards.yaml` lists them, each side in Markdoc with the stage's figures:
