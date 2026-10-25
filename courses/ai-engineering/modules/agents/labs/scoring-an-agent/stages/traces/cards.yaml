@@ -1,0 +1,14 @@
+cards:
+  - id: crd_100i79
+    front: >-
+      Why is a chat request's span of kind CLIENT, and a tool's INTERNAL?
+    back: >-
+      The request goes over HTTP to another process, the model's server. The tool runs in
+      the agent's own process.
+  - id: crd_mnoab7
+    front: >-
+      What goes in a span's error.type, and why not the error's message?
+    back: >-
+      A kind of error with few values, such as the status code "503" or an exception's class
+      name, so errors can be counted by kind. The message goes in the span status's
+      description.

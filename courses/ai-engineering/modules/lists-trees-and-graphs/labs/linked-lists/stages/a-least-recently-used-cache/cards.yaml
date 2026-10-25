@@ -1,0 +1,7 @@
+cards:
+  - id: crd_p60eyn
+    front: >-
+      What two structures make a least recently used cache's get and put take constant time?
+    back: >-
+      A dict from each key to its node, and a doubly linked list of the nodes in the order they
+      were used, so a node moves to the newest end or drops off the oldest in a step.

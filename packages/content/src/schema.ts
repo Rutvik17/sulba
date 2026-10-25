@@ -235,10 +235,10 @@ const stageFields = {
   /** What the stage builds on, a line of Markdoc above its brief. */
   builds: title,
   /**
-   * The file the learner works in, in Python or, on the learner's machine, TypeScript (decision
-   * record 39). A later stage on the same file adds to their code.
+   * The file the learner works in, in Python or, on the learner's machine, TypeScript or a
+   * Dockerfile (decision records 39 and 40). A later stage on the same file adds to their code.
    */
-  file: z.string().regex(/^[a-z_][a-z0-9_]*\.(py|ts)$/),
+  file: z.string().regex(/^([a-z_][a-z0-9_]*\.(py|ts)|Dockerfile)$/),
   packages: z.array(z.enum([...pythonPackages, ...machinePackages])).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),

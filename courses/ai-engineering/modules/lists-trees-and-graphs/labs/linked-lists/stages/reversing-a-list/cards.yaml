@@ -1,0 +1,7 @@
+cards:
+  - id: crd_evb0sz
+    front: >-
+      Reversing a linked list in place, what must you save before you point a node's `next`
+      back?
+    back: >-
+      The node after it, so the rest of the list stays reachable once its `next` changes.

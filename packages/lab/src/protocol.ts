@@ -164,6 +164,7 @@ export const machinePackages = [
   'psycopg-pool',
   'pgvector',
   'opentelemetry-sdk',
+  'pyjwt',
   'pyspark-client',
 ] as const;
 export type MachinePackage = (typeof machinePackages)[number];
@@ -196,6 +197,7 @@ export const importNames: Readonly<Record<Package, string>> = {
   'psycopg-pool': 'psycopg_pool',
   pgvector: 'pgvector',
   'opentelemetry-sdk': 'opentelemetry.sdk',
+  pyjwt: 'jwt',
   'pyspark-client': 'pyspark',
 };
 

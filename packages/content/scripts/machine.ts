@@ -1,21 +1,21 @@
 // Runs each lab that runs on the learner's machine from its download, as a learner would there
 // (decision record 28), so that CI can run it on Windows, macOS and Linux: each stage's starter
 // fails and its solution passes through `uv run sulba.py`, `uv run sulba.py next` opens the next
-// stage, and a lab with TypeScript for the browser builds it with `uv run sulba.py build`. The
-// runner fetches the lab's files from their publishers (decision record 29), all but those kept
-// from an earlier run, and keeps the ones it fetched for the next. With
-// `--figures <file>`, each stage's figures, computed in the download's own environment, go to that
-// file, whose text must then be the same on every system. With `--lab <path>`, it runs only the
-// lab at that path in its folder of courses, such as
-// `ai-engineering/modules/pytorch/labs/transfer-learning`, so that CI can run each lab in a job of
-// its own. With `--every-file`, it then fetches each file a machine lab pins that isn't kept yet,
-// so that one job's folder holds them all for CI to keep. With `--model`, it runs no stages: from a
-// download of each lab that serves a model no lab before it serves, `uv run sulba.py model --check`
-// fetches llama.cpp's server for this system and the lab's models, starts them and asks each one
-// thing (decision record 34). With `--spark`, it runs each lab whose project locks Sail on Spark
-// itself instead (decision record 41): the download's project takes PySpark in place of Sail and
-// PySpark's client, resolved afresh, its `spark` fixture starts Spark in local mode, which needs
-// Java, and each stage's solution must pass there too.
+// stage, a lab with TypeScript for the browser builds it with `uv run sulba.py build`, and a lab
+// with a Dockerfile builds its image where Docker runs Linux containers. The runner fetches the
+// lab's files from their publishers (decision record 29), all but those kept from an earlier run,
+// and keeps the ones it fetched for the next. With `--figures <file>`, each stage's figures,
+// computed in the download's own environment, go to that file, whose text must then be the same on
+// every system. With `--lab <path>`, it runs only the lab at that path in its folder of courses,
+// such as `ai-engineering/modules/pytorch/labs/transfer-learning`, so that CI can run each lab in a
+// job of its own. With `--every-file`, it then fetches each file a machine lab pins that isn't kept
+// yet, so that one job's folder holds them all for CI to keep. With `--model`, it runs no stages:
+// from a download of each lab that serves a model no lab before it serves,
+// `uv run sulba.py model --check` fetches llama.cpp's server for this system and the lab's models,
+// starts them and asks each one thing (decision record 34). With `--spark`, it runs each lab whose
+// project locks Sail on Spark itself instead (decision record 41): the download's project takes
+// PySpark in place of Sail and PySpark's client, resolved afresh, its `spark` fixture starts Spark
+// in local mode, which needs Java, and each stage's solution must pass there too.
 //
 //   node scripts/machine.ts <folder of courses>... [--lab <path>] [--every-file] [--figures <file>]
 //   node scripts/machine.ts <folder of courses>... --model
@@ -68,6 +68,14 @@ let ran = 0;
 function sulba(folder: string, ...args: string[]): { code: number | null; output: string } {
   const ran = spawnSync('uv', ['run', 'sulba.py', ...args], { cwd: folder, encoding: 'utf8' });
   return { code: ran.status, output: `${ran.stdout}${ran.stderr}` };
+}
+
+/** Whether Docker is here and runs Linux containers. */
+function dockerOnLinux(): boolean {
+  const version = spawnSync('docker', ['version', '--format', '{{.Server.Os}}'], {
+    encoding: 'utf8',
+  });
+  return version.status === 0 && version.stdout.trim() === 'linux';
 }
 
 for (const root of positionals.map((each) => resolve(each))) {
@@ -149,6 +157,18 @@ for (const root of positionals.map((each) => resolve(each))) {
     if (Object.hasOwn(lab.project, 'tsconfig.build.json')) {
       const built = sulba(folder, 'build');
       if (built.code !== 0) problem(`its build should compile.\n${built.output}`);
+    }
+    // A lab's Dockerfile builds its image from the stages' solutions, where Docker runs Linux
+    // containers.
+    if (lab.stages.some((stage) => stage.file === 'Dockerfile') && dockerOnLinux()) {
+      const tag = `sulba-check/${lab.slug}`;
+      const built = spawnSync('docker', ['build', '--tag', tag, '.'], {
+        cwd: folder,
+        encoding: 'utf8',
+      });
+      if (built.status !== 0)
+        problem(`its Dockerfile should build.\n${built.stdout}${built.stderr}`);
+      spawnSync('docker', ['image', 'rm', '--force', tag]);
     }
     for (const name of unkept) {
       const file = fetched[name];

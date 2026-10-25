@@ -7,6 +7,7 @@ import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 import ChartDemo from './ChartDemo';
+import DockerfileEditorDemo from './DockerfileEditorDemo';
 import EditorDemo from './EditorDemo';
 import formulas from './formulas.md?raw';
 import MenuDemo from './MenuDemo';
@@ -159,6 +160,12 @@ const buttons = [
       <h3>Read only, in TypeScript</h3>
       <div class="code">
         <TypeScriptEditorDemo client:load />
+      </div>
+    </div>
+    <div class="row">
+      <h3>Read only, a Dockerfile</h3>
+      <div class="code">
+        <DockerfileEditorDemo client:load />
       </div>
     </div>
   </section>

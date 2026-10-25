@@ -1,8 +1,9 @@
 """The fixtures a session's tests can ask for: `loop`, an event loop on a virtual clock (decision
 record 21), `typecheck`, mypy's errors in the session's files (decision record 22), `model`, a
-model server that answers with the replies the test scripts (decision record 31), and on the
-learner's machine `database`, a new Postgres database with pgvector (decision record 33), and
-`spark`, a Spark session on Sail (decision record 41).
+model server that answers with the replies the test scripts (decision record 31), `identity`, an
+OpenID provider that signs the test's people in (decision record 38), and on the learner's
+machine `database`, a new Postgres database with pgvector (decision record 33), and `spark`, a
+Spark session on Sail (decision record 41).
 
 The runner loads this module as a pytest plugin. A test that runs the learner's own tests with
 pytest's pytester loads it in that run too, so their tests can ask for the same fixtures:
@@ -188,8 +189,8 @@ ERROR_TYPES = {
 
 @dataclass(frozen=True)
 class Received:
-    """A request the scripted model received. Its headers' names are in lower case, and its body
-    is the JSON it carried, or its text where it carried no JSON."""
+    """A request the scripted model or provider received. Its headers' names are in lower case,
+    and its body is the JSON it carried, a form's fields, or its text where it carried neither."""
 
     method: str
     path: str
@@ -783,6 +784,278 @@ def compact(value: Any) -> str:
 def model() -> ScriptedModel:
     """A ScriptedModel for the test, with no reply scripted yet."""
     return ScriptedModel()
+
+
+class ScriptedIdentity:
+    """An OpenID provider that signs the test's people in, for code that signs its users in with
+    OpenID Connect's authorization code flow and PKCE (decision record 38). The app reaches its
+    discovery document, token endpoint, keys and userinfo through httpx, and the test plays the
+    browser: it takes the app's redirect to the provider, signs a person in there, and follows
+    the provider's redirect back to the app.
+
+        back = identity.sign_in(redirect.headers["location"], "ada")
+        callback = await client.get(back)
+
+    It holds each request to the rules a provider keeps: a client it knows, at the redirect URI
+    registered for it, asking for openid, with an S256 code challenge; and a code used once, by
+    the client it was given to, with the same redirect URI and the verifier its challenge came
+    from. Its ID tokens are JWTs it signs with RS256, with a key its keys endpoint publishes, and
+    each lasts five minutes by the system's clock, as a token library reads it.
+
+    For a test of code that must refuse a token, it makes tokens of any shape, and the token
+    endpoint gives the next one scripted in place of its own:
+
+        identity.returns(id_token=identity.id_token("ada", audience="another-app"))
+    """
+
+    issuer = "https://id.test"
+    client_id = "desk"
+    client_secret = "desk-client-secret"
+    redirect_uri = "https://desk.test/auth/callback"
+
+    def __init__(self) -> None:
+        self.people: dict[str, dict[str, Any]] = {}
+        self.requests: list[Received] = []
+        self._keys = [("key-1", signing_key())]
+        self._grants: dict[str, dict[str, Any]] = {}
+        self._access: dict[str, dict[str, Any]] = {}
+        self._script: deque[dict[str, Any]] = deque()
+        self.person("ada", email="ada@example.com")
+        self.person("grace", email="grace@example.com")
+
+    def person(self, name: str, *, email: str) -> None:
+        """Someone who can sign in, by their name: their subject, `sub`, is "user-" and the name."""
+        self.people[name] = {"sub": f"user-{name}", "email": email, "name": name.title()}
+
+    def sign_in(self, url: str, name: str = "ada") -> str:
+        """The address the provider sends the browser back to once the person signs in at url, the
+        app's authorization request: the redirect URI with a code and the request's state. A
+        request with no known client, or with a redirect URI not registered for it, raises
+        ValueError, as a provider shows an error rather than redirect there; any other request
+        that doesn't fit comes back with an error, as OAuth 2.0 sends one."""
+        query = self._authorization(url)
+        if query.get("code_challenge_method") != "S256" or not query.get("code_challenge"):
+            return self._back(query, error="invalid_request")
+        if "openid" not in query.get("scope", "").split() or query.get("response_type") != "code":
+            return self._back(query, error="invalid_request")
+        code = secrets.token_urlsafe(24)
+        self._grants[code] = {
+            "person": name,
+            "challenge": query["code_challenge"],
+            "nonce": query.get("nonce"),
+            "redirect_uri": query["redirect_uri"],
+        }
+        return self._back(query, code=code)
+
+    def declines(self, url: str) -> str:
+        """The address the provider sends the browser back to when the person won't sign in."""
+        return self._back(self._authorization(url), error="access_denied")
+
+    def id_token(
+        self,
+        name: str = "ada",
+        *,
+        nonce: str | None = None,
+        audience: str | None = None,
+        issuer: str | None = None,
+        lasts: int = 300,
+        stranger: bool = False,
+    ) -> str:
+        """An ID token for the person, as the provider signs one, or with the audience, issuer,
+        lifetime in seconds, from now, that the test gives. A stranger's token is signed with a
+        key the provider doesn't publish."""
+        import time
+
+        now = int(time.time())
+        claims = {
+            **self.people[name],
+            "iss": issuer or self.issuer,
+            "aud": audience or self.client_id,
+            "iat": now,
+            "exp": now + lasts,
+        }
+        if nonce is not None:
+            claims["nonce"] = nonce
+        kid, key = ("stranger", signing_key("stranger")) if stranger else self._keys[-1]
+        return signed_jwt(claims, kid, key)
+
+    def returns(self, **response: Any) -> None:
+        """Script the token endpoint's next answer to a request that fits, in place of its own:
+        an access token, its type and lifetime are added where the test doesn't give them."""
+        self._script.append(response)
+
+    def rotate(self) -> None:
+        """Sign with a new key from now on, published beside the old one."""
+        self._keys.append((f"key-{len(self._keys) + 1}", signing_key(str(len(self._keys)))))
+
+    def client(self, **options: Any) -> httpx.Client:
+        """An httpx.Client whose base_url is the provider. options go to httpx.Client."""
+        import httpx
+
+        transport = httpx.MockTransport(self._handle)
+        return httpx.Client(base_url=self.issuer, transport=transport, **options)
+
+    def async_client(self, **options: Any) -> httpx.AsyncClient:
+        """An httpx.AsyncClient whose base_url is the provider. options go to
+        httpx.AsyncClient."""
+        import httpx
+
+        async def handle(request: httpx.Request) -> httpx.Response:
+            return self._handle(request)
+
+        transport = httpx.MockTransport(handle)
+        return httpx.AsyncClient(base_url=self.issuer, transport=transport, **options)
+
+    def _authorization(self, url: str) -> dict[str, str]:
+        from urllib.parse import parse_qsl, urlsplit
+
+        split = urlsplit(url)
+        if f"{split.scheme}://{split.netloc}{split.path}" != f"{self.issuer}/authorize":
+            raise ValueError(f"{url} isn't the provider's authorization endpoint.")
+        query = dict(parse_qsl(split.query))
+        if query.get("client_id") != self.client_id:
+            raise ValueError("The provider knows no client by that id.")
+        if query.get("redirect_uri") != self.redirect_uri:
+            raise ValueError("The redirect URI isn't the one registered for the client.")
+        return query
+
+    def _back(self, query: Mapping[str, str], **answer: str) -> str:
+        from urllib.parse import urlencode
+
+        if "state" in query:
+            answer["state"] = query["state"]
+        return f"{query['redirect_uri']}?{urlencode(answer)}"
+
+    def _handle(self, request: httpx.Request) -> httpx.Response:
+        from urllib.parse import parse_qsl
+
+        import httpx
+
+        text = request.content.decode()
+        body: Any = dict(parse_qsl(text)) if request.method == "POST" else text
+        headers = {name.lower(): value for name, value in request.headers.items()}
+        self.requests.append(Received(request.method, request.url.path, headers, body))
+        path = request.url.path
+        if request.method == "GET" and path == "/.well-known/openid-configuration":
+            return httpx.Response(200, json=self._discovery())
+        if request.method == "GET" and path == "/keys":
+            return httpx.Response(200, json={"keys": [jwk(kid, key) for kid, key in self._keys]})
+        if request.method == "POST" and path == "/token":
+            return self._token(headers, body)
+        if request.method == "GET" and path == "/userinfo":
+            return self._userinfo(headers)
+        return httpx.Response(404, json={"error": "not_found"})
+
+    def _discovery(self) -> dict[str, Any]:
+        return {
+            "issuer": self.issuer,
+            "authorization_endpoint": f"{self.issuer}/authorize",
+            "token_endpoint": f"{self.issuer}/token",
+            "jwks_uri": f"{self.issuer}/keys",
+            "userinfo_endpoint": f"{self.issuer}/userinfo",
+            "response_types_supported": ["code"],
+            "subject_types_supported": ["public"],
+            "id_token_signing_alg_values_supported": ["RS256"],
+            "scopes_supported": ["openid", "email", "profile"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post"],
+            "code_challenge_methods_supported": ["S256"],
+        }
+
+    def _token(self, headers: Mapping[str, str], form: Mapping[str, str]) -> httpx.Response:
+        import hashlib
+
+        import httpx
+
+        client = (form.get("client_id"), form.get("client_secret"))
+        if headers.get("authorization", "").startswith("Basic "):
+            pair = base64.b64decode(headers["authorization"][6:]).decode()
+            client = tuple(pair.split(":", 1))  # type: ignore[assignment]
+        if client != (self.client_id, self.client_secret):
+            challenge = {"WWW-Authenticate": "Basic"}
+            return httpx.Response(401, json={"error": "invalid_client"}, headers=challenge)
+        if form.get("grant_type") != "authorization_code":
+            return httpx.Response(400, json={"error": "unsupported_grant_type"})
+        # A code is used once: a second request with it fails like one with no grant at all.
+        grant = self._grants.pop(form.get("code", ""), None)
+        verifier = form.get("code_verifier", "")
+        challenge = base64url(hashlib.sha256(verifier.encode()).digest())
+        if (
+            grant is None
+            or form.get("redirect_uri") != grant["redirect_uri"]
+            or challenge != grant["challenge"]
+        ):
+            return httpx.Response(400, json={"error": "invalid_grant"})
+        access_token = secrets.token_urlsafe(24)
+        self._access[access_token] = grant
+        answer = {
+            "access_token": access_token,
+            "token_type": "Bearer",
+            "expires_in": 300,
+            "id_token": self.id_token(grant["person"], nonce=grant["nonce"]),
+        }
+        if self._script:
+            answer |= self._script.popleft()
+        headers = {"Cache-Control": "no-store", "Pragma": "no-cache"}
+        return httpx.Response(200, json=answer, headers=headers)
+
+    def _userinfo(self, headers: Mapping[str, str]) -> httpx.Response:
+        import httpx
+
+        token = headers.get("authorization", "").removeprefix("Bearer ")
+        grant = self._access.get(token)
+        if grant is None:
+            # OAuth 2.0 gives a bearer token's error in the WWW-Authenticate header (RFC 6750).
+            return httpx.Response(401, headers={"WWW-Authenticate": 'Bearer error="invalid_token"'})
+        return httpx.Response(200, json=self.people[grant["person"]])
+
+
+@functools.cache
+def signing_key(name: str = "provider") -> Any:
+    """An RSA key for signing ID tokens, made once a run for each name, since making one takes
+    a moment."""
+    from cryptography.hazmat.primitives.asymmetric import rsa
+
+    return rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+
+def base64url(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
+
+
+def signed_jwt(claims: Mapping[str, Any], kid: str, key: Any) -> str:
+    """The claims as a JWT, signed with RS256 by the key, which the kid names (RFC 7515)."""
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric import padding
+
+    header = {"alg": "RS256", "typ": "JWT", "kid": kid}
+    signing_input = ".".join(
+        base64url(json.dumps(part, separators=(",", ":")).encode()) for part in (header, claims)
+    )
+    signature = key.sign(signing_input.encode(), padding.PKCS1v15(), hashes.SHA256())
+    return f"{signing_input}.{base64url(signature)}"
+
+
+def jwk(kid: str, key: Any) -> dict[str, str]:
+    """The key's public half as a JSON Web Key (RFC 7517 and RFC 7518)."""
+    numbers = key.public_key().public_numbers()
+
+    def octets(value: int) -> str:
+        return base64url(value.to_bytes((value.bit_length() + 7) // 8, "big"))
+
+    return {
+        "kty": "RSA",
+        "kid": kid,
+        "use": "sig",
+        "alg": "RS256",
+        "n": octets(numbers.n),
+        "e": octets(numbers.e),
+    }
+
+
+@pytest.fixture
+def identity() -> ScriptedIdentity:
+    """A ScriptedIdentity for the test, with Ada and Grace among its people."""
+    return ScriptedIdentity()
 
 
 # pgvector for Linux comes from the PostgreSQL project's packages for Debian 12, which run on any

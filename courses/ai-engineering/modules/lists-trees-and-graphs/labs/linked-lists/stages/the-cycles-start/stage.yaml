@@ -1,0 +1,6 @@
+id: stg_ruvy5i
+kind: problem
+title: The cycle's start
+builds: A new `cycle.py`.
+file: cycle.py
+minutes: 25

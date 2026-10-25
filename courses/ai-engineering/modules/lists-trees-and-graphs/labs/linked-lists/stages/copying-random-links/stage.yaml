@@ -1,0 +1,6 @@
+id: stg_ejpe4p
+kind: problem
+title: Copying random links
+builds: A new `copy_list.py`.
+file: copy_list.py
+minutes: 25

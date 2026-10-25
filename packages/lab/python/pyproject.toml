@@ -26,12 +26,15 @@ dependencies = [
 
 [dependency-groups]
 # Postgres with pgvector, and psycopg to reach it, for the tests of the database fixture (decision
-# record 33), and Sail with PySpark's client for those of the spark fixture (decision record 41):
-# machine labs' projects have them, and the browser never does.
+# record 33), PyJWT and cryptography for the tests of the identity fixture (decision record 38),
+# and Sail with PySpark's client for those of the spark fixture (decision record 41): machine labs'
+# projects have them, and of these the browser has only cryptography.
 dev = [
+  "cryptography==47.0.0",
   "embedded-postgres==18.6.3",
   "pgvector==0.5.1",
   "psycopg[binary]==3.3.5",
+  "pyjwt==2.15.1",
   "pysail==0.7.2",
   "pyspark-client==4.2.0",
   "ruff==0.17.1",
@@ -46,15 +49,16 @@ exclude-dependencies = [
   { package = { name = "xgboost", version = "2.1.4" }, dependencies = ["nvidia-nccl-cu12"] },
 ]
 # pytest's, pandas', scikit-learn's, tiktoken's, mypy's, FastAPI's, HTTPX's, OpenAI's, jsonschema's,
-# Jinja's and PySpark's client's own dependencies, at the versions Pyodide ships, or for the two it
-# doesn't, the versions the site serves. A test fails if any package in uv.lock and in Pyodide's
-# lock file differ.
+# Jinja's, cryptography's and PySpark's client's own dependencies, at the versions Pyodide ships,
+# or for the two it doesn't, the versions the site serves. A test fails if any package in uv.lock
+# and in Pyodide's lock file differ.
 constraint-dependencies = [
   "annotated-doc==0.0.4",
   "annotated-types==0.7.0",
   "anyio==4.13.0",
   "attrs==26.1.0",
   "certifi==2026.4.22",
+  "cffi==2.0.0",
   "charset-normalizer==3.4.7",
   "distro==1.9.0",
   "h11==0.16.0",
@@ -72,6 +76,7 @@ constraint-dependencies = [
   "pluggy==1.6.0",
   "protobuf==7.34.1",
   "pyarrow==22.0.0",
+  "pycparser==3.0",
   "pydantic==2.12.5",
   "pydantic-core==2.41.5",
   "pygments==2.20.0",

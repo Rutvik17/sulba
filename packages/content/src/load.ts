@@ -289,6 +289,12 @@ class Reader {
     if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
     else this.browserLab(folder, file, stages);
     if (usesTypeScript(stages, file.given)) this.typeScriptLab(folder, file, project, hasProject);
+    if (file.runs !== 'machine' && stages.some((stage) => stage.file === 'Dockerfile')) {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "runs: a Dockerfile stage runs on the learner's machine: set runs: machine.",
+      );
+    }
     this.fetchedNamed(join(folder, 'lab.yaml'), file);
     return { ...file, slug, data, references, given, project, stages };
   }

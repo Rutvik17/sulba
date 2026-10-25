@@ -1,0 +1,39 @@
+id: stg_p2mqa5
+kind: ship
+title: A release gate
+builds: A new `gate.py`, which uses your `scores.py` and `costs.py`.
+file: gate.py
+packages: []
+minutes: 40
+checks:
+  - check: tst_4k8spf
+    title: Compared task by task
+    requires: >-
+      The difference is the mean over the tasks of the candidate's pass^k less the current
+      agent's on the same task, with an interval of z standard errors of those differences.
+    failure: >-
+      Take each task's difference first. Two agents' intervals taken apart count the spread
+      between easy and hard tasks twice, which the same tasks share.
+  - check: tst_fitby9
+    title: Held only for being worse
+    requires: >-
+      A candidate is held for its pass^k only when the difference's low end is below minus
+      the tolerance, however much better it is, and at the tolerance given.
+    failure: >-
+      Compare the low end with `-tolerance`: a candidate far better than the current agent
+      ships.
+  - check: tst_mvzf8v
+    title: A tail it can't bound
+    requires: >-
+      A candidate on too few tasks for its 90th percentile to have a high end is held for its
+      seconds.
+    failure: >-
+      A high end of `nan` fails every comparison, so ask whether it's within the budget, not
+      whether it's over.
+  - check: tst_zcbnfl
+    title: The same tasks and trials
+    requires: >-
+      Agents that ran different tasks, or a task a different number of times, or any task
+      fewer than k times, raise `ValueError`.
+    failure: >-
+      Check the tasks and their trials before comparing anything.

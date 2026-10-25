@@ -1,0 +1,14 @@
+cards:
+  - id: crd_p09qvn
+    front: >-
+      Why take each task's median over its trials before a percentile over the tasks?
+    back: >-
+      A task's trials aren't independent: a slow task is slow on every trial. Pooled, its
+      trials count as separate draws, and the interval comes out narrower than the data allow.
+  - id: crd_xcl4wv
+    front: >-
+      What makes the order-statistic interval for a percentile hold whatever the costs' spread?
+    back: >-
+      Each value falls below the true p-quantile with the chance p, so the count below it is
+      binomial with n and p, whatever the distribution. The ends are the sorted values at the
+      counts that leave a chance of a or less on each side.
