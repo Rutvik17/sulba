@@ -1,0 +1,13 @@
+cards:
+  - id: crd_tb8all
+    front: >-
+      `F.count("passengers")` and `F.count("*")` over the same trips give different numbers.
+      Why?
+    back: >-
+      `F.count` of a column counts the rows where it isn't missing. `F.count("*")` counts every
+      row, whatever its values.
+  - id: crd_rn0gb9
+    front: >-
+      What does Spark's `dayofweek` give a Sunday, and a Saturday?
+    back: >-
+      1 for a Sunday, 7 for a Saturday. `F.date_format(day, "EEEE")` gives the day's name.

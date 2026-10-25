@@ -224,7 +224,7 @@ def test_totals(spark):
     ...
 ```
 
-The run starts one Sail server for its tests, on 127.0.0.1 at a free port, which they share. It splits work into two partitions, so a sum of floats comes out the same on every machine, and the session's time zone is UTC. When a test ends, its temporary views are dropped. Sail has no build for Windows on Arm.
+The run starts one Sail server for its tests, on 127.0.0.1 at a free port, which they share. It splits work into two partitions, so a sum of floats comes out the same on every machine, and the session's time zone is UTC. When a test ends, its temporary views are dropped. Sail has no build for Windows on Arm. A test that runs the learner's own tests with `pytester` gives them its session through a conftest whose `spark_session` fixture returns `SparkSession.getActiveSession()`: a run that started a session of its own would get the same one from `getOrCreate`, and stop it when it ended.
 
 `pnpm check:machine --spark`, which CI's Spark job runs on Linux, runs the lab's download on Spark itself, with PySpark in place of `pysail` and `pyspark-client`, and each stage's solution must pass there too. Sail and Spark differ in places, so a stage keeps to what both do alike: a CSV it reads has as many fields in each row as in its header, its integer sums stay within their type, and its tests check an exception's class but not its message, compare floats with a tolerance, and compare timestamps formatted as strings in Spark, since a collected timestamp is a datetime in the machine's own time zone.
 

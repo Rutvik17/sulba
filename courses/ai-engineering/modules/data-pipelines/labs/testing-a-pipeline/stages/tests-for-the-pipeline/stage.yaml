@@ -1,0 +1,49 @@
+id: stg_dr1e1n
+kind: ship
+title: Tests for the pipeline
+builds: A new `test_pipeline.py`, for your `weather.py`, `daily.py` and `rain.py`.
+file: test_pipeline.py
+packages: [pyspark-client]
+minutes: 45
+checks:
+  - check: tst_pl8e3g
+    title: Weather in units
+    requires: >-
+      Your tests fail on a pipeline that leaves the weather's values in tenths.
+    failure: >-
+      Test `weather` on a day whose values you know, such as 180 tenths of rain, which is
+      18.0 mm.
+  - check: tst_jn42c9
+    title: Failed values left out
+    requires: >-
+      Your tests fail on a pipeline that keeps a value whose quality flag is set.
+    failure: >-
+      Write a weather file with a value whose quality flag is set, such as `,X,W`, and test
+      that the value is missing.
+  - check: tst_0p5yk7
+    title: Every borough on every day
+    requires: >-
+      Your tests fail on a pipeline that drops a borough's day with no trips.
+    failure: >-
+      Give `daily` trips that leave a borough without any on a day, and test that it has a
+      row with 0 trips.
+  - check: tst_podlpb
+    title: Each day's weekday
+    requires: >-
+      Your tests fail on a pipeline that gives each day the weekday of the day after.
+    failure: >-
+      Test each row's weekday against Python's `day.strftime("%A")`.
+  - check: tst_enrwvc
+    title: Wet from 1 mm
+    requires: >-
+      Your tests fail on a pipeline that counts a day as wet only above 1 mm.
+    failure: >-
+      Test a day with exactly 1.0 mm of rain, which is wet.
+  - check: tst_tz1554
+    title: Like with like
+    requires: >-
+      Your tests fail on a pipeline that compares each wet day with every dry day, rather than
+      the dry days of its weekday.
+    failure: >-
+      Give `against_dry_days` dry days of two weekdays with different trips, and test which
+      mean it takes.

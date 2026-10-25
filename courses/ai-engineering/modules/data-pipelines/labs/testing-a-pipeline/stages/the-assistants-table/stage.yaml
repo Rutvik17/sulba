@@ -1,0 +1,73 @@
+id: stg_5un4lc
+kind: catch
+title: The assistant's table
+builds: A new `daily_table.py`.
+file: daily_table.py
+packages: [pyspark-client]
+minutes: 30
+problems:
+  - check: tst_jy9ecx
+    title: It read the measurement flag as the quality flag
+    cost: >-
+      The attributes come as `MFLAG,QFLAG,SFLAG,TIME`, and `value` took the first, so every
+      value with a measurement flag came out missing: on {% $fig.traces %}, when a trace of
+      rain fell, the rain was missing rather than 0 and the day was neither wet nor dry. A
+      value that failed a quality check, with no measurement flag, would have been kept.
+    fix: >-
+      The fix: take the second attribute, `F.split(F.col(f"{column}_ATTRIBUTES"), ",")[1]`.
+    edit:
+      replace: 'F.split(F.col(f"{column}_ATTRIBUTES"), ",")[0]'
+      with: 'F.split(F.col(f"{column}_ATTRIBUTES"), ",")[1]'
+  - check: tst_dzdg4x
+    title: It counted only the trips that report their passengers
+    cost: >-
+      `F.count` of a column counts the values that aren't missing, and {% $fig.unreported %}
+      of August's {% $fig.clean %} clean trips report no passenger count, so every borough's
+      trips came out short.
+    fix: >-
+      The fix: `F.count("*")`, which counts the rows.
+    edit:
+      replace: 'F.count("passengers")'
+      with: 'F.count("*")'
+  - check: tst_o5x2ri
+    title: It named each day after the next
+    cost: >-
+      Spark's `dayofweek` runs from 1 for a Sunday to 7 for a Saturday, and the names started
+      at Monday, so {% $fig.first_weekday %} 1 August came out as {% $fig.first_named %}, and
+      a comparison within each weekday would have set every day beside the wrong ones.
+    fix: >-
+      The fix: start the names at Sunday. `F.date_format("day", "EEEE")` names the day
+      without a list.
+    edit:
+      replace: |-
+        WEEKDAYS = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+      with: |-
+        WEEKDAYS = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ]
+  - check: tst_dwftiw
+    title: It dropped the days a borough had no trips
+    cost: >-
+      The join to the counts kept only the rows that matched one, so Staten Island had no row
+      on {% $fig.empty_day %}, when it had no clean pickups, and the `coalesce` meant to give
+      that day 0 had no row to work on.
+    fix: >-
+      The fix: a left join, `.join(counts, ["day", "borough"], "left")`, which keeps every row
+      of the grid.
+    edit:
+      replace: '.join(counts, ["day", "borough"])'
+      with: '.join(counts, ["day", "borough"], "left")'

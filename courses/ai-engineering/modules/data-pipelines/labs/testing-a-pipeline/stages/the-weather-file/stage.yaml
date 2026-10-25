@@ -1,0 +1,7 @@
+id: stg_6nn82x
+kind: build
+title: The weather file
+builds: A new `weather.py`.
+file: weather.py
+packages: [pyspark-client]
+minutes: 30

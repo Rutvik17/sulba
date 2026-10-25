@@ -1,0 +1,14 @@
+cards:
+  - id: crd_jmpmii
+    front: >-
+      A wet day needs at least 1 mm of rain. Which input tests that rule, and why that one?
+    back: >-
+      A day with exactly 1.0 mm. Only the edge tells `>= 1.0` from `> 1.0`, and real data may
+      never land on it.
+  - id: crd_0i0xby
+    front: >-
+      Why build a test's input with `spark.createDataFrame` rather than read a month of real
+      data?
+    back: >-
+      A few rows show one requirement, with a result you can work out by hand, and run in a
+      moment. Real data tests only what it happens to hold.

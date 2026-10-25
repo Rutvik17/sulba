@@ -1,0 +1,7 @@
+id: stg_rn0huq
+kind: build
+title: Each borough's days
+builds: A new `daily.py`, which uses your `weather.py`.
+file: daily.py
+packages: [pyspark-client]
+minutes: 40
