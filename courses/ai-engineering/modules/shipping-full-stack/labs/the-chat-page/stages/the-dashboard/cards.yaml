@@ -1,0 +1,14 @@
+cards:
+  - id: crd_dwfk0x
+    front: >-
+      `new Date('2026-10-22')` is midnight UTC. Why does the dashboard format it with
+      `timeZone: 'UTC'`?
+    back: >-
+      Formatted in the machine's time zone, midnight UTC is still the day before anywhere west
+      of UTC, so the row would show the wrong day.
+  - id: crd_orge03
+    front: >-
+      Why does the dashboard's total row leave the median empty, when it sums the other columns?
+    back: >-
+      The days' medians don't give the median of all their turns, which depends on how many
+      turns each day had and how long each took. It would need the turns themselves.

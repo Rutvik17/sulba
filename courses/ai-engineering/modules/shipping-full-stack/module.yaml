@@ -4,3 +4,4 @@ labs:
   - the-desks-api
   - conversations-in-postgres
   - signing-in
+  - the-chat-page

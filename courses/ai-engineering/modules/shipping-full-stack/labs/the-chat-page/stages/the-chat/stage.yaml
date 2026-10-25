@@ -1,0 +1,6 @@
+id: stg_41cgrv
+kind: build
+title: The chat
+builds: A new `chat.ts`, which shows a conversation and its replies with your `stream.ts`.
+file: chat.ts
+minutes: 120

@@ -1,0 +1,40 @@
+id: stg_ohrvgr
+kind: ship
+title: The dashboard
+builds: A new `dashboard.ts`, which uses your `api.ts`.
+file: dashboard.ts
+minutes: 60
+checks:
+  - check: tst_ol2xfc
+    title: Headers for every number
+    requires: >-
+      The table has a caption, its header row is `th` cells with `scope="col"`, and each row
+      of days and of the total starts with a `th` with `scope="row"`, followed by `td` cells.
+    failure: >-
+      Make the header row's cells `th` with `scope` set to `col`, and each other row's first
+      cell a `th` with `scope` set to `row`.
+  - check: tst_vl4u3h
+    title: UTC days in any time zone
+    requires: >-
+      The range ends at today's UTC date, and each row shows its own UTC day, on a machine in
+      Los Angeles, where it's still the day before, and in Auckland, where it's already the
+      day after.
+    failure: >-
+      Work out today with `now`'s UTC parts, such as `getUTCDate()`, and format each day with
+      `timeZone: 'UTC'`.
+  - check: tst_9bfm9o
+    title: Days without turns
+    requires: >-
+      A day without turns, and a total without turns, show `—` for the share done, the median
+      and the 90th percentile.
+    failure: >-
+      A share of no turns divides by zero, and the desk gives no times for a day without
+      turns: show `—` when there are no turns.
+  - check: tst_udihjx
+    title: A failed request
+    requires: >-
+      When the desk refuses the request, the status shows its problem's message, and the table
+      from before is gone. The next request that works clears the status.
+    failure: >-
+      Empty the place for the table and set the status in a `catch`, and clear the status
+      before each request.

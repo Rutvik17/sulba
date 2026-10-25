@@ -1,0 +1,9 @@
+`fetch` treats a refusal as an answer. MDN: "The fetch() function will reject the promise on some errors, but not if the server responds with an error status like 404: so we also check the response status and throw if it is not OK." Every request the page makes goes through one place that checks `response.ok`, so no call can forget to.
+
+The desk's errors are RFC 9457 problem details, sent as `application/problem+json`. RFC 9457 makes `title` "a short, human-readable summary of the problem type" and `detail` "a human-readable explanation specific to this occurrence of the problem", which "ought to focus on helping the client correct the problem". That's why the error's message is the detail when there is one: it's the sentence written for the person in front of the page. An answer from something in front of the desk, such as a proxy's 502 page, carries no problem details, so the error falls back on the status text.
+
+An id goes into the address through `encodeURIComponent`, so an id with `/` or `?` in it can't reach another route or add to the query. `usage` checks its days before it asks, since a request the desk would refuse with a 422 is one the page can refuse at once.
+
+The browser's `fetch` has to be called on its own. It's an operation of the window, and Web IDL's steps for calling one take "the this value, if it is not null or undefined, or realm's global object otherwise", then: "If jsValue does not implement the interface target, throw a TypeError." Called as `this.#fetch(...)`, its `this` is the desk, which isn't a window, so every request would throw. Called as `fetcher(input, init)`, its `this` is undefined, and the window stands in.
+
+The desk's session is a cookie on the desk's own address, and the page's requests carry it without being told to. MDN on a request's `credentials`: "same-origin Only send and include credentials for same-origin requests. This is the default."

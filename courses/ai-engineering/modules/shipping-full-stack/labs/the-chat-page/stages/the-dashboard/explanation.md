@@ -1,0 +1,9 @@
+A table's numbers mean something only with their headers, and a screen reader finds those through the markup. The W3C's tables tutorial: "use the <th> element to identify the header cells and the scope attribute to declare the direction of each header. The scope attribute can be set to row or col to denote that a header applies to the entire row or column, respectively." A caption names the table, which "is particularly useful for screen-reader users browsing the web page in “table mode” where they can navigate from table to table."
+
+The desk counts days in UTC, so the page does too. A day the desk gives, such as `2026-10-22`, is safe to parse: MDN says "When the time zone offset is absent, date-only forms are interpreted as a UTC time". It's showing that instant that goes wrong. Formatted in the machine's time zone, midnight UTC is still the day before in the Americas, so every row would show the wrong day. `timeZone: 'UTC'` shows the day the desk meant, and today comes from `now`'s UTC parts, for the same reason: in Auckland, for much of the day, the local date is already tomorrow's.
+
+A day without turns isn't a day of zero-second turns, and a share of no turns is no share at all: divided by zero, it's `NaN`, which `Intl` formats as `NaN%`. The dashboard shows `—` where there's nothing to show.
+
+The total has no median. A median is a middle turn, and the days' medians don't say which turn is in the middle of them all: a day of many quick turns and a day of a few slow ones have the same two medians whichever day had more turns, while the median of all the turns lies with the busy day. The desk would have to count it from the turns themselves.
+
+The dashboard shows what went wrong rather than numbers from before it went wrong. A table left in place after a failed request looks like today's numbers, and isn't.
