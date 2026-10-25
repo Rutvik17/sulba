@@ -1,0 +1,7 @@
+id: stg_fmq24x
+kind: build
+title: Wet days and dry days
+builds: A new `rain.py`, for the table your `daily.py` gives.
+file: rain.py
+packages: [pyspark-client]
+minutes: 35

@@ -1,0 +1,13 @@
+cards:
+  - id: crd_k6i5p8
+    front: >-
+      Why compare a wet Wednesday with dry Wednesdays rather than with every dry day?
+    back: >-
+      Riding changes with the weekday, and wet days don't fall evenly through the week.
+      Comparing within a weekday keeps the weekday out of the difference.
+  - id: crd_4xqwzk
+    front: >-
+      A window has `partitionBy` and no `orderBy`. Which rows does an aggregate over it see?
+    back: >-
+      Every row of the partition. With no ordering, the frame runs from the partition's first
+      row to its last.

@@ -1,0 +1,12 @@
+cards:
+  - id: crd_jm1veo
+    front: >-
+      Spark reads a CSV file with the `header` option set and nothing else. What type does each
+      column have?
+    back: >-
+      A string. `inferSchema` is off by default, so the code casts each column it needs.
+  - id: crd_k58olo
+    front: >-
+      A GHCN-Daily day's rain reads 0, with the measurement flag `T`. What does it mean?
+    back: >-
+      A trace: rain fell, too little to measure. The day isn't missing, and it isn't dry.

@@ -1,0 +1,15 @@
+cards:
+  - id: crd_adqjvx
+    front: >-
+      A daily table counts each borough's trips, then joins the weather to the counts. Which
+      rows does it lack?
+    back: >-
+      Every borough and day without a trip. A count makes no row for nothing, and the join keeps
+      only rows that match. Build the grid of every day and borough first, then left-join the
+      counts to it.
+  - id: crd_hqn6zf
+    front: >-
+      After a left join, which missing values should become 0, and which should stay missing?
+    back: >-
+      A count that found nothing becomes 0. A value that was never measured, such as a day's
+      weather, stays missing.

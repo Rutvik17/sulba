@@ -3,3 +3,4 @@ title: Data pipelines
 labs:
   - analytical-sql
   - spark-dataframes
+  - testing-a-pipeline

@@ -1,0 +1,59 @@
+id: lab_5ipery
+title: Testing a pipeline
+summary: >-
+  Join a month of New York's cab trips to the taxi zones and to Central Park's weather with
+  Spark, and test the pipeline that does it: NOAA's daily weather file read into units, each
+  borough's trips on every day of August, wet days against dry days of the same weekday, a
+  review of an assistant's daily table, and tests of your own that catch the mistakes planted
+  in the pipeline.
+data:
+  - file: central-park-2025-08.csv
+    title: Global Historical Climatology Network - Daily (GHCN-Daily), Version 3
+    creators:
+      - Matthew J. Menne
+      - Imke Durre
+      - Bryant Korzeniewski
+      - Shelley McNeill
+      - Kristy Thomas
+      - Xungang Yin
+      - Steven Anthony
+      - Ron Ray
+      - Russell S. Vose
+      - Byron E. Gleason
+      - Tamara G. Houston
+    url: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
+    licence:
+      name: Cite as NCEI asks, no other use constraints
+      url: https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00861
+    changes: >-
+      None: August 2025 at Central Park, New York, station USW00094728, as NCEI's Access Data
+      Service gave it on 25 October 2026, from version 3.35-upd-2026102317.
+fetch:
+  - kind: data
+    title: TLC Trip Record Data
+    creators: [NYC Taxi and Limousine Commission]
+    url: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+    licence:
+      name: NYC Open Data, no restrictions on use
+      url: https://www.nyc.gov/opendata/get-started/FAQs
+    files:
+      - file: yellow_tripdata_2025-08.parquet
+        url: https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-08.parquet
+        bytes: 62293743
+        sha256: b982ace703e3564d92e94edae5ec93515f4f1fb07a5b95e7404c32464c1a6a89
+      - file: green_tripdata_2025-08.parquet
+        url: https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2025-08.parquet
+        bytes: 1149707
+        sha256: ebaab192c199b850b0244e10c90622e472c1d4f2851168f950c9f75fe8db18d1
+      - file: taxi_zone_lookup.csv
+        url: https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
+        bytes: 12331
+        sha256: 1a99e105092230f8620f301edcca7f80d3080642ff404d28ed957d3fa222c8ed
+given: [trips.py, flags.py]
+runs: machine
+stages:
+  - the-weather-file
+  - borough-days
+  - wet-and-dry-days
+  - the-assistants-table
+  - tests-for-the-pipeline
