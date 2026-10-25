@@ -1,0 +1,8 @@
+cards:
+  - id: crd_vraxsp
+    front: >-
+      Two rows tie for first. What do `rank()`, `dense_rank()` and `row_number()` give the
+      row after them?
+    back: >-
+      3, 2 and 3: `rank()` skips past a tie, `dense_rank()` doesn't, and `row_number()`
+      gives the tied rows 1 and 2 in no set order.

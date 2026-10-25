@@ -1,0 +1,7 @@
+`rank()` gives each row "the rank of the current row, with gaps; that is, the row_number of the first row in its peer group", in Postgres's documentation's words, so zones with equal trips share a rank and the next rank skips past them. `dense_rank()` ranks "without gaps", so after two zones first the next would be second, and `row_number()` breaks ties in whatever order the rows arrive. Keeping the zones ranked `n` or better can give more than `n` rows, which is what a tie means.
+
+A window function works over the rows a query has already grouped and filtered: Postgres's documentation says they "are permitted only in the SELECT list and the ORDER BY clause of the query" and "are forbidden elsewhere, such as in GROUP BY, HAVING and WHERE clauses". Filtering on a rank takes a second query over the first, as a `WITH` clause or a subquery.
+
+`percentile_cont` "will interpolate between adjacent input items if needed", so the median of an even number of fares is the mean of the two in the middle, as pandas gives it. `percentile_disc` gives "the first value within the ordered set of aggregated argument values whose position in the ordering equals or exceeds the specified fraction", the lower of the two.
+
+The day runs from midnight to just before the next. In the documentation's words, `a BETWEEN x AND y` "is equivalent to" `a >= x AND a <= y`: "BETWEEN treats the endpoint values as included in the range". So `BETWEEN day AND day + 1` would also count the {% $fig.midnight %} trips that began at the next midnight.

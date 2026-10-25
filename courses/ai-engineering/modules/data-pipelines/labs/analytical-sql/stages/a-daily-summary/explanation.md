@@ -1,0 +1,7 @@
+Deleting the day's rows and writing them again gives the day as its trips are now, however often it runs. An `INSERT ... ON CONFLICT DO UPDATE` would update each zone it writes, but leave a zone that has no trips any more with its old row. The `DELETE` names its day, so other days stay.
+
+A transaction "bundles multiple steps into a single, all-or-nothing operation", in Postgres's documentation's words: "The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all." In autocommit mode each statement commits as it runs, so a `DELETE` followed by a failed `INSERT` would leave the dashboards with no rows for the day, and while the `INSERT` ran, a dashboard reading the table would find the day empty. psycopg's `with conn.transaction():` starts a transaction, commits it "when leaving the context", or rolls it back "if an exception is raised inside the block".
+
+A zone with drop-offs but no pickups has no row among the pickups' counts. A `FULL JOIN` keeps every row of both sides, filling the other side's columns with `NULL`, which `coalesce` makes 0.
+
+With `IF NOT EXISTS`, `CREATE TABLE` doesn't "throw an error if a relation with the same name already exists", and Postgres's documentation adds that "there is no guarantee that the existing relation is anything like the one that would have been created": a table made another way stays as it was made.

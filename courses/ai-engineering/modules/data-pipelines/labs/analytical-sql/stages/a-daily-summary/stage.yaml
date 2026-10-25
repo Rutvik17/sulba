@@ -1,0 +1,44 @@
+id: stg_04jrsh
+kind: ship
+title: A daily summary
+builds: A new `summary.py`, which uses the lab's `trips.py`.
+file: summary.py
+packages: [pandas, psycopg]
+minutes: 45
+checks:
+  - check: tst_q2i3gv
+    title: Every zone of the day, once
+    requires: >-
+      A row for each zone where a trip picked up on the day began or ended, with its
+      pickups, its drop-offs and its takings to the cent, and no trip from another day.
+    failure: >-
+      Count pickups and drop-offs apart, then join them with a `FULL JOIN`, so a zone with
+      only one of them keeps its row.
+  - check: tst_1ryg98
+    title: A run again gives the day as it is now
+    requires: >-
+      Run twice, `refresh` gives the same rows. Run after trips were taken away, it drops a
+      zone that has none left.
+    failure: >-
+      Delete the day's rows before writing them, so no row of an earlier run stays.
+  - check: tst_bs7jff
+    title: Other days are kept
+    requires: >-
+      A run for one day leaves every other day's rows as they were.
+    failure: >-
+      Delete only the rows of the day being written.
+  - check: tst_2qqz7o
+    title: All of it or none
+    requires: >-
+      A run that fails partway leaves the day's rows as they were before it.
+    failure: >-
+      Delete and write in one transaction, `with conn.transaction():`, so a failure rolls
+      back the delete too.
+  - check: tst_7sauuz
+    title: The table the dashboards read
+    requires: >-
+      `daily_zones` has `day` as a `date`, `zone`, `pickups` and `dropoffs` as `integer`s
+      and `revenue` as `numeric(12,2)`, none of them nullable, and `(day, zone)` as its
+      primary key.
+    failure: >-
+      Create the table as the brief gives it, with `CREATE TABLE IF NOT EXISTS`.
