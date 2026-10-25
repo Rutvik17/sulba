@@ -123,6 +123,19 @@ def test_userinfo_answers_the_access_token_it_gave(identity: ScriptedIdentity) -
     assert refused.headers["www-authenticate"] == 'Bearer error="invalid_token"'
 
 
+def test_a_persons_own_claims_go_in_their_tokens_and_userinfo(identity: ScriptedIdentity) -> None:
+    identity.person("linus", email="linus@example.com", groups=["benefits", "supervisors"])
+    tokens = signed_in(identity, "linus").json()
+    claims = validated(identity, tokens["id_token"])
+    assert claims["sub"] == "user-linus"
+    assert claims["groups"] == ["benefits", "supervisors"]
+    with identity.client() as client:
+        bearer = {"Authorization": f"Bearer {tokens['access_token']}"}
+        found = client.get("/userinfo", headers=bearer).json()
+    assert found["groups"] == ["benefits", "supervisors"]
+    assert "groups" not in validated(identity, signed_in(identity, "ada").json()["id_token"])
+
+
 def test_a_code_works_once(identity: ScriptedIdentity) -> None:
     code = answer(identity.sign_in(authorization(identity)))["code"]
     assert exchange(identity, code).status_code == 200

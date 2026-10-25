@@ -203,7 +203,7 @@ The run starts one server for its tests, on 127.0.0.1 at a free port, with a pas
 
 ### A lab's sign-in
 
-A lab whose app signs its users in with OpenID Connect tests it against the `identity` fixture, a scripted OpenID provider (decision record 38). Its project locks PyJWT, with cryptography, and a stage that imports `jwt` lists `pyjwt` under `packages`, which Pyodide doesn't have, so the lab runs on the learner's machine. The provider's issuer is `https://id.test`, and it knows one client, `desk`, with `identity.client_secret` as its secret and `https://desk.test/auth/callback` as its redirect URI, and two people, Ada and Grace. The test plays the browser: it takes the app's redirect to the provider, signs a person in there, and follows the provider's redirect back to the app:
+A lab whose app signs its users in with OpenID Connect tests it against the `identity` fixture, a scripted OpenID provider (decision record 38). Its project locks PyJWT, with cryptography, and a stage that imports `jwt` lists `pyjwt` under `packages`, which Pyodide doesn't have, so the lab runs on the learner's machine. The provider's issuer is `https://id.test`, and it knows one client, `desk`, with `identity.client_secret` as its secret and `https://desk.test/auth/callback` as its redirect URI, and two people, Ada and Grace. `identity.person("linus", email="linus@example.com", groups=["benefits"])` adds another, and any claims given besides the email, such as the groups an app lets people in by, go in their ID tokens and their userinfo. The test plays the browser: it takes the app's redirect to the provider, signs a person in there, and follows the provider's redirect back to the app:
 
 ```python
 back = identity.sign_in(redirect.headers["location"], "ada")
