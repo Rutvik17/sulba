@@ -1,0 +1,73 @@
+id: stg_7l9gpb
+kind: catch
+title: The assistant's search
+builds: A new `staff_search.py`.
+file: staff_search.py
+packages: [pyjwt, httpx]
+minutes: 35
+problems:
+  - check: tst_a7vcol
+    title: Groups from a token no one checked
+    cost: >-
+      `jwt.decode` with `verify_signature` off reads whatever the token says. Anyone can write a
+      token that names them a manager, sign it with a key of their own, or take one the provider
+      gave another app, and read every supervisor's document.
+    fix: >-
+      The fix: decode with the provider's key for the token's `kid`, the desk's client id as the
+      audience, and the provider's issuer, so a token that doesn't check out raises.
+    edit:
+      replace: |2
+            claims = jwt.decode(id_token, options={"verify_signature": False})
+      with: |2
+            kid = jwt.get_unverified_header(id_token).get("kid", "")
+            claims = jwt.decode(
+                id_token,
+                await keys.key(kid),
+                algorithms=["RS256"],
+                audience=client_id,
+                issuer=keys.provider.issuer,
+            )
+  - check: tst_9bxo18
+    title: The best k, then what they may read
+    cost: >-
+      `ranked[:k]` took the k best documents of all, then dropped those the person may not read.
+      A member of staff whose best matches are for supervisors got fewer documents than they may
+      read, or none.
+    fix: >-
+      The fix: keep what the person may read that shares a word with the question, then take the
+      first k.
+    edit:
+      replace: |2
+            found = [
+                document
+                for document in ranked[:k]
+                if score(document) > 0 and may_read(document)
+            ]
+      with: |2
+            found = [
+                document for document in ranked if score(document) > 0 and may_read(document)
+            ][:k]
+  - check: tst_4jj5ia
+    title: A document for no one, read by everyone
+    cost: >-
+      `not document.groups or ...` let anyone read a document that names no group, such as the draft
+      of the new phone menu, which no group has been given yet.
+    fix: >-
+      The fix: `bool(document.groups & groups)`, so a document is for the groups it names, and for
+      no one until it names one.
+    edit:
+      replace: |2
+                return not document.groups or bool(document.groups & groups)
+      with: |2
+                return bool(document.groups & groups)
+  - check: tst_wehqwf
+    title: What they asked, in the audit log
+    cost: >-
+      Each line kept the question, which can name the caller the member of staff is helping, with
+      their address or their case. The auditors need who searched, when and what they found, not
+      what a caller told the office.
+    fix: 'The fix: leave the question out of the line.'
+    edit:
+      replace: |2
+                "question": question,
+      with: ''

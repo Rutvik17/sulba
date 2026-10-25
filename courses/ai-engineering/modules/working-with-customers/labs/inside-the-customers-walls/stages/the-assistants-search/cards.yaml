@@ -1,0 +1,8 @@
+cards:
+  - id: crd_ypo6im
+    front: >-
+      `jwt.decode(token, options={"verify_signature": False})` reads a groups claim. What can a
+      caller do?
+    back: >-
+      Write a token with any groups and sign it with their own key, or none: unchecked, its
+      claims are only what the caller sent.

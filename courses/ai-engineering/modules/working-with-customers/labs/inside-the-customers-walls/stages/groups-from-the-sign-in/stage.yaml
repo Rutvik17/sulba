@@ -1,0 +1,7 @@
+id: stg_leq6r0
+kind: build
+title: Groups from the sign-in
+builds: A new `staff.py`.
+file: staff.py
+packages: [pyjwt, httpx]
+minutes: 30

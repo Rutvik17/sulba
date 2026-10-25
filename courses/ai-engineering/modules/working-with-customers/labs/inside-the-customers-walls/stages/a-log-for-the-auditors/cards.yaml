@@ -1,0 +1,7 @@
+cards:
+  - id: crd_5jb40p
+    front: >-
+      Why does an audit log name people by a keyed HMAC of their id, not a plain hash of it?
+    back: >-
+      Anyone with the list of ids could hash each one and match a plain hash. A keyed one stays
+      the same for each person, and only whoever holds the key can link it back to them.

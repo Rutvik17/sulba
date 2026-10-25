@@ -11,7 +11,7 @@ levels:
     title: Intermediate
     needs: >-
       A laptop with uv, 8 GB of memory and about 10 GB free: Windows or Linux on x86-64,
-      Linux on Arm, or macOS 14 or later on Apple silicon. Module 1, Working with customers,
-      the coding interviews and the capstone's take-home run in your browser, and the rest runs
-      on your machine
+      Linux on Arm, or macOS 14 or later on Apple silicon. Module 1, the coding interviews,
+      most of Working with customers and the capstone's take-home run in your browser, and the
+      rest runs on your machine
     modules: [neural-networks-from-scratch, pytorch, transformers-from-scratch, building-on-model-apis, retrieval, evals, agents, shipping-full-stack, data-pipelines, working-with-customers, lists-trees-and-graphs, heaps-recursion-and-intervals, the-aid-office]

@@ -1,0 +1,14 @@
+cards:
+  - id: crd_7bep5u
+    front: >-
+      Why check an allowed host in an httpx transport rather than where the code builds its
+      addresses?
+    back: >-
+      The transport sees every request, redirects and addresses from replies or documents
+      included, with the host as httpx parsed it.
+  - id: crd_zm1ge0
+    front: >-
+      An allowed list holds `model.office.test`. Why isn't `host.endswith(name)` enough?
+    back: >-
+      `evil-model.office.test` ends with it too. A host is allowed by its whole name, compared in
+      lower case.
