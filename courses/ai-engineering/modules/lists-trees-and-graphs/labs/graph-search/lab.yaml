@@ -1,0 +1,8 @@
+id: lab_i2zkbl
+title: Graph search
+summary: >-
+  Six interview problems on searching graphs, breadth first and depth first: counting islands
+  on a map, the shortest way out of a maze, a fire spreading from many places at once, copying
+  a graph with cycles, a word ladder whose links are never written down, and splitting a team
+  into two groups.
+stages: [counting-islands, the-shortest-way-out, a-spreading-fire, copying-a-graph, a-word-ladder, two-groups]

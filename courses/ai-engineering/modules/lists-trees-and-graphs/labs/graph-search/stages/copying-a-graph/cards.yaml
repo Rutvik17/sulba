@@ -1,0 +1,8 @@
+cards:
+  - id: crd_2frb16
+    front: >-
+      Copying a graph with cycles, how do you make each node's copy once and still link every
+      copy to the right ones?
+    back: >-
+      A dict from each original node to its copy: a link looks up the copy that may already
+      exist, and the dict is also the search's record of the nodes seen.

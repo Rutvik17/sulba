@@ -1,0 +1,6 @@
+id: stg_8kmqly
+kind: problem
+title: A word ladder
+builds: A new `ladder.py`.
+file: ladder.py
+minutes: 30

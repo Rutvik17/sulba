@@ -1,0 +1,8 @@
+cards:
+  - id: crd_fywdvc
+    front: >-
+      How do you find the words one letter away from a word without comparing it with every
+      other word?
+    back: >-
+      File every word under each pattern it fits with one letter blanked out, such as `c*ld` for
+      `cold`. Words a letter apart share a pattern.

@@ -1,0 +1,8 @@
+cards:
+  - id: crd_nrl5br
+    front: >-
+      Several fires spread through a grid at once. How do you find the minute each square
+      catches with one search?
+    back: >-
+      A breadth-first search that starts with every fire in its first level: each level is the
+      squares one more minute away from the nearest fire.
