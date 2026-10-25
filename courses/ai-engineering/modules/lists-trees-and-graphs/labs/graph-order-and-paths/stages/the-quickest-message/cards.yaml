@@ -1,0 +1,7 @@
+cards:
+  - id: crd_dcl4c7
+    front: >-
+      In Dijkstra's algorithm, why is the soonest arrival in the heap final?
+    back: >-
+      Every other way to that node leaves through a node reached no sooner, and no link takes
+      less than 0, so it can only arrive later.

@@ -1,0 +1,8 @@
+cards:
+  - id: crd_q0iy2j
+    front: >-
+      Accounts that share an email address belong to one person, even through other accounts.
+      How do you group them?
+    back: >-
+      Union-find over the addresses: join each account's addresses together, then gather the
+      addresses by their group's leader.

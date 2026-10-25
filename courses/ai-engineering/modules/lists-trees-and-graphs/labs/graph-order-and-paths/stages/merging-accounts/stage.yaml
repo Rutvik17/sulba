@@ -1,0 +1,6 @@
+id: stg_8anu6d
+kind: problem
+title: Merging accounts
+builds: A new `accounts.py`.
+file: accounts.py
+minutes: 30

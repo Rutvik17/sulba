@@ -1,0 +1,6 @@
+id: stg_8uf3dw
+kind: problem
+title: The quickest message
+builds: A new `delay.py`.
+file: delay.py
+minutes: 30

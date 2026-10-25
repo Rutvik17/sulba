@@ -1,0 +1,6 @@
+id: stg_ltwxid
+kind: problem
+title: The order of letters
+builds: A new `letters.py`.
+file: letters.py
+minutes: 30

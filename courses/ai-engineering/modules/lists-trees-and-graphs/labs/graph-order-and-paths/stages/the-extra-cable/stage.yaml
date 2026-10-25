@@ -1,0 +1,6 @@
+id: stg_e3tac0
+kind: problem
+title: The extra cable
+builds: A new `cables.py`.
+file: cables.py
+minutes: 25

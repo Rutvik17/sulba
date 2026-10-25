@@ -1,0 +1,8 @@
+cards:
+  - id: crd_xerrmm
+    front: >-
+      Adding links one at a time, how do you tell quickly whether a link joins two nodes that
+      are already connected?
+    back: >-
+      Union-find: each group is a tree of links to a leader. Follow each end to its leader; the
+      same leader means already connected, else point one leader at the other.
