@@ -1,0 +1,5 @@
+Each task ends at the latest end of the tasks it waits for, plus its own days, and the project ends when its last task does: the length of the longest path through the tasks. Because the list puts every task after the tasks it waits for, one pass in order finds every end.
+
+Python's `triangular` takes its arguments as `triangular(low, high, mode)`, and returns "a random floating-point number N such that low <= N <= high and with the specified mode between those bounds". One generator made from the seed, drawn in a fixed order, makes the runs reproducible: the same seed gives the same numbers in the same order.
+
+The likely days put the pilot's end at day {% $fig.likely %}, and the runs' average is day {% $fig.mean %}. The two differ for two reasons. Each task's mean is later than its likely days, since its high estimate is further away than its low. And the project waits for the slowest of the paths that meet at a task, so a delay on any of them delays it, while time saved on one path is lost waiting for the others: the end of the longest path is, on average, later than the longest path of the average days.

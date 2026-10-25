@@ -1,0 +1,6 @@
+id: stg_m17uil
+kind: build
+title: A date to promise
+builds: A new `promise.py`, for the runs your `schedule.py` simulates.
+file: promise.py
+minutes: 25

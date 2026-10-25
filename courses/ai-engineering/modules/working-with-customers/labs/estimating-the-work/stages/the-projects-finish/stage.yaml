@@ -1,0 +1,6 @@
+id: stg_pz1hdn
+kind: build
+title: The project's finish
+builds: A new `schedule.py`.
+file: schedule.py
+minutes: 30

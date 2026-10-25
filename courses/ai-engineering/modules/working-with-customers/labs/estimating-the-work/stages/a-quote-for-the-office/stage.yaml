@@ -1,0 +1,38 @@
+id: stg_y5bngv
+kind: ship
+title: A quote for the office
+builds: A new `quote.py`, which uses your `promise.py`.
+file: quote.py
+minutes: 35
+checks:
+  - check: tst_cq5n24
+    title: Whole days, rounded up
+    requires: >-
+      The days are the fewest whole days by which at least four runs in five finish: a
+      percentile of exactly 28 days takes 28, and one of 27.01 takes 28.
+    failure: >-
+      Round up with `math.ceil`. `round` takes 27.4 days to 27, and adding a day takes 28 to
+      29.
+  - check: tst_dl0yye
+    title: Working days only
+    requires: >-
+      The pilot is done on the last of its working days, counted from the start, which counts
+      if it's a working day. Saturdays, Sundays and the days off aren't working days.
+    failure: >-
+      A start on a Saturday or a day off counts from the next working day, and a day off in the
+      middle moves every day after it.
+  - check: tst_yoc7o3
+    title: Payments to the cent
+    requires: >-
+      The payments add up to the price exactly, each within a cent of its share, with each
+      cent left over going to the milestones with the largest remainders, the earlier on a
+      tie.
+    failure: >-
+      Work in whole cents: take each payment rounded down, then hand out the cents left over.
+  - check: tst_ku9y5h
+    title: A quote it can't price
+    requires: >-
+      No finishes, a day rate of 0 or less, no milestones, or a milestone with a share of 0
+      or less, raise `ValueError`.
+    failure: >-
+      Check the inputs before working out anything.
