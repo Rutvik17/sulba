@@ -1,0 +1,7 @@
+cards:
+  - id: crd_hkefz8
+    front: >-
+      How do you remove the fewest meetings so that none of the rest overlap?
+    back: >-
+      Keep the most: sort by end, keep the first, then each that starts once the last kept one
+      has ended. The answer is the rest.

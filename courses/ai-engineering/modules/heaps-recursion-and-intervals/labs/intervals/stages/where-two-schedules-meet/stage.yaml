@@ -1,0 +1,6 @@
+id: stg_ta4jnt
+kind: problem
+title: Where two schedules meet
+builds: A new `meet.py`.
+file: meet.py
+minutes: 20

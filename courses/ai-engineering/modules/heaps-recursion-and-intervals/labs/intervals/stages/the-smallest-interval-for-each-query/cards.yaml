@@ -1,0 +1,7 @@
+cards:
+  - id: crd_h5lw66
+    front: >-
+      How do you find, for each query, the smallest interval that holds it?
+    back: >-
+      Take the queries in sorted order: push intervals onto a heap by size as their left ends
+      pass, pop those whose right end is behind, and read the top.

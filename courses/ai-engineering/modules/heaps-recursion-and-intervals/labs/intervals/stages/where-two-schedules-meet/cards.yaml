@@ -1,0 +1,7 @@
+cards:
+  - id: crd_yofqxc
+    front: >-
+      How do you find where two sorted lists of intervals overlap?
+    back: >-
+      Walk both: add the overlap of the two current intervals, from the later start to the
+      earlier end, then move on from the one that ends first.

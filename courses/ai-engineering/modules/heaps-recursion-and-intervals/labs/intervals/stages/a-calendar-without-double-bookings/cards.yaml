@@ -1,0 +1,7 @@
+cards:
+  - id: crd_c7fhqj
+    front: >-
+      How do you refuse double bookings in a calendar, quickly?
+    back: >-
+      Keep the bookings sorted by start, find the new one's place with bisect, and check only its
+      neighbours: the one before must end by its start, the one after start by its end.

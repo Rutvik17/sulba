@@ -1,0 +1,6 @@
+id: stg_l5pgev
+kind: problem
+title: A calendar without double bookings
+builds: A new `bookings.py`.
+file: bookings.py
+minutes: 20

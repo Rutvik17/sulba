@@ -1,0 +1,7 @@
+cards:
+  - id: crd_mrqv2y
+    front: >-
+      How do you find the times when no one in a group is busy?
+    back: >-
+      Merge everyone's sorted busy times with heapq.merge and keep the latest end so far: a busy
+      time that starts after it leaves a free time.
