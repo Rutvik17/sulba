@@ -1,0 +1,6 @@
+id: stg_mdt731
+kind: problem
+title: The longest climb
+builds: A new `climb.py`.
+file: climb.py
+minutes: 30

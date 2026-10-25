@@ -1,0 +1,7 @@
+id: lab_piiuu8
+title: Depth-first search
+summary: >-
+  Six interview problems a depth-first search answers, kept on a stack of its own: rooms opened
+  by the keys inside, regions of a board cut off from its edge, rain that reaches two oceans, a
+  cycle among steps, the longest climb through a grid, and ratios from equations.
+stages: [keys-and-rooms, capturing-regions, water-to-both-oceans, a-cycle-in-the-steps, the-longest-climb, ratios-from-equations]

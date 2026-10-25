@@ -1,0 +1,7 @@
+cards:
+  - id: crd_xc2lpv
+    front: >-
+      How do you find the squares of a height grid whose rain reaches two oceans?
+    back: >-
+      Search uphill from each ocean's edge squares, to neighbours at least as high, and take the
+      squares both searches reach.

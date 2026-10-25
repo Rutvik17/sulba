@@ -1,0 +1,7 @@
+cards:
+  - id: crd_i855d3
+    front: >-
+      How do you tell whether every room opens, starting in room 0 with the keys inside?
+    back: >-
+      Search from room 0 with a list as a stack and a set of rooms opened, adding each key's room
+      once. Every room opens if the set ends up holding them all.

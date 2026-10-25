@@ -1,0 +1,6 @@
+id: stg_zm0093
+kind: problem
+title: Ratios from equations
+builds: A new `ratios.py`.
+file: ratios.py
+minutes: 25

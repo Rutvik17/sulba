@@ -1,0 +1,7 @@
+cards:
+  - id: crd_uygecz
+    front: >-
+      How do you answer many queries of x / y from equations a / b = value?
+    back: >-
+      Search each connected group once, giving each variable its value over the group's root; a
+      query in one group is the ratio of its two values.

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_37ffnt
+    front: >-
+      How do you find a cycle among steps that need other steps first?
+    back: >-
+      Walk depth first, keeping the steps on the current path and those finished. Reaching a step
+      on the path closes a cycle; a finished step adds nothing.

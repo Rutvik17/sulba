@@ -1,0 +1,6 @@
+id: stg_eym8ct
+kind: problem
+title: Keys and rooms
+builds: A new `keys.py`.
+file: keys.py
+minutes: 15
