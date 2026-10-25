@@ -1,0 +1,56 @@
+id: stg_3aeksu
+kind: catch
+title: The assistant's sign-in
+builds: A new `desk_auth.py`, on your `sign_in.py`, `tokens.py` and `sessions.py`.
+file: desk_auth.py
+packages: [fastapi, httpx, psycopg, psycopg-pool, pyjwt]
+minutes: 40
+problems:
+  - check: tst_tx9m41
+    title: The path back could be another site
+    cost: >-
+      `sign_in` kept whatever `back` it was given and sent the person there once they had
+      signed in. A link to the desk's sign-in with `back=https://` and another site's address
+      sent people who trusted the desk's sign-in to that site, signed in and unsuspecting.
+    fix: >-
+      The fix: send the person back only to a path on this site, one that starts with a single
+      `/`, and anywhere else to `/`.
+    edit:
+      replace: "    token = sessions.begin(pending, back)\n"
+      with: "    local = back.startswith(\"/\") and not back.startswith((\"//\", \"/\\\\\"))\n    token = sessions.begin(pending, back if local and back.isprintable() else \"/\")\n"
+  - check: tst_er3vgg
+    title: A session from before the sign-in carried on
+    cost: >-
+      `open_session` kept the session token the browser already had and signed it in. Someone
+      who could set the desk's cookie in a browser before its owner signed in, through a page on
+      another subdomain, for one, knew the session the owner then signed in to.
+    fix: >-
+      The fix: give every sign-in a new token, so that no token from before the sign-in is
+      ever signed in.
+    edit:
+      replace: "    token = token or secrets.token_urlsafe(32)\n"
+      with: "    token = secrets.token_urlsafe(32)\n"
+  - check: tst_70pgsx
+    title: People were found by their email
+    cost: >-
+      `open_session` found the account by the email the provider gave. Someone else given the
+      same email, by the same provider later or by another provider, signed in to the first
+      person's account and read their conversations.
+    fix: >-
+      The fix: find the account by the issuer and subject, which the provider gives each person
+      for good, and keep the email only to show.
+    edit:
+      replace: "            \"SELECT id FROM people WHERE email = %s\", [person.email]\n"
+      with: "            \"SELECT id FROM people WHERE issuer = %s AND subject = %s\",\n            [person.issuer, person.subject],\n"
+  - check: tst_q7q07e
+    title: Signing out left the session open
+    cost: >-
+      `sign_out` deleted the browser's cookie and left the session in the database. A copy of
+      the token, taken before the person signed out, still signed in as them until the session
+      ended days later.
+    fix: >-
+      The fix: end the session in the database as well, with `sessions.close`, so that its
+      token signs no one in.
+    edit:
+      replace: "    registration: Registration = request.app.state.registration\n    response.delete_cookie(\n        SESSION_COOKIE,\n"
+      with: "    registration: Registration = request.app.state.registration\n    sessions: Sessions = request.app.state.sessions\n    token = request.cookies.get(SESSION_COOKIE)\n    if token:\n        sessions.close(token)\n    response.delete_cookie(\n        SESSION_COOKIE,\n"

@@ -1,0 +1,7 @@
+id: stg_81x5u2
+kind: build
+title: The ID token
+builds: A new `tokens.py`, on your `sign_in.py`.
+file: tokens.py
+packages: [httpx, pyjwt]
+minutes: 50

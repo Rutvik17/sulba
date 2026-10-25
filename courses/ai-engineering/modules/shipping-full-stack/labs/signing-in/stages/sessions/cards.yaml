@@ -1,0 +1,20 @@
+cards:
+  - id: crd_p7ttp0
+    front: >-
+      Why is a person kept by their issuer and subject, and not their email?
+    back: >-
+      The issuer and subject together are the only claims OpenID Connect promises are stable
+      and unique. A provider may give an email to someone else later, and a person's email can
+      change.
+  - id: crd_1zn9ur
+    front: >-
+      Why does the database keep each session token's SHA-256, rather than the token?
+    back: >-
+      Someone who reads the database, or a backup of it, gets only hashes, which sign no one
+      in. A fast hash is enough, since the tokens are random.
+  - id: crd_71yzmg
+    front: >-
+      Why does a session end a set time after it opens, however much it's used?
+    back: >-
+      It limits how long a stolen session can be used. The end is kept in the database, where
+      the browser can't move it.

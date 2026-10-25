@@ -1,0 +1,20 @@
+cards:
+  - id: crd_2juvq8
+    front: >-
+      Which of an ID token's claims does the desk check, and against what?
+    back: >-
+      `iss` against the provider's issuer, `aud` against the desk's client id alone, `exp`
+      against the time now, and `nonce` against the one its sign-in sent.
+  - id: crd_yz0pwz
+    front: >-
+      Why is `algorithms` fixed at RS256, rather than read from the token's header?
+    back: >-
+      The header is written by whoever made the token. Read from it, the algorithm could be
+      `none`, or one that reads the key another way, as PyJWT's documentation warns of mixing
+      HS256 and RS256.
+  - id: crd_l2smr5
+    front: >-
+      When does the desk fetch the provider's keys again?
+    back: >-
+      When a token names a key id it doesn't hold, as after the provider rotates its keys.
+      Otherwise it keeps the keys it has.

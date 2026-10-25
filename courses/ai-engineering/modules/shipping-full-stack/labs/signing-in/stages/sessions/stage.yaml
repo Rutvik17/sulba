@@ -1,0 +1,7 @@
+id: stg_tiis01
+kind: build
+title: Sessions
+builds: A new `sessions.py`, on your `sign_in.py` and `tokens.py`.
+file: sessions.py
+packages: [fastapi, httpx, psycopg, psycopg-pool, pyjwt]
+minutes: 50

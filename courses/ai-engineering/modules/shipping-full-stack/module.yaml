@@ -3,3 +3,4 @@ title: Shipping full stack
 labs:
   - the-desks-api
   - conversations-in-postgres
+  - signing-in

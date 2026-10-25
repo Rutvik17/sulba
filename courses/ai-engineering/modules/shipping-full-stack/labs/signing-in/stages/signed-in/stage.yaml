@@ -1,0 +1,48 @@
+id: stg_cs4m68
+kind: ship
+title: Signed in
+builds: A new `app.py`, on your `sessions.py`, `store.py` and `desk_auth.py`.
+file: app.py
+packages: [fastapi, httpx, numpy, psycopg, psycopg-pool, pyjwt]
+minutes: 50
+checks:
+  - check: tst_s2x61a
+    title: A secret kept out of sight
+    requires: >-
+      `DESK_ISSUER`, `DESK_CLIENT_ID` and `DESK_CLIENT_SECRET` have no defaults, the issuer is
+      an `https://` address, `DESK_PUBLIC_URL` has no path, and the secret shows in neither the
+      settings' repr nor their JSON.
+    failure: >-
+      Give the three no default, hold the issuer and the public address to patterns, and keep
+      the secret as a `SecretStr`.
+  - check: tst_sn1dev
+    title: Cookies only over HTTPS
+    requires: >-
+      Served over HTTPS, the desk's cookies are `Secure` and `HttpOnly`, and its redirect URI is
+      its public address followed by `/auth/callback`.
+    failure: >-
+      Make the `Registration` from the public address: its redirect URI, and `secure` when the
+      address is `https://`.
+  - check: tst_r57jgx
+    title: No changes from other sites
+    requires: >-
+      A request other than GET, HEAD or OPTIONS is refused with 403 when its `Sec-Fetch-Site`
+      isn't `same-origin` or, without one, its `Origin` isn't the desk's public address.
+    failure: >-
+      Add a dependency to the whole app that checks `Sec-Fetch-Site`, then `Origin`, for every
+      request whose method isn't safe.
+  - check: tst_bcigbm
+    title: Each person's own
+    requires: >-
+      Each person lists, reads, replies in and counts the usage of their own conversations
+      alone, and someone else's is a 404.
+    failure: >-
+      Count the usage of the turns in conversations the person owns, by joining `turns` to
+      `conversations`.
+  - check: tst_0d1mqw
+    title: Started with its provider
+    requires: >-
+      The app doesn't start when the provider's discovery document can't be read.
+    failure: >-
+      Discover the provider in the lifespan, before it yields, and let its `SignInError` stop
+      the start.

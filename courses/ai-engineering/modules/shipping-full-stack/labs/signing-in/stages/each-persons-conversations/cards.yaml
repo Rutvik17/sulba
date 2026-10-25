@@ -1,0 +1,20 @@
+cards:
+  - id: crd_c4ud37
+    front: >-
+      Why does someone else's conversation get a 404, rather than a 403?
+    back: >-
+      A 403 would say that a conversation with that id exists. A 404 tells them nothing they
+      didn't know, as HTTP allows when a server hides that a resource exists.
+  - id: crd_lf8mki
+    front: >-
+      Why is the owner in the query that finds the conversation, rather than compared after?
+    back: >-
+      Whatever the query gives back is already the person's, so no route can forget the
+      comparison.
+  - id: crd_45is7b
+    front: >-
+      What does an index on `(owner, started_at DESC, id)` do for a person's newest
+      conversations?
+    back: >-
+      It finds that person's conversations in the order the list wants, so the first few come
+      straight from the index, with no sort over the rest.

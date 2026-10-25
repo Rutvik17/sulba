@@ -1,0 +1,20 @@
+cards:
+  - id: crd_y38u31
+    front: >-
+      Why does the desk send the S256 challenge of its PKCE verifier, and not the verifier?
+    back: >-
+      The authorization request passes through the browser, where others can read it. Only the
+      desk holds the verifier, which it sends to the token endpoint with the code, so a code
+      someone else takes is no use to them.
+  - id: crd_h48n5z
+    front: >-
+      Why is a discovery document that names another issuer refused?
+    back: >-
+      Its addresses aren't the provider the desk was set up for, and its ID tokens would name
+      that other issuer, so nothing it gives can be trusted.
+  - id: crd_cy4qi0
+    front: >-
+      Why does each sign-in get a new state, nonce and verifier?
+    back: >-
+      They tie the provider's answer to one request from one browser. Values used twice, or
+      shared, would let an answer to another request pass as this one's.
