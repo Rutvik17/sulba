@@ -1,0 +1,7 @@
+cards:
+  - id: crd_f75pag
+    front: >-
+      How do you list every balanced string of n pairs of brackets?
+    back: >-
+      Build each a bracket at a time: add ( while fewer than n are open, and ) while fewer have
+      closed than opened. Every string finished is balanced.

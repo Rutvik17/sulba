@@ -1,0 +1,8 @@
+cards:
+  - id: crd_r0tkgl
+    front: >-
+      How do you list the combinations of a list that add up to a target, each once, when the
+      list has repeats?
+    back: >-
+      Sort it, then choose from a place onwards: stop at a number larger than what's left, and
+      skip a number equal to the one before it for the same choice.

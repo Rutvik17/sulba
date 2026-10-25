@@ -1,0 +1,7 @@
+id: lab_ngsvud
+title: Backtracking
+summary: >-
+  Six interview problems solved by trying a choice, going on, and taking it back: every balanced
+  bracketing, the combinations that add up to a total, queens on a board, a word traced through
+  a grid of letters, the splits of a text into palindromes, and a sudoku.
+stages: [every-bracketing, combinations-that-add-up, placing-queens, a-word-in-the-grid, splitting-into-palindromes, solving-a-sudoku]

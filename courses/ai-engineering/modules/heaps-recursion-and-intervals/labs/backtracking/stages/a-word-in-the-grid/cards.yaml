@@ -1,0 +1,8 @@
+cards:
+  - id: crd_xynjzv
+    front: >-
+      How do you tell whether a word can be traced through a grid of letters, each cell used
+      once?
+    back: >-
+      First check the grid has enough of each letter. Then search from each cell: mark it, try
+      its four neighbours for the next letter, and unmark it on the way back.

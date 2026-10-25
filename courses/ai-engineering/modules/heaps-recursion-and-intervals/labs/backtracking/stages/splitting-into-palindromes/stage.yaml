@@ -1,0 +1,6 @@
+id: stg_6etej6
+kind: problem
+title: Splitting into palindromes
+builds: A new `palindromes.py`.
+file: palindromes.py
+minutes: 20
