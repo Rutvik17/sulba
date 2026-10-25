@@ -1,0 +1,13 @@
+cards:
+  - id: crd_yw2199
+    front: >-
+      What do pass@k and pass^k each measure of an agent?
+    back: >-
+      pass@k, the chance that at least one of k trials of a task does it; pass^k, the chance
+      that all k do. pass@k rises with k and pass^k falls.
+  - id: crd_ypom28
+    front: >-
+      Why score a help desk's agent by pass^k rather than pass@k?
+    back: >-
+      Each caller gets one conversation, so what matters is that the agent does the task every
+      time, not that one of several tries does.

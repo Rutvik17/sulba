@@ -1,0 +1,6 @@
+id: stg_gplfc0
+kind: problem
+title: The largest path sum
+builds: A new `path_sum.py`.
+file: path_sum.py
+minutes: 30

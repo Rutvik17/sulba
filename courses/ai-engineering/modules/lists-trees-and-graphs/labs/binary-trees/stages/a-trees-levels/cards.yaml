@@ -1,0 +1,7 @@
+cards:
+  - id: crd_vnhpw4
+    front: >-
+      How do you read a binary tree level by level without a queue?
+    back: >-
+      Keep one level's nodes in a list; the next level is their children, in order. Stop when a
+      level is empty.
