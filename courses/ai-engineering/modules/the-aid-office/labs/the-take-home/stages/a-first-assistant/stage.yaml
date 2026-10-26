@@ -1,0 +1,7 @@
+id: stg_vvhm97
+kind: problem
+title: A first assistant
+builds: A new `assistant.py`, from the office's pages.
+file: assistant.py
+packages: [httpx]
+minutes: 180

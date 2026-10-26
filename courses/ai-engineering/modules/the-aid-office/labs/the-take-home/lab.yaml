@@ -1,0 +1,30 @@
+id: lab_rpmfo4
+title: The take-home
+summary: >-
+  A first version of Harbor College's aid office assistant in three hours: the office's help
+  pages in passages, a search that finds the page that answers a question, and answers from the
+  model that cite their pages, or pass the question to staff.
+data:
+  - file: pages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's federal student aid pages, each page's text taken from its HTML, with its
+      headings marked by #s, its list items by -, and its blocks a blank line apart, and its
+      title without the part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue about those pages whose next turn answers it from
+      the same page, with that page: from 500 of the dataset's training dialogues, chosen at
+      random, and its validation dialogues.
+stages: [a-first-assistant]
