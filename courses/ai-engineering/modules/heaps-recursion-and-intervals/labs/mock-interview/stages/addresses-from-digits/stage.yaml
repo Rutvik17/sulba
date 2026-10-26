@@ -1,0 +1,6 @@
+id: stg_bgzwts
+kind: problem
+title: Addresses from digits
+builds: A new `addresses.py`.
+file: addresses.py
+minutes: 20

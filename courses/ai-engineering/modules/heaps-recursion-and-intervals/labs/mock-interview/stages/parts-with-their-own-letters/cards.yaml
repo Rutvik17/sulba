@@ -1,0 +1,7 @@
+cards:
+  - id: crd_btkpzr
+    front: >-
+      How do you cut a text into the most parts so that each letter is in only one part?
+    back: >-
+      Find each letter's last place, then walk the text keeping the furthest last place so far:
+      a part ends where the walk reaches it.

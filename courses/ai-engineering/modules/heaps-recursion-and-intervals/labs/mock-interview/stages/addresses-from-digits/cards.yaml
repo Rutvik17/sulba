@@ -1,0 +1,7 @@
+cards:
+  - id: crd_mzpl61
+    front: >-
+      How do you list the addresses a string of digits can be?
+    back: >-
+      Choose each of four numbers' digits, one to three, stopping at a leading zero or a number
+      over 255, and keep those whose fourth number ends at the last digit.

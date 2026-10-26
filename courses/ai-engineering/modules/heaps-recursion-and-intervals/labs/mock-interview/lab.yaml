@@ -1,0 +1,7 @@
+id: lab_qtuuo4
+title: Mock interview
+summary: >-
+  Three interview problems in 65 minutes, as in an onsite round: tasks on a machine with a
+  cooldown, the addresses a string of digits can be, and a text cut into parts that share no
+  letter.
+stages: [tasks-with-a-cooldown, addresses-from-digits, parts-with-their-own-letters]
