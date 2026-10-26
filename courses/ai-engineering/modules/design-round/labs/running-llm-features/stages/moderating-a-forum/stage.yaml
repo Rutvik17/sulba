@@ -1,0 +1,25 @@
+id: stg_tse4s5
+kind: design
+title: Moderating a forum
+builds: Grading with a model, and Measuring a classifier.
+minutes: 45
+questions:
+  - Volunteers can review {% $fig.capacity %} posts a day. How do you choose how many the model hides?
+  - Members learn to misspell banned words to get past the model. What do you do?
+  - A member says their post was hidden unfairly. What happens?
+rubric:
+  - point: Hides posts rather than deleting them
+    answer: The model hides a post until a volunteer decides, so its mistakes cost a delay, not a lost post.
+  - point: Sets the threshold by what volunteers can review
+    answer: "The threshold is chosen on labelled posts so the hidden posts fit the volunteers' day: at a recall of {% $fig.recall %} and a precision of {% $fig.precision %}, {% $fig.flagged %} a day."
+  - point: Measures on labelled posts
+    answer: Precision and recall come from posts the volunteers have labelled, with recent posts added every month.
+  - point: Gives the reason
+    answer: The model names the rule a post seems to break, and the volunteer and the member both see it.
+  - point: Has an appeal
+    answer: A member can appeal a hidden post, a volunteer other than the first decides, and each decision becomes a labelled post.
+  - point: Keeps up with new tricks
+    answer: Volunteers' decisions add new tricks to the labelled posts, and every change of prompt or model is checked against them.
+  - point: Checks each post before it shows
+    answer: A post is checked as it's made, with a time limit, and a post whose check doesn't finish in time is shown and checked afterwards.
+pass: 5

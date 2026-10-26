@@ -1,0 +1,25 @@
+id: stg_f5tjpc
+kind: design
+title: An assistant on the customer's servers
+builds: Rotary positions and the KV cache, and Inside the customer's walls.
+minutes: 45
+questions:
+  - The hospital asks for a model twice the size. What does it cost you on these servers?
+  - A policy document is updated. How does the change reach the assistant, with no network outside?
+  - How do you show the hospital that a model it can run is good enough?
+rubric:
+  - point: Runs everything inside the network
+    answer: The model server, the embedding model, the index and the app all run on the hospital's servers, and nothing calls out.
+  - point: Sizes the memory for the busiest moment
+    answer: Each user's context needs {% $fig.kv_user %} of KV cache, and {% $fig.peak %} users at once need {% $fig.kv_peak %}, more than the GPUs hold after the weights. So the design shortens the context to {% $fig.short_context %} tokens.
+  - point: Chooses the model on the hospital's own questions
+    answer: Open-weight models that fit are scored on a test set of the hospital's questions, and the smallest that clears the bar is chosen.
+  - point: Queues requests past its capacity
+    answer: A request beyond what the servers can hold waits, with a message, rather than slowing everyone.
+  - point: Updates without the internet
+    answer: New model and software versions come as signed packages that the hospital's IT checks and installs, and documents are indexed from the hospital's own stores.
+  - point: Keeps every log inside
+    answer: Usage and quality logs stay on the hospital's servers, and nothing is reported out.
+  - point: Plans for a server failing
+    answer: With two servers, one carries the load at a lower limit of users while the other is down.
+pass: 5

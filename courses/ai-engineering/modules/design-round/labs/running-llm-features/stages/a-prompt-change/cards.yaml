@@ -1,0 +1,7 @@
+cards:
+  - id: crd_8cc93r
+    front: Why compare a prompt change with the current release question by question?
+    back: Each question's own difficulty drops out of its pair's difference, so the gate can find a smaller drop with the same questions.
+  - id: crd_cxq8wr
+    front: What does a canary see that a test set doesn't?
+    back: Real users' questions, of every kind, which a test set can only sample.
