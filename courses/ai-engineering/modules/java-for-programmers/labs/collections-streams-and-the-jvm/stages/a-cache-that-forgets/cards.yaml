@@ -1,0 +1,19 @@
+cards:
+  - id: crd_xt0ufo
+    front: >-
+      How does a `LinkedHashMap` become an LRU cache?
+    back: >-
+      Made with access order, `new LinkedHashMap<>(16, 0.75f, true)`, each use moves an entry to the
+      end, and an overridden `removeEldestEntry` returning `size() > capacity` drops the front
+      entry after each put.
+  - id: crd_dseazn
+    front: >-
+      When can the JVM's garbage collector free an object?
+    back: >-
+      When no reference from any live object reaches it. Anything a map still holds stays alive,
+      so an unbounded cache fills the heap.
+  - id: crd_i7bgag
+    front: >-
+      How big is a JVM's heap if nothing sets it?
+    back: >-
+      At most a quarter of the machine's physical memory, by default. `-Xmx` sets the most.

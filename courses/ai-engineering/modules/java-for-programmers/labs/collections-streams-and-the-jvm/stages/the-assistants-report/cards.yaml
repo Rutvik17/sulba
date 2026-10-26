@@ -1,0 +1,25 @@
+cards:
+  - id: crd_pt08wy
+    front: >-
+      What happens when a for-each loop over an `ArrayList` calls `list.remove(element)`?
+    back: >-
+      The iterator is fail-fast, so its next step throws a `ConcurrentModificationException`,
+      except when the loop happens to be at its end. `list.removeIf(...)` removes safely.
+  - id: crd_qa8qtb
+    front: >-
+      When does `Collectors.toMap(keyMapper, valueMapper)` throw?
+    back: >-
+      When two elements map to the same key: an `IllegalStateException`. A third argument
+      merges the two values instead.
+  - id: crd_s2lf2k
+    front: >-
+      Why can `Integer` counts compare equal with `==` in a test and not in production?
+    back: >-
+      Java keeps one `Integer` object for each value from -128 to 127, so small counts are the
+      same object. Larger ones are objects of their own, and `==` compares objects.
+  - id: crd_z9kzdq
+    front: >-
+      What goes wrong when code reuses one list, clearing and refilling it, as a `HashMap` key?
+    back: >-
+      The map keeps that list object as the key of every entry, so changing it changes them all.
+      Each key needs an object of its own that won't change, such as `List.of(...)` or a record.
