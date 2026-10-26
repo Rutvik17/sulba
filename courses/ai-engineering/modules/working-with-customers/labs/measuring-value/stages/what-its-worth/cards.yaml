@@ -1,0 +1,15 @@
+cards:
+  - id: crd_9djkj9
+    front: >-
+      The desk saves {% $fig.net_low %} to {% $fig.net_high %} a month, and the pilot costs
+      {% $fig.price %}. What range of months does it take to pay for itself?
+    back: >-
+      {% $fig.months_low %} to {% $fig.months_high %}: the most a month pays back soonest, so
+      the months' low end comes from the saving's high end, and their high end from its low
+      end.
+  - id: crd_dcbw2j
+    front: >-
+      Why does a fixed monthly cost move a net saving's estimate but leave its interval as wide?
+    back: >-
+      It's the same in every case, so it shifts the estimate without adding to its standard
+      error, which comes only from the shares' errors.

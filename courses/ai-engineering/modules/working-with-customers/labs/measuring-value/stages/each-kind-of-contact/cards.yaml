@@ -1,0 +1,15 @@
+cards:
+  - id: crd_9ipd6l
+    front: >-
+      An agent is run five times on each of 20 tasks. Why is its standard error taken over the
+      tasks, not the 100 trials?
+    back: >-
+      A task's trials share its wording and difficulty, so they aren't separate samples of the
+      contacts to come. Each task's share counts once, and the error is the spread between
+      tasks over the square root of their number.
+  - id: crd_jetgjc
+    front: >-
+      Every trial of a kind of task was done, so its standard error is 0. What does that show?
+    back: >-
+      Only that its tasks never failed in these trials. No spread was seen to measure, so it
+      can't show that the agent never will.

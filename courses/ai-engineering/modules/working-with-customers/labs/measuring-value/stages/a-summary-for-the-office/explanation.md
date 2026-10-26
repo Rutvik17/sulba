@@ -1,0 +1,5 @@
+The office's share works out from {% $fig.low %} to {% $fig.high %}, and the summary shows {% $fig.low_shown %} to {% $fig.high_shown %}. Rounded to the nearest, the low end would come out above the one worked out, and the summary would claim the desk does more for certain than its trials show. Rounded outward, the interval shown always holds the one worked out, and the cost is at most a tenth of a point at each end. The months' high end, {% $fig.months_high %}, shows as {% $fig.months_high_shown %} for the same reason.
+
+The estimate itself is rounded to the nearest, since it's a best guess, not a bound. Every number in the summary comes from the trials and the office's figures, so changing either changes the summary, and none is typed into it.
+
+The vague requests show as all {% $fig.vague_tasks %} tasks done rather than as an interval, since their tasks never differed. And a pilot that may not pay for itself says so: the office should read that from the summary, not from a number of months that is infinite at one end.

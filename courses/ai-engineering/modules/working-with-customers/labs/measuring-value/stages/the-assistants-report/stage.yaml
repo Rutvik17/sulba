@@ -1,0 +1,65 @@
+id: stg_pyimjj
+kind: catch
+title: The assistant's report
+builds: A new `report.py`.
+file: report.py
+minutes: 30
+problems:
+  - check: tst_02105j
+    title: The test set's mix
+    cost: >-
+      `share` was the mean of every trial of the office's kinds, which weights each kind by
+      its trials in the test set, a third of them questions, not by the office's contacts,
+      {% $fig.questions %} of them questions. It told the office the desk would do
+      {% $fig.pooled %} of its contacts, against {% $fig.share %}.
+    fix: >-
+      The fix: `sum(volumes[k] / total * shares[k] for k in volumes)`, each kind weighted by
+      its share of the office's contacts.
+    edit:
+      replace: |2-
+            share = statistics.fmean(
+                d for k in volumes for done in trials[k].values() for d in done
+            )
+      with: |2-
+            share = sum(volumes[k] / total * shares[k] for k in volumes)
+  - check: tst_hv3rd0
+    title: Trials counted as separate samples
+    cost: >-
+      Each kind's error came from its trials as if each were a separate sample of the office's
+      contacts, when a task's five trials share its wording and difficulty. The intervals came out narrower than the tasks can show: the net saving's
+      from {% $fig.trials_low %} to {% $fig.trials_high %} a month, against
+      {% $fig.net_low %} to {% $fig.net_high %}.
+    fix: >-
+      The fix: `statistics.stdev(each) / math.sqrt(len(each))`, the spread between the kind's
+      tasks over the square root of their number.
+    edit:
+      replace: |2-
+                errors[kind] = math.sqrt(
+                    shares[kind] * (1 - shares[kind]) / sum(map(len, tasks.values()))
+                )
+      with: |2-
+                errors[kind] = statistics.stdev(each) / math.sqrt(len(each))
+  - check: tst_uxlzp1
+    title: The months' ends swapped
+    cost: >-
+      The months' low end came from the net's low end, so the report's interval ran from
+      {% $fig.swapped_low %} months down to {% $fig.swapped_high %}: the fewest months came
+      from the smallest saving.
+    fix: >-
+      The fix: the months' low end from the net's high end, and their high end from its low
+      end.
+    edit:
+      replace: "months(net - z * error), months(net + z * error)),"
+      with: "months(net + z * error), months(net - z * error)),"
+  - check: tst_smt4cw
+    title: No support in the cost
+    cost: >-
+      The net left out the team's {% $fig.support %} a month of support, the most of what the
+      desk costs. It put the saving at {% $fig.unsupported %} a month, against
+      {% $fig.net %}, and the payback at {% $fig.unsupported_months %} months, against
+      {% $fig.months %}.
+    fix: >-
+      The fix: `net = saved - hours * host - support`.
+    edit:
+      replace: "    net = saved - hours * host\n"
+      with: "    net = saved - hours * host - support\n"

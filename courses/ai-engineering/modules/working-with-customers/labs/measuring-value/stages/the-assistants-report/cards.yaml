@@ -1,0 +1,8 @@
+cards:
+  - id: crd_m2i2xo
+    front: >-
+      A report gives the share of a customer's contacts an agent does as the share of all its
+      test trials done. What's wrong with it?
+    back: >-
+      It weights each kind of contact by its trials in the test set. The customer's share
+      weights each kind by the customer's own contacts.
