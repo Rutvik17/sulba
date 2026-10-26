@@ -1,4 +1,4 @@
-package gateway
+package tests
 
 import (
 	"context"
@@ -9,12 +9,14 @@ import (
 	"testing"
 	"testing/synctest"
 	"time"
+
+	"example/gateway"
 )
 
 func TestLimiter(t *testing.T) {
 	t.Run("tst_aaaaaa waits a tenth of a second for its second token", func(t *testing.T) {
 		synctest.Test(t, func(t *testing.T) {
-			l := NewLimiter(10, 1)
+			l := gateway.NewLimiter(10, 1)
 			start := time.Now()
 			for range 2 {
 				if err := l.Wait(context.Background()); err != nil {
@@ -33,7 +35,7 @@ func TestLimiter(t *testing.T) {
 	})
 	t.Run("tst_dddddd gives up when its context ends", func(t *testing.T) {
 		synctest.Test(t, func(t *testing.T) {
-			l := NewLimiter(1, 1)
+			l := gateway.NewLimiter(1, 1)
 			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
 			defer cancel()
 			start := time.Now()
@@ -52,9 +54,9 @@ func TestProxy(t *testing.T) {
 			_, _ = io.WriteString(w, "from "+r.URL.Path)
 		}))
 		defer upstream.Close()
-		gateway := httptest.NewServer(Proxy(upstream.URL, upstream.Client()))
-		defer gateway.Close()
-		resp, err := gateway.Client().Get(gateway.URL + "/v1/models")
+		front := httptest.NewServer(gateway.Proxy(upstream.URL, upstream.Client()))
+		defer front.Close()
+		resp, err := front.Client().Get(front.URL + "/v1/models")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -67,7 +69,7 @@ func TestProxy(t *testing.T) {
 }
 
 func BenchmarkLimiter(b *testing.B) {
-	l := NewLimiter(1e12, 1e12)
+	l := gateway.NewLimiter(1e12, 1e12)
 	for b.Loop() {
 		_ = l.Wait(context.Background())
 	}

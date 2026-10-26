@@ -1,7 +1,8 @@
-"""Spike: does Go 1.27.3 from go.dev run a package's tests through go test -json on this runner,
-with subtests named for their ids, a fake clock from testing/synctest, an httptest server, a
-benchmark and a build failure, using nothing but the archive? Stdlib only. It runs the package
-from a copy in a folder whose name has non-ASCII letters."""
+"""Spike: does Go 1.27.3 from go.dev run a module's tests through go test -json on this runner,
+with tests in packages of their own under tests/, subtests named for their ids, a fake clock from
+testing/synctest, an httptest server, a panic in the code under test, a benchmark, a build failure
+and a vet failure, using nothing but the archive? Stdlib only. It runs the module from a copy in a
+folder whose name has non-ASCII letters."""
 
 import hashlib
 import io
@@ -79,8 +80,8 @@ def main():
     results = {}
     results["version"] = timed("go version", [str(go), "version"], project, env).stdout.strip()
     results["telemetry"] = timed("go telemetry", [str(go), "telemetry"], project, env).stdout.strip()
-    first = timed("go test, first", [str(go), "test", "-json", "-count=1", "."], project, env)
-    again = timed("go test, again", [str(go), "test", "-json", "-count=1", "."], project, env)
+    first = timed("go test, first", [str(go), "test", "-json", "-count=1", "./tests/..."], project, env)
+    again = timed("go test, again", [str(go), "test", "-json", "-count=1", "./tests/..."], project, env)
     tests = {}
     for event in events(again):
         if event.get("Test") and event["Action"] in ("pass", "fail", "skip"):
@@ -91,6 +92,11 @@ def main():
         for event in events(again)
         if event.get("Test", "").startswith("TestLimiter/tst_bbbbbb") and event["Action"] == "output"
     )
+    results["panic output"] = "".join(
+        event["Output"]
+        for event in events(again)
+        if event.get("Test", "").startswith("TestPanics/tst_ffffff") and event["Action"] == "output"
+    )
     results["first exit"] = first.returncode
     bad = timed("go test bad", [str(go), "test", "-json", "-count=1", "./bad"], project, env)
     results["bad"] = [
@@ -98,16 +104,26 @@ def main():
         for event in events(bad)
         if event["Action"].startswith("build")
     ]
-    results["vet"] = timed("go vet", [str(go), "vet", "."], project, env).returncode
+    vetbad = timed("go test vetbad", [str(go), "test", "-json", "-count=1", "./vetbad"], project, env)
+    results["vetbad"] = [
+        (event["Action"], event.get("Output", "").strip(), event.get("FailedBuild"))
+        for event in events(vetbad)
+        if event["Action"].startswith("build") or event["Action"] == "fail" or "vet" in event.get("Output", "")
+    ]
+    results["vet"] = timed("go vet", [str(go), "vet", ".", "./tests/..."], project, env).returncode
     bench = timed(
         "go test -bench",
-        [str(go), "test", "-run", "^$", "-bench", ".", "-benchtime", "1000x", "."],
+        [str(go), "test", "-run", "^$", "-bench", ".", "-benchtime", "1000x", "./tests"],
         project,
         env,
     )
     results["bench"] = bench.returncode, "BenchmarkLimiter" in bench.stdout
     print("RESULTS", json.dumps(results, ensure_ascii=False, indent=1))
     expected_tests = {
+        "TestChecks/tst_eeeeee_takes_the_first": "pass",
+        "TestChecks": "pass",
+        "TestPanics/tst_ffffff_first_of_nothing": "fail",
+        "TestPanics": "fail",
         "TestLimiter/tst_aaaaaa_waits_a_tenth_of_a_second_for_its_second_token": "pass",
         "TestLimiter/tst_bbbbbb_a_failing_one": "fail",
         "TestLimiter/tst_dddddd_gives_up_when_its_context_ends": "pass",
@@ -120,6 +136,9 @@ def main():
         and results["tests"] == expected_tests
         and "gateway_test.go:" in results["failure output"]
         and "got 1, want 2" in results["failure output"]
+        and "index out of range" in results["panic output"]
+        and "gateway.go:" in results["panic output"]
+        and any("Sprintf format %d has arg" in output for _, output, _ in results["vetbad"])
         and any(action == "build-fail" for action, _ in results["bad"])
         and any("cannot use" in output for _, output in results["bad"])
         and results["vet"] == 0

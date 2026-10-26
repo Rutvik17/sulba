@@ -65,3 +65,8 @@ func Proxy(upstream string, client *http.Client) http.Handler {
 		_, _ = io.Copy(w, resp.Body)
 	})
 }
+
+// First returns the first of xs.
+func First(xs []int) int {
+	return xs[0]
+}
