@@ -1,0 +1,10 @@
+id: lab_jrk7j1
+title: A demo against the clock
+summary: >-
+  Two demos for the benefits office, each from its written brief and against the clock, with the
+  brief's points planned as tests first: its web form's messages filed to the right queue, with
+  Social Security numbers kept from the model, and answers from the office's own answers that
+  cite the ones they use.
+stages:
+  - sorting-the-offices-messages
+  - answers-from-the-faq

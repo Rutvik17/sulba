@@ -1,0 +1,15 @@
+cards:
+  - id: crd_rivdw1
+    front: >-
+      A demo must keep a customer's personal numbers from a model. Where in the code are they
+      removed?
+    back: >-
+      Before the request is built, so nothing after it, a retry or a log of what was sent, can
+      carry the number.
+  - id: crd_kanuls
+    front: >-
+      What should a demo built on a model do when the model is down, slow or answers in a way
+      it can't read?
+    back: >-
+      Fall back to what the customer does today, such as a person's queue, after a timeout and
+      at most one more try, so nothing is lost and nothing waits forever.
