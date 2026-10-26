@@ -105,6 +105,7 @@ const chevron = 'M4 6l4 4 4-4';
             data-module
             data-number={number + 1}
             data-title={module.title}
+            data-optional={module.optional ? '' : undefined}
           >
             <h3 class="heading">
               <span class="toggle" data-toggle>
@@ -132,7 +133,7 @@ const chevron = 'M4 6l4 4 4-4';
               </span>
             </h3>
             <p class="meta">
-              <span>{moduleFacts(module.labs)}</span>
+              <span>{moduleFacts(module)}</span>
               <span class="marks" aria-hidden="true">
                 {module.labs.map(() => (
                   <i data-mark />
@@ -266,7 +267,8 @@ window.addEventListener('hashchange', openTarget);
 /**
  * Each lab's stages passed, in this browser or the account; each module's and level's labs done;
  * and the next lab: the first one started but not done, else the first not done after the last
- * one done, else the first not done.
+ * one done, else the first not done. An optional module's labs count for the last two only once
+ * one of them is started, or when they're all that's left.
  */
 function show() {
   const counts = labs.map((lab) => {
@@ -309,10 +311,17 @@ function show() {
   }
 
   const card = document.querySelector<HTMLElement>('[data-next]');
-  const lastDone = counts.findLastIndex(({ finished }) => finished);
+  const skipped = modules.filter(
+    (module) =>
+      module.dataset.optional !== undefined &&
+      !counts.some(({ lab, done }) => module.contains(lab) && done > 0),
+  );
+  const onPath = counts.filter(({ lab }) => !skipped.some((module) => module.contains(lab)));
+  const lastDone = onPath.findLastIndex(({ finished }) => finished);
   const next =
     counts.find(({ done, finished }) => done > 0 && !finished) ??
-    counts.slice(lastDone + 1).find(({ finished }) => !finished) ??
+    onPath.slice(lastDone + 1).find(({ finished }) => !finished) ??
+    onPath.find(({ finished }) => !finished) ??
     counts.find(({ finished }) => !finished);
   if (!card) return;
   card.hidden = next === undefined;

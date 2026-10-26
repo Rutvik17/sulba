@@ -41,6 +41,8 @@ export const courseFile = z.strictObject({
 export const moduleFile = z.strictObject({
   id: id('module'),
   title,
+  /** A module its level's learners can skip, such as a second language. */
+  optional: z.boolean().default(false),
   labs: z.array(slug),
 });
 

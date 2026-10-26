@@ -2,7 +2,13 @@ import { expect, test } from 'vitest';
 import { courseOutlines } from './course';
 import type { LabEntry } from './labs';
 
-function lab(order: number, path: string, level: string, module: string): LabEntry {
+function lab(
+  order: number,
+  path: string,
+  level: string,
+  module: string,
+  optionalModule = false,
+): LabEntry {
   return {
     id: `lab_${String(order).padStart(6, '0')}`,
     order,
@@ -13,6 +19,7 @@ function lab(order: number, path: string, level: string, module: string): LabEnt
     course: path.startsWith('other') ? 'Other' : 'AI Engineering',
     level,
     levelNeeds: level === 'Intermediate' ? 'A laptop with 16 GB of memory' : 'Any laptop',
+    optionalModule,
     module,
     data: [],
     references: [],
@@ -33,6 +40,7 @@ test("a course's labs come back grouped by level and module, in the course's ord
     lab(2, 'ai-engineering/learning-from-data/cross-validation', 'Beginner', 'Learning from data'),
     lab(0, 'ai-engineering/maths-as-code/arrays', 'Beginner', 'The maths behind ML'),
     lab(3, 'ai-engineering/models/autograd', 'Intermediate', 'Models'),
+    lab(4, 'ai-engineering/go/gateway', 'Intermediate', 'Go', true),
     lab(1, 'ai-engineering/learning-from-data/linear-regression', 'Beginner', 'Learning from data'),
   ];
   const [course] = courseOutlines(labs);
@@ -42,9 +50,10 @@ test("a course's labs come back grouped by level and module, in the course's ord
     course?.levels.map(({ title, needs, modules }) => ({
       title,
       needs,
-      modules: modules.map(({ slug, title, labs }) => ({
+      modules: modules.map(({ slug, title, optional, labs }) => ({
         slug,
         title,
+        optional,
         labs: labs.map((each) => each.path.split('/')[2]),
       })),
     })),
@@ -53,10 +62,11 @@ test("a course's labs come back grouped by level and module, in the course's ord
       title: 'Beginner',
       needs: 'Any laptop',
       modules: [
-        { slug: 'maths-as-code', title: 'The maths behind ML', labs: ['arrays'] },
+        { slug: 'maths-as-code', title: 'The maths behind ML', optional: false, labs: ['arrays'] },
         {
           slug: 'learning-from-data',
           title: 'Learning from data',
+          optional: false,
           labs: ['linear-regression', 'cross-validation'],
         },
       ],
@@ -64,7 +74,10 @@ test("a course's labs come back grouped by level and module, in the course's ord
     {
       title: 'Intermediate',
       needs: 'A laptop with 16 GB of memory',
-      modules: [{ slug: 'models', title: 'Models', labs: ['autograd'] }],
+      modules: [
+        { slug: 'models', title: 'Models', optional: false, labs: ['autograd'] },
+        { slug: 'go', title: 'Go', optional: true, labs: ['gateway'] },
+      ],
     },
   ]);
 });

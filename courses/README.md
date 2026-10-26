@@ -9,7 +9,8 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
   course.yaml               id, title, and its levels, each with the machine it needs and its
                             modules in order
   modules/<module>/
-    module.yaml             id, title, and its labs in order
+    module.yaml             id, title, its labs in order, and `optional: true` for a module
+                            its level's learners can skip (decision record 44)
     labs/<lab>/
       lab.yaml              id, title, summary, datasets, fetched files and ported code with
                             their credit, the files it gives, where its stages run, and its

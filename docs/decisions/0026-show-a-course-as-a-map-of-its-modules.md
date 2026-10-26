@@ -1,6 +1,6 @@
 # 26. Show a course as a map of its modules
 
-- Status: accepted
+- Status: accepted, amended by [44. Mark a module optional, and leave it out of the next lab until it's started](0044-mark-a-module-optional-and-leave-it-off-the-next-lab.md)
 - Date: 2026-10-17
 
 ## Context

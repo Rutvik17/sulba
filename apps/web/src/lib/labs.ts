@@ -178,6 +178,8 @@ export interface LabEntry extends LabView {
   readonly order: number;
   /** The machine its level needs, which the course's page states before the level begins. */
   readonly levelNeeds: string;
+  /** Whether its module is optional, which the course's page says. */
+  readonly optionalModule: boolean;
   /** Code by others that the lab ports, which its page credits with its licence's notice. */
   readonly code: Lab['code'];
   /**
@@ -300,6 +302,7 @@ function entryOf(
     course: course.title,
     level: level.title,
     levelNeeds: level.needs,
+    optionalModule: module.optional,
     module: module.title,
     data: lab.data.map(({ text, ...set }) => ({
       ...set,

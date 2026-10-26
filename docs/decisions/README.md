@@ -29,7 +29,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [23. Time an interview problem from its start, with the plan before the code](0023-time-an-interview-problem-from-its-start.md) | Accepted |
 | [24. Test a FastAPI app in process, through httpx on the test's loop](0024-test-a-fastapi-app-in-process-through-httpx.md) | Accepted |
 | [25. Download a lab as a project the learner runs with uv](0025-download-a-lab-as-a-project-run-with-uv.md) | Accepted |
-| [26. Show a course as a map of its modules](0026-show-a-course-as-a-map-of-its-modules.md) | Accepted |
+| [26. Show a course as a map of its modules](0026-show-a-course-as-a-map-of-its-modules.md) | Accepted, amended by 44 |
 | [27. Check a from-scratch build against a library's recorded results](0027-check-a-from-scratch-build-against-recorded-results.md) | Accepted |
 | [28. Run a lab that needs PyTorch from its download, and bring its results back by a link](0028-run-a-pytorch-lab-from-its-download.md) | Accepted |
 | [29. Fetch a machine lab's large files from their publishers, pinned by size and sha256](0029-fetch-a-machine-labs-large-files-from-their-publishers.md) | Accepted |
@@ -47,5 +47,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [41. Run a lab's Spark code on Sail, and check it against Spark](0041-run-a-labs-spark-code-on-sail-checked-against-spark.md) | Accepted |
 | [42. Practise a design round against the clock, marked against a rubric](0042-practise-a-design-round-against-the-clock-and-a-rubric.md) | Accepted |
 | [43. Run a machine lab's Go stages with Go's own toolchain, pinned by the runner](0043-run-a-machine-labs-go-stages-with-gos-own-toolchain.md) | Accepted |
+| [44. Mark a module optional, and leave it out of the next lab until it's started](0044-mark-a-module-optional-and-leave-it-off-the-next-lab.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
