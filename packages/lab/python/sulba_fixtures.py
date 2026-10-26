@@ -1059,6 +1059,9 @@ def identity() -> ScriptedIdentity:
     return ScriptedIdentity()
 
 
+# How many times a run asks a publisher for a package, each time for the rest of it.
+PACKAGE_TRIES = 5
+
 # pgvector for Linux comes from the PostgreSQL project's packages for Debian 12, which run on any
 # processor of their kind: the pgvector embedded-postgres builds for Linux runs only on processors
 # like the one that built it (decision record 33). Each package is pinned by its name, size and
@@ -1190,22 +1193,43 @@ def pgvector_folder() -> Path | None:
 
 
 def fetched_package(url: str, size: int, sha256: str, what: str) -> bytes:
-    """The package at url, once it's the one its size and sha256 name. `what` names it in an
-    error."""
+    """The package at url, once it's the one its size and sha256 name. When its publisher stops
+    sending or can't be reached, it asks again for the rest, up to PACKAGE_TRIES times in all; an
+    answer with an error is final. `what` names it in an error."""
     import hashlib
     import http.client
+    import urllib.error
     import urllib.request
     from urllib.parse import urlsplit
 
     host = urlsplit(url).hostname
-    request = urllib.request.Request(url, headers={"User-Agent": "sulba"})
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            package: bytes = response.read(size + 1)
-    except (OSError, http.client.HTTPException) as error:
-        raise RuntimeError(f"{what} comes from {host}, which didn't send it: {error}") from error
+    unsent = f"{what} comes from {host}, which didn't send it"
+    different = RuntimeError(f"{host} sent a different {what} from the one the lab was made with.")
+    package = b""
+    for tried in range(1, PACKAGE_TRIES + 1):
+        headers = {"User-Agent": "sulba"}
+        if package:
+            headers["Range"] = f"bytes={len(package)}-"
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                if response.status != 206:
+                    package = b""
+                total = response.headers.get("Content-Length")
+                if total is not None and len(package) + int(total) != size:
+                    raise different
+                # http.client ends a read early without an error when the connection closes.
+                package += response.read(size + 1 - len(package))
+        except (OSError, http.client.HTTPException) as error:
+            if isinstance(error, urllib.error.HTTPError) or tried == PACKAGE_TRIES:
+                raise RuntimeError(f"{unsent}: {error}") from error
+            continue
+        if len(package) >= size:
+            break
+    if len(package) < size:
+        raise RuntimeError(f"{host} stopped sending {what} after {len(package)} of {size} bytes.")
     if len(package) != size or hashlib.sha256(package).hexdigest() != sha256:
-        raise RuntimeError(f"{host} sent a different {what} from the one the lab was made with.")
+        raise different
     return package
 
 
