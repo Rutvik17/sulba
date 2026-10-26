@@ -1,9 +1,12 @@
 import { fileURLToPath } from 'node:url';
 import { pyodideEngine } from '@sulba/lab/node';
-import { beforeAll, expect, test } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 import { type Course, loadCourse, type Stage } from './load.ts';
 import { mathFontCharacters } from './math-font.ts';
 import { computeFigures, type FiguresRunner, proseProblems } from './prose-check.ts';
+
+// The tests compute the fixture course's figures in Pyodide, one of them twice over.
+vi.setConfig({ testTimeout: 60_000 });
 
 const fixtures = fileURLToPath(new URL('../fixtures/courses/', import.meta.url));
 const count = 'demo/modules/counting/labs/tallies/stages/count';
