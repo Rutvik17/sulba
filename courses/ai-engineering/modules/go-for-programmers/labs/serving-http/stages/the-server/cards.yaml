@@ -1,0 +1,19 @@
+cards:
+  - id: crd_fdivrg
+    front: >-
+      Why does the gateway's handler check the key and the rate limit before it reads the body?
+    back: >-
+      A caller without a key, or over its limit, is refused for the cost of reading a header:
+      no body read, no upstream asked.
+  - id: crd_fg948y
+    front: >-
+      Why does the handler pass `r.Context()` to `Fallback`?
+    back: >-
+      It's canceled when the caller's connection closes, so the upstreams stop working on a
+      reply no one will read.
+  - id: crd_poyd96
+    front: >-
+      A handler sets a header after it writes the body. What does the caller get?
+    back: >-
+      The reply without that header: the first write sends the status and the headers, and
+      changes to the header map after it have no effect.

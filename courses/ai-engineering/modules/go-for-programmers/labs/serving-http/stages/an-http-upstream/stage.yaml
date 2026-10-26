@@ -1,0 +1,6 @@
+id: stg_1v3i3r
+kind: build
+title: An HTTP upstream
+builds: A new `upstream.go`, which uses your `server.go` and the given `fallback.go` and `failures.go`.
+file: upstream.go
+minutes: 45

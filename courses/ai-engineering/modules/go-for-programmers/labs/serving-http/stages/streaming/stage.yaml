@@ -1,0 +1,6 @@
+id: stg_xd5908
+kind: build
+title: Streaming
+builds: A new `stream.go`, which uses your `upstream.go` and the given `failures.go`.
+file: stream.go
+minutes: 50

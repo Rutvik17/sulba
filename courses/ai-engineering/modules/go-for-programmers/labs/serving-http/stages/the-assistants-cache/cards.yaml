@@ -1,0 +1,20 @@
+cards:
+  - id: crd_buxyk9
+    front: >-
+      A cache's `Chat` holds its mutex while it calls the upstream. What does that do to the
+      gateway?
+    back: >-
+      Every request through the cache, cached or not, waits for that one call, so the gateway
+      answers one request at a time.
+  - id: crd_amcuxt
+    front: >-
+      Why does a cache of chat replies key on the whole request, not the last message?
+    back: >-
+      The reply depends on every message. Conversations that end with the same message would
+      otherwise get each other's replies.
+  - id: crd_a17v2x
+    front: >-
+      What does `singleflight`'s `Do` add to a cache?
+    back: >-
+      Only one call is in flight for a key at a time: callers who ask for the same key at once
+      wait for that call and get its result, so the upstream is asked once.

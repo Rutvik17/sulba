@@ -1,0 +1,19 @@
+cards:
+  - id: crd_4lsrdp
+    front: >-
+      What timeouts does a Go `http.Server` have if you set none?
+    back: >-
+      None: a zero timeout means no timeout, so a slow or silent client holds its connection
+      for as long as it likes.
+  - id: crd_164vt1
+    front: >-
+      Why must a program wait for `Shutdown` to return, rather than for `Serve`?
+    back: >-
+      `Serve` returns `ErrServerClosed` as soon as the shutdown starts. A program that exits
+      then cuts off the requests `Shutdown` is still waiting for.
+  - id: crd_amrt6h
+    front: >-
+      The context that started a shutdown is already done. Why not pass it to `Shutdown`?
+    back: >-
+      `Shutdown` gives up when its context is done, so it would return at once without waiting
+      for anything. It needs a context of its own, with the grace as its deadline.

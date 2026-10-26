@@ -1,0 +1,13 @@
+cards:
+  - id: crd_rspzev
+    front: >-
+      What does a Go program lose if it doesn't close an HTTP response's body?
+    back: >-
+      The connection: the transport may not reuse it, so each call opens a new one, until the
+      program runs out of them.
+  - id: crd_u4qbgn
+    front: >-
+      `http.Client`'s `Timeout` is zero. How long can a call take?
+    back: >-
+      As long as the request's context allows: a zero `Timeout` means no timeout, so with a
+      context that has no deadline, a stuck server holds the call forever.

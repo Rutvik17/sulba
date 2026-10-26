@@ -1,0 +1,6 @@
+id: stg_6fox1e
+kind: build
+title: The server
+builds: A new `server.go`, which uses the given `request.go`, `routes.go`, `fallback.go`, `failures.go` and `bucket.go`.
+file: server.go
+minutes: 50
