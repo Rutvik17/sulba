@@ -1,0 +1,25 @@
+id: stg_ihmb68
+kind: design
+title: An agent that books appointments
+builds: Agents, and Securing the assistant.
+minutes: 45
+questions:
+  - The booking system times out after the agent asks it to book. What does the agent do?
+  - "A patient asks to cancel \"all my appointments\", and has {% $fig.many %}. What happens?"
+  - How do you test the agent before it books for real patients?
+rubric:
+  - point: Gives the agent narrow tools
+    answer: Tools to search free slots, and to book, move or cancel one appointment, each checked by the booking system, and no tool that can do anything else.
+  - point: Acts only for the person signed in
+    answer: The patient comes from the sign-in, and every tool call is made as that patient, so the agent can't see or change anyone else's appointments.
+  - point: Confirms before it changes a booking
+    answer: The agent shows each booking, move or cancellation with its date, time, clinic and therapist, and makes it only when the patient confirms.
+  - point: Makes each change safe to retry
+    answer: Each change carries an idempotency key, so a call sent again after a timeout books once, and the agent reads the booking's state before trying again.
+  - point: Bounds the agent's run
+    answer: A run has a limit of steps and of time, and a request it can't finish goes to the clinic's staff with what the agent found.
+  - point: Tests against a copy of the booking system
+    answer: A test set of requests runs against a test copy of the system, each several times, scored by the bookings it leaves rather than by what the agent said.
+  - point: Works out the cost
+    answer: "{% $fig.request_in %} tokens in and {% $fig.request_out %} out a request: about {% $fig.day_cost %} a day."
+pass: 5

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_okhgtk
+    front: A booking call times out. Why can't the agent just send it again?
+    back: The booking may have happened. An idempotency key makes a second send book once, and the agent reads the patient's appointments before it tries again.
+  - id: crd_e5mssa
+    front: Why make every tool call as the signed-in patient?
+    back: Then the booking system itself refuses anything outside that patient's appointments, whatever the agent is told.

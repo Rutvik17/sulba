@@ -1,0 +1,7 @@
+cards:
+  - id: crd_btasqh
+    front: Why decide which invoices staff check by rules, not by the model's confidence?
+    back: A model's confidence isn't a measure of whether a field is right. Rules such as a failed check, a new supplier or a large amount are the firm's to set and to see.
+  - id: crd_y9tk1s
+    front: What identifies a duplicate invoice?
+    back: The same supplier, invoice number and total, from whichever channel it came.

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_wq4o9g
+    front: Why should a review bot post few comments rather than every finding?
+    back: A bot that's often wrong teaches engineers to ignore it, so it ranks its findings and posts only the most severe few.
+  - id: crd_3ms6xy
+    front: What number shows whether a review bot's comments are worth reading?
+    back: The share of its comments that led to a change in the code.

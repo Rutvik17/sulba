@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ag53vx
+    front: How does an SQL assistant make two managers' "last month's sales" agree?
+    back: It builds on the warehouse's agreed definitions, kept as views, rather than on raw tables, so both answers count sales the same way.
+  - id: crd_g7zohp
+    front: Why keep personal data from an SQL assistant with the database role rather than the prompt?
+    back: The role's access can't be talked around, so no query it runs can return those columns, whatever the question says.
