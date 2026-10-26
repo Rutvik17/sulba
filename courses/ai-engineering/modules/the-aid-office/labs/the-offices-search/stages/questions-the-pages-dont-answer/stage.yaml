@@ -1,0 +1,7 @@
+id: stg_d8dx7e
+kind: build
+title: Questions the pages don't answer
+builds: A new `scope.py`, which uses your `index.py`.
+file: scope.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 45

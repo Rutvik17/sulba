@@ -1,0 +1,639 @@
+question,set,text
+o1,validation,What can I do if my disability benefits application is denied?
+o2,validation,What documents will I need to get a corrected card for my son?
+o3,validation,Please help me get information about social security's disability benefits.
+o4,validation,how do I apply for disability benefits?
+o5,validation,How soon do someone need to apply for disability benefits?
+o6,validation,"please, give me information about benefits planning for widows."
+o7,validation,I am looking for information regarding benefits for my widow when I pass on
+o8,validation,What do I need to show to get a Social Security Card?
+o9,validation,"I would like to apply for a Social Security Card for my child, what documents do I need to submit?"
+o10,validation,How do I obtain an original social security card for a child born in the U.S.?
+o11,validation,"Hi, i was told to use this. I'm looking for information for getting a SSN for a U.S bron child, please."
+o12,validation,I need a Social Security card for my kid that was born here in the states.
+o13,validation,I've lost my Social Security Card can you help me?
+o14,validation,I need a card for a foregn born u.s. citizen adult
+o15,validation,"Hello, I want to know about Social Security cards for foreign-born U.S. citizens adopted children."
+o16,validation,What original documents do I need to produce when looking for an original Social Security card for a foreign born US citizen adopted child?
+o17,validation,"Yeah, hi. i need some info about an SSN card for an Adopted Child, please?"
+o18,validation,I need to get my social security card for the first time. I'm an adult born in the US.
+o19,validation,What documents do I need to apply for a social security card
+o20,validation,What documents do I need?
+o21,validation,How do I apply for an original ss card?
+o22,validation,What documents do I need to get a Social Security Card?
+o23,validation,I need a social security card for my child
+o24,validation,"Hello I'm an immigrant hoping to get a Social Security Card, what is the procedure?"
+o25,validation,What documents do I need to get a Social Security card for a kid born out of the U.S.?
+o26,validation,What original documents do I need to get a social security card if any?
+o27,validation,"In order to obtain a social security card, what original documents do I need?"
+o28,validation,I need a replacement Social Security Card and want to know what I need to bring with me?
+o29,validation,What do my documents need to reflect in order to get a replacement social security card?
+o30,validation,What kind of documents will I need to get a card?
+o31,validation,I need help with Survivors Benefits
+o32,validation,How will I know if I should apply for Medicare?
+o33,validation,Hi. I want to know what kind of documents i need for a replacement card?
+o34,validation,How do i get replacement card for a noncitizen child?
+o35,validation,I need to know what original documents that I need.
+o36,validation,What original documents are needed?
+o37,validation,Can anyone apply for retirement benefits online?
+o38,validation,How do I start the online application?
+o39,validation,You can help me with the online retirement benefits application
+o40,validation,Am I in the right place to access a benefits planner?
+o41,validation,"I would like to know more about benefits, please."
+o42,validation,"Hello, can you help me with the Benefits Planner, please?"
+o43,validation,I want to see about the Benefits Planner and my Social Security
+o44,validation,"Good afternoon, I'm looking for some information about the Benefits planner."
+o45,validation,"Good morning. I'm looking to get a replacement SSN card for a U.S born child. I'm being told that i need some documentation. Could you help me out with that, please?"
+o46,validation,I'm trying to work on some disability benefits
+o47,validation,Can you tell me about Social Security disability benefits?
+o48,validation,Hi. I would like to learn about disability benefits.
+o49,validation,can you help me apply for retirement benefits?
+o50,validation,I'd like to know which steps to do next.
+o51,validation,Can my family qualify for benefits on my record even if I didn't qualify for benefits on someone else's record?
+o52,validation,I need help applying for my retirement benefits.
+o53,validation,I need help with applying for my retirement benefits.
+o54,validation,"Hello, i was directed here for information about replacing a SS card for a child."
+o55,validation,"Hey, could you maybe tell me what documents I need? I'm a bit confused and lost."
+o56,validation,"Hello, I would like to know how to get started to verify?"
+o57,validation,How can I plan for disablity benefits
+o58,validation,"you may help me with my disability benefits, will I ever need them"
+o59,validation,I need help with disability.
+o60,validation,What if my spouse dies and they were on Socoal security
+o61,validation,"Hello, I want to know some things about disability and supplemental security income. Can you help me out?"
+o62,validation,"Hi There! I'm searching for information, I want to know if I can file an appeal if my SSI application was denied."
+o63,validation,"HEllo, my SSI was denied, and I am upset about it, can I file an appeal or something?"
+o64,validation,Can I file an appeal my SSI application was denied?
+o65,validation,I would like to know how to apply for SSI Benefits online.
+o66,validation,"I was told a disabled person can do their SSI application online, is that true?"
+o67,validation,I need to apply for supplemental security income benefits
+o68,validation,I need information about SSI
+o69,validation,Do I qualify for SSI?
+o70,validation,what is SSI
+o71,validation,where do i start?
+o72,validation,I would like information on whether I can qualify for Supplemental Security Income.
+o73,validation,"Hi, I just lost my husband and would like to know if Social Security pays out any form of death benefit?"
+o74,validation,How can my spouse earn social security survivors benefits?
+o75,validation,can you help me with knowing about if they can take my benefits away and when they review my case?
+o76,validation,What could make my disability benefits stop?
+o77,validation,Can you tell me how many Social Security credits my wife can earn every year?
+o78,validation,How would my wife earn social security survivor's benefits?
+o79,validation,"if a spouse passes, how do they earn benefits?"
+o80,validation,I was wondering if social security also pays death benefits? Does it?
+o81,validation,Where do i begin
+o82,validation,Hello I need information about the Disability Determination Process
+o83,validation,I could use some help regarding social security credits. How do they work?
+o84,validation,what can you tell me about Social Security Credits
+o85,validation,"Hello, can you please tell me how I can keep my personal information secure?"
+o86,validation,"Hey, how can I keep my personal information safe?"
+o87,validation,Hello there. I need explanations regarding my retirement benefits. I can't make sense of it all.
+o88,validation,How do I find out if I'm eligible for Retirement Benefits?
+o89,validation,"Hey, I'm planning for retirement and need some input."
+o90,validation,when should I decide to start retirement benefits
+o91,validation,"Hello, I would like to obtain information about Retirement Planning"
+o92,validation,"Hello, I would like to obtain information about Medicare monthly premiums for 2020"
+o93,validation,I have a few questions about medicare premiums. It'd be great if you could answer them.
+o94,validation,"I'd like to learn more about medicare premiums, please."
+o95,validation,"I have so many questions about medicare premiums, I don't even know where to begin."
+o96,validation,Hello there. What can you tell me about medicare premiums?
+o97,validation,"Hi, can you tell me the rules for beneficiaries with higher incomes?"
+o98,validation,Hello there. Can you please answer a few questions I have about Medicare premiums?
+o99,validation,"Hi, can you tell me what it takes to apply for disability benefits?"
+o100,validation,What is required to apply for disability benefits?
+o101,validation,Hi. I need some information about how to apply for a disabled child. The process is a bit complicated.
+o102,validation,If Applying for a child (under 18) what are the steps for Disability Benefits
+o103,validation,"Hello, I wonder once you have applied to the benefit, what should I do?"
+o104,validation,Could you please give me some information on how to apply for benefits if I am not currently living in the U.S.?
+o105,validation,how to apply retirement benefits
+o106,validation,"Hello, I would like you to help me know how to apply for retirement benefits."
+o107,validation,"Hello, I would like to know if I can apply for retirement at the local office?"
+o108,validation,"Hi, could you tell me what original documents do I need to get a Social Security Card?"
+o109,validation,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+o110,validation,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+o111,validation,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+o112,validation,"Hello, I would like to know what original documents do I need to obtain a Social Security Card?"
+o113,validation,I was wondering if it is possible to check the status of my VA claim online?
+o114,validation,Hello. I need to know what to do to request a review from a senior reviewer.
+o115,validation,Tell me about how to change a VA direct deposit information
+o116,validation,hi i need help about how to get housing assistance grants for veterans
+o117,validation,Tell me about Veterans Housing Assistance Grants.
+o118,validation,Good evening. I need some explanations regarding veterans housing assistance grants.
+o119,validation,I am looking for support from a military sexual trauma.
+o120,validation,HI. I'm looking for information...
+o121,validation,Where can I find more information and support?
+o122,validation,I'm here about MST
+o123,validation,How do I get a hold of some records from the Army?
+o124,validation,"Hi, good afternoon. Look, i'm interested on some info about GI Bill related benefits. Could you tell me what's next after application?"
+o125,validation,I'm here for VA disability benefits
+o126,validation,What can you tell me about VA disability compensation?
+o127,validation,Why did the military records need to be reconstructed?
+o128,validation,I want to know about the fire you had and what to do if my military records are gone
+o129,validation,I need information about VA disability ratings.
+o130,validation,"Hey there, I would like to know more about your disability ratings."
+o131,validation,"Hello, I'm on the GI Bill and was wondering if you have information about changing something."
+o132,validation,Hello there. How are you doing? My name is John and I am looking for information on the affordable care act.
+o133,validation,can you give me details of VA disability compensation
+o134,validation,What is VA disability compensation?
+o135,validation,can you give me details of More information about VA mental health services
+o136,validation,How do I access Va mental health services?
+o137,validation,Hello. Can you tell me how to get benefits?
+o138,validation,I am looking for help on benefits.
+o139,validation,I need info about VA programs for substance abuse
+o140,validation,how do I get More information and resources
+o141,validation,Hello. My name is Jim. I am currently not working and looking for employment.
+o142,validation,How do I get VA Home Loan Benefits?
+o143,validation,I'd like information on how to apply for a Veterans Housing Assistance Grant please.
+o144,validation,I would like to find out if I'm eligible for VA Home Loan Benefits.
+o145,validation,How do I appeal to a veterans law judge?
+o146,validation,"Hello, I need information about health care costs."
+o147,validation,hi i need help about Employment benefits for dependent family members
+o148,validation,hi i need help about How do I apply?
+o149,validation,hi i need help on how do i apply?
+o150,validation,can you give me details of Print out your VA Welcome Kit
+o151,validation,I'm interested in more information and VA resources
+o152,validation,I would like information about education and training benefits.
+o153,validation,I need information on educational and career counseling.
+o154,validation,Hello. I want to get some information on life insurance for vets.
+o155,validation,Hello! I would like to obtain information about insurance life.
+o156,validation,hello I need information about Exposure to hazardous chemicals and materials
+o157,validation,can you give me details of Exposure to hazardous chemicals and materials
+o158,validation,looking for anything I can get on the topic of U.S. chemical testing on vets
+o159,validation,"Hello, I'm here to learn more about the benefits of a GI Bill."
+o160,validation,hi i need More information and resources about VA Pension Benefits
+o161,validation,"Hello, we talked yesterday, maybe you remember. I have more questions and was hoping to come across more information here."
+o162,validation,"Hello, I am here to learn more about the costs connected with using a veteran service officer."
+o163,validation,hello I need information About VA insurance options and eligibility
+o164,validation,I am looking for life insurance through the VA
+o165,validation,I need information about VA insurance options and eligibility.
+o166,validation,Hello I need information about What happens after I request a decision review?
+o167,validation,"hello, I am in the Army and I want to know if I can qualify for more than one education benefit from the VA"
+o168,validation,"Hello. I've been receiving veteran benefits since some time ago, but i've been a little messy with my transactions. Is there a way to know about my doings?"
+o169,validation,"I'm looking for information about my veteran payments, about my transaction history, please."
+o170,validation,you can help me by telling me where someone in the middle of nowhere can go for medical care
+o171,validation,I want to know more about copay fees
+o172,validation,I wanted to see what the copays are for certain services
+o173,validation,I want to apply for a burial in a VA cemetery and I want to know what happens after I apply.
+o174,validation,How do I get VA Title 38 USC 1151 benefits?
+o175,validation,health care
+o176,validation,I need more information on VA health care
+o177,validation,What is some information I can find out about VA health care?
+o178,validation,I need help getting VA health care for PTSD
+o179,validation,"Hello. I'm a doing a research, and I was wondering if you could help me with information about the post traumatic stress disorder for veterans?"
+o180,validation,I need help. How do I access services for PTSD?
+o181,validation,"Hi there. I'm a veteran but I don't have any health care benefits, can I still have access to PTSD treatment?"
+o182,validation,"Hi there, I need to file a Supplemental Claim with new evidence."
+o183,validation,Would you ever need to contact a national cemetery directly?
+o184,validation,what's with the pact team?
+o185,validation,I'm looking for more info about the GI BIll
+o186,validation,can I use my benefits on two degrees?
+o187,validation,what are the steps to get a VA or direct mortgage loan
+o188,validation,"Hi, i think i'll soon be in need of a loan for home purposes, but i'll also need proof of that. Do you have any option for veterans in that regard?"
+o189,validation,I need information on how to obtain a VA direct home loan.
+o190,validation,"Hi, have a nice day. I'm looking for information related to how to help a veteran to return to his life at home. I don't have any experience on this, so I was wondering if you could help me. Please?"
+o191,validation,you can tell me what happens after I request a review on a fiduciary claim
+o192,validation,I requested a decision review and I need to know what to expect now.
+o193,validation,I would like to know if you have information about the VA medical benefits package
+o194,validation,Can you tell me about applying for VA Voc Rehab adn Employment?
+o195,validation,How to apply for VA Voc Rehab and Employment
+o196,validation,Am I able to use the VA Appointments tools?
+o197,validation,How to know if I am eligible to use the VA Appointments tools
+o198,validation,I have become totally disabled and was wondering about my premiums.
+o199,validation,"good, do i need information about the fully developed Claim program for a VA pension?"
+o200,validation,"Good afternoon, am I looking for information on VA Disability Compensation for PTSD?"
+o201,validation,I want help with PTSD matters
+o202,validation,I want to know more about Agent Orange exposure?
+o203,validation,who used Agent orange exposure
+o204,validation,can you help me with Agent Orange exposure please?
+o205,validation,offered by Veterans Mortgage Life Insurance
+o206,validation,what can you tell me about VMLI?
+o207,validation,What is VA Aid and Attendance benefits and housebound allowance used for?
+o208,validation,"Hello, I would like to know if there is something that makes me more likely to obtain these benefits?"
+o209,validation,Hi. I would like to know about Eligibility for VA health care
+o210,validation,"Hey, I was wondering how I can increase my chance to get benefits. Care to explain?"
+o211,validation,Good evening. I would like to know if VA covers my glasses.
+o212,validation,"Hi, I need to know if the VA will cover the cost of the glasses?"
+o213,validation,"Hello there, can you tell me how I view my medical records online?"
+o214,validation,"hi i need some help if i can't get VA dental care benefits, can i get help buying dental insurance?"
+o215,validation,"Hello, can you tell me more about VA education benefits for survivors?"
+o216,validation,when I finish the Reserve Educational Assistance Program (REAP)
+o217,validation,can you help me with information about the Educational Reserve Assistance Program (REAP)
+o218,validation,"Hello there, I would like to learn more about the reserve educational assistance program."
+o219,validation,hi i need help about Reserve Educational Assistance Program (REAP)
+o220,validation,How Group Life Insurance for Veterans (VGLI) works
+o221,validation,I would like to have information about Group Life Insurance for Veterans (VGLI)
+o222,validation,for the Post-9/11 GI Bill (Chapter 33)
+o223,validation,Can you give me Post-9/11 GI Bill information (Chapter 33)
+o224,validation,"I have questions. Regarding the GI Bill, after September 11."
+o225,validation,which is protection against traumatic injuries (TSGLI)
+o226,validation,Traumatic Injury Protection (TSGLI)
+o227,validation,"hi, give me information about the program Traumatic Injury Protection"
+o228,validation,"hi, please show me information about TSGLI"
+o229,validation,Hi. I am trying to learn about TSGLI.
+o230,validation,"Hi, I am trying to learn about VA services."
+o231,validation,"hi. i want to know How do I access these services (VA nursing homes, assisted living, and home health care)?"
+o232,validation,How do I access VA nursing home services?
+o233,validation,How your benefits may change from year to year
+o234,validation,hi. please tell me How your benefits may change from year to year
+o235,validation,please tell me How your benefits may change from year to year
+o236,validation,hi i need help about How your benefits can change from year to year in VA
+o237,validation,Hello. Can you fill me in about educational aid for survivors?
+o238,validation,Eligibility for VA disability benefits
+o239,validation,please show me information about Eligibility for VA disability benefits
+o240,validation,"hi, please information about Eligibility for VA disability benefits"
+o241,validation,How can I be eligible for VA disability benefits?
+o242,validation,please show me information about Eligibility for VA Vocational Rehab and Employment
+o243,validation,"hi, give me information about adding a dependent to your VA disability compensation"
+o244,validation,I would like to know how to add a dependent to my VA disability compensation.
+o245,validation,please show me information about Veterans Educational Assistance Program
+o246,validation,please show me information about VEAP
+o247,validation,Hello. I hope you're doing well. I need some information about the educational aid program for veterans.
+o248,validation,"You tell me, I wanted to know what I need to be able to get approved. So how can you help?"
+o249,validation,Am I eligible for VA DIC as a surviving spouse or dependent?
+o250,validation,hi i need help about Benefits for spouses and dependents
+o251,validation,hi i need help about Am I eligible for VA DIC as a surviving spouse or dependent?
+o252,validation,How to get these disability benefits?
+o253,validation,I need to get a new veteran ID card.
+o254,validation,Hello there. Can you please tell what types of Veteran ID cards exist?
+o255,validation,can you give me details of Types of Veteran ID cards
+o256,validation,can you give me details of Types of Veteran ID cards
+o257,validation,hi i need help about Types of Veteran ID cards
+o258,validation,hi can you help me to know how to apply for a veteran id card?
+o259,validation,can you give me details of How to apply for a Veteran ID Card
+o260,validation,Hello there. What can you tell me about Co-op training?
+o261,validation,hi i need help about Cooperative Training
+o262,validation,can you give me details of Co-op training
+o263,validation,Can you please help me find out about co-op training?
+o264,validation,I moved recently and forgot to update my address. Could this be a problem?
+o265,validation,"Hi , I forget to update my adress. And What will happen now.?"
+o266,validation,Can a motorist know if I searched his records using the dial-in search account?
+o267,validation,"Hi, I'm constantly searching DMV records for driver license, registration and insurance information. So I thought I'd get a DIAL-IN search account, but I need to fill the form MV-15D. I've been trying to get the form on the website but it's seems the website is down, or maybe my browser is not compatible. Could you assist me with that?"
+o268,validation,will you tell a motorist if i search their records?
+o269,validation,Do I have to get insurance to register my vehicle?
+o270,validation,I need to know if I have to get insurance to register my vehicle.
+o271,validation,"In order for me to register my vehicle, do I have to have an insurance policy in place on that vehicle"
+o272,validation,"Hey, do I need an insurance to register a vehicle? If so, what are the New York State Insurance requirements."
+o273,validation,Tell me about county taxes and supplemental fees
+o274,validation,I need to know how much is the fee for my vehicle.
+o275,validation,"Hello, I want to know about county use taxes and supplemental fees."
+o276,validation,I would like to know the cost of the registration fee of a commercial vehicle
+o277,validation,Can you help me determine my total registration fees for my commercial vehicle?
+o278,validation,I need help to renew my non-driver ID card
+o279,validation,"Yes, I need to know more about how to renew my non-driver ID card"
+o280,validation,"I want to renew my non-driver ID card, please, help me with info about it."
+o281,validation,I want to know more about the refunds-
+o282,validation,"Yeah, hi, i went through pre-licensing course and got my certificate, but i wanted to know how much time is it valid before expiring?"
+o283,validation,What do I need to do before I take my road test?
+o284,validation,"I would like to know how to get motorcycle license,please."
+o285,validation,How do I get a motorcycle license?
+o286,validation,Can I get an escort driver certification at the DMV?
+o287,validation,"I would like to know what the hearing process is like, please"
+o288,validation,I just passed my test and I want to know what is next.
+o289,validation,"Hi, i'm going to take my road test soon, and i know is getting way ahead, but i wanted to know what happens once i pass the test?"
+o290,validation,"I have passed my road test, now what?"
+o291,validation,I would like to schedule a road test please.
+o292,validation,"Morning! I just read about the PBS license on an article but I don't know what's that, and I couldn't found any information about that. Could you help me out a bit? I'm interested because I'm not sure if I should get a PBS license."
+o293,validation,I would like to know what would happen if I forget not to respond to the notice of non-compliance and licence downgrade.
+o294,validation,I received a notice of non-compliance and license downgrade. What happens if I don't respond?
+o295,validation,I'm currently contesting my License downgrade on the basis of it being unfair. What happens if I don't comply with the notice that I received?
+o296,validation,How do I obtain a disabilities parking permit while out of state?
+o297,validation,How can I learn passenger wehicle taxes and fees
+o298,validation,How much are the fees to register?
+o299,validation,Who are the I LOVE NY Adventure Custom Plates available to?
+o300,validation,What do i do if i already have a lifetime sporting license or safe boating certificate?
+o301,validation,What information can you give me about a sporting license?
+o302,validation,I need some deceased owner info for transfers
+o303,validation,How long are in-transit vehicle permits valid for?
+o304,validation,Is my driver license and vehicle information safe or is this information sold or shared with others?
+o305,validation,What is shown on my lifetime driving record?
+o306,validation,How do I reinstate surrendered plates?
+o307,validation,What do I need to renew my Driving School license?
+o308,validation,What do I need to know about Diesel Opacity Emissions?
+o309,validation,"Hello, I want to know about the ignition interlock device"
+o310,validation,I want to know about the ignition interlock device.
+o311,validation,I'd like to look into Interlock devices
+o312,validation,can you tell me what is an ignition interlock device?
+o313,validation,How can I get reductions on insurance premiums?
+o314,validation,Can I get both a youth and PIRP discount?
+o315,validation,I am looking at a used vehicle on your website and want to know what the reported mileage is?
+o316,validation,Can you tell me what proof of vehicle ownership is?
+o317,validation,"Hi there. I probably will be moving out new york, but I got some doubts about the registration of my car."
+o318,validation,Hey there. I'm having some doubts related to if is possible or not have a insurance from another state and keep my car registered in the new york state.
+o319,validation,How to renew a CDL
+o320,validation,"Hello, I would like to know what kind of equipment and technology do I need to take an I-PIRP course?"
+o321,validation,how to get a CDL
+o322,validation,"Hi, how are you? Do you want information about what I must do to change my driver's license to another state?"
+o323,validation,I had some bad work done on my car and now what do I do to fix this?
+o324,validation,how is the hearing process
+o325,validation,Hello there. How are you doing? I came here because there was a complaint filed against me and I don't know what to do about it.
+o326,validation,can you give me details of The Graduated License Law and Restrictions for Drivers under 18
+o327,validation,under 18 restrictions
+o328,validation,What happens if I had a lapse of insurance coverage during active duty?
+o329,validation,"Hello, I have a suspension order. How much should I pay?"
+o330,validation,I let my insurance lapse and DMV has suspended my registration. I need to know how much I'll have to pay to have the suspension removed.
+o331,validation,"Hey there, I'm here to figure out how to replace a registration. Would you walk me through the process?"
+o332,validation,What do I need to do if my address has changed?
+o333,validation,"I need to replace my vehicle registration, but I recently changed my last name."
+o334,validation,What is the learner permit for?
+o335,validation,When must someone renew there registration for a vehicle?
+o336,validation,"hello I need information about Driver's License, Permit or Non-Driver Identification"
+o337,validation,What are the requirements to become a driving school instructor?
+o338,validation,How to Become a Driving Instructor What tests do I have to pass?
+o339,validation,"Hello there, I came here looking for information on how to register a snowmobile. Can you answer a few questions about that?"
+o340,validation,my address doesn't fit on the registration page for out of state snowmobiles so I can't continue
+o341,validation,"Hi, could you tell me what do I need to bring to the New York State DMV office to show as proof of my license?"
+o342,validation,"What do I need to bring to the NY State DMV office to show as proof of my lifetime sporting/recreational license, privilege or certification?"
+o343,validation,do I need to have icons on my license?
+o344,validation,I need to have an adventure license icon removed from my Driver License.
+o345,validation,Hello I need information about Payment of termination fee for suspension
+o346,validation,I need help with a license suspension
+o347,validation,what's the fee for a license?
+o348,validation,I need address entry information for DMV records
+o349,validation,"Good morning, greetings!. I'm about to be ready to get a license so i thought i would need some info about it, please."
+o350,validation,"Hi, good morning. I'm used to pay for certain services coming from you, but i want to lighten up a little everything related to that. So, i created a escrow account, but could you tell me what's the minimum for that?"
+o351,validation,"Hello, I'm having some troubles with stuff related to a escrow account and I would need some help."
+o352,validation,"Hello. How are you doing? I came here to inform myself about a few things. For example, if I can keep my picture plates if I remove a vehicle from the road."
+o353,validation,and can i request by mail?
+o354,validation,as it is through a DMV office
+o355,validation,"Goof afternoon. I heard that you offer the possibility to change a name in a vehicle's tittle on your offices, is that right?"
+o356,validation,what form do I need to mail in when I change the name on a lease I bought ?
+o357,validation,Hello I need information about How to request professional photos and plates
+o358,validation,II want to make some modifications to my truck and want to know if it will affect it's registration class.
+o359,validation,I have received a TVB ticket. Can you please explain what steps I have to take to answer it?
+o360,validation,"Hi there. I'm about to be a TNC driver, but i don't even know what that means, can you help me?"
+o361,validation,What exactly is a TNC?
+o362,validation,"Tell about a TNC, please"
+o363,validation,"Hello there, I have some questions about selling a retail vehicle. Can you answer them, please?"
+o364,validation,"Hello, do I need information about whether the license can be restored by mail?"
+o365,validation,I just bought a new truck and need help with getting the title.
+o366,validation,Is it possible to access accident reports I already purchased online?
+o367,test,How do I apply for disability benefits?
+o368,test,What documents do I need to get a corrected Social Security Card?
+o369,test,Will I need specific documents to get a card?
+o370,test,What kind of documents are required to get a card?
+o371,test,I need help with replacement card for a noncitizen adult.
+o372,test,I need a replacement card for a foreign born Us adult
+o373,test,Please tell me the documents needed to get a Social Security card for a foreign-born adopted child.
+o374,test,"hello, hope you are well. How do I get an original card for a foreign Born Us citizen?"
+o375,test,"Hello. I understand I need original documents, but which ones?"
+o376,test,It's my first time trying to get a social security card. I'm a noncitizen adult.
+o377,test,"Good morning. I'm parent of a foreign born U.S citizen child and need to get her a SSN card, could you tell me about it?"
+o378,test,Could you please give me some information about survivors' benefits?
+o379,test,Could you please help me? I need to find out how to get an replacement card for a non citizen child that I have in my care.
+o380,test,Hello I need information about What happens after I apply for retirement benefits?
+o381,test,"Hi, how you doing. Look, i'm looking for information about what original documents do i need related to replacing a SSN card for a child, please?"
+o382,test,Hi there. I would like to get some information related on disability benefits.
+o383,test,I would like to have information on social disability benefits management
+o384,test,I need to know if I can apply for adult disability benefits online.
+o385,test,What are the next steps if I do not qualify for benefits on someone else's record?
+o386,test,How do I apply for Social Security Retirement?
+o387,test,"Regarding retirement benefits, how do I apply?"
+o388,test,Hello I need information about What original documents do I need to get a Social Security Card?
+o389,test,How much will I receive for disablilty
+o390,test,"Hi, good morning. I'm looking to do some benefits planning on disability. Can you help me with that?"
+o391,test,"Hello, i want to know which person can use the retirement estimator?"
+o392,test,Can I use the Retirement Estimator?
+o393,test,Am I eligible to use the Retirement Calculator?
+o394,test,"Hello, who can use the retirement estimator?"
+o395,test,Hey there. I'm looking information related to the benefits that an adult with a disability can receive. if they can receive any from you.
+o396,test,"Hi there. I would like to know, what happens with an adult with a disability if this one wants to get access to the social security benefits."
+o397,test,Are other people allowed to access my social security account?
+o398,test,Hi. Can more than one person use my account?
+o399,test,Can my husband use my Social Security account?
+o400,test,I need SSI benefits information
+o401,test,Can you tell me a little bit about Supplemental Security Income benefits?
+o402,test,I need to know if my family members are eligible for increased benefits
+o403,test,how do I qualify for social security?
+o404,test,what if you retire early?
+o405,test,How do you Check the Status of Your Reconsideration
+o406,test,how do I apply?
+o407,test,Where can I apply for it at?
+o408,test,hello I have some questions
+o409,test,Can I get benefits while I am working?
+o410,test,Can I get benefits while working?
+o411,test,Is it possible to work while receiving benefits?
+o412,test,Can I get benefits while working
+o413,test,What if I plan to continue working after taking benefits?
+o414,test,I want info about what happens to my benefits if I want to keep working
+o415,test,I need to find out about medicare health insurance coverage
+o416,test,Is there life time benefits?
+o417,test,"Hi, i'm receiving benefits, but i wanted to know if there is a chance i keep them now i'm looking to continue working."
+o418,test,"Hello, I'm here to learn more about how you determine if a person is disabled."
+o419,test,I'm looking for info about social security credits.
+o420,test,"Hello, I would like to obtain information about Social Security Credits"
+o421,test,how Keep my Information Secure
+o422,test,I was wondering if you have some resources about retirement benefits. I'm looking for some answers.
+o423,test,hi can you help me with retirement planning
+o424,test,What is Retirement Planning like?
+o425,test,what can you tell me about Medicare Premiums: Rules For Higher-Income Beneficiaries
+o426,test,"Hello, I have some questions about Medicare premiums."
+o427,test,"Hello, I would like to know how to apply for a disability benefits for a minor"
+o428,test,I could use some guidance on how to apply for a disabled child.
+o429,test,it's not my case Social Security Credits
+o430,test,"Hello, I would like to obtain information about Social Security Credits"
+o431,test,How to apply for retirement benefits with the local office
+o432,test,I was wondering where I can find information for my application. I want to apply for retirement benefits.
+o433,test,how do you Check your VA claim or appeal status
+o434,test,hg
+o435,test,what is Military sexual trauma (MST)
+o436,test,I need information about what happens after applying for the GI Bill please.
+o437,test,What if my records were destroyed in fire?
+o438,test,what happens after After you apply for health care benefits
+o439,test,"Hello, I just wanted to know what information I need for my request."
+o440,test,What information do you have about the Affordable Care Act and how it affects VA health care coverage?
+o441,test,what is VA disability compensation
+o442,test,Are there Resources and support outside VA
+o443,test,"Hello there, I have problems with substance use and need help."
+o444,test,Hello. I'm currently unemployed and would like to ask about possible jobs for me.
+o445,test,hi i need help about the services they offer for VA with Health Needs and Conditions
+o446,test,How do I find out how to get health services for a specific condition or need?
+o447,test,What services are available for health needs and conditions?
+o448,test,I'm a vet and wanted to know what you have for someone like me
+o449,test,"are you a real person or a robot? anyways, I need health care for depression"
+o450,test,"Hello, I came here to learn in what way your services can cover my health needs."
+o451,test,I would like information related to the costs of medical care.
+o452,test,What are employment benefits for dependent family members?
+o453,test,hi i need help about VA Education and Training Benefits
+o454,test,can you give me details of Get GI Bill and other education benefits
+o455,test,I need more information and resources about VA Education Benefits
+o456,test,hi i need help about VA Education and Training Benefits
+o457,test,"Hello, i've been reading about the benefits that Veterans can get, but i was wondering about education benefits. Could you tell me about it, if possible?"
+o458,test,"Hello there. Please, do you have any educational benefits for veterans?"
+o459,test,I am looking for more information about VA education.
+o460,test,What are VA education and training benefits for?
+o461,test,I would like to know more about VA education benefits.
+o462,test,Where can I learn more about VA education and training benefits?
+o463,test,I need help with the VA Welcome Kit
+o464,test,I just wanted to get a little info on life insurance
+o465,test,I need to know if I can get information on exposure to hazardous chemicals and materials.
+o466,test,I need help with pension benefits
+o467,test,I need help getting insurance
+o468,test,Is it possible for getting more than one VA education benefit at the same time?
+o469,test,"Hello, I would like to know More information and resources of VA Health Care"
+o470,test,"Please, talk me about my VA care team."
+o471,test,need info on whether or not I can use my GI Bill benefits for more classes after graduating
+o472,test,"Hello, I was wondering what the next steps are now that I requested a review of a decision."
+o473,test,Hi. I need more information about your medical benefits package
+o474,test,How to Apply for Rehabilitation and Employment at VA Voc
+o475,test,Hello I need information about the Program and see VA appointments online
+o476,test,Can you help me get information for the Premium Waiver for policyholders who are totally disabled?
+o477,test,What is the benefit of a fully developed claim for a VA pension?
+o478,test,can you give me details of VA disability compensation for PTSD
+o479,test,can you give me details of Agent Orange exposure
+o480,test,hi i need help about Veterans Mortgage Life Insurance (VMLI)
+o481,test,hi i need help about VA Assistance and Home Assistance and Subsidy Benefits
+o482,test,Is there anything that will make me more likely to get these benefits?
+o483,test,hi i need help about Will VA cover the cost of the glasses?
+o484,test,"Hello, I need information about Life Insurance for Veterans with Disabilities in Service (S-DVI)"
+o485,test,"Hello, could you give me information about Life Insurance for disabled veterans in the S-DVI service"
+o486,test,Can you tell me about Service-Disabled Veterans Life Insurance?
+o487,test,What does service-disable veterans life insurance provide?
+o488,test,What does S-DVI provide?
+o489,test,what is Service-Disabled Veterans Life Insurance ?
+o490,test,what can you tell me about Service-Disabled Veterans Life Insurance (S-DVI)?
+o491,test,can you give me details of Service-Disabled Veterans Life Insurance (S-DVI)
+o492,test,can you give me details of Service-Disabled Veterans Life Insurance (S-DVI)
+o493,test,Service-Disabled Veterans Life Insurance (S-DVI)
+o494,test,Good day. How do I get my medical records online?
+o495,test,can I get help buying dental insurance?
+o496,test,hello i need help on how VA education benefits for survivors and dependents
+o497,test,I would like you to help me obtain information on How much will my service member pay for dependent coverage?
+o498,test,How much will my service member pay for dependent coverage?
+o499,test,How much will my service member pay for dependent coverage?
+o500,test,"Hi, I'd like to know how much will my service member pay for dependent coverage?"
+o501,test,hi i need to know how much will my service member pay for dependent coverage?
+o502,test,"Hi, how you doing. Look, i was searching for information about insurance for family members. Could you tell me how much will my service member pay for dependent coverage?"
+o503,test,How much will my service member pay for dependent coverage?
+o504,test,How much will my service member pay for dependent coverage?
+o505,test,hi i need help about How much will my service member pay for dependent coverage?
+o506,test,How much will a service member pay for dependent coverage for a child?
+o507,test,Veterans Group Life Insurance (VGLI)
+o508,test,I wanted to look into what the housing grant is all about
+o509,test,"hi, show me information about Post-9/11 GI Bill"
+o510,test,I am trying to learn about assisted living or nursing homes.
+o511,test,Can you explain to me how my benefits could change from year to year?
+o512,test,I want to know about the survivor and dependent program Educational assistance
+o513,test,there is a program to help veterans study
+o514,test,what is work study?
+o515,test,How does the Work study for Veterans work?
+o516,test,"Hello, Can I work and study?"
+o517,test,please show me information about Work study
+o518,test,Hello. I need information about the work study program please.
+o519,test,Can you tell me more about this work-study program of yours?
+o520,test,What is the work study program?
+o521,test,How does work study work for me as a Veteran?
+o522,test,"Good morning. Please, I'm a veteran and have some projects to do but need to pass through school. Do you have some kind of work study program?"
+o523,test,I want to transfer GI Bill benefits
+o524,test,I need some info to transfer my Post-9/11 GI Bill benefits.
+o525,test,Am I able to transfer my post-9/11 GI Bill benefits to my husband?
+o526,test,I would like information about transferring your GI Bill benefits after 9/11
+o527,test,please show me information about Transfer your Post-9/11 GI Bill benefits
+o528,test,I need to know how to transfer my GI Bill benefits from before 9/11.
+o529,test,Will I be able to transfer your Post-9/11 GI Bill benefits?
+o530,test,Can I transfer my Post-9/11 GI Bill benefits?
+o531,test,I need help with transferring my Post-9/11 GI Bill benefits to my son.
+o532,test,I need to know if my husband can use my GI Bill?
+o533,test,"Hi, I am trying to learn about VA vocational rehab."
+o534,test,I wanted to find out how to add my daughter to my disability benefits
+o535,test,Can you explain the Veterans Educational Assistance Program?
+o536,test,please show me information about VADIP
+o537,test,What is the VA dental insurance program?
+o538,test,What do VA dental insurance programs offer?
+o539,test,please show me information about VADIP
+o540,test,What does the VA dental insurance program (VADIP) offer?
+o541,test,I would like to learn about the VA Dental Insurance Program.
+o542,test,What can you tell me about the VA Dental Insurance Program?
+o543,test,Can you give me more information about what the VADIP is?
+o544,test,Does VADIP provide dental insurance to veterans?
+o545,test,"Hi. I am in the VA, and I need to get dental insurance."
+o546,test,can you give me details of Eligibility requirements for VA home loan program
+o547,test,hi i need help about Types of Veterans Identification Cards
+o548,test,you can help me apply for a Veteran ID card
+o549,test,Good afternoon. I'm looking for some info about schooling opportunities for veterans. Are there any kind of these benefits?.
+o550,test,"Hey good morning, how you doing?. Say, the other day i heard something about co-op training program. Could you tell me about it, please?"
+o551,test,My insurance ended so what should i do
+o552,test,I need to change my address.
+o553,test,how do i pay dial in search account fees?
+o554,test,I need to know how to pay the dial-in search account fees.
+o555,test,I'm enquiring about out of state insurance docs
+o556,test,Do I need insurance to register my vehicle?
+o557,test,Can you please tell me about the county use taxes and the supplemental fees?
+o558,test,How do the county taxes work? how are they used?
+o559,test,"Yeah, um, i'm looking for some help with a non-driver ID renewal."
+o560,test,Hi How are you today? I was wondering how the refund amount is determined?
+o561,test,What can I do to prepare for my road test?
+o562,test,What do I need to do before my road test
+o563,test,Dp I need a new eye exam to replace my license?
+o564,test,Where do I apply for escort driver certification?
+o565,test,What follows after passing the test?
+o566,test,I want to trade in my license for a New York one
+o567,test,I have a problem with the repairs made on my vehicle at the auto repair shop.
+o568,test,I have questions about the driving restrictions for people under 18.
+o569,test,hi I need to replace the inspection tag
+o570,test,Give me some info about how to replace the inspection sticker
+o571,test,How do I avoid an insurance lapse?
+o572,test,Hello I need information about What can cause an insurance lapse?
+o573,test,What is an insurance lapse in New York State?
+o574,test,Good afternoon. Need some information about avoiding an insurance lapse.
+o575,test,How is it possible to avoid an lapse in insurance?
+o576,test,"Hi good morning, I'm having some insurance lapsing, Can you help me on that?"
+o577,test,"Hi, I got the news that the New York State DMV started issuing REAL ID licenses, permits, and ID cards on October 30, 2017. How do I get mine?"
+o578,test,Yes I would like info on the cost of augmenting my driver's license.
+o579,test,how Getting a REAL ID is mandatory but is encouraged?
+o580,test,How much does one have to pay for this REAL ID I've been hearing about?
+o581,test,"Please, I need to know the cost for a REAL ID"
+o582,test,"Hello I need information about The New York State DMV began issuing REAL ID licenses, permits and ID cards on October 30, 2017"
+o583,test,"Hello I need information about whether the New York State DMV began issuing REAL ID licenses, permits and ID cards on October 30, 2017"
+o584,test,I need to get a real ID to travel and want to know if it costs more than a regular ID
+o585,test,Is it now required by law to have a REAL ID?
+o586,test,I came here with a few questions a bout getting a REAL ID. It'd be great if you could answer them for me.
+o587,test,"Hi, I would like to know if I have a driver's license from another country and I have a New York State learner's permit, can I drive without a supervising driver?"
+o588,test,"If I have a driver license from another country and I have a NY State learner permit, can I drive without a supervising driver?"
+o589,test,"Hi, I have a question. If I have a driver's license from another country and I have a New York State learner's permit, can I drive without a supervising driver?"
+o590,test,do I need someone else in the car if I have a Mexican license and a NY learners permit?
+o591,test,Can I drive without a supervising driver if I have a driver license from another country and have a NY State learner permit?
+o592,test,"Hello there. I have a driver license from another country and a learner permit in NY. I wanted to know if I'm allowed to drive in NY, among other questions."
+o593,test,Hello there. I happen to own an Chinese driver license. Can you tell me if I can use it to drive in NY without a supervising driver?
+o594,test,How to Exchange a New York State Driver's License for a Non-Driver Identification Card
+o595,test,how Exchange a NY State driver license for a non-driver ID card?
+o596,test,how Exchange a NY State driver license for a non-driver ID card?
+o597,test,I need help with exchanging my New York driver license for a non-driver ID card.
+o598,test,"Hello, I would like to know what does ""TEMPORARY VISITOR"" mean?"
+o599,test,"If I have a driver license from another country and I have a NY State learner permit, can I drive without a supervising driver?"
+o600,test,What does 'TEMPORARY VISITOR' mean?
+o601,test,What is a TEMPORARY VISITOR
+o602,test,"If I have a driver license from another country and I have a NY State learner's permit, can I drive without a supervising driver?"
+o603,test,"Please, tell me a bout the meaning of 'TEMPORARY VISITOR'"
+o604,test,Is there an additional fee to have icons added to my DMV photo document?
+o605,test,What is a suspension termination fee?
+o606,test,what will I have to pay for a learners permit?
+o607,test,"Hello. My vehicle license plates are lost, stolen, or destroyed. What I can do?"
+o608,test,How can I get new plates?
+o609,test,"Hello, I need help. The license plates of my vehicle were stolen. What can I do?"
+o610,test,Hello I need information about How can I get new plates?
+o611,test,I need info about a problem with my stolen plates
+o612,test,What should I do if the plates from my car were stolen?
+o613,test,Can you walk me through the procedure for requesting new plates?
+o614,test,Can you please tell me how I can get new plates?
+o615,test,My plates have been stolen. Can you please tell me what steps to take? I'm very concerned and don't know what to do.
+o616,test,I had an accident in which the plate on my van was completely destroyed. Can you help me figure out what to do?
+o617,test,I don t have enough proof of name identification to bring to the DMV. What can I do?
+o618,test,I don't have the proofs of name identification that I need to bring to DMV.
+o619,test,What is the procedure if I do not have enough proof of name identification to bring with me to the DMV?
+o620,test,"Hello, can you help me? I've been requested some identity proof, but i believe i don't have enough of that, What can i do about it?"
+o621,test,What items do I need to bring to the DMV office to transfer registration?
+o622,test,hi i need i should take to the DMV office
+o623,test,Hello I need information about how to transfer a vehicle
+o624,test,do I need the title to transfer a registration to another car?
+o625,test,What should I bring to a DMV office?
+o626,test,do I need the title to transfer a registration to another car or do you have it on record?
+o627,test,What items do I need to bring to the DMV office when transferring a registration to another vehicle?
+o628,test,How can I find out about transferring a vehicle?
+o629,test,What needs to be done when I sell my vehicle?
+o630,test,Do I need to bring the title when I transfer a registration from one car to another car?
+o631,test,"Hello, I received a letter stating that my insurance has expired. What I can do?"
+o632,test,Hello I need information about How do I respond to the letter or request?
+o633,test,I received a Letter that states my license is suspended. What can I do?
+o634,test,I received a Letter that states my insurance lapsed. What can I do?
+o635,test,How do I respond to the letter or order?
+o636,test,Hello I received a 'letter' or 'order' from DMV insurance. What I can do?
+o637,test,"Hey, i need some guidance with certain letter i received some days ago about insurance, Could you help me out?"
+o638,test,I got an insurance letter from you guys so I am here for help

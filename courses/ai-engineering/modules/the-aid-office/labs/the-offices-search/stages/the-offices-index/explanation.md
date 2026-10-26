@@ -1,0 +1,5 @@
+The first sync embeds all {% $fig.passages %} passages in {% $fig.requests %} requests of up to {% $fig.batch %} texts. After that, a week's edits cost a request for each {% $fig.batch %} texts changed. The solution's digest is the text's SHA-256, so a passage whose text is the same, byte for byte, is never embedded again, and one whose page or title alone has changed is updated where it is.
+
+The solution embeds every new and changed text before it writes anything, then deletes, adds and updates in one transaction. psycopg's documentation says a `transaction()` block on an autocommit connection begins a transaction, commits it as the block ends, and rolls it back when the block raises, so a failure part way through the writes leaves the table as it was too.
+
+`words` is a stored generated column, which Postgres computes whenever a row is inserted or updated, as its documentation says, so it follows each passage's title and text with nothing for `sync` to do. Postgres keeps both indexes up to date with every row it writes.
