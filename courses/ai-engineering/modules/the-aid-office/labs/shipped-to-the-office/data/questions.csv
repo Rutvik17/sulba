@@ -1,0 +1,225 @@
+question,set,page,text
+q1,validation,studentaid-3,I have a question about the FAFSA program.
+q2,validation,studentaid-2,I need to know how to prepare for college.
+q3,validation,studentaid-2,"Hello, I need some help exploring my career options."
+q4,validation,studentaid-2,"Is there any career information that you can give me, I'm currently exploring all the different options that are available to me"
+q5,validation,studentaid-1,can you tell me what is income based payment?
+q6,validation,studentaid-4,What loan types are eligible for Deferment?
+q7,validation,studentaid-4,"Hey there, i'm in some situation and have to do something about my student loan. I heard i could deferment it, but i need guidance. Can you help me there, please?"
+q8,validation,studentaid-4,I need help with student loan deferment
+q9,validation,studentaid-6,Can you tell me anything about direct PLUS loans?
+q10,validation,studentaid-6,Good day. I have some questions regarding the direct plus loan. It'd be kind of you if you answered them for me.
+q11,validation,studentaid-6,I need information about the direct PLUS loans.
+q12,validation,studentaid-6,I want to know about Direct PLUS loans.
+q13,validation,studentaid-6,I would like some information about the PLUS Loans program for education.
+q14,validation,studentaid-6,"Hi, could you please tell me what a Direct PLUS Loan is for?"
+q15,validation,studentaid-5,Is there any way to learn about college costs and tips to lower cost when going to school?
+q16,validation,studentaid-8,I need some guidance about the IT Standards Library guidelines please.
+q17,validation,studentaid-8,I'm looking for IT standards on student aid documents
+q18,validation,studentaid-29,"Hey, good morning. I'm looking for some information about the gainful employment, please."
+q19,validation,studentaid-29,I have some questions I need answered about gainful employment.
+q20,validation,studentaid-29,"Hello, I would like to obtain information about paid employment..."
+q21,validation,studentaid-22,I want to learn more about students with a criminal status as it pertains to financial aid.
+q22,validation,studentaid-22,"Hello, can you give me information related to students with criminal convictions, can they ask for student help?"
+q23,validation,studentaid-25,"How do I find Aidan, the FSA Virtual Assistant?"
+q24,validation,studentaid-25,"Hi, how is it going?. I heard you're using some AI program now to interact wit h users, could you tell me more?"
+q25,validation,studentaid-27,What happens after I submit my FAFSA form?
+q26,validation,studentaid-27,I need help with understanding Student Aid Reports.
+q27,validation,studentaid-27,I need help with my Student Aid Report.
+q28,validation,studentaid-26,Can you explain what a co-signer is?
+q29,validation,studentaid-40,Could you let me know what type of Federal Student Aid is available?
+q30,validation,studentaid-33,How do you come up with the amount of financial aid I will get?
+q31,validation,studentaid-31,What can I do with my loan if a withdraw from my school?
+q32,validation,studentaid-31,"Hello, I need help, I recently left school and the school did not make the required repayment of the loan funds, how do I do?"
+q33,validation,studentaid-36,I need help with understanding annual re-certification requirements on income and family size.
+q34,validation,studentaid-36,"Hello, what are the low payments for federal loans?"
+q35,validation,studentaid-36,Hello there. I need to know what happens if I miss the annual deadline to recertify my income.
+q36,validation,studentaid-39,"Hey, greetings to you. You know, i got a student loan, so i have to repay it, but i got a teacher job too. That counts for anything on the loan?"
+q37,validation,studentaid-39,"I need to know if I'm teaching at a low-income school or educational service agency, please"
+q38,validation,studentaid-39,I'm part of the teacher loan program and I wanted to know if I can receive loan forgiveness or not.
+q39,validation,studentaid-30,I want to find out more about who is handling my school loan
+q40,validation,studentaid-30,"Hello, I came here to learn more about my student loan servicer."
+q41,validation,studentaid-30,hi
+q42,validation,studentaid-34,I need some information about the Graduated Repayment Plan.
+q43,validation,studentaid-34,I heard about a repayment plan which isn't all at once and would like information.
+q44,validation,studentaid-34,"Hello, I would like to obtain information about The Graduate Payment Plan"
+q45,validation,studentaid-43,hi could you help me How to correct or update your FAFSA application
+q46,validation,studentaid-43,can you tell me how to update FAFSA
+q47,validation,studentaid-43,hi could you help me how to update my FAFSA application
+q48,validation,studentaid-42,hi i need the paid employment spreadsheet
+q49,validation,studentaid-42,"Hi there, I'm looking to get further information in relation to the Gainful Emplyment Downloadable Spreadsheet, can you help me with this?"
+q50,validation,studentaid-46,I have some questions about third party servicer programs.
+q51,validation,studentaid-46,I have some questions about third party servicer program reviews.
+q52,validation,studentaid-49,Is it possible to qualify for FSA if I am a non-US citizen?
+q53,validation,studentaid-49,I'm not a U.S. citizen and need to know if I qualify for financial aid.
+q54,validation,studentaid-47,What are federal grants that are available to students through the FSA?
+q55,validation,studentaid-47,I have a few questions about federal grants.
+q56,validation,studentaid-56,I have been told that I can't receive student aid anymore. What can I do?
+q57,validation,studentaid-56,"I have been informed that I can no longer receive any federal student aid, is there anything I can do?"
+q58,validation,studentaid-56,"Hello there, i'm having some issues with my finanial aid. It looks like i can't get any more, could you help me?"
+q59,validation,studentaid-56,I need help. I'm being told that I don't qualify for federal student aid anymore.
+q60,validation,studentaid-56,I am concerned because I have been told that I can no longer get federal student aid
+q61,validation,studentaid-51,"Hi, I need help in the financial area."
+q62,validation,studentaid-51,What is good advice when accepting financial aid?
+q63,validation,studentaid-50,What payments are available through the Income-Sensitive Repayment Plan who have Federal Family Education Loan Program loans?
+q64,validation,studentaid-50,I need help understanding how the Income-Sensitive Repayment plan works.
+q65,validation,studentaid-53,"Tell about the Temporary Relief, please"
+q66,validation,studentaid-53,Hi there. I was looking information about how to get a temporary relief.
+q67,validation,studentaid-55,I was wondering if I could get student aid when studying abroad. Can you please give me some advice?
+q68,validation,studentaid-60,"Hi, I am looking to take out a student loan and would like to know what a Mater Promissory Note is?"
+q69,validation,studentaid-60,"Good morning. I was hearing the other day about things I'm supposed to do ti repay my student loans and heard bout something called MPN, what's that?"
+q70,validation,studentaid-60,Why are Master Promissory Notes necessary?
+q71,validation,studentaid-61,I need help with how you stay eligible for financial aiid
+q72,validation,studentaid-61,"Hello, I would like to continue receiving federal student aid"
+q73,validation,studentaid-61,how do I stay good with the financial aid people?
+q74,validation,studentaid-59,"Hello, I would like to know how to send PSLF forms"
+q75,validation,studentaid-64,"Hi I have heard that I might be able to have all or portion of my Federal Perkins Loan canceled, if this correct?"
+q76,validation,studentaid-64,I need to know if I'm eligible to have all or a portion of my Federal Perkins Loan canceled
+q77,validation,studentaid-68,"Hello, I would like to know if Federal student loans are a good investment?"
+q78,validation,studentaid-67,What requirements do I need to qualify for federal student aid?
+q79,validation,studentaid-67,"Hi, I'd like to know what requirements I must meet to qualify for federal student aid."
+q80,validation,studentaid-67,"Good morning, how you doing?. I've thinking about getting a student aid, but need some info about what could i need for it."
+q81,validation,studentaid-67,"Hello, what are the requirements for federal aid?"
+q82,validation,studentaid-75,I'm getting calls from someone who wants to charge me fees to get my federal loan out of default.
+q83,validation,studentaid-75,Hi there. I have some questions related to fees charged to me to get my loan out of default.
+q84,validation,studentaid-77,My Dad was in the military. I need to know if this qualifies me for any kind of financial aid for college.
+q85,validation,studentaid-82,tell me about tax benefits for school purposes
+q86,validation,studentaid-82,Hi there. I'm looking information related to economic aid for college students.
+q87,validation,studentaid-82,Are there any tax benefits that I can avail of when paying for education?
+q88,validation,studentaid-73,I need to find out what exactly is the Standard Repayment Plan that is available through the FSA?
+q89,validation,studentaid-73,tyufffdgh
+q90,validation,studentaid-76,can you help me with a loan discharge?
+q91,validation,studentaid-76,Goo evening. I recently found out that my school apparently requested a student loan on my behalf without me knowing. Is there something I can do about that?
+q92,validation,studentaid-76,I want a loan discharge please
+q93,validation,studentaid-74,Who do I make a student loan payment to?
+q94,validation,studentaid-80,Hey there. I'm looking some help about how to fill in a correct way the application for federal student aid.
+q95,validation,studentaid-80,"Hi, I wonder if you could help, I am currently completing the FAFSA form but I'm not fiully sure what I have to do, could you help me?"
+q96,validation,studentaid-80,"If I am unsure of what to do when completing the FAFSA form, is there somewhere I can get help with it?"
+q97,validation,studentaid-80,Can you assist me with filling out my FAFSA form?
+q98,validation,studentaid-88,"Hi there, I'm looking information of how many scholarships can I apply for."
+q99,validation,studentaid-88,Should I research early to get as many scholarships as I can?
+q100,validation,studentaid-88,Should I apply for a scholarship? Do you have any advice about it?
+q101,validation,studentaid-88,"Hi I need help on how to find and apply for scholarships, can you only have one scholarship or many?"
+q102,validation,studentaid-86,What are some of the most common FAFSA completion data questions and answers?
+q103,validation,studentaid-84,is there a deadline for the fafsa application?
+q104,validation,studentaid-84,"How you doing there? Good afternoon. You know, I'm looking to complete the application for federal aid, but i wanted to know if there's some kind of deadline or if I just simply can submit it whenever i want."
+q105,validation,studentaid-84,Are there deadlines associated with FAFSA completions and can you give me more information regarding these deadlines
+q106,validation,studentaid-84,"Hello, can you tell me which FAFSA Deadlines?"
+q107,validation,studentaid-87,Hey there. I would like to know information about the information I need to give in a student aid form.
+q108,validation,studentaid-13,can I get a loan if I'm poor?
+q109,validation,studentaid-13,how can I get a low-interest loan to help cover the cost of college?
+q110,validation,studentaid-12,dfsgfgsdrgfdg
+q111,validation,studentaid-12,I have some questions about Federal Student Aid.
+q112,validation,studentaid-18,Hi there. Can I get a Federal Work-Study job to pay my college?
+q113,validation,studentaid-18,What do work study job help with?
+q114,validation,studentaid-18,I'm here to learn about work study jobs
+q115,validation,studentaid-18,"I'm interested in a work-study job, but how long would I need to work?"
+q116,validation,studentaid-18,I came here to learn more about work-study jobs. Can you please tell me more about those?
+q117,validation,studentaid-15,How would I go about requesting a forbearance?
+q118,validation,studentaid-15,Hello there. Can you please explain how I can request a forbearance? I'm not doing so well financially at the moment.
+q119,validation,studentaid-14,I need some advice how to avoid student aid scams.
+q120,validation,studentaid-17,When am I eligible for discharge of my loans because my school closed?
+q121,validation,studentaid-17,"Hi, I was wondering what conditions must occur to be eligible to discharge your federal student loan?"
+q122,validation,studentaid-17,Could my federal student loan possibly qualify for discharge if the school in which I am currently enrolled is closing?
+q123,validation,studentaid-89,"Hello, can you tell me about the federal student loan borrower?"
+q124,validation,studentaid-89,"Hello, I have many questions regarding the payment of student loans, can you tell me about it?"
+q125,validation,studentaid-71,"Hi, I have come on hard times and am battling to pay my student loan. Is there a way I could lower my payments for a time?"
+q126,validation,studentaid-71,"I'd like to suspend my student loan payments, but I don't know if or how I can."
+q127,validation,studentaid-71,You can help me by telling me how to suspend my student loan payments. I can't pay them at the moment.
+q128,validation,studentaid-91,Could you help me understand how to repay my federal student loan without going into default?
+q129,validation,studentaid-91,"Hello, can you advise me to pay your student loan?"
+q130,validation,studentaid-90,Do I qualify for a discharge of my federal student loan?
+q131,validation,studentaid-90,"Hello, can you tell me what would happen if I was approved to register for TPD?"
+q132,validation,studentaid-90,What would happen if my obligation to repay my loans or satisfy my TEACH grant obligation is reinstated?
+q133,validation,studentaid-92,who are we really dealing with when we get a direct loan?
+q134,validation,studentaid-92,What is something I should do before student loan repayment begins?
+q135,test,studentaid-3,"Hello, I need some help with my application for student aid, please."
+q136,test,studentaid-2,I wanted to know about career options
+q137,test,studentaid-4,Do student loan deferments allow me to temporarily stop making payments?
+q138,test,studentaid-4,Will a student loan deferment help me out if i need to stop making payments?
+q139,test,studentaid-7,What is the feedback center for?
+q140,test,studentaid-7,What is the feedback center ?
+q141,test,studentaid-7,is this where I go to complain?
+q142,test,studentaid-7,I have something to submit about false information that I was given.
+q143,test,studentaid-7,Did I reach the feedback center?
+q144,test,studentaid-7,Hello there. I'm here to ask a few things about submitting feedback.
+q145,test,studentaid-7,Why is their a feedback center for Federal Student Aid?
+q146,test,studentaid-7,"Hi there, could you explain to me what exactly the function of the Feedback Centre in relation to Student Aid is?"
+q147,test,studentaid-7,"Hello, I'd like to submit some feedback on my experience."
+q148,test,studentaid-7,What does the feedback center do?
+q149,test,studentaid-6,I'm here for plus loan info?
+q150,test,studentaid-6,What are Direct PLUs Loans?
+q151,test,studentaid-5,Do all schools cost the same or do they differ from school to school?
+q152,test,studentaid-5,I just wanted to do a little digging to learn more about paying for college
+q153,test,studentaid-8,Could you please tell me what is included in the Federal Student Aid Specific Resources section of the IT Standards Library?
+q154,test,studentaid-25,who is Aidan?
+q155,test,studentaid-27,What are the next steps involved after I submit my FAFSA form for federal student aid?
+q156,test,studentaid-26,I have some questions about what it means to be a co-signer.
+q157,test,studentaid-40,I need help with understanding how financial aid works.
+q158,test,studentaid-33,How is the amount of my federal student aid figured out?
+q159,test,studentaid-31,"Hello, I would like you to help me with something. I recently left the school and the school did not make the required return of the loan funds to the loan administrator."
+q160,test,studentaid-32,I want to see what payments will be like for a loan
+q161,test,studentaid-32,I need help using the loan simulator.
+q162,test,studentaid-39,"Hello, I need to know what is the forgiveness please?"
+q163,test,studentaid-39,I would like to know if I can get my federal student loans forgiven for their service as a teacher?
+q164,test,studentaid-34,I'm wondering how the Graduated Repayment Plan works?
+q165,test,studentaid-49,"Hello, a question. Can US students apply for federal aid?"
+q166,test,studentaid-49,"I need to know whether I, as a non-citizen, qualify for federal student aid."
+q167,test,studentaid-51,What is the best choice when accepting financial aid from a school?
+q168,test,studentaid-50,I came here hoping you could explain how the income-sensitive repayment plan works. Can you tell me more about this plan?
+q169,test,studentaid-58,"Hello, I would like to have more information about the delinquency of student loans and default."
+q170,test,studentaid-58,Hello i would like to get information about Student Loan Delinquency and Default
+q171,test,studentaid-58,Hello i would like to get information about Student Loan Delinquency and Default
+q172,test,studentaid-58,hi i would like to get information about student loan default
+q173,test,studentaid-58,I am delinquent on a loan do I really have to pay?
+q174,test,studentaid-58,I might be in loan trouble
+q175,test,studentaid-58,I'm not making payments on my loan
+q176,test,studentaid-58,I was wondering what happens if I can't pay my student loan and I'd appreciate some answers.
+q177,test,studentaid-58,What happens with student loan delinquency and default?
+q178,test,studentaid-58,I came here to learn more a bout student loan delinquency. What can you tell me about that?
+q179,test,studentaid-65,"Hi, I am having difficulty paying my student loans and was wondering if I could consolidate my loans to help with my financial position?"
+q180,test,studentaid-65,"Hi, I have a number of student loans and am wondering if I consolidated them into one loan if that would benefit me."
+q181,test,studentaid-65,I want to look into consolidating my student loans
+q182,test,studentaid-65,"Hello there, I have some questions about the fact that I have noticed a reduction on the benefits I have received in the past few days."
+q183,test,studentaid-65,tell me about student loan consolidation
+q184,test,studentaid-65,Does consolidating my federal educational loans help?
+q185,test,studentaid-65,Is there pros and cons with consolidating my federal educational loans?
+q186,test,studentaid-65,Are there pros and cons when consolidating my federal education loans?
+q187,test,studentaid-65,What does consolidating your federal education help with and not help with?
+q188,test,studentaid-65,Hello. I have some questions related to the consolidation of the loan I have.
+q189,test,studentaid-64,I need to know if I'm eligible to have my Federal Perkins Loan cancelled.
+q190,test,studentaid-64,"Hi, I was wondering if I can qualify to have the entire federal loan canceled?"
+q191,test,studentaid-68,Hello there. Can you please tell me something about federal student loans? How exactly do they work?
+q192,test,studentaid-67,"Hello, can you tell me what requirements are asked to qualify for federal student aid?"
+q193,test,studentaid-67,Do I need to meet certain requirements to get federal student aid?
+q194,test,studentaid-77,Can I get help for the military service of a relative or myself?
+q195,test,studentaid-82,Are there any tax benefits available from the IRS in relation to education costs?
+q196,test,studentaid-76,"Hello, can you inform me if I am eligible for the cancellation of a student loan through a false certification?"
+q197,test,studentaid-76,"Hello, can you tell me if I can be eligible for loan cancellation based on a false certification?"
+q198,test,studentaid-79,Could forgiveness of my federal student loan be available if the school I attended misled me or engaged in misconduct in violation of certain laws?
+q199,test,studentaid-79,What is the name of the forgiveness if I was misled by a school?
+q200,test,studentaid-79,I have heard that borrowers may be able to avail of forgiveness of their federal student loans if the school was found to have misled the borrower or engaged in misconduct. Is this true?
+q201,test,studentaid-79,Is there any option for a borrower to be eligible for debt forgiveness of a federal student loan if the school in question misled the borrower or were engaged in misconduct unbecoming of the school?
+q202,test,studentaid-79,educate me on loan forgiveness because I think I was done wrong
+q203,test,studentaid-79,I need to know if I am eligible for federal student loan forgiveness.
+q204,test,studentaid-79,Could you give me more information regarding debt forgiveness of federal student loans as a result of a school misleading a student or being engaged in misconduct?
+q205,test,studentaid-79,"I have reason to believe that I could be eligible for loan forgiveness in relation to my school, can you give me more information on this regard?"
+q206,test,studentaid-79,I think I may be eligible for debt forgiveness of my federal student loan due to a law violation carried out by my school. How do I pursue this?
+q207,test,studentaid-79,Hello there. My school misled me and I came here to find out if I am eligible for loan forgiveness in that context.
+q208,test,studentaid-86,I have several questions about FAFSA termination
+q209,test,studentaid-83,Can you tell me who can qualify for federal student aid?
+q210,test,studentaid-83,"Hi, I am not from the United States but I applying to colleges there. Will I be able to get any sort of financial aid to attend college there?"
+q211,test,studentaid-83,Hi. I want to go to college but I don't think I can afford it. I only have one parent because my dad died in the military when I was a baby. Do you know of anything that could help me?
+q212,test,studentaid-83,"Hi, good morning. I'm now looking into your financial aid, and wanted to know if this kind of programs are available to non-citizens?"
+q213,test,studentaid-83,"I have a question that you might be able to help me with, can I apply for financial student aid if I am a non-US citizen?"
+q214,test,studentaid-83,"Hello, I'm a student whose parents were Killed in Iraq, I want to know if I can get ""aid"", and if so: what do I have to do?"
+q215,test,studentaid-83,How can I regain eligibility for federal student aid?
+q216,test,studentaid-83,"Hi, I would like to find out if I am eligible for federal student aid, could you please tell me who is eligible to get aid?"
+q217,test,studentaid-83,where can I get info on regaining my financial aid eligibility?
+q218,test,studentaid-83,"Hi there, I am wondering if I am eligible for financial aid if I am a non-US citizen?"
+q219,test,studentaid-12,"Hello there, hope you're doing well in these times. I was wondering what the FSAA can do for me as a student."
+q220,test,studentaid-15,Hi there. I'm looking information about forbearance.
+q221,test,studentaid-15,How can I request an indulgence?
+q222,test,studentaid-17,"i need help i would like to know if your school closes while you enroll or soon after you retire, you may be eligible for discharge from your federal student loan"
+q223,test,studentaid-62,how will you give me my financial aid?
+q224,test,studentaid-90,"If I am totally and permanently disabled, can I qualify for a discharge of my federal student loans?"

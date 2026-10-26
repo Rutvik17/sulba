@@ -1,0 +1,14 @@
+cards:
+  - id: crd_24afoq
+    front: >-
+      Why does the desk find the student by the office's directory rather than by an id in the
+      request?
+    back: >-
+      Anyone can put any id in a request; the session names a person the college signed in, and
+      the office's own directory says which student they are.
+  - id: crd_il6ifl
+    front: >-
+      What bounds how many of the desk's replies run at once?
+    back: >-
+      Each reply holds a pool connection from question to verdict, so the pool's size: a
+      question past it waits for a connection to come back.

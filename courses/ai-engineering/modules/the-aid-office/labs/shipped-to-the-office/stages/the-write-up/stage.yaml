@@ -1,0 +1,39 @@
+id: stg_5v7vjp
+kind: ship
+title: The write-up
+builds: A new `report.py`, which uses your `capacity.py` and the office's `evals.py`.
+file: report.py
+packages: [numpy]
+minutes: 60
+checks:
+  - check: tst_u7leex
+    title: "Each release's answers"
+    requires: >-
+      Each release's shares right, wrong and to staff are its recorded outcomes' shares, five's
+      release first.
+    failure: >-
+      Take each release's outcomes from `evals.py`'s `outcomes`, and their shares from its
+      `shares`.
+  - check: tst_5kodhr
+    title: "The times for 95% of replies"
+    requires: >-
+      Each release's `first` and `whole` are the seconds within which 95% of its replies come,
+      `hourly` the replies an hour at its whole replies' seconds, and `busy` its share of the
+      busiest hour.
+    failure: >-
+      Give your `percentile` each release's own timings, with `SLOWEST`, and your `per_hour` the
+      whole replies' seconds.
+  - check: tst_rm06l2
+    title: "The change and the release to run"
+    requires: >-
+      `wrong` is three's share wrong less five's, from each question's difference, with its
+      margin at 95%, and the release to run is five.
+    failure: >-
+      Give `change` five's outcomes first and three's second, with each question's page.
+  - check: tst_3z74ko
+    title: "The write-up's figures"
+    requires: >-
+      The write-up's table gives each release's figures, rounded as the tests show, and it ends
+      with the release to run.
+    failure: >-
+      Build the table and the decision from the report's own figures, in the tests' form.

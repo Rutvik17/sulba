@@ -1,0 +1,5 @@
+The write-up says to run five passages. With three, the prompt is {% $fig.saved %} shorter, and 95% of whole replies come within {% $fig.whole_three %} seconds rather than {% $fig.whole_five %}. But the share of answers that cite only other pages changes by {% $fig.wrong_change %} points, with a margin of {% $fig.wrong_margin %}, an interval that lies wholly above 0, and a wrong answer costs a student more than a slower one.
+
+With five passages, one server writes {% $fig.hourly_five %} replies an hour, one after another, so the busiest hour's {% $fig.peak %} questions keep it busy for {% $fig.busy_five %} of the hour. Every figure in the write-up comes from the recorded replies and their timings, so the office can trace each one, and a new release is measured the same way before it replaces this one.
+
+Everything the desk uses runs on the office's server: Postgres with pgvector, the model server with Qwen3.5-0.8B and nomic-embed-text-v1.5, and the desk. The one request that leaves it is a student's sign-in, which goes to the college's own provider.

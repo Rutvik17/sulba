@@ -1,0 +1,13 @@
+cards:
+  - id: crd_dubtsw
+    front: >-
+      Why can't a field in the request say which student's aid to show?
+    back: >-
+      The caller writes the request; only the session the provider vouched for, and the office's
+      directory, say who the caller is and which student they are.
+  - id: crd_083h00
+    front: >-
+      What should a service's log keep about the questions its users ask?
+    back: >-
+      What happened, such as what a question was about and how it ended, never its text or who
+      asked it, since logs travel further than the database.

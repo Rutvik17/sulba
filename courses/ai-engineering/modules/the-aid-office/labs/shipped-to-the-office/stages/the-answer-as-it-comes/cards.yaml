@@ -1,0 +1,14 @@
+cards:
+  - id: crd_pla1wf
+    front: >-
+      A streamed reply turns out to cite nothing. What becomes of the pieces the student has
+      already seen?
+    back: >-
+      The verdict that ends the stream takes their place: the question goes to staff, and the
+      pieces were only ever the reply on its way.
+  - id: crd_0mp422
+    front: >-
+      Why does a reply that stopped at the token limit go to staff?
+    back: >-
+      It can end mid-sentence after a citation, so its pages can't vouch for what it says; only
+      a reply that stopped by itself is checked as an answer.

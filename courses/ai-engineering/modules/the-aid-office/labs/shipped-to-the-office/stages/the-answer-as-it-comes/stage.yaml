@@ -1,0 +1,7 @@
+id: stg_ue010r
+kind: build
+title: The answer as it comes
+builds: A new `streamed.py`, which uses the office's `answers.py`.
+file: streamed.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 45
