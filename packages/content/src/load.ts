@@ -47,8 +47,13 @@ export const nodeProjectFiles = ['package.json', 'package-lock.json', 'tsconfig.
  */
 export const goProjectFiles = ['go.mod'];
 
-/** A test file's name in Python, TypeScript and Go. */
-const testFileNames = [/^test_[a-z0-9_]+\.py$/, /^[a-z0-9_]+\.test\.ts$/, /^[a-z0-9]+_test\.go$/];
+/** A test file's name in Python, TypeScript, Go and Java. */
+const testFileNames = [
+  /^test_[a-z0-9_]+\.py$/,
+  /^[a-z0-9_]+\.test\.ts$/,
+  /^[a-z0-9]+_test\.go$/,
+  /^[A-Z][A-Za-z0-9]*Test\.java$/,
+];
 
 export type { Card, CatchProblem, ChartFile, RubricPoint, ShipCheck } from './schema.ts';
 
@@ -314,6 +319,7 @@ class Reader {
     else this.browserLab(folder, file, stages);
     if (usesTypeScript(stages, file.given)) this.typeScriptLab(folder, file, project, hasProject);
     if (usesGo(stages, file.given)) this.goLab(folder, file, project, hasProject);
+    if (usesJava(stages, file.given)) this.javaLab(folder, file, stages);
     if (file.runs !== 'machine' && stages.some((stage) => stage.file === 'Dockerfile')) {
       this.problem(
         join(folder, 'lab.yaml'),
@@ -426,6 +432,41 @@ class Reader {
           join(folder, 'project', name),
           `Missing: a lab's Go runs with its project's ${name}.`,
         );
+      }
+    }
+  }
+
+  /**
+   * Java runs on the learner's machine, and every class of a run shares Java's unnamed package
+   * (decision record 45), so no two of a lab's test files, or a test file and a class the learner or
+   * the lab writes, may name the same class.
+   */
+  javaLab(folder: string, file: LabFile, stages: readonly Stage[]) {
+    if (file.runs !== 'machine') {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "runs: Java runs on the learner's machine: set runs: machine.",
+      );
+    }
+    const classes = new Map<string, string>();
+    for (const name of [...file.given, ...stages.map((stage) => stage.file)]) {
+      if (name.endsWith('.java')) classes.set(name, name);
+    }
+    for (const stage of stages) {
+      for (const [kind, files] of [
+        ['tests', stage.tests],
+        ['checks', stage.checks],
+      ] as const) {
+        for (const name of Object.keys(files).filter((each) => each.endsWith('.java'))) {
+          const at = join('stages', stage.slug, kind, name);
+          const before = classes.get(name);
+          if (before === undefined) classes.set(name, at);
+          else
+            this.problem(
+              join(folder, at),
+              `${name} is already a class of the lab's, in ${before}: a Java test file needs a name of its own.`,
+            );
+        }
       }
     }
   }
@@ -717,14 +758,17 @@ class Reader {
     return code === null ? null : { ...described, code };
   }
 
-  /** The test files in a folder, each by name: test_<name>.py, <name>.test.ts or <name>_test.go. */
+  /**
+   * The test files in a folder, each by name: test_<name>.py, <name>.test.ts, <name>_test.go or
+   * <Name>Test.java.
+   */
   async testFiles(folder: string, none: string): Promise<Record<string, string>> {
     const names = (await this.files(folder)).sort();
     for (const name of names) {
       if (!testFileNames.some((form) => form.test(name))) {
         this.problem(
           join(folder, name),
-          'A test file is named test_<name>.py, <name>.test.ts in TypeScript, or <name>_test.go in Go.',
+          'A test file is named test_<name>.py, <name>.test.ts in TypeScript, <name>_test.go in Go, or <Name>Test.java in Java.',
         );
       }
     }
@@ -993,17 +1037,32 @@ function usesGo(stages: readonly Stage[], given: readonly string[]): boolean {
   ].some((name) => name.endsWith('.go'));
 }
 
+/** Whether any of a lab's stages, or any file it gives, is Java. */
+function usesJava(stages: readonly Stage[], given: readonly string[]): boolean {
+  return [
+    ...given,
+    ...stages.flatMap((stage) => [
+      stage.file,
+      ...Object.keys(stage.tests),
+      ...Object.keys(stage.checks),
+    ]),
+  ].some((name) => name.endsWith('.java'));
+}
+
 /**
  * The id of each test in a test file: in Python, its `@pytest.mark.id("tst_...")`, in TypeScript,
- * the start of its name, as in `test('tst_... Finds the user', ...)`, and in Go, the start of its
- * subtest's name, as in `t.Run("tst_... Waits for a token", ...)`.
+ * the start of its name, as in `test('tst_... Finds the user', ...)`, in Go, the start of its
+ * subtest's name, as in `t.Run("tst_... Waits for a token", ...)`, and in Java, the start of its
+ * display name, as in `@DisplayName("tst_... Refuses a blank id")`.
  */
 export function testIds(name: string, text: string): string[] {
   const mark = name.endsWith('.ts')
     ? /\b(?:test|it)\(\s*['"`](tst_[0-9a-z]{6}) /g
     : name.endsWith('.go')
       ? /\bt\.Run\(\s*"(tst_[0-9a-z]{6}) /g
-      : /@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g;
+      : name.endsWith('.java')
+        ? /@DisplayName\(\s*"(tst_[0-9a-z]{6}) /g
+        : /@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g;
   return [...text.matchAll(mark)].map((found) => found[1] as string);
 }
 

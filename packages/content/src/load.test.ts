@@ -316,7 +316,7 @@ test.each([
     problem: {
       path: `${stages}/count/tests/checks.py`,
       message:
-        'A test file is named test_<name>.py, <name>.test.ts in TypeScript, or <name>_test.go in Go.',
+        'A test file is named test_<name>.py, <name>.test.ts in TypeScript, <name>_test.go in Go, or <Name>Test.java in Java.',
     },
   },
   {
@@ -633,6 +633,7 @@ test("a lab that runs on the learner's machine says so, and has its project", as
     ['close', 'ship'],
     ['statement', 'build'],
     ['receipt', 'build'],
+    ['invoice', 'build'],
   ]);
   expect(Object.keys(lab?.project ?? {})).toEqual([
     'README.md',
@@ -662,6 +663,14 @@ test("a machine lab's stage can be Go, with tests that go test runs", async () =
   expect(Object.keys(receipt?.tests ?? {})).toEqual(['receipt_test.go']);
 });
 
+test("a machine lab's stage can be Java, with tests that JUnit runs", async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const invoice = course?.levels[1]?.modules[0]?.labs[0]?.stages[5];
+  expect(invoice?.file).toBe('Invoice.java');
+  expect(invoice?.starter).toContain('public record Invoice(');
+  expect(Object.keys(invoice?.tests ?? {})).toEqual(['InvoiceTest.java']);
+});
+
 test("a test's id is its mark in Python, and the start of its name in TypeScript", () => {
   expect(testIds('test_tally.py', '@pytest.mark.id("tst_abc123")\ndef test_count():\n')).toEqual([
     'tst_abc123',
@@ -677,6 +686,13 @@ test("a test's id is its mark in Python, and the start of its name in TypeScript
     't.Run("Has no id", func(t *testing.T) {})',
   ].join('\n');
   expect(testIds('tally_test.go', go)).toEqual(['tst_abc123']);
+  const java = [
+    '@Test',
+    '@DisplayName("tst_abc123 Counts the votes")',
+    'void counts() {}',
+    '@DisplayName("Has no id")',
+  ].join('\n');
+  expect(testIds('TallyTest.java', java)).toEqual(['tst_abc123']);
 });
 
 test("a lab with TypeScript runs on the learner's machine", async () => {
@@ -703,6 +719,30 @@ test("a lab with Go runs on the learner's machine", async () => {
   ]);
 });
 
+test("a lab with Java runs on the learner's machine", async () => {
+  const { problems } = await loadChanged((root) =>
+    writeFile(join(root, stages, 'count/tests/TallyTest.java'), ''),
+  );
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message: "runs: Java runs on the learner's machine: set runs: machine.",
+    },
+  ]);
+});
+
+test('a Java test file names a class of its own in the lab, which every run shares', async () => {
+  const { problems } = await loadChanged((root) =>
+    writeFile(join(root, ledger, 'stages/close/tests/InvoiceTest.java'), ''),
+  );
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/stages/invoice/tests/InvoiceTest.java`,
+      message: `InvoiceTest.java is already a class of the lab's, in stages/close/tests/InvoiceTest.java: a Java test file needs a name of its own.`,
+    },
+  ]);
+});
+
 test("a Go file's name has no _, which Go reads as a system to build for", async () => {
   const { problems } = await loadChanged(async (root) => {
     const receipt = join(root, ledger, 'stages/receipt');
@@ -717,7 +757,7 @@ test("a Go file's name has no _, which Go reads as a system to build for", async
   expect(problems).toContainEqual({
     path: `${ledger}/stages/receipt/stage.yaml`,
     message:
-      'file: Expected a Python, TypeScript or Go file name, in lowercase, and in Go without _',
+      'file: Expected a Python, TypeScript, Go or Java file name: in lowercase, in Go without _, and in Java named for its class',
   });
 });
 

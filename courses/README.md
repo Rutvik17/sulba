@@ -294,6 +294,30 @@ func TestReceipt(t *testing.T) {
 
 A failed test shows its first message from `t.Errorf` or `t.Fatalf`, which says what it got and what it wanted. A panic stops its package's tests: the test that panicked shows the panic, with the line of the learner's code where it started, and each test after it in the package shows that it didn't run, so a starter returns a zero value or an error rather than panicking. A test of time, such as a rate limit's wait or a retry's backoff, runs inside `synctest.Test`, whose clock moves only when every goroutine in it is waiting, so a second's wait takes no time and comes out the same on every machine. The lab's page says that the first run downloads Go from dl.google.com, so the project's `README.md` says so too.
 
+### Java stages
+
+A lab that runs on the learner's machine can have stages in Java (decision record 45): the stage's file is a `.java` file named for its class, as `Ticket.java`, its tests and checks are `<Name>Test.java` files, and the lab can give `.java` files too. No file has a `package` declaration, so the learner's classes, the lab's and the tests share Java's unnamed package, and a lab's download stays one flat folder. Every run's class path holds Jackson 3, for JSON, and its tests' holds JUnit 6 too; a lab uses no other library. Before a learner's first Java run, the runner fetches the JDK, the archive of Liberica JDK Lite for their system that `sulba_runner.py` pins by its size and sha256, and the jars, each pinned by its sha256, into `sulba` in their cache folder.
+
+A run compiles the learner's and the lab's classes with `javac`, then the tests: the first error, with its file and line, is the run's problem, and the tests don't run. Then JUnit's console launcher runs the tests. A test is a `@Test` method whose `@DisplayName` starts with its id:
+
+```java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class InvoiceTest {
+    @Test
+    @DisplayName("tst_demo32 Adds up its amounts")
+    void total() {
+        assertEquals(1255, new Invoice("Kim", List.of(1250, 5)).total());
+    }
+}
+```
+
+A failed assertion shows its message, and an `assertEquals` its expected and actual values. An exception from the learner's code is an error, with the line of their code where it was thrown. Every run puts a lab's test classes on one class path, so no two of its test files, in any of its stages' tests and checks, share a name. A test of time takes a `java.time.InstantSource` or `Clock` that the test moves itself, rather than waiting. The lab's page says that the first run downloads the JDK from github.com and the jars from repo1.maven.org, so the project's `README.md` says so too.
+
 ### Dockerfile stages
 
 A lab that runs on the learner's machine can have a stage whose file is `Dockerfile` (decision record 40), the image of the lab's project. Its tests and checks are pytest files that read the `Dockerfile` in the run's folder, so a run needs no Docker:

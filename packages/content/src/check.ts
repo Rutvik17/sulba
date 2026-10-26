@@ -180,7 +180,7 @@ export async function prove(
     for (const test of solution.tests) {
       if (!test.id || !idPattern('test').test(test.id)) {
         problem(
-          `"${test.name}" needs an id, "tst_" and 6 letters or digits: in Python, @pytest.mark.id("tst_..."), in TypeScript, at the start of the test's name, and in Go, at the start of its subtest's name.`,
+          `"${test.name}" needs an id, "tst_" and 6 letters or digits: in Python, @pytest.mark.id("tst_..."), in TypeScript, at the start of the test's name, in Go, at the start of its subtest's name, and in Java, at the start of its @DisplayName.`,
         );
       }
     }

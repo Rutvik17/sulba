@@ -18,4 +18,6 @@ The lab's TypeScript stage runs in Node.js. Its first run downloads Node.js for 
 
 The lab's Go stage runs with Go. Its first run downloads Go for your system from dl.google.com into `sulba` in your cache folder.
 
+The lab's Java stage runs with Java. Its first run downloads a JDK for your system from github.com, and JUnit and Jackson from repo1.maven.org, into `sulba` in your cache folder.
+
 `uv run sulba.py build` compiles `statement.ts` into `static/statement.js`, for a browser to load.

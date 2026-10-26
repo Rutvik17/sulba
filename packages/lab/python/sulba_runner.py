@@ -107,24 +107,91 @@ GO_BUILDS = {
     ),
 }
 
+# The JDK that compiles and runs a session's Java on the learner's machine (decision record 45):
+# Liberica JDK Lite, where BellSoft publishes it, and its archive for each system, by the names
+# Python gives the system and the machine: the archive's name, its size and its sha256.
+JAVA = "25.0.5.0.2+5"
+JAVA_RELEASES = "https://github.com/bell-sw/Liberica/releases/download"
+JAVA_BUILDS = {
+    ("Windows", "AMD64"): (
+        "windows-amd64-lite.zip",
+        82885946,
+        "35218d3407607b170eeb6e8b048b46aac4e287d64b0d23691b5c5d5b3b8c7ea2",
+    ),
+    ("Windows", "ARM64"): (
+        "windows-aarch64-lite.zip",
+        80303853,
+        "9fad7d8935ccb22de5a5c0b182a71bea53ab5eeb40ff42775badc99a31d66de4",
+    ),
+    ("Darwin", "arm64"): (
+        "macos-aarch64-lite.tar.gz",
+        80507572,
+        "63a6b768183133d2acc87dcf5f4142185baa1aadf6b5d68267d840d7c694b729",
+    ),
+    ("Darwin", "x86_64"): (
+        "macos-amd64-lite.tar.gz",
+        81646190,
+        "0b461ac569ccfd733727b8ddafa78835bedbfa3ccfc9fba2fb2e47cf2ec6da82",
+    ),
+    ("Linux", "x86_64"): (
+        "linux-amd64-lite.tar.gz",
+        83098331,
+        "1017bff21d11331f652cc219403b43b63c139f040a32cea1770139fbfb474aeb",
+    ),
+    ("Linux", "aarch64"): (
+        "linux-aarch64-lite.tar.gz",
+        82325521,
+        "d9e6bec48560f986848efd5c4a4540130291dd9c67ea9e2df0de5964426dda20",
+    ),
+}
+# The jars a Java run has, from Maven Central, each by its path there, its size and its sha256:
+# JUnit's console launcher, which runs the tests, and Jackson, which every run's classes can use.
+MAVEN = "https://repo1.maven.org/maven2"
+JUNIT = (
+    "org/junit/platform/junit-platform-console-standalone/6.1.3/"
+    "junit-platform-console-standalone-6.1.3.jar",
+    2997949,
+    "e62b96ac475dbcde8599ea905d088f65d90778f86e259b856a49fa5c4ea256ec",
+)
+JACKSON = [
+    (
+        "tools/jackson/core/jackson-databind/3.2.4/jackson-databind-3.2.4.jar",
+        1990007,
+        "c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d",
+    ),
+    (
+        "tools/jackson/core/jackson-core/3.2.4/jackson-core-3.2.4.jar",
+        613344,
+        "494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651",
+    ),
+    (
+        "com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+        84211,
+        "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0",
+    ),
+]
+
 
 def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
     """Write the files to a new folder, with the linked files beside them, run the test files
-    there, and return the result. Python's tests run with pytest, TypeScript's with Node and Go's
-    with Go, and a run with more than one gives the results of each."""
+    there, and return the result. Python's tests run with pytest, TypeScript's with Node, Go's
+    with Go and Java's with JUnit, and a run with more than one gives the results of each."""
     files: dict[str, str] = json.loads(files_json)
     tests: list[str] = json.loads(tests_json)
     links: dict[str, str] = json.loads(links_json)
     scripts = [name for name in tests if name.endswith(".ts")]
     go = [name for name in tests if name.endswith(".go")]
-    python = [name for name in tests if not name.endswith((".ts", ".go"))]
+    java = [name for name in tests if name.endswith(".java")]
+    python = [name for name in tests if not name.endswith((".ts", ".go", ".java"))]
     results = []
-    if python or not (scripts or go):
+    if python or not (scripts or go or java):
         results.append(pytest_run(files, python, links))
     if scripts:
         results.append(typescript(files, scripts, links))
     if go:
         results.append(go_run(files, go, links))
+    if java:
+        results.append(java_run(files, java, links))
     problem = next((result["problem"] for result in results if result["problem"]), None)
     return json.dumps(
         {
@@ -655,6 +722,274 @@ def go_build_problem(built: str, root: Path) -> dict[str, Any]:
                 "location": {"file": file, "line": int(found[2])},
             }
     said = built.strip() or "Go stopped without saying why."
+    return {"kind": "BuildError", "message": clip(cleaned(said, root)), "location": None}
+
+
+def java_run(files: dict[str, str], tests: list[str], links: dict[str, str]) -> dict[str, Any]:
+    """Compile the session's Java with javac and run its tests with JUnit's console launcher
+    (decision record 45): the learner's classes, the lab's and the tests share Java's unnamed
+    package. Of the test files in tests/, only those the run names are compiled, so a test file
+    the run leaves out doesn't build with it."""
+    import subprocess
+
+    try:
+        home, junit, jackson = java_toolkit()
+    except RuntimeError as error:
+        return {
+            "tests": [],
+            "problem": {"kind": "RunError", "message": clip(str(error)), "location": None},
+            "output": "",
+            "durationMs": 0,
+        }
+    sources = sorted(
+        name for name in files if name.endswith(".java") and not name.startswith("tests/")
+    )
+    libraries = os.pathsep.join(str(each) for each in jackson)
+    with session_folder() as folder:
+        root = Path(folder, "session").resolve()
+        write(root, files)
+        link(root, links)
+        started = time.perf_counter()
+        javac = str(home / "bin" / ("javac.exe" if os.name == "nt" else "javac"))
+
+        def compiled(
+            output: str, classes: str, names: list[str]
+        ) -> subprocess.CompletedProcess[str]:
+            # Relative paths, so javac names each file as the learner sees it.
+            return subprocess.run(
+                [javac, "-encoding", "UTF-8", "-d", output, "-cp", classes, *names],
+                cwd=root,
+                env=java_environment(),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+
+        built = compiled("out/main", libraries, sources) if sources else None
+        if built is not None and built.returncode != 0:
+            result = {
+                "tests": [],
+                "problem": java_build_problem(built.stderr, root),
+                "output": cleaned(built.stderr, root),
+            }
+        else:
+            classes = os.pathsep.join(["out/main", libraries, str(junit)])
+            checked = compiled("out/tests", classes, tests)
+            if checked.returncode != 0:
+                result = {
+                    "tests": [],
+                    "problem": java_build_problem(checked.stderr, root),
+                    "output": cleaned(checked.stderr, root),
+                }
+            else:
+                ran = subprocess.run(
+                    [
+                        str(home / "bin" / ("java.exe" if os.name == "nt" else "java")),
+                        "-Dstdout.encoding=UTF-8",
+                        "-Dstderr.encoding=UTF-8",
+                        "-jar",
+                        str(junit),
+                        "execute",
+                        "--class-path",
+                        os.pathsep.join(["out/main", "out/tests", libraries]),
+                        "--scan-class-path",
+                        "out/tests",
+                        "--reports-dir",
+                        "out/reports",
+                        "--redirect-stdout=out/printed.txt",
+                        "--redirect-stderr=out/printed.txt",
+                        "--details=none",
+                        "--disable-banner",
+                        "--disable-ansi-colors",
+                    ],
+                    cwd=root,
+                    env=java_environment(),
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                named = {name: files[name] for name in tests}
+                result = java_reported(root, ran.stdout + ran.stderr, named, sources)
+        result["durationMs"] = round((time.perf_counter() - started) * 1000)
+    return result
+
+
+def java_environment() -> dict[str, str]:
+    """A Java run's environment: none of the learner's own settings for the JVM or the class
+    path."""
+    left_out = {"JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "CLASSPATH"}
+    return {name: value for name, value in os.environ.items() if name not in left_out}
+
+
+def java_place() -> tuple[tuple[str, int, str], Path]:
+    """The JDK's archive for this system, and the folder of the cache folder it's unpacked into,
+    named for the release and the system."""
+    import platform
+
+    system, machine = platform.system(), platform.machine()
+    if (system, machine) not in JAVA_BUILDS:
+        raise RuntimeError(f"Liberica JDK {JAVA} has no build for {system} on {machine}.")
+    build = JAVA_BUILDS[(system, machine)]
+    return build, cache_folder() / "java" / f"jdk-{JAVA}-{build[0].split('.')[0]}"
+
+
+def java_toolkit() -> tuple[Path, Path, list[Path]]:
+    """The JDK's home, JUnit's console launcher and Jackson's jars, each fetched into the cache
+    folder the first time."""
+    import io
+    import tarfile
+    import zipfile
+
+    (archive, size, sha256), home = java_place()
+    if not (home / "bin").is_dir():
+        packed = fetched_package(
+            f"{JAVA_RELEASES}/{JAVA}/bellsoft-jdk{JAVA}-{archive}", size, sha256, "JDK"
+        )
+        home.parent.mkdir(parents=True, exist_ok=True)
+        # Unpacked beside its place first, so a run stopped halfway leaves no JDK to find.
+        unpacking = Path(tempfile.mkdtemp(dir=home.parent))
+        try:
+            if archive.endswith(".zip"):
+                with zipfile.ZipFile(io.BytesIO(packed)) as files:
+                    files.extractall(unpacking)
+            else:
+                with tarfile.open(fileobj=io.BytesIO(packed)) as files:
+                    files.extractall(unpacking, filter="tar")
+            # The JDK's home is the folder with bin/javac in it, which on macOS is Contents/Home.
+            javac = next(unpacking.rglob("javac" if os.name != "nt" else "javac.exe"))
+            if os.name != "nt" and not os.access(javac, os.X_OK):
+                raise RuntimeError("The JDK's javac can't be run.")
+            try:
+                os.replace(javac.parent.parent, home)
+            except OSError:
+                # Another run put it there first.
+                if not (home / "bin").is_dir():
+                    raise
+        finally:
+            shutil.rmtree(unpacking, ignore_errors=True)
+    jars = [java_jar(path, size, sha256) for path, size, sha256 in [JUNIT, *JACKSON]]
+    return home, jars[0], jars[1:]
+
+
+def java_jar(path: str, size: int, sha256: str) -> Path:
+    """A jar from Maven Central, in the cache folder, fetched there the first time."""
+    jar = cache_folder() / "java" / "jars" / PurePosixPath(path).name
+    if not jar.is_file():
+        packed = fetched_package(f"{MAVEN}/{path}", size, sha256, PurePosixPath(path).name)
+        jar.parent.mkdir(parents=True, exist_ok=True)
+        # Written beside its place first, so a run stopped halfway leaves no jar to find.
+        writing = jar.with_name(f"{jar.name}.{os.getpid()}")
+        writing.write_bytes(packed)
+        os.replace(writing, jar)
+    return jar
+
+
+def java_fetches_first() -> bool:
+    """Whether a Java run fetches the JDK or a jar first."""
+    try:
+        _, home = java_place()
+    except RuntimeError:
+        # The run stops before it fetches anything, and says why.
+        return False
+    jars = home.parent / "jars"
+    return not (home / "bin").is_dir() or not all(
+        (jars / PurePosixPath(path).name).is_file() for path, _, _ in [JUNIT, *JACKSON]
+    )
+
+
+def java_reported(
+    root: Path, printed: str, tests: dict[str, str], sources: list[str]
+) -> dict[str, Any]:
+    """The run's result from JUnit's XML report: each named test's, in the order of its files,
+    with what the tests printed, which the launcher writes to a file of its own."""
+    import re
+    from xml.etree import ElementTree
+
+    named: dict[str, str] = {}
+    for text in tests.values():
+        for found in re.finditer(r'@DisplayName\(\s*"(tst_[0-9a-z]{6}) ([^"]*)"', text):
+            named.setdefault(found[1], found[2])
+    cases: dict[str, ElementTree.Element] = {}
+    for report in sorted((root / "out" / "reports").glob("TEST-*.xml")):
+        for case in ElementTree.parse(report).iter("testcase"):
+            said = case.findtext("system-out") or ""
+            found = re.search(r"^display-name: .* > (tst_[0-9a-z]{6}) ", said, re.MULTILINE)
+            if found:
+                cases[found[1]] = case
+    written = root / "out" / "printed.txt"
+    output = written.read_text(encoding="utf-8", errors="replace") if written.is_file() else ""
+    if not cases:
+        said = printed.strip() or "No tests ran."
+        problem = {"kind": "RunError", "message": clip(cleaned(said, root)), "location": None}
+        return {"tests": [], "problem": problem, "output": cleaned(output.strip(), root)}
+    files = {PurePosixPath(name).name: name for name in sources}
+    entries = [java_entry(id, name, cases.get(id), files) for id, name in named.items()]
+    return {"tests": entries, "problem": None, "output": cleaned(output.strip(), root)}
+
+
+def java_entry(id: str, name: str, case: Any, files: dict[str, str]) -> dict[str, Any]:
+    """A Java test's result: a failure's message, with an assertEquals's expected and actual
+    values, and an exception as an error with the deepest line of the session's own code, outside
+    its tests, that it passed."""
+    import re
+
+    entry: dict[str, Any] = {
+        "id": id,
+        "name": name,
+        "status": "pass",
+        "message": None,
+        "expected": None,
+        "actual": None,
+        "location": None,
+        "output": "",
+        "note": None,
+        "durationMs": round(float(case.get("time", 0)) * 1000) if case is not None else 0,
+    }
+    if case is None:
+        entry["status"] = "error"
+        entry["message"] = "Didn't run."
+        return entry
+    failed = next(
+        (each for each in (case.find("failure"), case.find("error")) if each is not None), None
+    )
+    if case.find("skipped") is not None:
+        entry["status"] = "skip"
+    elif failed is not None:
+        message = failed.get("message") or failed.get("type") or "The check failed."
+        compared = re.search(r"expected: <(.*)> but was: <(.*)>$", message, re.DOTALL)
+        if compared:
+            entry["expected"], entry["actual"] = compared[1], compared[2]
+        if failed.get("type", "").startswith(("org.opentest4j.", "org.junit.")):
+            entry["status"] = "fail"
+            entry["message"] = clip(message)
+        else:
+            entry["status"] = "error"
+            entry["message"] = clip(f"{failed.get('type', '').rsplit('.', 1)[-1]}: {message}")
+            for found in re.finditer(
+                r"^\s*at [^(]+\(([^:()]+\.java):(\d+)\)", failed.text or "", re.MULTILINE
+            ):
+                if found[1] in files:
+                    entry["location"] = {"file": files[found[1]], "line": int(found[2])}
+                    break
+    return entry
+
+
+def java_build_problem(said: str, root: Path) -> dict[str, Any]:
+    """javac's first error as the run's problem, with its file and line."""
+    import re
+
+    for line in said.splitlines():
+        found = re.match(r"^(.+?\.java):(\d+): error: (.+)$", line.strip())
+        if found:
+            file = cleaned(found[1], root).replace(os.sep, "/")
+            return {
+                "kind": "BuildError",
+                "message": clip(found[3]),
+                "location": {"file": file, "line": int(found[2])},
+            }
+    said = said.strip() or "javac stopped without saying why."
     return {"kind": "BuildError", "message": clip(cleaned(said, root)), "location": None}
 
 
