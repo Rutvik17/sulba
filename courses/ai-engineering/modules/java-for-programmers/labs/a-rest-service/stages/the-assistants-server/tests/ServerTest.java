@@ -59,6 +59,16 @@ class ServerTest {
                 .timeout(Duration.ofSeconds(10)).build(), HttpResponse.BodyHandlers.ofString());
     }
 
+    /** The log's lines once it has `count` of them, or after five seconds. A request's line is
+     * written once its reply has gone, so it can come a moment after the caller has the reply. */
+    List<String> lines(int count) throws InterruptedException {
+        var deadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
+        while (log.size() < count && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+        }
+        return List.copyOf(log);
+    }
+
     @Test
     @DisplayName("tst_gcsvi9 Answers its health check")
     void health() throws Exception {
@@ -88,8 +98,9 @@ class ServerTest {
     void logs() throws Exception {
         get("/tickets");
         get("/health");
-        assertEquals(2, log.size(), log.toString());
-        assertTrue(List.copyOf(log).get(0).startsWith("GET /tickets 200 "), log.toString());
-        assertTrue(List.copyOf(log).get(1).startsWith("GET /health 200 "), log.toString());
+        var lines = lines(2);
+        assertEquals(2, lines.size(), lines.toString());
+        assertTrue(lines.stream().anyMatch(line -> line.startsWith("GET /tickets 200 ")), lines.toString());
+        assertTrue(lines.stream().anyMatch(line -> line.startsWith("GET /health 200 ")), lines.toString());
     }
 }
