@@ -1,0 +1,13 @@
+cards:
+  - id: crd_871khu
+    front: >-
+      Why give a desk's latency as a percentile rather than a mean?
+    back: >-
+      A percentile says what most students wait, such as 95% of them; a mean can look fine while
+      the slowest replies keep students waiting.
+  - id: crd_m3895b
+    front: >-
+      What does it mean for a server to be busy for a share near 1 of its busiest hour?
+    back: >-
+      It's answering all hour, so a question that comes while it's busy waits for the ones ahead
+      of it, on top of its own reply.

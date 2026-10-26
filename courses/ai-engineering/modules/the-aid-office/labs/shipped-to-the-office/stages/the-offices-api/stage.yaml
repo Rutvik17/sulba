@@ -1,0 +1,7 @@
+id: stg_8x7m4d
+kind: build
+title: The office's API
+builds: A new `app.py`, which uses your `streamed.py` and the college's sign-in.
+file: app.py
+packages: [fastapi, httpx, numpy, psycopg, psycopg-pool, pgvector, pyjwt]
+minutes: 90

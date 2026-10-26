@@ -1,0 +1,147 @@
+id: lab_zdq4n7
+title: Shipped to the office
+summary: >-
+  Harbor College's aid desk on the office's own server: the answer streamed as the model writes
+  it, the desk's API behind the college's sign-in, its latency and capacity from timed replies, a
+  review of an assistant's API, and the write-up the office decides by.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's federal student aid pages in passages: each page's text taken from its HTML,
+      with its headings marked by #s and its list items by -, and its blocks joined into
+      passages of up to 200 words. Each passage has its page, and the page's title without the
+      part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue about those pages whose next turn answers it from
+      the same page, with that page: from 500 of the dataset's training dialogues, chosen at
+      random, and its validation dialogues.
+  - file: other-questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue about the dataset's other pages, Social Security's,
+      Veterans Affairs' and New York State's DMV's, whose next turn answers it from the same
+      page, from the same dialogues.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: question-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector, the office's and the others', from nomic-embed-text-v1.5 at 8
+      bits, embedded after `search_query: `, one text a request, by llama.cpp's server, release
+      b11734, each number times 32,767, rounded.
+  - file: shown.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each of the office's questions, the passages its recorded replies were given, by
+      their numbers, each with its page: the best passage of each of its five best pages by
+      meaning, by the cosines of the recorded vectors.
+  - file: replies.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      For each of the office's questions, a reply from each of two releases, `five`, given the
+      question's five passages, and `three`, given the first three, written by Qwen3.5-0.8B at
+      8 bits through llama.cpp's server, release b11734, on 26 October 2026, at the sampling
+      settings its model card gives for text without thinking, with the question's number for
+      its seed, each with the reason the model stopped, the tokens of its prompt and the tokens
+      it wrote.
+  - file: timings.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each of the two releases' requests for the office's questions sent again, as they were
+      recorded, every question in turn for one release and then the other, on 26 October 2026,
+      with what llama.cpp's server, release b11734, timed for each: the prompt tokens it took
+      from its cache and those it processed, with the milliseconds they took, and the tokens it
+      wrote, with theirs. The server ran on 4 cores of an Intel Xeon at 2.1 GHz.
+models:
+  - title: Qwen3.5-0.8B
+    kind: chat
+    creators: [Qwen]
+    url: https://huggingface.co/Qwen/Qwen3.5-0.8B
+    licence:
+      name: Apache License 2.0
+      url: https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/2fc06364715b967f1860aea9cf38778875588b17/LICENSE
+    file:
+      url: https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q8_0.gguf
+      bytes: 833592096
+      sha256: 37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f
+  - title: nomic-embed-text-v1.5
+    kind: embedding
+    creators: [Nomic AI]
+    url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    licence:
+      name: Apache License 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+    file:
+      url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf
+      bytes: 146146432
+      sha256: 3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7
+given:
+  - index.py
+  - search.py
+  - scope.py
+  - office.py
+  - office_records.py
+  - answers.py
+  - records.py
+  - evals.py
+  - desk.py
+  - migrations.py
+  - sessions.py
+  - sign_in.py
+  - tokens.py
+  - desk_auth.py
+  - setup.py
+runs: machine
+stages:
+  - the-answer-as-it-comes
+  - the-offices-api
+  - latency-and-capacity
+  - the-assistants-api
+  - the-write-up

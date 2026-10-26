@@ -1,0 +1,53 @@
+id: stg_pb381g
+kind: catch
+title: The assistant's API
+builds: A new `desk_api.py`, which uses your `streamed.py` and the college's sign-in.
+file: desk_api.py
+packages: [fastapi, httpx, numpy, psycopg, psycopg-pool, pgvector, pyjwt]
+minutes: 45
+problems:
+  - check: tst_79reaf
+    title: It let the address name the student
+    cost: >-
+      `?student=` in the address took the place of the student signed in, for the office's staff
+      to look a student up. Anyone signed in read any student's aid by putting their id in the
+      address, and a visitor with an id read it without signing in.
+    fix: >-
+      The fix: the student is the one the session and the directory give, and no one else.
+    edit:
+      replace: "        # Staff can look a student up with ?student=.\n        student = request.query_params.get(\"student\", who)\n"
+      with: "        student = who\n"
+  - check: tst_eq34gc
+    title: It wrote a ticket for a visitor
+    cost: >-
+      Every verdict to staff wrote a ticket, a visitor's too, whose student is null, which
+      `tickets` refuses: the insert raised, the stream broke off, and the visitor never got the
+      message asking them to sign in.
+    fix: >-
+      The fix: a visitor's verdict to staff is `STAFF_SIGNED_OUT`, with no ticket, and only a
+      student's writes one.
+    edit:
+      replace: "                if each.to_staff:\n                    conn.execute(\n                        \"INSERT INTO tickets (student, question) VALUES (%s, %s)\",\n                        [student, question.text],\n                    )\n                    if student is None:\n                        each = Verdict(STAFF_SIGNED_OUT, [], True)\n"
+      with: "                if each.to_staff and student is None:\n                    each = Verdict(STAFF_SIGNED_OUT, [], True)\n                elif each.to_staff:\n                    conn.execute(\n                        \"INSERT INTO tickets (student, question) VALUES (%s, %s)\",\n                        [student, question.text],\n                    )\n"
+  - check: tst_omxklv
+    title: It logged every question with its student
+    cost: >-
+      Each question went to the desk's log with the student's id, so the server's logs held what
+      every student asked about their aid, read by whoever reads the logs and kept as long as
+      they're kept.
+    fix: >-
+      The fix: the log notes what a question is about, and never its text or its student.
+    edit:
+      replace: "        log.info(\"Question from %s: %s\", student, question.text)\n"
+      with: "        log.info(\"A question about %s.\", question.about)\n"
+  - check: tst_qlhg0r
+    title: It sent no verdict for a question that went to staff
+    cost: >-
+      A reply that cited nothing, said it didn't know or stopped at the limit ended with no
+      verdict, so the page kept the pieces it had shown: an answer the desk had turned down,
+      left on the student's screen as if it stood.
+    fix: >-
+      The fix: every stream ends with its verdict, which takes the pieces' place.
+    edit:
+      replace: "                else:\n                    yield event(\"verdict\", asdict(each))"
+      with: "                yield event(\"verdict\", asdict(each))"
