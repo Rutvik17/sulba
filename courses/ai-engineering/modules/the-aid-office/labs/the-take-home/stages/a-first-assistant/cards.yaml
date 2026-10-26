@@ -1,0 +1,7 @@
+cards:
+  - id: crd_ffjvfl
+    front: Why build a word search's index once, before any question?
+    back: Kept for each word, the passages that hold it let a question score only the passages that share one of its words, instead of reading every passage again.
+  - id: crd_8xruqy
+    front: Why does a support assistant read the pages it cites from the passages' numbers rather than the model's words?
+    back: The numbers name passages the code gave the model, so each cited page is one the answer was given from. A page the model names in its words could be one it made up.
