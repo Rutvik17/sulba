@@ -1,0 +1,20 @@
+cards:
+  - id: crd_apwe50
+    front: >-
+      A server-sent event stream ends without `data: [DONE]`. What should a reader of OpenAI's
+      stream format do with the text it has?
+    back: >-
+      Treat it as an error: the stream was cut short, and the text so far would look like a
+      whole reply.
+  - id: crd_njqw67
+    front: >-
+      Why can `Relay` answer a failure with an error status only before the first piece?
+    back: >-
+      Flushing the first piece sends the status and headers. After it, changing them has no
+      effect, so a failure can only end the stream.
+  - id: crd_09kkn8
+    front: >-
+      What does a server-sent event line that starts with a colon mean?
+    back: >-
+      It's a comment, which a reader ignores. Servers send them to keep a quiet connection
+      open.

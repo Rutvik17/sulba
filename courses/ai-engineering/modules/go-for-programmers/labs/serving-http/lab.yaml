@@ -1,0 +1,14 @@
+id: lab_4pwf4r
+title: Serving HTTP
+summary: >-
+  The gateway on HTTP, in Go: a server with keys, rate limits and a cap on bodies, in front of
+  its routes; upstreams asked over HTTP; replies streamed as server-sent events; a review of an
+  assistant's cache; and a server ready for traffic, with timeouts and a graceful shutdown.
+given: [request.go, routes.go, fallback.go, failures.go, bucket.go]
+runs: machine
+stages:
+  - the-server
+  - an-http-upstream
+  - streaming
+  - the-assistants-cache
+  - ready-for-traffic

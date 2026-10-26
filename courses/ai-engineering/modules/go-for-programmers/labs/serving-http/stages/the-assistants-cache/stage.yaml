@@ -1,0 +1,52 @@
+id: stg_c677q9
+kind: catch
+title: The assistant's cache
+builds: A new `cache.go`, from an assistant.
+file: cache.go
+minutes: 35
+problems:
+  - check: tst_6fyx63
+    title: A reply never expired
+    cost: >-
+      `Chat` answered from the cache whenever it found the key, and never looked at the
+      entry's `expires`. Once the help desk changed its opening hours, the gateway went on
+      giving the old ones for as long as it ran.
+    fix: >-
+      The fix: `if found && time.Now().Before(cached.expires)`, so an entry past its time to
+      live sends the request to the upstream again.
+    edit:
+      replace: "\tif found {\n"
+      with: "\tif found && time.Now().Before(cached.expires) {\n"
+  - check: tst_wt7496
+    title: One request at a time reached the upstream
+    cost: >-
+      `Chat` held the cache's lock while it asked the upstream. Every other request, cached or
+      not, waited behind that one call, so the gateway answered one request at a time, each
+      taking as long as a model's reply.
+    fix: >-
+      The fix: unlock before the upstream call, and lock again only to store the reply.
+    edit:
+      replace: "\treply, err := c.upstream.Chat(ctx, request)\n\tc.mu.Unlock()\n"
+      with: "\tc.mu.Unlock()\n\treply, err := c.upstream.Chat(ctx, request)\n"
+  - check: tst_8lpujp
+    title: A failure was kept as an empty reply
+    cost: >-
+      `Chat` stored the upstream's reply whether or not it gave an error. After one 503, the
+      cache answered that request with an empty reply and no error, until the entry expired.
+    fix: >-
+      The fix: give the error and store nothing when the upstream fails.
+    edit:
+      replace: "\tc.store(key, reply)\n\treturn reply, err\n"
+      with: "\tif err != nil {\n\t\treturn Reply{}, err\n\t}\n\tc.store(key, reply)\n\treturn reply, nil\n"
+  - check: tst_toplsu
+    title: Conversations that ended alike shared a reply
+    cost: >-
+      `keyOf` hashed the model and the last message only. "How many people live there?" after
+      a question about Lyon got the reply cached for the one about Paris: a caller got an
+      answer to a conversation they never had.
+    fix: >-
+      The fix: hash the whole request, `json.Marshal(request)`, since the reply depends on
+      every message.
+    edit:
+      replace: "json.Marshal([]any{request.Model, request.Messages[len(request.Messages)-1]})"
+      with: "json.Marshal(request)"

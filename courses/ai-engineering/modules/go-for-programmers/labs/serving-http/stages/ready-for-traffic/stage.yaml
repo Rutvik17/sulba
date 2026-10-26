@@ -1,0 +1,37 @@
+id: stg_h1mbkf
+kind: ship
+title: Ready for traffic
+builds: A new `serve.go`, which serves any handler, such as your server's.
+file: serve.go
+minutes: 45
+checks:
+  - check: tst_i72gxr
+    title: A request in flight gets its reply
+    requires: >-
+      A request that's being answered when the shutdown starts gets its whole reply.
+    failure: >-
+      Shut down with `server.Shutdown`, which waits for the requests in flight, not
+      `server.Close`, which cuts them off.
+  - check: tst_3nxkxg
+    title: Run waits for the requests in flight
+    requires: >-
+      `Run` returns only once a request in flight at the shutdown has been answered.
+    failure: >-
+      Wait for `Shutdown` to return, not for `Serve`, which returns as soon as the shutdown
+      starts, and give `Shutdown` a context of its own: `ctx` is already done.
+  - check: tst_ca82u6
+    title: The grace has an end
+    requires: >-
+      With a grace of 200 milliseconds and a request that would take a minute, `Run` returns
+      an error that is `context.DeadlineExceeded`, and the request's connection is closed.
+    failure: >-
+      Give `Shutdown` a context with a timeout of `grace`, and once it gives that error, close
+      the connections still open with `server.Close`.
+  - check: tst_kdjyi4
+    title: A server that can't serve says so
+    requires: >-
+      On a listener that's already closed, `Run` gives `Serve`'s error at once, with `ctx`
+      never done.
+    failure: >-
+      Wait for `Serve`'s error and for `ctx` at once, in a `select`, and give the error when it
+      comes first.
