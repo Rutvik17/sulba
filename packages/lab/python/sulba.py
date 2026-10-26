@@ -25,6 +25,9 @@ tsconfig.build.json names, with the lab's own TypeScript, for a browser to load.
 
 A lab with Go stages runs their tests with Go. The first time, it fetches Go into sulba in your
 cache folder.
+
+A lab with Java stages compiles them with a JDK and runs their tests with JUnit. The first time,
+it fetches the JDK, JUnit and Jackson into sulba in your cache folder.
 """
 
 # A lab that runs on the learner's machine downloads with this file at its top and its stages in
@@ -286,6 +289,9 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
         print(
             f"Fetching Go {sulba_runner.GO} into {sulba_fixtures.cache_folder()}, the first time.\n"
         )
+    if any(name.endswith(".java") for name in stage["tests"]) and sulba_runner.java_fetches_first():
+        print(f"Fetching a JDK, Liberica {sulba_runner.JAVA}, with JUnit and Jackson, into")
+        print(f"{sulba_fixtures.cache_folder()}, the first time.\n")
     result = json.loads(
         sulba_runner.run(
             json.dumps(files), json.dumps(list(stage["tests"])), json.dumps(session_links(lab))

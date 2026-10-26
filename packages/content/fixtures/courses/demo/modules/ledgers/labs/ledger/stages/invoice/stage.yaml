@@ -1,0 +1,6 @@
+id: stg_demo12
+kind: build
+title: Invoice
+builds: A new `Invoice.java`, in Java.
+file: Invoice.java
+minutes: 10

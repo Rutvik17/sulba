@@ -239,6 +239,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
   const served = servedOf(lab);
   const typeScript = lab.stages.some((each) => each.file.endsWith('.ts'));
   const go = lab.stages.some((each) => each.file.endsWith('.go'));
+  const java = lab.stages.some((each) => each.file.endsWith('.java'));
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
@@ -375,6 +376,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
             <p>
               Its Go stages run with Go. The first time, it downloads Go for your system from
               dl.google.com.
+            </p>
+          )}
+          {java && (
+            <p>
+              Its Java stages run with Java. The first time, it downloads a JDK for your system from
+              github.com, and JUnit and Jackson from repo1.maven.org.
             </p>
           )}
           {isCatch && (

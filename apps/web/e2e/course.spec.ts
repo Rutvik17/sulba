@@ -5,10 +5,10 @@ import { signedIn, standIn, supabase } from './supabase';
 // course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages,
 // and the optional module Interviews, with the lab Pairs and its one Problem stage and the lab Poll
 // design and its one Design stage, and whose level Second has the module Ledgers, with the lab
-// Ledger and its 5 stages, which runs on the learner's machine.
+// Ledger and its 6 stages, which runs on the learner's machine.
 const path = '/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
-const ledger = ['stg_demo06', 'stg_demo07', 'stg_demo08', 'stg_demo09', 'stg_demo11'];
+const ledger = ['stg_demo06', 'stg_demo07', 'stg_demo08', 'stg_demo09', 'stg_demo11', 'stg_demo12'];
 
 async function passed(page: Page, ...ids: string[]) {
   await page.addInitScript((each) => {
@@ -144,7 +144,7 @@ test("after a lab that's done, the next lab is the one after it, past an optiona
     'href',
     '/demo/ledgers/ledger/',
   );
-  await expect(next(page)).toContainText('Module 1 · Ledgers · About 50 minutes');
+  await expect(next(page)).toContainText('Module 1 · Ledgers · About 60 minutes');
   // The module's row, under its title.
   await expect(level(page).getByText('1 lab · About 40 minutes').locator('..')).toContainText(
     'Done',
