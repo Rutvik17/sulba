@@ -1,0 +1,6 @@
+id: stg_0exo12
+kind: build
+title: The desk
+builds: A new `Desk.java`, which uses your `Ticket.java`.
+file: Desk.java
+minutes: 50

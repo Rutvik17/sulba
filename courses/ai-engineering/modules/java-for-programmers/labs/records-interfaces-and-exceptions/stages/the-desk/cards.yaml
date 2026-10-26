@@ -1,0 +1,26 @@
+cards:
+  - id: crd_dc459d
+    front: >-
+      What does calling `add` on a list from `List.copyOf` do?
+    back: >-
+      It throws `UnsupportedOperationException`: the list is unmodifiable, so no caller can
+      change what a class gives out with it.
+  - id: crd_xamp5y
+    front: >-
+      Which exceptions are checked in Java?
+    back: >-
+      `Throwable` and its subclasses, other than `RuntimeException`, `Error` and their
+      subclasses. A method that can throw one has to catch it or name it in its `throws` clause.
+  - id: crd_to0msv
+    front: >-
+      When should a Java method throw a checked exception rather than an unchecked one?
+    back: >-
+      When its caller can reasonably be expected to recover, such as a callback time that's
+      taken. A mistake in the calling code, such as a blank summary, is unchecked.
+  - id: crd_p9nmts
+    front: >-
+      Why does `callbacks.remove(new Callback(ticket, day, time))` find the callback booked
+      earlier?
+    back: >-
+      `remove` removes an element equal to the one it's given, and a record's `equals` compares
+      each of its parts.

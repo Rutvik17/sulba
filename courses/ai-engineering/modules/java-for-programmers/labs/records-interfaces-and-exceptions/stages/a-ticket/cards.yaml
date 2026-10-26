@@ -1,0 +1,28 @@
+cards:
+  - id: crd_m0mqyi
+    front: >-
+      In a record's compact constructor, `summary = summary.strip();` changes what?
+    back: >-
+      The constructor's parameter. Once the body ends, the compiler sets each field from its
+      parameter, so the field gets the stripped summary.
+  - id: crd_o19djg
+    front: >-
+      When does Java's `Ticket` throw a `NullPointerException`, and when an
+      `IllegalArgumentException`?
+    back: >-
+      A `NullPointerException`, from `Objects.requireNonNull`, for a part that's `null`, and
+      an `IllegalArgumentException` for a part that's there but wrong, such as an id that
+      isn't `T-` and a number.
+  - id: crd_d3aszm
+    front: >-
+      Why does Jackson write a record with a method `isOpen()` as JSON with a field `open`?
+    back: >-
+      Jackson finds getters by their names, records included, and `isOpen()` is one. `@JsonIgnore`
+      on the method leaves it out.
+  - id: crd_17ysui
+    front: >-
+      A record's compact constructor throws while Jackson reads JSON into it. What does the
+      caller get?
+    back: >-
+      A `DatabindException`, a `ValueInstantiationException`, whose cause is the exception the
+      constructor threw.

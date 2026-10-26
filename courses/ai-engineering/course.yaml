@@ -14,4 +14,4 @@ levels:
       Linux on Arm, or macOS 14 or later on Apple silicon. Module 1, the coding interviews,
       most of Working with customers, the design round, the capstone's take-home and the mock loop
       run in your browser, and the rest runs on your machine
-    modules: [neural-networks-from-scratch, pytorch, transformers-from-scratch, building-on-model-apis, retrieval, evals, agents, shipping-full-stack, data-pipelines, working-with-customers, lists-trees-and-graphs, heaps-recursion-and-intervals, design-round, the-aid-office, the-mock-loop, go-for-programmers]
+    modules: [neural-networks-from-scratch, pytorch, transformers-from-scratch, building-on-model-apis, retrieval, evals, agents, shipping-full-stack, data-pipelines, working-with-customers, lists-trees-and-graphs, heaps-recursion-and-intervals, design-round, the-aid-office, the-mock-loop, go-for-programmers, java-for-programmers]
