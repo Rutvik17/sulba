@@ -1,0 +1,14 @@
+cards:
+  - id: crd_8s0da0
+    front: >-
+      Why add random jitter to exponential backoff?
+    back: >-
+      Clients that failed together would otherwise retry together, in spikes. Random waits
+      spread their retries out over time.
+  - id: crd_s1zy4v
+    front: >-
+      `Retry`'s next wait would end after the caller's deadline. Why does it give up at once
+      rather than wait?
+    back: >-
+      The call after the wait couldn't finish in time, so waiting would only spend the caller's
+      remaining time before giving the same error.

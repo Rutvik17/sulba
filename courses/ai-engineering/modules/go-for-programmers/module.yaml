@@ -1,4 +1,4 @@
 id: mod_iko4xz
 title: Go for programmers
 optional: true
-labs: [types-errors-and-interfaces]
+labs: [types-errors-and-interfaces, goroutines-channels-and-context]
