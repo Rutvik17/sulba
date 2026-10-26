@@ -1,0 +1,36 @@
+id: stg_9hdz46
+kind: ship
+title: A retry budget
+builds: A new `budget.go`, which uses your `retry.go` and the given `fallback.go`.
+file: budget.go
+minutes: 60
+checks:
+  - check: tst_2hrmkc
+    title: An outage's retries stay in the budget
+    requires: >-
+      With every call failing, 1,000 requests at 10 a second never have more retries in a
+      minute than 10 and a tenth of that minute's requests.
+    failure: >-
+      Count only the window's requests and retries, and refuse a retry that would take the
+      retries past the floor plus the ratio of the requests.
+  - check: tst_torijy
+    title: Healthy traffic keeps its retries
+    requires: >-
+      When 1 request in 20 fails its first call, each of them is retried, and succeeds.
+    failure: >-
+      Allow a retry while the window's retries, with it, are within the floor plus the ratio
+      of its requests.
+  - check: tst_6s8fhq
+    title: Retries come back after an outage
+    requires: >-
+      A minute after an outage of 300 requests, a request whose first call fails is retried.
+    failure: >-
+      Leave out the requests and retries older than the window, so an outage stops counting
+      once it has passed.
+  - check: tst_1539zm
+    title: Attempts still hold
+    requires: >-
+      With budget to spare, a request that always fails makes no more calls than the
+      backoff's `Attempts`.
+    failure: >-
+      Check the request's attempts before you ask the budget, as `Retry` does.

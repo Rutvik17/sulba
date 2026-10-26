@@ -1,0 +1,41 @@
+id: stg_stg9ng
+kind: ship
+title: Ready to serve
+builds: A new `App.java`, which uses your `Server.java`.
+file: App.java
+minutes: 45
+checks:
+  - check: tst_oxfedr
+    title: Settings that fit
+    requires: >-
+      Settings that don't fit, such as a `DESK_PORT` past 65535, a `DESK_RUNNING` of 0 or a
+      `DESK_SECONDS` that isn't a whole number, raise `IllegalArgumentException`, naming each
+      variable that's wrong and no other.
+    failure: >-
+      Check every variable before throwing, and put each wrong one's name in the message:
+      `Integer.parseInt` throws `NumberFormatException` for a value that isn't a whole number.
+  - check: tst_y8y96l
+    title: The gate from the settings
+    requires: >-
+      The service's gate lets `DESK_RUNNING` replies run, keeps `DESK_WAITING` callers in line,
+      and turns the rest away with a `Retry-After` of `DESK_SECONDS`.
+    failure: >-
+      Make the gate with the settings' `running`, `waiting` and `limit`, in that order, and give
+      it to `Server.start`.
+  - check: tst_r1o3cw
+    title: A reply in flight gets to finish
+    requires: >-
+      A reply that's being written when the service stops gets its whole reply, ending with its
+      `done` event.
+    failure: >-
+      Stop with `server.stop(grace)`, which waits up to `grace` seconds for the exchanges in
+      flight, not `stop(0)`, which closes their connections at once.
+  - check: tst_nhwh7s
+    title: The grace has an end
+    requires: >-
+      With a grace of 1 second and a reply that would take a minute, `stop` returns within a
+      few seconds, and the reply has been closed by then.
+    failure: >-
+      After `server.stop`, interrupt the handlers still running with the executor's
+      `shutdownNow()`, and wait for them with `awaitTermination`: `server.getExecutor()` gives
+      the executor `Server.start` set.

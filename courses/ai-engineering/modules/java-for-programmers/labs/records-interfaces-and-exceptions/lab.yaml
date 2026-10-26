@@ -1,0 +1,15 @@
+id: lab_mhzihv
+title: Records, interfaces and exceptions
+summary: >-
+  The help desk's model, in Java: a ticket as a record that checks itself; the desk's tickets,
+  callbacks and advisers' free times, with its refusals as checked exceptions; the tools a model
+  calls, each reading its arguments from JSON into a record; a review of an assistant's schedule;
+  and a problem details object for every error.
+given: [Service.java]
+runs: machine
+stages:
+  - a-ticket
+  - the-desk
+  - the-tools
+  - the-assistants-schedule
+  - problem-details

@@ -1,0 +1,27 @@
+cards:
+  - id: crd_y5llw5
+    front: >-
+      Why can't a lambda that calls a method throwing a checked exception be a
+      `java.util.function.Function`?
+    back: >-
+      `Function`'s `apply` declares no exceptions, so the lambda would have to catch it. A
+      functional interface of your own can declare `throws`, as `Action` does.
+  - id: crd_4zv79z
+    front: >-
+      Why does `Tool` take its arguments' record as a `Class<A>`, rather than using `A.class`?
+    back: >-
+      Type parameters are erased: at run time `A` is just its bound, so `A.class` doesn't
+      compile. The `Class<A>` value carries the type for Jackson and reflection.
+  - id: crd_7hddem
+    front: >-
+      How does a method with a `Tool<?>` call that tool's action with the record it read?
+    back: >-
+      Through a private generic helper, `<A extends Record> String call(Tool<A> tool, ...)`,
+      which captures the wildcard as `A`.
+  - id: crd_mraatz
+    front: >-
+      A `try` has `catch (DatabindException e)` and then `catch (ValueInstantiationException e)`.
+      What's wrong?
+    back: >-
+      `ValueInstantiationException` is a `DatabindException`, so the first `catch` takes it.
+      The more specific `catch` goes first; here, `javac` refuses the code.

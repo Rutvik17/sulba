@@ -1,0 +1,6 @@
+id: stg_0z8q5v
+kind: build
+title: A ticket
+builds: A new `Ticket.java`, in Java.
+file: Ticket.java
+minutes: 35

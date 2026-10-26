@@ -1,0 +1,57 @@
+id: stg_lbj1wq
+kind: catch
+title: The assistant's schedule
+builds: A new `Schedule.java`, from an assistant.
+file: Schedule.java
+minutes: 35
+problems:
+  - check: tst_xsn849
+    title: A ticket read from a request had no bookings
+    cost: >-
+      `bookingsFor` compared ids with `==`, which asks whether two strings are the same object,
+      not whether they hold the same text. The assistant's tests wrote every id as a literal,
+      and Java keeps one object for each literal, so they matched. An id read from a request's
+      JSON is a new string, so every caller who asked about their callbacks was told they had
+      none.
+    fix: >-
+      The fix: `booking.ticket().equals(ticket)`, which compares the text.
+    edit:
+      replace: "booking.ticket() == ticket"
+      with: "booking.ticket().equals(ticket)"
+  - check: tst_h8imi6
+    title: A second booking on a day freed the wrong slot
+    cost: >-
+      `slots.remove(slot)` with an `int` calls `remove(int index)`, which removes the element
+      at that place in the list, not the slot with that number. On a day with every slot free,
+      slot 2 is at place 2, so the first booking looked right. After it, slot 5 was at place
+      4, so booking slot 5 freed nothing of its own and took slot 6 away: slot 5 stayed free
+      to be booked twice.
+    fix: >-
+      The fix: `slots.remove(Integer.valueOf(slot))`, which calls `remove(Object)` and removes
+      the slot equal to that number.
+    edit:
+      replace: "        slots.remove(slot);\n"
+      with: "        slots.remove(Integer.valueOf(slot));\n"
+  - check: tst_i5xeat
+    title: A report reordered the bookings
+    cost: >-
+      `bookings()` gave its caller the schedule's own list. A report that sorted what it was
+      given, by day, sorted the schedule's bookings, and the order they were made in was gone
+      for every caller after it.
+    fix: >-
+      The fix: `List.copyOf(bookings)`, a copy no caller can change.
+    edit:
+      replace: "        return bookings;\n"
+      with: "        return List.copyOf(bookings);\n"
+  - check: tst_o6btc5
+    title: The days came out in the wrong order
+    cost: >-
+      `days()` gave the keys of a `HashMap`, which keeps no order. The assistant's tests
+      opened one day at a time, so its order never showed. With a week open, the days came out
+      in the order their hash codes put them in, Friday first for this week.
+    fix: >-
+      The fix: sort the days, `free.keySet().stream().sorted().toList()`, or keep them in a
+      `TreeMap`, which orders its keys.
+    edit:
+      replace: "        return new ArrayList<>(free.keySet());\n"
+      with: "        return free.keySet().stream().sorted().toList();\n"

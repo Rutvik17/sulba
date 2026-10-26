@@ -1,0 +1,24 @@
+cards:
+  - id: crd_u51qb0
+    front: >-
+      How does a handler on the JDK's HTTP server send a body whose length it doesn't know yet?
+    back: >-
+      With `sendResponseHeaders(status, 0)`, which sends the body in chunks until the stream is
+      closed. `flush()` sends what's been written so far.
+  - id: crd_vfw785
+    front: >-
+      What ends one server-sent event?
+    back: >-
+      A blank line, after its `event:` and `data:` lines. The stream is `text/event-stream`, in
+      UTF-8.
+  - id: crd_xq8uyj
+    front: >-
+      When does a `switch` over a sealed interface need no `default`?
+    back: >-
+      When its cases cover every class the interface permits. Then a new permitted class makes
+      the `switch` fail to compile until it has a case.
+  - id: crd_lwpmgv
+    front: >-
+      Why measure a time limit with `System.nanoTime()` rather than the time of day?
+    back: >-
+      It measures elapsed time only, so it doesn't jump when the computer's clock is set.

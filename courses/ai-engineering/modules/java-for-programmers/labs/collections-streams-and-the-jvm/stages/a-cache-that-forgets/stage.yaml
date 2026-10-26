@@ -1,0 +1,6 @@
+id: stg_12asua
+kind: build
+title: A cache that forgets
+builds: A new `Recent.java`, in Java.
+file: Recent.java
+minutes: 35

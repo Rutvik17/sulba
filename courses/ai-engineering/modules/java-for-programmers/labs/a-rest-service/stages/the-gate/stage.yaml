@@ -1,0 +1,6 @@
+id: stg_68jq8a
+kind: build
+title: The gate
+builds: A new `Gate.java`.
+file: Gate.java
+minutes: 40

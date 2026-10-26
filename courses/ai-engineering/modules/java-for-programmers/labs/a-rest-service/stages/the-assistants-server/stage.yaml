@@ -1,0 +1,54 @@
+id: stg_du4s6x
+kind: catch
+title: The assistant's server
+builds: A new `Server.java`, from an assistant, which uses your `Api.java`, `Gate.java` and `Replies.java`.
+file: Server.java
+minutes: 35
+problems:
+  - check: tst_egd3dw
+    title: One slow caller held up everyone
+    cost: >-
+      The server had no executor, so it ran every exchange on the one thread `start()` made.
+      A caller on a slow connection, halfway through sending a ticket, held that thread while
+      the server waited for the rest, and every other request waited behind them: the health
+      check too, so the load balancer took the desk out of service.
+    fix: >-
+      The fix: `server.setExecutor(Executors.newVirtualThreadPerTaskExecutor())` before
+      `start()`, so each exchange runs on a virtual thread of its own.
+    edit:
+      replace: "        server.start();\n"
+      with: "        server.setExecutor(java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor());\n        server.start();\n"
+  - check: tst_y39bs3
+    title: Every message arrived empty
+    cost: >-
+      The log's filter read the request's body to count its bytes, before the handlers ran. A
+      body can be read once, so `Api` and `Replies` read nothing, and every ticket opened,
+      callback booked and message sent got a 422. The assistant's tests sent only `GET`s.
+    fix: >-
+      The fix: log the request's `Content-Length` header, and leave the body for the handler.
+    edit:
+      replace: "var size = exchange.getRequestBody().readAllBytes().length;"
+      with: "var size = java.util.Objects.requireNonNullElse(exchange.getRequestHeaders().getFirst(\"Content-Length\"), \"-\");"
+  - check: tst_ffrwoe
+    title: A health check of the wrong kind never got its answer
+    cost: >-
+      `problem` wrote its body without closing the exchange, so a request to `/healthz`, or a
+      `POST` to `/health`, waited for an answer that was never sent, until the caller gave
+      up.
+    fix: >-
+      The fix: close the response's stream once the body is written, as the 200 does.
+    edit:
+      replace: "        exchange.getResponseBody().write(body);\n    }\n\n    /**"
+      with: "        try (var out = exchange.getResponseBody()) {\n            out.write(body);\n        }\n    }\n\n    /**"
+  - check: tst_nzqd0s
+    title: Addresses the desk doesn't have got a page of HTML
+    cost: >-
+      The API was the context for `/tickets` only, so a request for any other path, `/` or
+      `/callbacks`, found no context, and the server answered on its own with a 404 page in
+      HTML. The chat page read every error as problem details, and showed none.
+    fix: >-
+      The fix: make the API the context for `/`, which every path starts with. The longer
+      paths, `/messages` and `/health`, still go to their own handlers.
+    edit:
+      replace: "server.createContext(\"/tickets\", new Api(desk))"
+      with: "server.createContext(\"/\", new Api(desk))"

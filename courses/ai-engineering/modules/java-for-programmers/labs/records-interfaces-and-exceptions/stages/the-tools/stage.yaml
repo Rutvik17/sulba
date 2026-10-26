@@ -1,0 +1,6 @@
+id: stg_4lfr5c
+kind: build
+title: The tools
+builds: A new `Tools.java`, which uses your `Ticket.java` and `Desk.java`.
+file: Tools.java
+minutes: 50

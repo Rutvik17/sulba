@@ -1,0 +1,6 @@
+id: stg_4kfugz
+kind: build
+title: A day's questions
+builds: A new `Reports.java`, in Java.
+file: Reports.java
+minutes: 40

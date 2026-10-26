@@ -1,0 +1,27 @@
+cards:
+  - id: crd_kpeqqg
+    front: >-
+      What map does `Collectors.groupingBy(Asked::service, Collectors.counting())` collect into, and
+      how do you choose another?
+    back: >-
+      A `HashMap`, in no promised order. The three-argument form takes a map factory, such as
+      `() -> new EnumMap<>(Service.class)` or `TreeMap::new`.
+  - id: crd_7e3406
+    front: >-
+      `comparing(PageCount::questions).thenComparing(PageCount::page).reversed()`: what order does it
+      give?
+    back: >-
+      Most questions first, but ties by name backwards: `reversed()` turns around the whole
+      chain before it. Reverse the count first, then add the tie-breaker.
+  - id: crd_cvjo38
+    front: >-
+      Does `list.stream().sorted()` change the list?
+    back: >-
+      No. A stream operation produces a result and doesn't modify its source.
+  - id: crd_2euie5
+    front: >-
+      Why does `byHour` take a `ZoneId` such as `America/New_York` rather than an offset such as
+      `-05:00`?
+    back: >-
+      A region's offset changes with the date, as when the clocks go back. A fixed offset would
+      put every question on one side of the change an hour out.

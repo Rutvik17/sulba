@@ -1,0 +1,24 @@
+cards:
+  - id: crd_h3ad8p
+    front: >-
+      What does `\w` match in a Java `Pattern` without any flags?
+    back: >-
+      Only `[a-zA-Z_0-9]`. `Pattern.UNICODE_CHARACTER_CLASS` makes it match word characters in
+      any script, as Python's `\w` does.
+  - id: crd_qjeihj
+    front: >-
+      Why does the index lowercase with `toLowerCase(Locale.ROOT)`?
+    back: >-
+      `toLowerCase()` uses the computer's language: in a Turkish locale, `TITLE` becomes `tıtle`
+      with a dotless i, and a query for `title` would miss it.
+  - id: crd_bioxbl
+    front: >-
+      What does `map.computeIfAbsent(word, key -> new TreeSet<>())` give?
+    back: >-
+      The word's set: the one in the map, or a new one it puts there first, like a
+      `defaultdict(set)` in Python.
+  - id: crd_ox3pty
+    front: >-
+      What does `counts.merge(id, 1, Integer::sum)` do?
+    back: >-
+      Puts 1 for an id that isn't there, and otherwise adds 1 to its count.

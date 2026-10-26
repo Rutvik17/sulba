@@ -1,0 +1,6 @@
+id: stg_lc1qbr
+kind: build
+title: A token bucket
+builds: A new `bucket.go`, in Go.
+file: bucket.go
+minutes: 45

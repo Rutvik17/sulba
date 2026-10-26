@@ -1,0 +1,14 @@
+id: lab_2qgcla
+title: Collections, streams and the JVM
+summary: >-
+  The desk's reports and memory, in Java: a day's questions counted with streams; an index of the
+  help pages' words; a cache that forgets the conversations used least lately; a review of an
+  assistant's report; and counts kept right by thousands of threads at once.
+given: [Service.java]
+runs: machine
+stages:
+  - a-days-questions
+  - a-word-index
+  - a-cache-that-forgets
+  - the-assistants-report
+  - live-counts

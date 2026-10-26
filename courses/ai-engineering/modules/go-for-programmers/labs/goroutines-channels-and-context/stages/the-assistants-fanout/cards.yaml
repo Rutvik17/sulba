@@ -1,0 +1,14 @@
+cards:
+  - id: crd_f3ff5f
+    front: >-
+      A function starts a goroutine per upstream, each sending its answer on a channel with no
+      buffer, and returns after the first answer. What happens to the other goroutines?
+    back: >-
+      Each waits forever on its send, as nothing receives again. Goroutines aren't garbage
+      collected, so each request leaks them.
+  - id: crd_y3vhl2
+    front: >-
+      `asking, cancel := context.WithCancel(ctx)` is made and its cancel deferred. What does
+      the cancel stop if the calls were given `ctx`?
+    back: >-
+      Nothing: only work given `asking`, or a context made from it, sees the cancel.
