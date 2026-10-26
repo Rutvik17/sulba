@@ -1,0 +1,25 @@
+id: stg_t7ct5d
+kind: design
+title: A catalogue that changes every hour
+builds: Tools, streaming and MCP.
+minutes: 45
+questions:
+  - A price changes while the assistant is answering. What price does the customer see, and what do they pay?
+  - The assistant suggests a product that's out of stock. Where did the design go wrong?
+  - "A customer asks for \"a dozen eggs\" and the assistant adds twelve boxes. How does your design stop that?"
+rubric:
+  - point: Takes facts from the shop's systems, not the model
+    answer: Prices, stock and product details come from the catalogue at the time of the question, through tools. The model never states a price it wasn't given.
+  - point: Lets the model choose, and code check
+    answer: The model searches the catalogue and picks products by their ids, and code checks that each one exists and is in stock before it's shown.
+  - point: Asks the customer before changing the basket
+    answer: The assistant proposes each change, with the product, its size, the quantity and the price, and it applies only when the customer confirms it.
+  - point: Prices at checkout, not in the chat
+    answer: A price in the chat is the price when it was given. Checkout prices the basket again, so the customer pays the current price and sees any change before paying.
+  - point: Keeps recipes and products apart
+    answer: Cooking questions are answered from an index of recipes, and products come from the catalogue's own search, which knows what's in stock.
+  - point: Keeps each answer fast
+    answer: Each tool call adds the search's {% $fig.search_ms %} milliseconds, so the design keeps to {% $fig.max_calls %} calls a turn, runs them side by side where it can and streams the answer.
+  - point: Tests the tools' use
+    answer: A test set of conversations checks the products chosen, the quantities, and that no price or stock was made up, on every change to the prompt or the model.
+pass: 5

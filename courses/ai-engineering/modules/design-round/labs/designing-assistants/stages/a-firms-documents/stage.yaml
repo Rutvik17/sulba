@@ -1,0 +1,25 @@
+id: stg_j8f51u
+kind: design
+title: Search over a firm's documents
+builds: Vector search in Postgres, and Inside the customer's walls.
+minutes: 45
+questions:
+  - Someone leaves a matter's group at {% $fig.leaves_at %}. From when can their answers no longer use its documents?
+  - A partner shares a document with the whole firm by mistake, and fixes it an hour later. What could have leaked, and how do you find out?
+  - The index grows to {% $fig.later_passages %} passages and searches slow down. What do you change first?
+rubric:
+  - point: Checks access when the question is asked
+    answer: The person's groups are known at question time, and the search looks only at passages whose document lists one of them. The filter is part of the search, not a step after it.
+  - point: Keeps each passage's access with it
+    answer: Each passage carries its document's groups, and a change of access rewrites them on the document's passages without embedding them again.
+  - point: Takes identity from the sign-in, not the question
+    answer: The groups come from the person's validated sign-in or the directory, so no question can claim someone else's access.
+  - point: Keeps the index in step with its sources
+    answer: Each source's changes, deletions included, reach the index through its change feed or a regular scan, and a deleted document's passages go at once.
+  - point: Shows only what the person may open
+    answer: The model sees only passages the person may read, and each answer links documents they can open.
+  - point: Sizes the index
+    answer: "{% $fig.passages %} passages of {% $fig.vector_bytes %} bytes each: about {% $fig.vector_gb %} of vectors before the index's own graph."
+  - point: Logs searches for audit without their text
+    answer: Each search is logged with a pseudonym for the person, their groups and the documents it found, not the question.
+pass: 5

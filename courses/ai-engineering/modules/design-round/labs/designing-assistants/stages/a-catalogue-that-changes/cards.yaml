@@ -1,0 +1,7 @@
+cards:
+  - id: crd_lzrrph
+    front: Where should a shopping assistant's prices come from?
+    back: From the catalogue, through a tool, in the same turn. The model never states a price it wasn't given.
+  - id: crd_l5lzjv
+    front: Why does a shopping assistant propose basket changes rather than make them?
+    back: A wrong change costs the customer effort to undo, so each change shows the product, size, quantity and price, and applies only when they confirm it.
