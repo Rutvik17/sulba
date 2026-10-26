@@ -1,0 +1,7 @@
+cards:
+  - id: crd_r16fu3
+    front: A support assistant's answer cites none of the passages it was given. What should happen to it?
+    back: It goes to staff instead of to the customer, since an answer that cites nothing may not come from the help pages.
+  - id: crd_rx5qav
+    front: Why give a support assistant no tool that issues refunds?
+    back: Then a message that tells it to give a refund can only change what it says, and refunds stay with staff.

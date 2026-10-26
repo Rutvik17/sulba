@@ -1,0 +1,25 @@
+id: stg_y6es8c
+kind: design
+title: Summaries of support calls
+builds: Structured output, and Data pipelines.
+minutes: 45
+questions:
+  - A call has two problems, one solved and one not. What does its summary say, and how does the weekly view count it?
+  - Customers read card numbers out on calls. What do you do about them?
+  - The model's provider is down for two hours. What happens to the summaries?
+rubric:
+  - point: Gives each summary a fixed shape
+    answer: Each summary is structured output in a schema that code validates. It lists problems, each with a category from the company's list, what was done, and whether it was solved.
+  - point: Counts the weekly view from the fields
+    answer: The weekly view counts categories and outcomes from the structured fields, never from the free text, and the category list has versions so weeks stay comparable.
+  - point: Runs from a queue, not live
+    answer: Each ended call goes on a queue, and workers summarise it with retries. The hour leaves room to wait out short failures.
+  - point: Removes card numbers and personal data first
+    answer: Card numbers and other personal data are removed from the transcript before the model sees it, and the summary is checked for them again before it's stored.
+  - point: Measures the summaries
+    answer: Each week a team lead grades a sample of {% $fig.sample %} summaries against their calls, the categories against the ones the lead would choose.
+  - point: Plans for an outage
+    answer: Calls wait on the queue while the provider is down, and the workers clear the backlog of {% $fig.backlog %} calls faster than calls arrive. Summaries past their hour are marked late.
+  - point: Works out the cost and the rate
+    answer: "{% $fig.rate %} calls a second through the working day, and {% $fig.day_in %} tokens in and {% $fig.day_out %} out a day: about {% $fig.day_cost %} a day."
+pass: 5

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_05i2gn
+    front: Why filter by access inside the search, not after it?
+    back: Taking the best passages first and dropping the forbidden ones can leave a person on few matters with almost nothing, and a ranking that saw forbidden passages can reveal them.
+  - id: crd_yvb6kk
+    front: A document's access changes but its text doesn't. What does its index need?
+    back: Only the groups on its passages rewritten. Its embeddings stay as they are.

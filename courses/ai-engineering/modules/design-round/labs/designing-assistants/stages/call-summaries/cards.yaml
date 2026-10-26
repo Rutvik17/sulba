@@ -1,0 +1,7 @@
+cards:
+  - id: crd_vqv74t
+    front: Why should a call's summary be structured output rather than a paragraph?
+    back: The weekly view counts problems by category and outcome, which needs fields code can validate and add up, not free text.
+  - id: crd_5spueg
+    front: What does a queue give a pipeline that has an hour to summarise each call?
+    back: It smooths the day's peaks, rides out short failures with retries, and holds the calls through an outage until they can be cleared.
