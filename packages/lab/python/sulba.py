@@ -22,6 +22,9 @@ time, it fetches pgvector into sulba in your cache folder.
 A lab with TypeScript stages runs their tests in Node.js. The first time, it fetches Node.js and
 the lab's packages into sulba in your cache folder. Its build compiles the TypeScript its
 tsconfig.build.json names, with the lab's own TypeScript, for a browser to load.
+
+A lab with Go stages runs their tests with Go. The first time, it fetches Go into sulba in your
+cache folder.
 """
 
 # A lab that runs on the learner's machine downloads with this file at its top and its stages in
@@ -125,6 +128,9 @@ PORT = 9931
 # The project's files a lab's TypeScript runs with, beside the learner's: the packages Node runs
 # the tests with, and tsc's settings (decision record 39).
 NODE_FILES = ["package.json", "package-lock.json", "tsconfig.json"]
+# The project's file a lab's Go runs with: the module its tests import the learner's package from
+# (decision record 43).
+GO_FILES = ["go.mod"]
 # The headers about one connection, not the request or the answer they come with, which the
 # forwarder sets for each of its connections itself.
 HOP_BY_HOP = {
@@ -276,6 +282,10 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
     if any(name.endswith(".ts") for name in stage["tests"]) and sulba_runner.fetches_first(files):
         print(f"Fetching Node.js {sulba_runner.NODE} and the lab's packages for TypeScript into")
         print(f"{sulba_fixtures.cache_folder()}, the first time.\n")
+    if any(name.endswith(".go") for name in stage["tests"]) and sulba_runner.go_fetches_first():
+        print(
+            f"Fetching Go {sulba_runner.GO} into {sulba_fixtures.cache_folder()}, the first time.\n"
+        )
     result = json.loads(
         sulba_runner.run(
             json.dumps(files), json.dumps(list(stage["tests"])), json.dumps(session_links(lab))
@@ -313,11 +323,11 @@ def run_stage(lab: dict[str, Any], progress: dict[str, Any], *, finishing: bool)
 
 def session_files(lab: dict[str, Any], index: int) -> dict[str, str]:
     """A run's files: the lab's datasets and references, the files it gives, the project's files
-    for TypeScript, the learner's files up to this stage, and the stage's tests and checks. Of
-    data/, only the lab's own datasets are read: it also holds the files the lab fetches, and
-    whatever the learner puts there."""
+    for TypeScript and Go, the learner's files up to this stage, and the stage's tests and
+    checks. Of data/, only the lab's own datasets are read: it also holds the files the lab
+    fetches, and whatever the learner puts there."""
     files: dict[str, str] = {}
-    for name in [*lab["data"], *lab["given"], *NODE_FILES]:
+    for name in [*lab["data"], *lab["given"], *NODE_FILES, *GO_FILES]:
         if (HERE / name).is_file():
             files[name] = (HERE / name).read_text(encoding="utf-8")
     folder = RUNNER / "references"

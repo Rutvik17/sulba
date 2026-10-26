@@ -118,8 +118,11 @@ const providers = [
       way, into that shared folder. The database too answers only programs on your computer, so what
       you put in it stays there. If a lab has stages in TypeScript, their first run fetches Node.js
       from nodejs.org, and the packages the lab names from registry.npmjs.org, the same way, into
-      that shared folder. When you pass a stage, it gives you a link to the lab's page. The part of
-      the link after its
+      that shared folder. If a lab has stages in Go, their first run fetches Go from dl.google.com
+      the same way, into that shared folder. Go keeps counts of how its commands are used in a
+      folder of its own on your computer, and sends them nowhere unless you turn that on with{' '}
+      <code>go telemetry on</code>. When you pass a stage, it gives you a link to the lab's page.
+      The part of the link after its
       <code>#</code>
       holds which stages you passed there, which problems you caught in a review, and each run of
       the tests since its last link, with how many passed, when, and the time between runs. Browsers

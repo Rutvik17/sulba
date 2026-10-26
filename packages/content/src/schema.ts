@@ -15,6 +15,11 @@ const title = z.string().trim().min(1);
 
 /** A file's name in a lab's download, or a model's: letters, digits, dots, dashes and _. */
 const fileName = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+/**
+ * A file of code: Python's or TypeScript's, or Go's without _, which Go reads as naming a system
+ * or a processor the file builds for alone, as in limit_windows.go.
+ */
+const codeFileName = /^([a-z_][a-z0-9_]*\.(py|ts)|[a-z][a-z0-9]*\.go)$/;
 
 export const courseFile = z.strictObject({
   id: id('course'),
@@ -151,16 +156,16 @@ export const labFile = z.strictObject({
    */
   references: z.array(z.string().regex(/^[a-z0-9-]+\.json$/)).default([]),
   /**
-   * Python or TypeScript files the lab gives its learner to build on, each in `given/`, beside the
-   * learner's files in every run and in the download (decision records 37 and 39).
+   * Python, TypeScript or Go files the lab gives its learner to build on, each in `given/`,
+   * beside the learner's files in every run and in the download (decision records 37, 39 and 43).
    */
   given: z
     .array(
       z
         .string()
         .regex(
-          /^[a-z_][a-z0-9_]*\.(py|ts)$/,
-          'Expected a Python or TypeScript file name, in lowercase',
+          codeFileName,
+          'Expected a Python, TypeScript or Go file name, in lowercase, and in Go without _',
         ),
     )
     .refine((files) => new Set(files).size === files.length, {
@@ -235,10 +240,12 @@ const stageFields = {
   /** What the stage builds on, a line of Markdoc above its brief. */
   builds: title,
   /**
-   * The file the learner works in, in Python or, on the learner's machine, TypeScript or a
-   * Dockerfile (decision records 39 and 40). A later stage on the same file adds to their code.
+   * The file the learner works in, in Python or, on the learner's machine, TypeScript, Go or a
+   * Dockerfile (decision records 39, 40 and 43). A later stage on the same file adds to their code.
    */
-  file: z.string().regex(/^([a-z_][a-z0-9_]*\.(py|ts)|Dockerfile)$/),
+  file: z.string().refine((name) => name === 'Dockerfile' || codeFileName.test(name), {
+    message: 'Expected a Python, TypeScript or Go file name, in lowercase, and in Go without _',
+  }),
   packages: z.array(z.enum([...pythonPackages, ...machinePackages])).default([]),
   /** About how long the stage takes. */
   minutes: z.int().positive(),

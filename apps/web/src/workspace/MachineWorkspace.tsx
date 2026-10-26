@@ -238,6 +238,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
   const fetched = fetchedOf(lab);
   const served = servedOf(lab);
   const typeScript = lab.stages.some((each) => each.file.endsWith('.ts'));
+  const go = lab.stages.some((each) => each.file.endsWith('.go'));
 
   return (
     <section className={css.workspace} aria-label={`Stage ${index + 1}: ${stage.title}`}>
@@ -368,6 +369,12 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
             <p>
               Its TypeScript stages run in Node.js. The first time, it downloads Node.js for your
               system from nodejs.org, and the lab’s packages from registry.npmjs.org.
+            </p>
+          )}
+          {go && (
+            <p>
+              Its Go stages run with Go. The first time, it downloads Go for your system from
+              dl.google.com.
             </p>
           )}
           {isCatch && (

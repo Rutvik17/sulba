@@ -69,22 +69,62 @@ NODE_BUILDS = {
 }
 # The reporter Node's test runner writes each result with, as a line of JSON.
 REPORTER = Path(__file__).with_name("sulba_reporter.mjs")
+# The release of Go that runs a session's Go tests on the learner's machine (decision record 43),
+# where its archives are, which go.dev/dl links to, and its archive for each system, by the names
+# Python gives the system and the machine: the archive's name, its size and its sha256.
+GO = "1.27.3"
+GO_RELEASES = "https://dl.google.com/go"
+GO_BUILDS = {
+    ("Windows", "AMD64"): (
+        "windows-amd64.zip",
+        79010309,
+        "f26081f438319757f8a1b46d7d0b2c5ec7583d4038e485e0aa725cfde7885fff",
+    ),
+    ("Windows", "ARM64"): (
+        "windows-arm64.zip",
+        75113075,
+        "c507872ff21f8a7cd3c1c217b059c6f7271a4a9d8e692810ef9dd3e1f601197c",
+    ),
+    ("Darwin", "arm64"): (
+        "darwin-arm64.tar.gz",
+        68196737,
+        "dd3908cf20959d798c1e06ebe5b72213f0505ce01373b40ce3110975a6cd99c2",
+    ),
+    ("Darwin", "x86_64"): (
+        "darwin-amd64.tar.gz",
+        71697771,
+        "b6f8e931e4ab497fcde6da8ae4499a58f9d258e55c8a80824a516eae5950a750",
+    ),
+    ("Linux", "x86_64"): (
+        "linux-amd64.tar.gz",
+        70588678,
+        "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+    ),
+    ("Linux", "aarch64"): (
+        "linux-arm64.tar.gz",
+        67076044,
+        "a06e99309dbcbdca1a8ccd2282c3ee146e55930886e26b4f1193269587165f49",
+    ),
+}
 
 
 def run(files_json: str, tests_json: str, links_json: str = "{}") -> str:
     """Write the files to a new folder, with the linked files beside them, run the test files
-    there, and return the result. Python's tests run with pytest and TypeScript's with Node, and
-    a run with both gives the results of each."""
+    there, and return the result. Python's tests run with pytest, TypeScript's with Node and Go's
+    with Go, and a run with more than one gives the results of each."""
     files: dict[str, str] = json.loads(files_json)
     tests: list[str] = json.loads(tests_json)
     links: dict[str, str] = json.loads(links_json)
     scripts = [name for name in tests if name.endswith(".ts")]
-    python = [name for name in tests if not name.endswith(".ts")]
+    go = [name for name in tests if name.endswith(".go")]
+    python = [name for name in tests if not name.endswith((".ts", ".go"))]
     results = []
-    if python or not scripts:
+    if python or not (scripts or go):
         results.append(pytest_run(files, python, links))
     if scripts:
         results.append(typescript(files, scripts, links))
+    if go:
+        results.append(go_run(files, go, links))
     problem = next((result["problem"] for result in results if result["problem"]), None)
     return json.dumps(
         {
@@ -352,6 +392,270 @@ def reported(printed: str, errors: str, root: Path, tests: list[str]) -> dict[st
             }
         )
     return {"tests": entries, "problem": None, "output": cleaned(output, root)}
+
+
+def go_run(files: dict[str, str], tests: list[str], links: dict[str, str]) -> dict[str, Any]:
+    """Run Go tests with go test (decision record 43): each folder of test files is a package of
+    its own, which imports the learner's from the lab's go.mod. Of the test files in tests/, only
+    those the run names are written, so a test file the run leaves out doesn't build with it; the
+    learner's own tests, beside their files, are their code."""
+    import subprocess
+
+    try:
+        go = go_program()
+    except RuntimeError as error:
+        return {
+            "tests": [],
+            "problem": {"kind": "RunError", "message": clip(str(error)), "location": None},
+            "output": "",
+            "durationMs": 0,
+        }
+    if "go.mod" not in files:
+        problem = {
+            "kind": "RunError",
+            "message": "A Go run needs the lab's go.mod.",
+            "location": None,
+        }
+        return {"tests": [], "problem": problem, "output": "", "durationMs": 0}
+    written = {
+        name: text
+        for name, text in files.items()
+        if name in tests or not (name.startswith("tests/") and name.endswith("_test.go"))
+    }
+    packages = sorted({f"./{PurePosixPath(name).parent}" for name in tests})
+    with session_folder() as folder:
+        root = Path(folder, "session").resolve()
+        write(root, written)
+        link(root, links)
+        started = time.perf_counter()
+        # go test vets only the packages it tests, and the learner's are the ones the tests
+        # import, so go vet checks every package first, and builds them as it does.
+        vetted = subprocess.run(
+            [go, "vet", "./..."],
+            cwd=root,
+            env=go_environment(),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if vetted.returncode != 0:
+            said = vetted.stdout + vetted.stderr
+            result = {
+                "tests": [],
+                "problem": go_build_problem(said, root),
+                "output": cleaned(said, root),
+            }
+        else:
+            ran = subprocess.run(
+                [go, "test", "-json", "-count=1", *packages],
+                cwd=root,
+                env=go_environment(),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            named = {name: files[name] for name in tests}
+            result = go_reported(ran.stdout, ran.stderr, root, named)
+        result["durationMs"] = round((time.perf_counter() - started) * 1000)
+    return result
+
+
+def go_environment() -> dict[str, str]:
+    """A Go run's environment: the Go the runner pins and nothing it would fetch, no C compiler,
+    none of the learner's own go env settings, and the build cache in the cache folder."""
+    folder = cache_folder() / "go"
+    return {
+        **os.environ,
+        "GOTOOLCHAIN": "local",
+        "GOPROXY": "off",
+        "GOENV": "off",
+        "GOFLAGS": "",
+        "CGO_ENABLED": "0",
+        "GOPATH": str(folder / "path"),
+        "GOCACHE": str(folder / "build"),
+    }
+
+
+def go_place() -> tuple[tuple[str, int, str], Path]:
+    """Go's archive for this system, and the folder of the cache folder it's unpacked into, named
+    for the release and the system."""
+    import platform
+
+    system, machine = platform.system(), platform.machine()
+    if (system, machine) not in GO_BUILDS:
+        raise RuntimeError(f"Go {GO} has no build for {system} on {machine}.")
+    build = GO_BUILDS[(system, machine)]
+    return build, cache_folder() / "go" / f"go{GO}.{build[0].split('.')[0]}"
+
+
+def go_program() -> Path:
+    """The go command, from Go's archive for this system, fetched into the cache folder the first
+    time."""
+    import io
+    import tarfile
+    import zipfile
+
+    (archive, size, sha256), folder = go_place()
+    go = folder / "bin" / ("go.exe" if os.name == "nt" else "go")
+    if go.is_file():
+        return go
+    packed = fetched_package(f"{GO_RELEASES}/go{GO}.{archive}", size, sha256, "Go")
+    folder.parent.mkdir(parents=True, exist_ok=True)
+    # Unpacked beside its place first, so a run stopped halfway leaves no Go to find.
+    unpacking = Path(tempfile.mkdtemp(dir=folder.parent))
+    try:
+        if archive.endswith(".zip"):
+            with zipfile.ZipFile(io.BytesIO(packed)) as files:
+                files.extractall(unpacking)
+        else:
+            with tarfile.open(fileobj=io.BytesIO(packed)) as files:
+                files.extractall(unpacking, filter="tar")
+        try:
+            os.replace(unpacking / "go", folder)
+        except OSError:
+            # Another run put it there first.
+            if not go.is_file():
+                raise
+    finally:
+        shutil.rmtree(unpacking, ignore_errors=True)
+    return go
+
+
+def go_fetches_first() -> bool:
+    """Whether a Go run fetches Go first."""
+    try:
+        _, folder = go_place()
+    except RuntimeError:
+        # The run stops before it fetches anything, and says why.
+        return False
+    return not (folder / "bin" / ("go.exe" if os.name == "nt" else "go")).is_file()
+
+
+def go_reported(printed: str, errors: str, root: Path, tests: dict[str, str]) -> dict[str, Any]:
+    """The run's result from go test's events: each named test's, in the order of its files, a
+    package that didn't build as the run's problem, and what the tests printed. A test that never
+    ran, because one before it in its package panicked, is an error too."""
+    import re
+
+    events = [json.loads(line) for line in printed.splitlines() if line.startswith("{")]
+    built = "".join(
+        event.get("Output", "") for event in events if event["Action"] == "build-output"
+    )
+    if built:
+        return {
+            "tests": [],
+            "problem": go_build_problem(built, root),
+            "output": cleaned(built, root),
+        }
+    named: dict[str, str] = {}
+    for text in tests.values():
+        for found in re.finditer(r'\bt\.Run\(\s*"(tst_[0-9a-z]{6}) ([^"]*)"', text):
+            named.setdefault(found[1], found[2])
+    # By package and test: go test runs the packages at once, so their events interleave, and two
+    # packages may each have a test of the same name.
+    outputs: dict[tuple[str, str], str] = {}
+    ended: dict[tuple[str, str], dict[str, Any]] = {}
+    failed: dict[str, str] = {}
+    panicked: dict[str, str] = {}
+    output = ""
+    for event in events:
+        package, test = event.get("Package", ""), event.get("Test")
+        if event["Action"] == "output" and test:
+            said = event["Output"]
+            # A panic's message and stack come after the failure of the test that panicked, as
+            # output of the test it runs in.
+            if package not in panicked and package in failed and said.startswith("panic: "):
+                panicked[package] = failed[package]
+            owner = panicked.get(package, "")
+            key = (package, owner if owner.split("/")[0] == test else test)
+            outputs[key] = outputs.get(key, "") + said
+            if event.get("OutputType") not in ("frame", "error", "error-continue"):
+                output += said
+        elif event["Action"] in ("pass", "fail", "skip") and test:
+            ended[(package, test)] = event
+            if event["Action"] == "fail" and "/" in test:
+                failed[package] = test
+    entries = []
+    for id, name in named.items():
+        key = next((each for each in ended if re.search(rf"/{id}_", each[1])), ("", ""))
+        entries.append(go_entry(id, name, ended.get(key), outputs.get(key, ""), root))
+    if not entries and not ended:
+        said = (errors or printed).strip() or "No tests ran."
+        problem = {"kind": "RunError", "message": clip(cleaned(said, root)), "location": None}
+        return {"tests": [], "problem": problem, "output": cleaned(output, root)}
+    return {"tests": entries, "problem": None, "output": cleaned(output, root)}
+
+
+def go_entry(
+    id: str, name: str, ended: dict[str, Any] | None, printed: str, root: Path
+) -> dict[str, Any]:
+    """A Go test's result: a failure's first message, a panic as an error with the deepest line
+    of the session's own code, outside its tests, that it passed, and a test that never ran."""
+    import re
+
+    entry: dict[str, Any] = {
+        "id": id,
+        "name": name,
+        "status": "pass",
+        "message": None,
+        "expected": None,
+        "actual": None,
+        "location": None,
+        "output": "",
+        "note": None,
+        "durationMs": round((ended or {}).get("Elapsed", 0) * 1000),
+    }
+    panicked = re.search(r"^panic: (.+?)(?: \[recovered[^\]]*\])?$", printed, re.MULTILINE)
+    if panicked:
+        entry["status"] = "error"
+        entry["message"] = clip(f"panic: {panicked[1]}")
+        entry["location"] = go_location(printed, root)
+    elif ended is None:
+        entry["status"] = "error"
+        entry["message"] = "Didn't run: a test before it in its package panicked."
+    elif ended["Action"] == "fail":
+        entry["status"] = "fail"
+        said = re.search(r"^\s+\S+?\.go:\d+: (.+)$", printed, re.MULTILINE)
+        entry["message"] = clip(said[1] if said else "The check failed.")
+    elif ended["Action"] == "skip":
+        entry["status"] = "skip"
+    return entry
+
+
+def go_location(printed: str, root: Path) -> dict[str, Any] | None:
+    """The first line of a panic's stack in the session's own files, outside its tests: the
+    stack starts where the panic did."""
+    import re
+
+    for found in re.finditer(r"^\s+(.+\.go):(\d+)", printed, re.MULTILINE):
+        path = Path(found[1])
+        if path.is_relative_to(root):
+            file = path.relative_to(root).as_posix()
+            if not file.startswith("tests/"):
+                return {"file": file, "line": int(found[2])}
+    return None
+
+
+def go_build_problem(built: str, root: Path) -> dict[str, Any]:
+    """The first error as the run's problem: the compiler's, under the name of the package that
+    didn't build, which vet marks as its own when it finds it, or else vet's."""
+    import re
+
+    building = False
+    for line in built.splitlines():
+        building = building or line.startswith("# ")
+        found = re.match(r"^(?:vet: )?(?:\.[/\\])?(.+?\.go):(\d+):(?:\d+:)? (.+)$", line.strip())
+        if found:
+            file = cleaned(found[1], root).replace(os.sep, "/")
+            return {
+                "kind": "BuildError" if building else "VetError",
+                "message": clip(found[3]),
+                "location": {"file": file, "line": int(found[2])},
+            }
+    said = built.strip() or "Go stopped without saying why."
+    return {"kind": "BuildError", "message": clip(cleaned(said, root)), "location": None}
 
 
 def cleaned(text: str, root: Path) -> str:
