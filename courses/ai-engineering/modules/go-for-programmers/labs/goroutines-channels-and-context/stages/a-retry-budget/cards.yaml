@@ -1,0 +1,20 @@
+cards:
+  - id: crd_kowf68
+    front: >-
+      In an outage where every call fails, why does a per-client retry budget matter when each
+      request already stops at three attempts?
+    back: >-
+      Three attempts each still nearly triples the load on servers that are failing from too
+      much of it. A budget of retries as a share of requests holds the growth near a tenth.
+  - id: crd_w6h6f5
+    front: >-
+      Why does the retry budget have a floor as well as a ratio?
+    back: >-
+      A client that has sent few requests would get almost no retries from a ratio alone. The
+      floor lets a quiet or new client retry.
+  - id: crd_gb4ycp
+    front: >-
+      Why does the budget count requests and retries over a window rather than since it began?
+    back: >-
+      An outage's retries leave the window once it's over, so the budget recovers. Counted
+      forever, one outage would hold back retries for as long as the gateway ran.

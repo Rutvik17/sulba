@@ -1,0 +1,19 @@
+cards:
+  - id: crd_s9clav
+    front: >-
+      A token bucket with a burst of 5 and a rate of 1 a second has been idle for an hour. How
+      many requests at once does it let through?
+    back: >-
+      5. It gains a token a second, but holds no more than its burst.
+  - id: crd_gatn45
+    front: >-
+      Why does the bucket's `Wait` unlock its mutex before it waits for its timer?
+    back: >-
+      Holding the lock while it waited would make every other caller of the bucket wait behind
+      it, for the whole wait.
+  - id: crd_7933qx
+    front: >-
+      `Bucket` holds a `sync.Mutex`. Why do its methods take a `*Bucket`, not a `Bucket`?
+    back: >-
+      A mutex must not be copied after first use. A value receiver would lock a copy, which
+      guards nothing.

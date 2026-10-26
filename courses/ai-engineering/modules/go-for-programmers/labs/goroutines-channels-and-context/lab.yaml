@@ -1,0 +1,15 @@
+id: lab_xa6ujq
+title: Goroutines, channels and context
+summary: >-
+  The gateway's limits, in Go: a token bucket for each key; retries with backoff, inside the
+  caller's deadline; a limit on the calls in flight, and a batch sent at once; a review of an
+  assistant's fan-out to every upstream; and a retry budget that holds an outage's retries in
+  check.
+given: [request.go, fallback.go]
+runs: machine
+stages:
+  - a-token-bucket
+  - retries
+  - in-flight
+  - the-assistants-fanout
+  - a-retry-budget

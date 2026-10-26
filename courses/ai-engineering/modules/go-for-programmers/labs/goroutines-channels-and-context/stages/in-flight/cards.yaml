@@ -1,0 +1,13 @@
+cards:
+  - id: crd_g43rcu
+    front: >-
+      How does a channel with a buffer of 3 keep a gateway to 3 calls at once?
+    back: >-
+      Each call sends into it before it starts and receives from it when it's done. With 3
+      values in the buffer, the next send waits until a call finishes.
+  - id: crd_z20q9h
+    front: >-
+      In `ChatAll`, why can each goroutine write `replies[i]` without a lock?
+    back: >-
+      Each writes a different element, so none write the same memory, and `WaitGroup.Wait`
+      returns only after every goroutine has returned, with its write visible.

@@ -1,0 +1,55 @@
+id: stg_ylzcbc
+kind: catch
+title: The assistant's fan-out
+builds: A new `fanout.go`, from an assistant.
+file: fanout.go
+minutes: 35
+problems:
+  - check: tst_f73z28
+    title: Every slower upstream left a goroutine behind
+    cost: >-
+      `answers` had no buffer, so each send waited for a receive, and once `Fanout` returned
+      with the first reply, nothing received again. Each slower upstream's goroutine waited
+      forever, holding its reply: every request leaked a goroutine for each upstream but one,
+      until the gateway ran out of memory.
+    fix: >-
+      The fix: `make(chan answer, len(upstreams))`, with room for every answer, so each send
+      finishes whether or not anyone reads it.
+    edit:
+      replace: "\tanswers := make(chan answer)\n"
+      with: "\tanswers := make(chan answer, len(upstreams))\n"
+  - check: tst_0d7ot1
+    title: The slower upstreams worked on after the reply
+    cost: >-
+      The goroutines asked with `ctx`, the caller's context, not `asking`, the one `Fanout`
+      cancels once it has a reply. Every slower upstream went on writing a reply no one would
+      read, holding its place, and from a paid API, charging for every token.
+    fix: >-
+      The fix: `upstream.Chat(asking, request)`.
+    edit:
+      replace: "\t\t\treply, err := upstream.Chat(ctx, request)\n"
+      with: "\t\t\treply, err := upstream.Chat(asking, request)\n"
+  - check: tst_gtwg7t
+    title: One failing upstream failed the request
+    cost: >-
+      The loop returned at the first answer, error or reply. An upstream that's down fails
+      fast, so it beat the upstreams that were about to reply, and the caller got an error it
+      didn't need to.
+    fix: >-
+      The fix: keep the error and wait for the next answer, giving up only once every upstream
+      has failed.
+    edit:
+      replace: "\t\tif got.err != nil {\n\t\t\tfailures = append(failures, got.err)\n\t\t\treturn Reply{}, errors.Join(failures...)\n\t\t}\n\t\treturn got.reply, nil\n"
+      with: "\t\tif got.err == nil {\n\t\t\treturn got.reply, nil\n\t\t}\n\t\tfailures = append(failures, got.err)\n"
+  - check: tst_xe2nrq
+    title: A stuck upstream held the caller past its deadline
+    cost: >-
+      `got := <-answers` waited for an answer whatever became of the caller. An upstream that
+      ignored its context, as one on a stuck connection does, kept the caller waiting long
+      after its deadline, when it had stopped listening.
+    fix: >-
+      The fix: wait in a `select` on `answers` and `ctx.Done()`, and give `ctx.Err()` once
+      the caller is done.
+    edit:
+      replace: "\t\tgot := <-answers\n"
+      with: "\t\tvar got answer\n\t\tselect {\n\t\tcase got = <-answers:\n\t\tcase <-ctx.Done():\n\t\t\treturn Reply{}, ctx.Err()\n\t\t}\n"
