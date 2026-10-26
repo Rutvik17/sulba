@@ -5,6 +5,7 @@ import {
   completionKeymap,
 } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { go } from '@codemirror/lang-go';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
 import { bracketMatching, indentOnInput, indentUnit, StreamLanguage } from '@codemirror/language';
@@ -66,13 +67,27 @@ export interface EditorHandle {
 }
 
 /**
- * Each language the editor reads: how it highlights it, the spaces of an indent, and its name.
- * Ruff checks and formats Python only.
+ * Each language the editor reads: how it highlights it, its indent, a tab's width, and its name.
+ * Go indents with tabs, as gofmt writes it. Ruff checks and formats Python only.
  */
-const languages: Record<Language, { highlight: () => Extension; spaces: number; name: string }> = {
-  python: { highlight: () => python(), spaces: 4, name: 'Python' },
-  typescript: { highlight: () => javascript({ typescript: true }), spaces: 2, name: 'TypeScript' },
-  dockerfile: { highlight: () => StreamLanguage.define(dockerFile), spaces: 4, name: 'Dockerfile' },
+const languages: Record<
+  Language,
+  { highlight: () => Extension; indent: string; width: number; name: string }
+> = {
+  python: { highlight: () => python(), indent: '    ', width: 4, name: 'Python' },
+  typescript: {
+    highlight: () => javascript({ typescript: true }),
+    indent: '  ',
+    width: 2,
+    name: 'TypeScript',
+  },
+  go: { highlight: () => go(), indent: '\t', width: 4, name: 'Go' },
+  dockerfile: {
+    highlight: () => StreamLanguage.define(dockerFile),
+    indent: '    ',
+    width: 4,
+    name: 'Dockerfile',
+  },
 };
 
 export interface EditorProps {
@@ -135,7 +150,7 @@ export function Editor({
   const run = useRef(onRun);
   run.current = onRun;
   const [status, setStatus] = useState<Status>({ line: 1, column: 1, errors: 0, warnings: 0 });
-  const { highlight, spaces, name } = languages[language];
+  const { highlight, indent, width, name } = languages[language];
   const ruff = language === 'python';
 
   // The editor is made once. Its theme changes in place; its text changes only through it.
@@ -151,8 +166,8 @@ export function Editor({
           highlightActiveLineGutter(),
           history(),
           drawSelection(),
-          indentUnit.of(' '.repeat(spaces)),
-          EditorState.tabSize.of(spaces),
+          indentUnit.of(indent),
+          EditorState.tabSize.of(width),
           indentOnInput(),
           bracketMatching(),
           closeBrackets(),
@@ -232,7 +247,7 @@ export function Editor({
             {count(status.errors, 'error', 'errors')},{' '}
             {count(status.warnings, 'warning', 'warnings')}
           </span>
-          <span>Spaces: {spaces}</span>
+          <span>{indent === '\t' ? `Tab size: ${width}` : `Spaces: ${width}`}</span>
           <span>{name}</span>
         </div>
       )}
