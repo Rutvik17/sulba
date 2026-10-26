@@ -9,7 +9,7 @@ A conversation comes first. In `conversations.py`, write `Conversations`, which 
 Every error the app gives is a problem details object, as RFC 9457 defines it:
 
 - `problem(status, detail=None, headers=None, **extensions)` gives a `JSONResponse` with the status, the headers and the media type `application/problem+json`. Its body has `type`, `about:blank`; `title`, the status's phrase, such as `Not Found`; `status`; `detail`, when there is one; and each extension.
-- `pointer(location)` gives where in the request's body a validation error is, from its location, such as `("body", "page")`, as a JSON Pointer in a URI fragment: `#/page`. Inside a key, `~` is written `~0` and `/` is written `~1`.
+- `pointer(location)` gives where in the request's body a validation error is, from its location, such as `("body", "page")`, as a JSON Pointer in a URI fragment: `#/page`. Inside a key, `~` is written `~0` and `/` is written `~1`, and a character a URI fragment can't hold is percent-encoded, as in `#/first%20name`.
 - `install(app)` gives every HTTP error as problem details, with its headers, and with its detail unless that's only the status's phrase. That covers your own errors and FastAPI's, such as a 404 for an address the app doesn't have, or a 405 for a method it doesn't take. A request whose body doesn't fit gets a 422 with the detail `The request's content doesn't fit.`, and `errors`, which gives each error's message as its `detail`, and its `pointer`.
 
 Then two routes, on `router`, each taking the app's conversations from `held`:

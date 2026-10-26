@@ -7,3 +7,7 @@ FastAPI's `HTTPException` is a subclass of Starlette's, and the 404 and 405 the 
 ---
 
 `error.errors()` lists each validation error with its `msg` and its `loc`. The first part of `loc` says where the error is, such as `"body"`, and the rest is the path to the field inside it. `ConfigDict(extra="forbid")` as a model's `model_config` refuses fields it doesn't have.
+
+---
+
+`urllib.parse.quote(part, safe="!$&'()*+,;=:@/?")` percent-encodes each character a URI fragment can't hold, in UTF-8, and leaves letters, digits and `-._~` as they are.
