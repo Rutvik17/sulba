@@ -1,0 +1,7 @@
+id: stg_h3jz2q
+kind: build
+title: The office's evals
+builds: A new `evals.py`, which uses your `answers.py`.
+file: evals.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60

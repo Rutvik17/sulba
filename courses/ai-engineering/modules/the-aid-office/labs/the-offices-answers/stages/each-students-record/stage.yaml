@@ -1,0 +1,7 @@
+id: stg_h74n3g
+kind: build
+title: Each student's record
+builds: A new `records.py`, which reads the office's records.
+file: records.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60

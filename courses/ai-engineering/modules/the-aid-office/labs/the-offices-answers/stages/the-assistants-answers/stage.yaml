@@ -1,0 +1,55 @@
+id: stg_cexqlm
+kind: catch
+title: The assistant's answers
+builds: A new `desk_answers.py`, which uses the tables your `records.py` makes.
+file: desk_answers.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 45
+problems:
+  - check: tst_uosvtq
+    title: It asked the model about questions the search turned away
+    cost: >-
+      `find` gives no pages for a question the office's pages don't answer, and `office_answer`
+      asked the model anyway, with no passages at all: a request, and its tokens, for every
+      other service's question, for a reply that could cite nothing.
+    fix: >-
+      The fix: `STAFF` and no pages as soon as `find` gives none.
+    edit:
+      replace: "    found = find(conn, client, question)\n    ids = ["
+      with: "    found = find(conn, client, question)\n    if not found:\n        return STAFF, []\n    ids = ["
+  - check: tst_9b4h1l
+    title: It counted the passages from 0
+    cost: >-
+      The message numbers the passages from `[1]`, and `pages_cited` took `[1]` for the passage
+      at place 1, the second, so each citation named the next passage's page, and the last
+      passage's number named none.
+    fix: >-
+      The fix: the passage at place `int(number) - 1`, with a number that names no passage, 0
+      among them, left out.
+    edit:
+      replace: "    for number in re.findall(r\"\\[(\\d+)\\]\", reply):\n        if int(number) < len(pages) and pages[int(number)] not in found:\n            found.append(pages[int(number)])"
+      with: "    for number in re.findall(r\"\\[(\\d+)\\]\", reply):\n        place = int(number) - 1\n        if 0 <= place < len(pages) and pages[place] not in found:\n            found.append(pages[place])"
+  - check: tst_yv413s
+    title: It wrote the student's id into its SQL
+    cost: >-
+      `student_record` put the id into the query with an f-string, so a quote in it ended the
+      string and the rest ran as SQL: psycopg runs every statement in a query that has no
+      parameters. The check's id ran `RESET ROLE`, and the query after it read another student's
+      record as the tables' owner, whom the policies don't hold.
+    fix: >-
+      The fix: the id as a parameter of `set_config`, which Postgres takes as a value whatever
+      it holds.
+    edit:
+      replace: "        conn.execute(f\"SELECT set_config('app.student', '{student}', true)\")"
+      with: "        conn.execute(\"SELECT set_config('app.student', %s, true)\", (student,))"
+  - check: tst_q820th
+    title: It kept the role for the rest of the session
+    cost: >-
+      A `SET ROLE` in a transaction that commits lasts until the session ends, so every query on
+      the connection after a record ran as `ROLE`, which can't read the passages: the office's
+      search failed for every question after the first record.
+    fix: >-
+      The fix: `SET LOCAL ROLE`, which ends with the transaction.
+    edit:
+      replace: "        conn.execute(f\"SET ROLE {ROLE}\")"
+      with: "        conn.execute(f\"SET LOCAL ROLE {ROLE}\")"

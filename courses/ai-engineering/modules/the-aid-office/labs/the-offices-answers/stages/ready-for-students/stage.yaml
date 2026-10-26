@@ -1,0 +1,45 @@
+id: stg_86rwhp
+kind: ship
+title: Ready for students
+builds: A new `desk.py`, which uses your `answers.py` and `records.py`.
+file: desk.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60
+checks:
+  - check: tst_15l6jj
+    title: "Each student's own aid"
+    requires: >-
+      With `about` `"my aid"`, each student signed in gets their own record's lines, whoever the
+      question names, a student the office has no record of gets `NO_RECORD`, and nothing goes
+      to the model.
+    failure: >-
+      Read the record with your `record`, for the student signed in, and give its lines as your
+      `lines` words them.
+  - check: tst_i4bwfk
+    title: "Nothing kept for a visitor"
+    requires: >-
+      A visitor who isn't signed in gets `SIGN_IN` for their aid, `STAFF_SIGNED_OUT` for a
+      question that goes to staff, and answers from the pages as a student does, and no ticket
+      is written.
+    failure: >-
+      Check `student` for `None` before you read a record or write a ticket.
+  - check: tst_mzfd2v
+    title: "A ticket for each question staff answer"
+    requires: >-
+      Each question from a student signed in that goes to staff writes one ticket, with the
+      student and the question, and a question the model answers writes none.
+    failure: >-
+      Write the ticket when, and only when, your `answer` goes to staff.
+  - check: tst_2g2mi9
+    title: "Staff answer when the model is down"
+    requires: >-
+      When the model answers with an error, the student gets `STAFF`, to staff, with a ticket.
+    failure: >-
+      Let your `answer` pass a failed request to staff, and write the ticket for it.
+  - check: tst_mjq3u9
+    title: "One request a question"
+    requires: >-
+      A question for the pages asks the model once, and a question about the student's aid
+      doesn't ask it at all.
+    failure: >-
+      Call your `answer` once for a question for the pages, and not for one about aid.
