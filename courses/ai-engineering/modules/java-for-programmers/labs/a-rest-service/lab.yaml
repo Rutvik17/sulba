@@ -1,0 +1,15 @@
+id: lab_lfr03g
+title: A REST service
+summary: >-
+  The desk's API on the JDK's own HTTP server: the tickets and callbacks as JSON, with every
+  error as problem details; a gate in front of the model; the reply streamed as server-sent
+  events; a review of an assistant's server; and the service, ready to serve, with its settings
+  from the environment and a stop that lets replies finish.
+given: [Service.java, Ticket.java, Desk.java, Problems.java, Agent.java]
+runs: machine
+stages:
+  - the-desks-routes
+  - the-gate
+  - a-streamed-reply
+  - the-assistants-server
+  - ready-to-serve

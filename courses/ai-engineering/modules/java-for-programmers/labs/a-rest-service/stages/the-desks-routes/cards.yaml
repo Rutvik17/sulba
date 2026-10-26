@@ -1,0 +1,30 @@
+cards:
+  - id: crd_7fl9dl
+    front: >-
+      Which context does the JDK's `HttpServer` give a request to?
+    back: >-
+      The one whose path is the longest prefix of the request's path, so a context at
+      `/tickets` also takes `/ticketsX` and `/tickets/T-1`.
+  - id: crd_y7jvib
+    front: >-
+      What does the length passed to `sendResponseHeaders(status, length)` mean?
+    back: >-
+      Above zero, the body's exact length in bytes; zero, a body of any length, sent in chunks;
+      -1, no body at all.
+  - id: crd_rko21l
+    front: >-
+      What must happen to an `HttpExchange` once its reply is written?
+    back: >-
+      It must be closed, which ends the exchange. `try (exchange)` closes it however the
+      handler ends.
+  - id: crd_1foj1b
+    front: >-
+      What must a 405 response carry?
+    back: >-
+      An `Allow` header listing the methods the address does take, as RFC 9110 requires.
+  - id: crd_82jo4l
+    front: >-
+      What does Jackson 3 do by default with a field in the JSON that the record doesn't have?
+    back: >-
+      It leaves it out. `FAIL_ON_UNKNOWN_PROPERTIES` was on by default in Jackson 2 and is off
+      from 3.0, so an API that refuses unknown fields turns it on.

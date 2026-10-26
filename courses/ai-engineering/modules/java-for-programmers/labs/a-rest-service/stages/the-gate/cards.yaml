@@ -1,0 +1,25 @@
+cards:
+  - id: crd_srizt1
+    front: >-
+      What does a fair `Semaphore`, `new Semaphore(n, true)`, promise that one without fairness
+      doesn't?
+    back: >-
+      That waiting threads get permits in the order they asked. Without it, a thread that
+      arrives as a permit frees can barge ahead of one that's been waiting.
+  - id: crd_p9j23x
+    front: >-
+      What does `Semaphore.tryAcquire()` do when no permit is free?
+    back: >-
+      It returns `false` at once, without waiting. It ignores fairness, taking any free permit
+      even when other threads are waiting.
+  - id: crd_djyhzn
+    front: >-
+      What happens to a thread interrupted while it waits in `Semaphore.acquire()`?
+    back: >-
+      `acquire()` throws `InterruptedException`, clears the thread's interrupted status, and
+      takes no permit.
+  - id: crd_0v0f5t
+    front: >-
+      What form does a `Retry-After` header's delay take?
+    back: >-
+      A whole number of seconds, such as `Retry-After: 120`, or an HTTP date.

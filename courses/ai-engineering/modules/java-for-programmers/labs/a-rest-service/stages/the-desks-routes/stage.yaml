@@ -1,0 +1,6 @@
+id: stg_74tidl
+kind: build
+title: The desk's routes
+builds: A new `Api.java`, which uses the given `Desk.java` and `Problems.java`.
+file: Api.java
+minutes: 50

@@ -1,4 +1,4 @@
 id: mod_9s4yfh
 title: Java for programmers
 optional: true
-labs: [records-interfaces-and-exceptions, collections-streams-and-the-jvm]
+labs: [records-interfaces-and-exceptions, collections-streams-and-the-jvm, a-rest-service]

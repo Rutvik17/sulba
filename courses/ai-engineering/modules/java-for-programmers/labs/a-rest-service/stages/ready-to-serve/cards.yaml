@@ -1,0 +1,19 @@
+cards:
+  - id: crd_reki76
+    front: >-
+      What does `HttpServer.stop(seconds)` do with the exchanges in flight?
+    back: >-
+      It stops taking new ones, waits up to `seconds` for those in flight to finish, then closes
+      their connections. Their handlers aren't stopped.
+  - id: crd_hl0mm4
+    front: >-
+      What does `ExecutorService.shutdownNow()` do to the tasks that are running?
+    back: >-
+      It interrupts them, as a rule, and returns without waiting. `awaitTermination` waits for
+      them to end.
+  - id: crd_rqjrfc
+    front: >-
+      Why name every wrong setting at once, rather than throw at the first?
+    back: >-
+      Whoever deploys the service fixes them all in one go, rather than one deploy for each
+      mistake.

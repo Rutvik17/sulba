@@ -1,0 +1,6 @@
+id: stg_1y6z7w
+kind: build
+title: A streamed reply
+builds: A new `Replies.java`, which uses your `Api.java` and `Gate.java`, and the given `Agent.java`.
+file: Replies.java
+minutes: 50
