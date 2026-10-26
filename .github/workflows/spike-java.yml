@@ -1,0 +1,23 @@
+# Spike: compiles a project with Liberica's Lite JDK 25.0.5 and runs its JUnit tests, on each system a
+# learner may have.
+name: Spike Java stages
+on:
+  push:
+    branches: [spike/java-stages]
+    paths: [spike/java-stages/**, .github/workflows/spike-java.yml]
+permissions:
+  contents: read
+jobs:
+  java:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, windows-11-arm, macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - run: uv run --no-project --python 3.14 spike/java-stages/run.py
