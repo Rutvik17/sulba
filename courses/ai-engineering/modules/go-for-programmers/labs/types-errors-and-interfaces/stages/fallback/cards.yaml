@@ -1,0 +1,20 @@
+cards:
+  - id: crd_lvic0g
+    front: >-
+      The tests' fake upstream has `func (f *fake) Chat(...)`. Why does the list of upstreams
+      hold `&fake{...}` rather than `fake{...}`?
+    back: >-
+      Pointer methods can only be invoked on pointers, so only `*fake` has every method of
+      `Upstream`. The pointer also lets `Chat` count its calls in the fake the test holds.
+  - id: crd_kfueo8
+    front: >-
+      Why does `Fallback` go on to the next upstream after a 503, but stop at a 400?
+    back: >-
+      A 5xx is that server's own trouble, which another may not share. A 4xx says the client
+      erred, so every upstream would refuse the same request.
+  - id: crd_ubsv7k
+    front: >-
+      What does `ctx.Err()` give before a context's deadline, and after it?
+    back: >-
+      nil before; `context.DeadlineExceeded` after, or `context.Canceled` if it was canceled
+      instead.

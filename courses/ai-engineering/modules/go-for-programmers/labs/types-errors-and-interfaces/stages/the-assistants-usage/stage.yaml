@@ -1,0 +1,54 @@
+id: stg_2uyovt
+kind: catch
+title: The assistant's usage
+builds: A new `usage.go`, from an assistant.
+file: usage.go
+minutes: 35
+problems:
+  - check: tst_iqxtai
+    title: Merging a new key stopped the server
+    cost: >-
+      `Merge` added to `u.tokens[key]` without making it first. For a key that only the other
+      server had seen, that map was nil, and assigning to a nil map panics, so the first merge
+      after a new key came in would take the gateway down.
+    fix: >-
+      The fix: merge through `u.Add`, which makes the key's map, and lists the key, before it
+      counts.
+    edit:
+      replace: "\t\t\tu.tokens[key][day] += tokens\n"
+      with: "\t\t\tu.Add(key, day, tokens)\n"
+  - check: tst_e9f7dp
+    title: A report of the busiest keys reordered them all
+    cost: >-
+      `Keys` gave its caller the count's own slice, so `Busiest`, which sorts what `Keys` gives
+      it, sorted the count's list of keys. After the first report, the keys were in the order
+      of that day's tokens, and the order they were first seen in was gone, from `Save` too.
+    fix: >-
+      The fix: `Keys` returns `slices.Clone(u.keys)`, a copy the caller can sort.
+    edit:
+      replace: "\treturn u.keys\n"
+      with: "\treturn slices.Clone(u.keys)\n"
+  - check: tst_0ppk33
+    title: One refusal failed the whole batch
+    cost: >-
+      `Charge` wraps `ErrOverLimit` with the key and the day, and `==` compares only the error
+      itself, so `ChargeAll` never matched it. The first use over the limit came back as an
+      error, the uses after it were never charged, and the refusal wasn't counted.
+    fix: >-
+      The fix: `errors.Is(err, ErrOverLimit)`, which finds the error inside its wrapping.
+    edit:
+      replace: "\t\tif err == ErrOverLimit {\n"
+      with: "\t\tif errors.Is(err, ErrOverLimit) {\n"
+  - check: tst_3vhuaj
+    title: A file it couldn't read loaded without an error
+    cost: >-
+      `:=` inside the loop declared a second `err`, which only the loop could see. The loop
+      stopped at the bad line, but the `err` after it was the one declared before the loop,
+      still nil, so `LoadUsage` gave the counts up to that line as if the file were whole. A
+      key's usage, and so its limit, would start again from what was left.
+    fix: >-
+      The fix: declare the line's parts before the call and assign with `=`, so the loop's
+      error is the one the function checks.
+    edit:
+      replace: "\t\tkey, day, tokens, err := parseLine(scanner.Text())\n"
+      with: "\t\tvar key, day string\n\t\tvar tokens int\n\t\tkey, day, tokens, err = parseLine(scanner.Text())\n"

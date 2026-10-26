@@ -1,0 +1,6 @@
+id: stg_nsabfq
+kind: build
+title: The request
+builds: A new `request.go`, in Go.
+file: request.go
+minutes: 40

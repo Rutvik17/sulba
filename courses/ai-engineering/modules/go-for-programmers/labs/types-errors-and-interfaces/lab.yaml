@@ -1,0 +1,14 @@
+id: lab_1m4bn5
+title: Types, errors and interfaces
+summary: >-
+  The start of a model gateway, in Go: a chat request read and checked, with its errors as
+  values; routes from each model to the upstreams that serve it; a fallback from one upstream
+  to the next, behind an interface; a review of an assistant's usage counter; and the
+  gateway's answers when a request fails.
+runs: machine
+stages:
+  - the-request
+  - routes
+  - fallback
+  - the-assistants-usage
+  - error-replies

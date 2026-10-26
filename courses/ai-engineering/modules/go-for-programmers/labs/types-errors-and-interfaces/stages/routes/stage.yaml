@@ -1,0 +1,6 @@
+id: stg_isnn8l
+kind: build
+title: Routes
+builds: A new `routes.go`, beside your `request.go`.
+file: routes.go
+minutes: 40
