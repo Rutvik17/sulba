@@ -823,9 +823,10 @@ class ScriptedIdentity:
         self.person("ada", email="ada@example.com")
         self.person("grace", email="grace@example.com")
 
-    def person(self, name: str, *, email: str) -> None:
-        """Someone who can sign in, by their name: their subject, `sub`, is "user-" and the name."""
-        self.people[name] = {"sub": f"user-{name}", "email": email, "name": name.title()}
+    def person(self, name: str, *, email: str, **claims: Any) -> None:
+        """Someone who can sign in, by their name: their subject, `sub`, is "user-" and the name.
+        Any other claims, such as `groups`, go in their ID tokens and their userinfo."""
+        self.people[name] = {"sub": f"user-{name}", "email": email, "name": name.title(), **claims}
 
     def sign_in(self, url: str, name: str = "ada") -> str:
         """The address the provider sends the browser back to once the person signs in at url, the
