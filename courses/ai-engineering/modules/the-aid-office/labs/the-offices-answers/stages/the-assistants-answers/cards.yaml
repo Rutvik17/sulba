@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ho6ab4
+    front: >-
+      Why does a student's id go to Postgres as a parameter, even when it comes from sign-in?
+    back: >-
+      A parameter is a value whatever it holds; text written into the query with an f-string can
+      end its string and run as SQL.
+  - id: crd_kcut03
+    front: >-
+      A message numbers its passages from [1]. Which passage does a reply's [n] name?
+    back: >-
+      The passage at place n - 1; a number beyond the passages, or 0, names none and is left
+      out.

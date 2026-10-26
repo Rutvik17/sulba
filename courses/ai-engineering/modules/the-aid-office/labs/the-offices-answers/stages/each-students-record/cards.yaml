@@ -1,0 +1,14 @@
+cards:
+  - id: crd_j5pl1d
+    front: >-
+      Why does the desk read a student's record as a role the policies hold, rather than as the
+      tables' owner?
+    back: >-
+      Superusers, roles with BYPASSRLS and, normally, a table's owner bypass row-level security;
+      only a role the policies hold reads just the student set.
+  - id: crd_choixj
+    front: >-
+      Why SET LOCAL ROLE rather than SET ROLE on a connection kept open?
+    back: >-
+      SET LOCAL lasts until the transaction ends; a SET in a transaction that commits stays for
+      the rest of the session, and every later query runs as that role.

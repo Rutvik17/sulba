@@ -1,0 +1,7 @@
+id: stg_skvkig
+kind: build
+title: Answers that cite their pages
+builds: A new `answers.py`, which uses the office's search.
+file: answers.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60

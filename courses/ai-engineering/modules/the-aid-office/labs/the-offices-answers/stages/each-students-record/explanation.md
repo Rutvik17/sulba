@@ -1,0 +1,5 @@
+Postgres's documentation says superusers and roles with the BYPASSRLS attribute always bypass row-level security, and a table's owner normally does too. The tests' connection owns the tables, so `record` reads as `ROLE`, which the policies hold to the student set for the transaction. A query as `ROLE` that leaves the student unset reads no one's rows rather than everyone's: `current_setting('app.student', true)` gives null, or an empty string once an earlier transaction has set it, and neither is any student's id.
+
+The documentation says the effects of `SET LOCAL` last only till the end of the current transaction, while a `SET` in a transaction that commits lasts until the end of the session, and a value `set_config` sets with its last argument true applies only during the current transaction. On a connection the office's desk keeps open from one question to the next, a `SET ROLE` would stay for every query after it, and `ROLE` can't read the passages the search needs.
+
+The student's id goes to Postgres as a parameter, so a quote in it is part of the id rather than of the query, and the policy, not the query, decides whose rows come back.

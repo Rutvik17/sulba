@@ -1,0 +1,13 @@
+cards:
+  - id: crd_qag6ks
+    front: >-
+      Why does the office's assistant pass a reply that cites no passage to staff?
+    back: >-
+      A student can't check an answer against pages it doesn't name, and a reply without a
+      citation isn't held to the office's pages.
+  - id: crd_tk4uyb
+    front: >-
+      Why does a question the search turns away never reach the model?
+    back: >-
+      The pages don't answer it, so an answer could only come from elsewhere; going straight to
+      staff costs no tokens and gives no made-up answer.

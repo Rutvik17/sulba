@@ -1,0 +1,13 @@
+cards:
+  - id: crd_s7l5o7
+    front: >-
+      Why does the desk give a student's aid from their record rather than ask the model?
+    back: >-
+      The record is the answer, read for the student signed in; a model that reworded it could
+      get a number wrong.
+  - id: crd_etmbzz
+    front: >-
+      Why does a question for staff from a visitor who isn't signed in write no ticket?
+    back: >-
+      Staff reply by email to the student signed in, so there's no one to reply to; the desk
+      asks the visitor to sign in instead.

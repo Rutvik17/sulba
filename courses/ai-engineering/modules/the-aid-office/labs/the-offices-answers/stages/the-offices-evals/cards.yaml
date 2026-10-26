@@ -1,0 +1,13 @@
+cards:
+  - id: crd_ykwu9b
+    front: >-
+      Why compare two releases question by question rather than by their scores alone?
+    back: >-
+      Both answered the same questions, so each question's difference takes out what the
+      questions share, and the margin is narrower than two scores compared alone.
+  - id: crd_rtmtzi
+    front: >-
+      Why count a page's questions together in an eval's margin of error?
+    back: >-
+      Questions about one page share its passages, so their outcomes move together; counted
+      apart, they make the margin too narrow.
