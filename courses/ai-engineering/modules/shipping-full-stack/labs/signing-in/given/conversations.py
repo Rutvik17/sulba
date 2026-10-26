@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict
 from starlette.exceptions import HTTPException
 
 from sessions import Account, signed_in
+from urllib.parse import quote
 
 Page = Literal["ssa", "va", "studentaid", "dmv"]
 
@@ -84,7 +85,8 @@ def problem(
 def pointer(location: tuple[int | str, ...]) -> str:
     """Where in the request's body a validation error is, as a JSON Pointer in a URI fragment."""
     parts = [str(part).replace("~", "~0").replace("/", "~1") for part in location[1:]]
-    return "#" + "".join(f"/{part}" for part in parts)
+    # quote keeps letters, digits and -._~, and safe names the rest a URI fragment holds as is.
+    return "#" + "".join("/" + quote(part, safe="!$&'()*+,;=:@/?") for part in parts)
 
 
 def install(app: FastAPI) -> None:

@@ -5,6 +5,7 @@ import secrets
 from collections.abc import Mapping
 from http import HTTPStatus
 from typing import Any, Literal
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
@@ -85,7 +86,8 @@ def problem(
 def pointer(location: tuple[int | str, ...]) -> str:
     """Where in the request's body a validation error is, as a JSON Pointer in a URI fragment."""
     parts = [str(part).replace("~", "~0").replace("/", "~1") for part in location[1:]]
-    return "#" + "".join(f"/{part}" for part in parts)
+    # quote keeps letters, digits and -._~, and safe names the rest a URI fragment holds as is.
+    return "#" + "".join("/" + quote(part, safe="!$&'()*+,;=:@/?") for part in parts)
 
 
 def install(app: FastAPI) -> None:

@@ -2,7 +2,7 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from conversations import Conversations, Message, install, router
+from conversations import Conversations, Message, install, pointer, router
 
 
 def make_app():
@@ -92,3 +92,16 @@ def test_routes_that_are_not_there(loop):
     assert wrong.status_code == 405
     assert wrong.json()["title"] == "Method Not Allowed"
     assert wrong.headers["allow"] == "POST"
+
+
+@pytest.mark.id("tst_rdx9q4")
+def test_pointers_in_a_uri_fragment():
+    """A field's place as a JSON Pointer in a URI fragment, as RFC 6901 writes them"""
+    assert pointer(("body", "messages", 0, "content")) == "#/messages/0/content"
+    assert pointer(("body", "a/b")) == "#/a~1b"
+    assert pointer(("body", "m~n")) == "#/m~0n"
+    assert pointer(("body", "c%d")) == "#/c%25d"
+    assert pointer(("body", "e^f")) == "#/e%5Ef"
+    assert pointer(("body", " ")) == "#/%20"
+    assert pointer(("body", "page", "café")) == "#/page/caf%C3%A9"
+    assert pointer(("body",)) == "#"
