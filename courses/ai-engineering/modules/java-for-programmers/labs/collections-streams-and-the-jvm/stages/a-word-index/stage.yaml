@@ -1,0 +1,6 @@
+id: stg_ayct99
+kind: build
+title: A word index
+builds: A new `Index.java`, in Java.
+file: Index.java
+minutes: 40

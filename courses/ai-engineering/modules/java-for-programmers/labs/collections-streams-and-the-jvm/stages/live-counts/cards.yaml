@@ -1,0 +1,26 @@
+cards:
+  - id: crd_0p8ag2
+    front: >-
+      Why is a `HashMap` of counts wrong when several Java threads add to it?
+    back: >-
+      Java's threads run at once, and `HashMap` isn't synchronized: two threads can read the
+      same count and write the same new one, losing an addition, or break the map adding keys.
+  - id: crd_ybxj6k
+    front: >-
+      What's the pattern for counting in a map from many threads?
+    back: >-
+      A `ConcurrentHashMap` of `LongAdder`s:
+      `counts.computeIfAbsent(key, k -> new LongAdder()).increment();`, where `computeIfAbsent`
+      runs atomically.
+  - id: crd_g6od0p
+    front: >-
+      Can iterating a `ConcurrentHashMap` while other threads change it throw a
+      `ConcurrentModificationException`?
+    back: >-
+      No. Its iterators show the map at some point at or since they were made, and never throw it.
+  - id: crd_98j0ex
+    front: >-
+      What are Java's virtual threads for?
+    back: >-
+      A thread per task, such as per request, by the thousand: they're lightweight, and run on a
+      few carrier threads, one per core.

@@ -1,0 +1,37 @@
+id: stg_yh4pxj
+kind: ship
+title: Live counts
+builds: A new `Tally.java`, which uses your `Reports.java`.
+file: Tally.java
+minutes: 45
+checks:
+  - check: tst_b31dzk
+    title: Every count right under load
+    requires: >-
+      With ten thousand threads counting at once, the total, each service's count and each
+      page's count are exact.
+    failure: >-
+      Keep the counts in a `ConcurrentHashMap` of `LongAdder`s, or `AtomicLong`s, so that no
+      two threads' additions overwrite each other.
+  - check: tst_dv87cw
+    title: A new page's first questions
+    requires: >-
+      Many threads counting a page no one has counted yet, all at once, count every question.
+    failure: >-
+      Make a page's counter with `computeIfAbsent`, which runs once for a key, rather than
+      checking for it and then putting one.
+  - check: tst_7wk86f
+    title: Read while it counts
+    requires: >-
+      The dashboard's reads, while threads count, never throw, and the total it reads never
+      goes down.
+    failure: >-
+      Read from maps made for many threads, whose iterators never throw a
+      `ConcurrentModificationException`, and keep the total in a counter of its own.
+  - check: tst_an31mq
+    title: A report stays as it was given
+    requires: >-
+      A report of the services or pages doesn't change when more questions are counted, and
+      can't be changed.
+    failure: >-
+      Copy the counts into a new map or list as each report is made, and give it unmodifiable.

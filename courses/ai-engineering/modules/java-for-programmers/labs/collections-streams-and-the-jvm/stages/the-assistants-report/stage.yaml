@@ -1,0 +1,56 @@
+id: stg_ga4vdw
+kind: catch
+title: The assistant's report
+builds: A new `Stats.java`, from an assistant, which uses your `Reports.java`.
+file: Stats.java
+minutes: 35
+problems:
+  - check: tst_zblmks
+    title: Pruning a busy log threw
+    cost: >-
+      `prune` removed questions from the list it was looping over. A list's iterator is
+      fail-fast: once the list changes under it, its next step throws a
+      `ConcurrentModificationException`. The assistant's test removed the first of two
+      questions, which ends the loop before that check, so it passed; with an old question
+      anywhere but there, pruning threw and the dashboard kept yesterday's questions.
+    fix: >-
+      The fix: `log.removeIf(asked -> asked.at().isBefore(before))`, which removes through the
+      list itself.
+    edit:
+      replace: "        for (var asked : log) {\n            if (asked.at().isBefore(before)) {\n                log.remove(asked);\n            }\n        }\n"
+      with: "        log.removeIf(asked -> asked.at().isBefore(before));\n"
+  - check: tst_xi69er
+    title: A page asked about twice broke the figures
+    cost: >-
+      `Collectors.toMap` with two arguments throws an `IllegalStateException` when two elements
+      have one key. Every page in the assistant's test was asked about once, so it passed; the
+      first page asked about twice, on any real day, stopped the figure for every page.
+    fix: >-
+      The fix: a third argument that merges two values for a key, keeping the longer reply.
+    edit:
+      replace: "Collectors.toMap(Reports.Asked::page, Reports.Asked::reply)"
+      with: "Collectors.toMap(\n                Reports.Asked::page, Reports.Asked::reply, (one, other) -> one.compareTo(other) >= 0 ? one : other)"
+  - check: tst_o3pj21
+    title: On a busy day, a tie had one busiest page
+    cost: >-
+      `entry.getValue() == most` compared two `Integer` objects by reference. Java keeps one
+      object for each count from -128 to 127, so in the assistant's test, with two questions a
+      page, the counts were the same object. Past 127, each count is an object of its own, and
+      only the page whose count was the very object `max` returned was listed.
+    fix: >-
+      The fix: `entry.getValue().equals(most)`, which compares the numbers.
+    edit:
+      replace: "entry.getValue() == most"
+      with: "entry.getValue().equals(most)"
+  - check: tst_s5bxls
+    title: Every hour showed the last question's hour
+    cost: >-
+      `byHourAndService` reused one list as the key for every question, clearing and refilling
+      it. A `HashMap` keeps the key object it's given, so every entry's key was that one list,
+      and changing it changed them all: the map held one entry per hour and service seen, each
+      showing the last question's. The assistant's test had one hour, so it passed.
+    fix: >-
+      The fix: a new key for each question, `List.of(hour, service)`, which can't change.
+    edit:
+      replace: "        var key = new ArrayList<Object>();\n        for (var asked : log) {\n            key.clear();\n            key.add(asked.at().atZone(zone).getHour());\n            key.add(asked.service());\n            counts.merge(key, 1, Integer::sum);\n"
+      with: "        for (var asked : log) {\n            counts.merge(List.of(asked.at().atZone(zone).getHour(), asked.service()), 1, Integer::sum);\n"
