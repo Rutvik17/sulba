@@ -1,0 +1,20 @@
+cards:
+  - id: crd_llarxe
+    front: >-
+      Which thread runs an `HttpServer`'s handlers when it's given no executor?
+    back: >-
+      The one thread `start()` made, so one exchange runs at a time. A virtual thread per
+      exchange, from `Executors.newVirtualThreadPerTaskExecutor()`, lets each run on its own.
+  - id: crd_mulqqj
+    front: >-
+      Why does a `Filter` that reads the request's body break the handler after it?
+    back: >-
+      `getRequestBody()` gives the same stream every time, so once the filter has read it, the
+      handler reads nothing.
+  - id: crd_ruhtm8
+    front: >-
+      Which path should an API's own handler take on the JDK's `HttpServer`, so that every
+      address answers with its errors?
+    back: >-
+      `/`, which every path starts with. A path no context takes gets the server's own 404, a
+      page of HTML.
