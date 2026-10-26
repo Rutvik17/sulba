@@ -1,0 +1,8 @@
+cards:
+  - id: crd_qcxwzb
+    front: >-
+      When finding the cheapest route with at most k stops, why does each round read the fares
+      from a copy made at its start?
+    back: >-
+      So each round adds at most one flight: a fare lowered in the same round would let two
+      flights chain in one round, and round k would no longer mean at most k flights.

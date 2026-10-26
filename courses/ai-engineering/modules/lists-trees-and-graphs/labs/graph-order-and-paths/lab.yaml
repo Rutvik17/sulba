@@ -1,0 +1,8 @@
+id: lab_4r5z2e
+title: Graph order and paths
+summary: >-
+  Six interview problems on ordering and connecting a graph's nodes and finding its cheapest
+  paths: an order for courses, the order of an alphabet from sorted words, the cable that closes
+  a loop, merging accounts that share addresses, the time a message takes to reach a network,
+  and the cheapest route within a number of stops.
+stages: [an-order-for-courses, the-order-of-letters, the-extra-cable, merging-accounts, the-quickest-message, the-cheapest-route]

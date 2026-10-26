@@ -1,0 +1,9 @@
+cards:
+  - id: crd_qfo93x
+    front: >-
+      How do you put tasks in an order that keeps every "this before that", and tell when no
+      order can?
+    back: >-
+      Count each task's unmet prerequisites. Take tasks whose count is 0, lowering the counts of
+      the tasks that need them. If you run out before taking them all, some tasks need each
+      other.

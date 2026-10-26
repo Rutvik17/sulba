@@ -1,0 +1,7 @@
+cards:
+  - id: crd_0ebszo
+    front: >-
+      A sorted list of words in an unknown alphabet: what does each pair of neighbours tell you?
+    back: >-
+      At most one rule: at the first place they differ, the first word's letter comes before the
+      second's. A word followed by a shorter word it begins means no order sorts them.

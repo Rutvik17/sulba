@@ -1,0 +1,6 @@
+id: stg_0g0p9k
+kind: problem
+title: An order for courses
+builds: A new `order.py`.
+file: order.py
+minutes: 25

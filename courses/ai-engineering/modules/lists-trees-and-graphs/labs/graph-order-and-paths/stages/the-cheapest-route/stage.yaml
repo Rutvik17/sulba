@@ -1,0 +1,6 @@
+id: stg_4rcwyj
+kind: problem
+title: The cheapest route
+builds: A new `route.py`.
+file: route.py
+minutes: 30
