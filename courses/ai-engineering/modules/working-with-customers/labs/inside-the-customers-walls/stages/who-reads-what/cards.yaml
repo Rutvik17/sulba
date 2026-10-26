@@ -1,0 +1,14 @@
+cards:
+  - id: crd_bz956j
+    front: >-
+      A search must return only documents the person may read. Why filter before taking the
+      best k, not after?
+    back: >-
+      Filtering after gives fewer than k, or none, when the best matches are for others. Ranked
+      within what they may read, the k places all go to documents they can open.
+  - id: crd_z1vdzg
+    front: >-
+      A document names no group that may read it. Who should?
+    back: >-
+      No one: access fails closed, so a document whose groups were never set stays unread
+      until someone gives it some.

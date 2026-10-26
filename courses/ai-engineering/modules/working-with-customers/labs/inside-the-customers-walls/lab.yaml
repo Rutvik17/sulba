@@ -1,0 +1,15 @@
+id: lab_xtjh5w
+title: Inside the customer's walls
+summary: >-
+  Bring the desk inside the benefits office: a search of its staff guidance that finds only what
+  each person may read, groups from a sign-in whose token checks out, an audit log that names no
+  one, a review of an assistant's search for staff, and a transport that lets no request leave
+  the office's hosts.
+given: [sign_in.py, tokens.py]
+runs: machine
+stages:
+  - who-reads-what
+  - groups-from-the-sign-in
+  - a-log-for-the-auditors
+  - the-assistants-search
+  - nothing-leaves-the-walls

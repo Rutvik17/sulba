@@ -1,0 +1,23 @@
+[project]
+name = "inside-the-customers-walls"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = ["httpx==0.28.1", "pyjwt[crypto]==2.15.1", "pytest==9.0.2"]
+
+[tool.uv]
+package = false
+# The versions the browser runs.
+constraint-dependencies = [
+  "anyio==4.13.0",
+  "certifi==2026.4.22",
+  "cffi==2.0.0",
+  "cryptography==47.0.0",
+  "h11==0.16.0",
+  "httpcore==1.0.9",
+  "idna==3.11",
+  "iniconfig==2.3.0",
+  "packaging==26.1",
+  "pluggy==1.6.0",
+  "pycparser==3.0",
+  "pygments==2.20.0",
+]

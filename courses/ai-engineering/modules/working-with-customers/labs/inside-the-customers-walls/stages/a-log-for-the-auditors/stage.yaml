@@ -1,0 +1,6 @@
+id: stg_5tclv0
+kind: build
+title: A log for the auditors
+builds: A new `audit.py`, for the documents your `access.py` finds and the staff your `staff.py` gives.
+file: audit.py
+minutes: 25

@@ -1,0 +1,38 @@
+id: stg_gxclpm
+kind: ship
+title: Nothing leaves the walls
+builds: A new `walls.py`.
+file: walls.py
+packages: [httpx]
+minutes: 30
+checks:
+  - check: tst_smfzre
+    title: Hosts by name, exactly
+    requires: >-
+      A request goes on only to a host whose whole name is allowed, not to one that ends with
+      it, starts with it or holds it.
+    failure: >-
+      Compare the request's host with each allowed name for equality: `evil-model.office.test`
+      ends with `model.office.test`, and `model.office.test.evil.test` starts with it.
+  - check: tst_dome93
+    title: Any case
+    requires: >-
+      Host names match in any case, in the request and in the list given.
+    failure: >-
+      Host names are case-insensitive: lower both before comparing.
+  - check: tst_x1he5r
+    title: Addresses in disguise
+    requires: >-
+      A redirect to another host, a host written after a user name, and an address given as a
+      number are each refused, with nothing sent to them.
+    failure: >-
+      Read the host from `request.url.host`, for every request the client sends, redirects
+      included, not from the address as a string.
+  - check: tst_48jj0u
+    title: An error clients already handle
+    requires: >-
+      A refused request raises an `httpx.TransportError`, as a network that can't be reached
+      does.
+    failure: >-
+      Make `NotAllowed` a subclass of `httpx.TransportError`, so code that handles httpx's
+      errors handles it too.

@@ -1,0 +1,3 @@
+Each problem gave someone more than the office means them to have, or kept more about them than it needs. The unchecked token let anyone be a manager. The search that filtered after taking the best few gave staff less than they may read, and a document that names no group went to everyone, the opposite of what the store means by it. The question in the log copied what callers say into a file the auditors keep.
+
+None of the assistant's tests could catch them: each used a token the provider signed, documents with groups, and checked the log only for the fields it had. Tests of access control need the requests an attacker or a careless store would make, which is what the checks send.

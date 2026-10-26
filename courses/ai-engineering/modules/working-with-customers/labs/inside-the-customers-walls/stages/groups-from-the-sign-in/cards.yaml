@@ -1,0 +1,12 @@
+cards:
+  - id: crd_rm0lvs
+    front: >-
+      When may an app believe the groups in an ID token?
+    back: >-
+      Once the token checks out: signed by the provider's key, for this app, by the provider's
+      issuer and not expired. Before that, the claim is only what the caller sent.
+  - id: crd_9008go
+    front: >-
+      A directory gives someone a group the app doesn't know. What access should it give?
+    back: >-
+      None: the app maps the directory's groups it lists to its own, and leaves out the rest.
