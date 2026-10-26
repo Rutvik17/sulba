@@ -1,0 +1,25 @@
+id: stg_h85qdy
+kind: design
+title: Shipping a prompt change
+builds: Regression gates.
+minutes: 45
+questions:
+  - The new prompt scores better on the test set, but in the canary more users mark answers unhelpful. What do you do?
+  - The provider changes the model behind the name you call. What does your process catch, and when?
+  - Can the test set find a drop of {% $fig.drop %}? If not, what do you change?
+rubric:
+  - point: Versions prompts like code
+    answer: Each prompt is a file in the repository, reviewed and versioned with the model and settings it runs with, and each answer logs the version that made it.
+  - point: Gates on the test set, question by question
+    answer: Each change runs the test set beside the current release, takes each question's difference, and ships only if a one-sided test finds no drop.
+  - point: Sizes the test set to the drop it must find
+    answer: "With {% $fig.questions %} questions the smallest drop the gate finds is about {% $fig.detectable %}. Finding {% $fig.drop %} needs {% $fig.needed %} questions."
+  - point: Releases to a few users first
+    answer: A canary sends {% $fig.canary %} of conversations to the new prompt and compares their feedback, complaints and handoffs with the rest's before it goes further.
+  - point: Can go back in minutes
+    answer: The prompt's version is a setting the service reads, so going back is a change of setting, not a deploy.
+  - point: Pins the model and watches it
+    answer: Calls name a dated model version where the provider offers one, and the test set runs every day against what's live, so a change behind a name shows within a day.
+  - point: Watches after release
+    answer: Feedback, complaints and handoffs by prompt version are on a dashboard, with an alert when one rises past its usual range.
+pass: 5

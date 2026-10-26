@@ -1,0 +1,25 @@
+id: stg_0nynna
+kind: design
+title: A gateway for every model call
+builds: Calling a model, and Shipping full stack.
+minutes: 45
+questions:
+  - The main provider is down. What happens to each team's calls?
+  - One team's batch job takes the whole rate limit every morning. What does the gateway do?
+  - A team says its cached answers are out of date. What do you change?
+rubric:
+  - point: Puts every call behind one interface
+    answer: Teams call the gateway with a key of their own, and the gateway holds the providers' keys, so no team needs one.
+  - point: Attributes every call's cost
+    answer: Each call is logged with its team, product, model, tokens in and out, and cost, so the bill splits by team.
+  - point: Limits each team, not just the company
+    answer: Each team has its own rate and spending limits, and batch work its own lower-priority limit, so one team can't use up the others' share.
+  - point: Fails over between providers
+    answer: A team names fallback models for each model it calls. On errors and timeouts the gateway retries with a growing wait, then moves to the fallback, and says which model answered.
+  - point: Caches only where a team asks
+    answer: An exact-match cache, keyed by the whole request, is on only for teams whose requests have one right answer, with an expiry they set.
+  - point: Keeps prompts out of its logs by default
+    answer: The logs keep counts and costs. A request's text is kept only where its team turns that on, and only for a set time.
+  - point: Adds little delay
+    answer: The gateway streams answers as they come, and its own work on a call is held to {% $fig.overhead_ms %} milliseconds, on calls that take seconds.
+pass: 5

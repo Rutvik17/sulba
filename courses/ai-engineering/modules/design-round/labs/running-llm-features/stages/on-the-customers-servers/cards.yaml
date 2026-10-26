@@ -1,0 +1,7 @@
+cards:
+  - id: crd_syybpa
+    front: What limits how many people a model on your own GPUs can serve at once?
+    back: Usually the KV cache, which grows with every token each conversation holds, not the weights.
+  - id: crd_8vcz3r
+    front: Why choose the smallest model that clears the bar for a customer's own servers?
+    back: A smaller model leaves more GPU memory for the cache, so more conversations fit at once.

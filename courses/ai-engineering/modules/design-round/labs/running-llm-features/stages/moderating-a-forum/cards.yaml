@@ -1,0 +1,7 @@
+cards:
+  - id: crd_7he7fr
+    front: How do you set the threshold at which a moderation model hides posts?
+    back: On labelled posts, so that the posts it hides fit what the volunteers can review in a day.
+  - id: crd_yzhyar
+    front: Why should a moderation model hide posts rather than delete them?
+    back: A wrong hide costs its writer a wait, which a volunteer can undo. A wrong delete loses the post.

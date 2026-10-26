@@ -1,0 +1,7 @@
+cards:
+  - id: crd_djdyna
+    front: Why give batch work its own, lower-priority rate limit in a model gateway?
+    back: Batch work can wait, so it uses what the products leave over instead of starving them.
+  - id: crd_o2ftvr
+    front: Which requests can a model gateway cache by exact match?
+    back: Only those with one right answer, such as a classification, and only with an expiry, since an answer that depends on changing data goes out of date.

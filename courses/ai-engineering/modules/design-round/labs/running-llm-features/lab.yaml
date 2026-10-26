@@ -1,0 +1,4 @@
+id: lab_hlo0gi
+title: Running LLM features
+summary: Design how LLM features are run, released, moderated and kept on a customer's own servers, then defend each design against follow-up questions.
+stages: [a-model-gateway, a-prompt-change, moderating-a-forum, on-the-customers-servers]
