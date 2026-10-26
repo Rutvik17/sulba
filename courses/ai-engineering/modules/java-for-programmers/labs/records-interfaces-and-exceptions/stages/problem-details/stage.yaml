@@ -1,0 +1,37 @@
+id: stg_haina0
+kind: ship
+title: Problem details
+builds: A new `Problems.java`, which uses your `Desk.java` and `Ticket.java`.
+file: Problems.java
+minutes: 45
+checks:
+  - check: tst_wyqiqg
+    title: Nothing inside leaks
+    requires: >-
+      A 500 has no detail, whatever its exception's message says, and so does a Jackson error
+      that the code's own types caused rather than the request.
+    failure: >-
+      Answer every exception the table doesn't name with `of(500, null)`, and answer an
+      `InvalidDefinitionException` as one, before the row for `DatabindException`.
+  - check: tst_3lwewo
+    title: Each status's own title
+    requires: >-
+      Each of the ten statuses has the phrase RFC 9110 gives it, and 429 the one RFC 6585 gives.
+    failure: >-
+      Take each title from RFC 9110's section on its status: 413 is `Content Too Large` and 422
+      is `Unprocessable Content`.
+  - check: tst_0ghv7v
+    title: A pointer for any key
+    requires: >-
+      A key with `/` or `~` in it is escaped as JSON Pointer says, and any character a URI
+      fragment can't hold, a space, `%`, `"`, `#`, a brace or a letter outside ASCII among them,
+      is percent-encoded from its UTF-8 bytes.
+    failure: >-
+      Escape `~` as `~0` before `/` as `~1`, then percent-encode each byte that isn't a letter,
+      a digit or one of `-._~!$&'()*+,;=:@/?`.
+  - check: tst_cn0olo
+    title: However deep the error is wrapped
+    requires: >-
+      An error inside other exceptions, at any depth, gets the answer it would get alone.
+    failure: >-
+      Follow `getCause()` from the error, and answer for the first one the table names.

@@ -1,0 +1,26 @@
+cards:
+  - id: crd_sx33j4
+    front: >-
+      What title does a problem details object of type `about:blank` and status 422 have?
+    back: >-
+      `Unprocessable Content`, the phrase RFC 9110 gives 422. Its title should be the status's
+      own phrase, and RFC 9110 also renamed 413 `Content Too Large`.
+  - id: crd_wpllj8
+    front: >-
+      Why does the desk's 500 problem have no detail?
+    back: >-
+      The detail is for the caller to correct the request. An exception's message can hold
+      connection strings, paths or queries, which belong in the server's logs.
+  - id: crd_4pr9if
+    front: >-
+      How is the JSON key `a/b~c` written in a JSON Pointer?
+    back: >-
+      `/a~1b~0c`: `~` becomes `~0` first, then `/` becomes `~1`. Escaping `/` first would turn
+      its `~1` into `~01`.
+  - id: crd_rpq6vo
+    front: >-
+      A `switch` over an exception has `case DatabindException e` before `case
+      InvalidDefinitionException e`. What happens?
+    back: >-
+      It doesn't compile: the first label dominates the second, since every
+      `InvalidDefinitionException` is a `DatabindException`.

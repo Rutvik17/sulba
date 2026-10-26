@@ -1,0 +1,20 @@
+cards:
+  - id: crd_5mxxh3
+    front: >-
+      Why can `id == "T-2041"` pass a test and fail in production?
+    back: >-
+      `==` compares references. Java interns string literals, so two literals are one object,
+      but an id read from JSON or built at run time is a new object with the same text.
+      `equals` compares the text.
+  - id: crd_is8e6b
+    front: >-
+      `List<Integer> slots`, `int slot`: which method does `slots.remove(slot)` call?
+    back: >-
+      `remove(int index)`, which removes the element at that place. Java tries overloads
+      without boxing first. `slots.remove(Integer.valueOf(slot))` removes the value.
+  - id: crd_26lz2q
+    front: >-
+      In what order does a `HashMap` give its keys?
+    back: >-
+      In no promised order: whatever its hash codes give. A `TreeMap` sorts its keys, and a
+      `LinkedHashMap` keeps the order they were added in, as Python's `dict` does.
