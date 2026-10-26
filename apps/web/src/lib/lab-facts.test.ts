@@ -136,20 +136,58 @@ test('problems are counted as one Problem or as Problems', () => {
 
 test("a module's row counts its labs and adds up their time", () => {
   const lab = { stages: [stage('build', 'tally.py', 50), stage('ship', 'tally.py', 40)] };
-  expect(moduleFacts([lab])).toBe('1 lab · About 1.5 hours');
-  expect(moduleFacts([lab, lab, lab])).toBe('3 labs · About 4.5 hours');
+  expect(moduleFacts({ optional: false, labs: [lab] })).toBe('1 lab · About 1.5 hours');
+  expect(moduleFacts({ optional: false, labs: [lab, lab, lab] })).toBe('3 labs · About 4.5 hours');
+});
+
+test("an optional module's row says so first", () => {
+  const lab = { stages: [stage('build', 'tally.py', 50)] };
+  expect(moduleFacts({ optional: true, labs: [lab] })).toBe('Optional · 1 lab · About 50 minutes');
 });
 
 test("a level's facts count its modules and labs, add up their time and say what it needs", () => {
   const lab = { stages: [stage('build', 'tally.py', 30), stage('catch', 'report.py', 15)] };
   const level = {
     needs: 'Any laptop: every lab runs in your browser',
-    modules: [{ labs: [lab, lab] }, { labs: [lab] }],
+    modules: [
+      { optional: false, labs: [lab, lab] },
+      { optional: false, labs: [lab] },
+    ],
   };
   expect(levelFacts(level)).toEqual([
     { term: 'Modules', value: '2' },
     { term: 'Labs', value: '3' },
     { term: 'Time', value: 'About 2.5 hours' },
     { term: 'Needs', value: 'Any laptop: every lab runs in your browser' },
+  ]);
+});
+
+test("a level's facts say how many of its modules are optional, and give their time apart", () => {
+  const lab = { stages: [stage('build', 'tally.py', 30), stage('catch', 'report.py', 15)] };
+  const needs = 'Any laptop: every lab runs in your browser';
+  const one = levelFacts({
+    needs,
+    modules: [
+      { optional: false, labs: [lab, lab] },
+      { optional: true, labs: [lab] },
+    ],
+  });
+  expect(one.slice(0, 3)).toEqual([
+    { term: 'Modules', value: '2, 1 of them optional' },
+    { term: 'Labs', value: '3' },
+    { term: 'Time', value: 'About 1.5 hours, and about 45 minutes more in the optional module' },
+  ]);
+  const two = levelFacts({
+    needs,
+    modules: [
+      { optional: false, labs: [lab] },
+      { optional: true, labs: [lab, lab] },
+      { optional: true, labs: [lab, lab] },
+    ],
+  });
+  expect(two.slice(0, 3)).toEqual([
+    { term: 'Modules', value: '3, 2 of them optional' },
+    { term: 'Labs', value: '5' },
+    { term: 'Time', value: 'About 45 minutes, and about 3 hours more in the optional modules' },
   ]);
 });

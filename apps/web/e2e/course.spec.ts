@@ -3,11 +3,12 @@ import { signedIn, standIn, supabase } from './supabase';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): the
 // course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages,
-// and the module Interviews, with the lab Pairs and its one Problem stage and the lab Poll design
-// and its one Design stage, and whose level Second has the module Ledgers, with the lab Ledger,
-// which runs on the learner's machine.
+// and the optional module Interviews, with the lab Pairs and its one Problem stage and the lab Poll
+// design and its one Design stage, and whose level Second has the module Ledgers, with the lab
+// Ledger and its 5 stages, which runs on the learner's machine.
 const path = '/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
+const ledger = ['stg_demo06', 'stg_demo07', 'stg_demo08', 'stg_demo09', 'stg_demo11'];
 
 async function passed(page: Page, ...ids: string[]) {
   await page.addInitScript((each) => {
@@ -36,9 +37,9 @@ test("a course's page lists its levels, with their facts, and their modules, clo
   await expect(page).toHaveTitle('Demo · Sulba');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Demo');
   await expect(level(page).locator('dl').first().getByRole('definition')).toHaveText([
-    '2',
+    '2, 1 of them optional',
     '3',
-    'About 1.5 hours',
+    'About 40 minutes, and about 50 minutes more in the optional module',
     'Any laptop: every lab runs in your browser',
   ]);
   await expect(level(page).getByRole('heading', { level: 3 })).toHaveText([
@@ -47,6 +48,7 @@ test("a course's page lists its levels, with their facts, and their modules, clo
   ]);
   await expect(counting(page)).toHaveAttribute('aria-expanded', 'false');
   await expect(level(page).getByText('1 lab · About 40 minutes')).toBeVisible();
+  await expect(level(page).getByText('Optional · 2 labs · About 50 minutes')).toBeVisible();
   // Every lab's title shows, and links its page, with every module closed.
   await expect(
     level(page)
@@ -132,15 +134,17 @@ test('a lab partway through is the next lab, with how many of its stages are don
   await expect(tallies(page)).toContainText('1 of 4 stages done');
 });
 
-test("after a lab that's done, the next lab is the one after it", async ({ page }) => {
+test("after a lab that's done, the next lab is the one after it, past an optional module", async ({
+  page,
+}) => {
   await passed(page, ...stages);
   await page.goto(path);
 
-  await expect(next(page).getByRole('link', { name: 'Pairs' })).toHaveAttribute(
+  await expect(next(page).getByRole('link', { name: 'Ledger' })).toHaveAttribute(
     'href',
-    '/demo/interviews/pairs/',
+    '/demo/ledgers/ledger/',
   );
-  await expect(next(page)).toContainText('Module 2 · Interviews · About 20 minutes');
+  await expect(next(page)).toContainText('Module 1 · Ledgers · About 50 minutes');
   // The module's row, under its title.
   await expect(level(page).getByText('1 lab · About 40 minutes').locator('..')).toContainText(
     'Done',
@@ -149,16 +153,30 @@ test("after a lab that's done, the next lab is the one after it", async ({ page 
   await expect(tallies(page)).toContainText('Done');
 });
 
-test('with every lab done, there is no next lab', async ({ page }) => {
-  await passed(
-    page,
-    ...stages,
-    'stg_demo05',
-    'stg_demo10',
-    'stg_demo06',
-    'stg_demo07',
-    'stg_demo08',
+test("an optional module's lab is next once one of its labs is started", async ({ page }) => {
+  await passed(page, ...stages, 'stg_demo05');
+  await page.goto(path);
+
+  await expect(next(page).getByRole('link', { name: 'Poll design' })).toHaveAttribute(
+    'href',
+    '/demo/interviews/poll-design/',
   );
+  await expect(next(page)).toContainText('Module 2 · Interviews · About 30 minutes');
+});
+
+test("with every other lab done, an optional module's first lab is next", async ({ page }) => {
+  await passed(page, ...stages, ...ledger);
+  await page.goto(path);
+
+  await expect(next(page).getByRole('link', { name: 'Pairs' })).toHaveAttribute(
+    'href',
+    '/demo/interviews/pairs/',
+  );
+  await expect(next(page)).toContainText('Module 2 · Interviews · About 20 minutes');
+});
+
+test('with every lab done, there is no next lab', async ({ page }) => {
+  await passed(page, ...stages, 'stg_demo05', 'stg_demo10', ...ledger);
   await page.goto(path);
 
   await expect(level(page).locator('dl').first()).toContainText('3 of 3 labs done');

@@ -11,11 +11,16 @@ const kindNames: Readonly<Record<Kind, readonly [string, string]>> = {
   design: ['Design', 'Designs'],
 };
 
+/** "45 minutes", or in hours to the nearest half past an hour: "4.5 hours". */
+function timeOf(minutes: number): string {
+  if (minutes < 60) return `${minutes} minutes`;
+  const hours = Math.round(minutes / 30) / 2;
+  return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+}
+
 /** "About 45 minutes", or in hours to the nearest half past an hour: "About 4.5 hours". */
 export function aboutTime(minutes: number): string {
-  if (minutes < 60) return `About ${minutes} minutes`;
-  const hours = Math.round(minutes / 30) / 2;
-  return `About ${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+  return `About ${timeOf(minutes)}`;
 }
 
 type Fact = { term: string; value: string };
@@ -97,23 +102,46 @@ export function servedOf(
   };
 }
 
-/** What a module's row says under its title: how many labs it has, and their time. */
-export function moduleFacts(labs: readonly Pick<LabView, 'stages'>[]): string {
-  const minutes = labs.reduce((sum, lab) => sum + minutesOf(lab), 0);
-  return `${labs.length} ${labs.length === 1 ? 'lab' : 'labs'} · ${aboutTime(minutes)}`;
+interface ModuleLabs {
+  readonly optional: boolean;
+  readonly labs: readonly Pick<LabView, 'stages'>[];
 }
 
-/** The facts above a level's modules: how many modules and labs, their time, and what it needs. */
+/** The minutes a module's labs take, added up. */
+function minutesIn(modules: readonly ModuleLabs[]): number {
+  return modules.flatMap((module) => module.labs).reduce((sum, lab) => sum + minutesOf(lab), 0);
+}
+
+/** What a module's row says under its title: whether it's optional, its labs and their time. */
+export function moduleFacts(module: ModuleLabs): string {
+  const { length } = module.labs;
+  return [
+    ...(module.optional ? ['Optional'] : []),
+    `${length} ${length === 1 ? 'lab' : 'labs'}`,
+    aboutTime(minutesIn([module])),
+  ].join(' · ');
+}
+
+/**
+ * The facts above a level's modules: how many modules, and how many of them are optional; how many
+ * labs; their time, with the optional modules' apart; and what it needs.
+ */
 export function levelFacts(level: {
   readonly needs: string;
-  readonly modules: readonly { readonly labs: readonly Pick<LabView, 'stages'>[] }[];
+  readonly modules: readonly ModuleLabs[];
 }): Fact[] {
-  const labs = level.modules.flatMap((module) => module.labs);
-  const minutes = labs.reduce((sum, lab) => sum + minutesOf(lab), 0);
+  const optional = level.modules.filter((module) => module.optional);
+  const required = level.modules.filter((module) => !module.optional);
+  let modules = String(level.modules.length);
+  let time = aboutTime(minutesIn(required));
+  if (optional.length > 0) {
+    modules += `, ${optional.length} of them optional`;
+    time += `, and about ${timeOf(minutesIn(optional))} more in the optional ${optional.length === 1 ? 'module' : 'modules'}`;
+  }
   return [
-    { term: 'Modules', value: String(level.modules.length) },
-    { term: 'Labs', value: String(labs.length) },
-    { term: 'Time', value: aboutTime(minutes) },
+    { term: 'Modules', value: modules },
+    { term: 'Labs', value: String(level.modules.flatMap((module) => module.labs).length) },
+    { term: 'Time', value: time },
     { term: 'Needs', value: level.needs },
   ];
 }

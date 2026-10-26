@@ -1,3 +1,4 @@
 id: mod_demo02
 title: Interviews
+optional: true
 labs: [pairs, poll-design]

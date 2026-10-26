@@ -5,6 +5,7 @@ import type { LabEntry } from './labs';
 export interface ModuleOutline {
   readonly slug: string;
   readonly title: string;
+  readonly optional: boolean;
   readonly labs: readonly LabEntry[];
 }
 
@@ -27,7 +28,7 @@ interface Building {
   levels: {
     title: string;
     needs: string;
-    modules: { slug: string; title: string; labs: LabEntry[] }[];
+    modules: { slug: string; title: string; optional: boolean; labs: LabEntry[] }[];
   }[];
 }
 
@@ -48,7 +49,7 @@ export function courseOutlines(labs: readonly LabEntry[]): CourseOutline[] {
     }
     let module = level.modules.at(-1);
     if (module?.slug !== moduleSlug) {
-      module = { slug: moduleSlug, title: lab.module, labs: [] };
+      module = { slug: moduleSlug, title: lab.module, optional: lab.optionalModule, labs: [] };
       level.modules.push(module);
     }
     module.labs.push(lab);
