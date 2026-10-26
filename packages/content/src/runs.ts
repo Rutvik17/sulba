@@ -2,7 +2,7 @@
 // there as the learner left them, and a stage on a file an earlier stage made adds its starter
 // to the end of the learner's code.
 import type { FetchedFile, RunRequest } from '@sulba/lab/protocol';
-import { type CatchProblem, type Lab, nodeProjectFiles, type Stage } from './load.ts';
+import { type CatchProblem, type Lab, nodeProjectFiles, type Stage, writesCode } from './load.ts';
 
 /** The learner's code with a stage's starter added below it. */
 export function addStarter(code: string, starter: string): string {
@@ -65,9 +65,11 @@ export interface StageRuns {
   readonly earlier: RunRequest | null;
 }
 
+/** Each stage's runs, for the stages that write code: a Design stage runs nothing. */
 export function stageRuns(lab: Lab): StageRuns[] {
-  return lab.stages.map((stage, index) => {
-    const before = lab.stages.slice(0, index);
+  const coded = lab.stages.filter(writesCode);
+  return coded.map((stage, index) => {
+    const before = coded.slice(0, index);
     const files = labFiles(lab);
     for (const each of before) files[each.file] = each.solution;
     const own = testFiles(stage);

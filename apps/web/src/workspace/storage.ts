@@ -1,8 +1,9 @@
 // What the workspace keeps in this browser: each stage's code, the stages passed, each finished
-// Catch review, and each Problem stage's start, plan and time. Storage can be blocked or cleared,
-// so every read falls back and every write may fail without harm. A signed-in learner's passes
-// and reviews also go to their account, and come back from it on another device (sync.ts); their
-// code and plans stay here.
+// Catch review, each Problem stage's start, plan and time, and each Design stage's attempt.
+// Storage can be blocked or cleared, so every read falls back and every write may fail without
+// harm. A signed-in learner's passes and reviews also go to their account, and come back from it
+// on another device (sync.ts); their code, plans and designs stay here.
+import { type DesignState, designOf } from './design';
 import { type ProblemState, problemOf } from './problem';
 import type { Kept, Review } from './stages';
 
@@ -46,6 +47,9 @@ export const kept: Kept & {
   /** A Problem stage's start, plan and time, or null until the learner starts it. */
   problem(stageId: string): ProblemState | null;
   saveProblem(stageId: string, state: ProblemState): void;
+  /** A Design stage's latest attempt, or null until the learner starts it. */
+  design(stageId: string): DesignState | null;
+  saveDesign(stageId: string, state: DesignState): void;
 } = {
   code: (stageId) => read(`sulba:code:${stageId}`),
   passed: (stageId) => read(`sulba:passed:${stageId}`) !== null,
@@ -58,4 +62,6 @@ export const kept: Kept & {
   },
   problem: (stageId) => problemOf(read(`sulba:problem:${stageId}`)),
   saveProblem: (stageId, state) => write(`sulba:problem:${stageId}`, JSON.stringify(state)),
+  design: (stageId) => designOf(read(`sulba:design:${stageId}`)),
+  saveDesign: (stageId, state) => write(`sulba:design:${stageId}`, JSON.stringify(state)),
 };

@@ -119,3 +119,23 @@ test("a machine lab's entry carries what it fetches, with each source's credit",
     'tsconfig.json',
   ]);
 });
+
+test("a Design stage's questions and rubric are lines of prose, with its figures", async () => {
+  const figures = new Map([['stg_demo10', { close: '8 pm' }]]);
+  const lab = labEntries(await demo(), figures).find((each) => each.id === 'lab_demo04');
+  const [stage] = lab?.stages ?? [];
+
+  expect(stage).toMatchObject({
+    kind: 'design',
+    file: '',
+    questions: [
+      'Two counts of the same box disagree. What does the service do?',
+      'The town doubles its voters. What changes first?',
+    ],
+    pass: 2,
+  });
+  expect(stage?.rubric[1]).toEqual({
+    point: 'Says who reads the results, and when',
+    answer: 'The clerk reads them at 8 pm, when the polls close.',
+  });
+});

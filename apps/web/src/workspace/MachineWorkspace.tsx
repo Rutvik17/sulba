@@ -11,7 +11,7 @@ import { labData, projectFiles } from './data';
 import { type Report, reportOf } from './link';
 import { firstStage, passOf, reviewsOf, takeIn } from './progress';
 import { Line } from './Results';
-import { Problems, Prose, StageNav } from './StageParts';
+import { Hints, Problems, Prose, StageNav } from './StageParts';
 import { machineDownloadOf, type Review } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
 import { kept } from './storage';
@@ -24,7 +24,6 @@ const css = classes(
   'left',
   'panel',
   'builds',
-  'hints',
   'right',
   'head',
   'file',
@@ -273,29 +272,14 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
           {stage.hints.length > 0 && (
             <TabPanel id="hints">
               <div className={css.panel}>
-                {hints > 0 && (
-                  <ol className={css.hints}>
-                    {stage.hints.slice(0, hints).map((hint) => (
-                      <li key={hint}>
-                        <Prose html={hint} />
-                      </li>
-                    ))}
-                  </ol>
-                )}
-                {hints < stage.hints.length ? (
-                  <Button
-                    variant="outline"
-                    size="small"
-                    onPress={() => {
-                      setHints(hints + 1);
-                      record({ kind: 'hint', hint: hints + 1 }, lap());
-                    }}
-                  >
-                    {hints === 0 ? 'Show a hint' : 'Show the next hint'}
-                  </Button>
-                ) : (
-                  <p>No more hints.</p>
-                )}
+                <Hints
+                  hints={stage.hints}
+                  shown={hints}
+                  onShow={() => {
+                    setHints(hints + 1);
+                    record({ kind: 'hint', hint: hints + 1 }, lap());
+                  }}
+                />
               </div>
             </TabPanel>
           )}

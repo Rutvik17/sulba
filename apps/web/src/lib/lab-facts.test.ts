@@ -34,6 +34,19 @@ test("a lab's facts name its files in order, count its stages by kind and add up
   ]);
 });
 
+test('a Design stage builds no file, so a lab of designs names none', () => {
+  const designs = [stage('design', '', 45), stage('design', '', 45)];
+  expect(labFacts({ stages: designs })).toEqual([
+    { term: 'Stages', value: '2 Designs' },
+    { term: 'Time', value: 'About 1.5 hours' },
+  ]);
+  const mixed = [stage('problem', 'pairs.py', 20), stage('design', '', 30)];
+  expect(labFacts({ stages: mixed }).slice(0, 2)).toEqual([
+    { term: 'You build', value: 'pairs.py' },
+    { term: 'Stages', value: '1 Problem, 1 Design' },
+  ]);
+});
+
 test("a lab that runs on the learner's machine says so", () => {
   const stages = [stage('build', 'model.py', 30)];
   expect(labFacts({ stages, runs: 'machine' }).at(-1)).toEqual({

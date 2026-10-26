@@ -25,6 +25,9 @@ function stage(id: string, kind: StageView['kind'], problems: string[] = []): St
     problems: problems.map((check) => ({ check, title: check, cost: '', fix: '' })),
     shipChecks: [],
     chart: null,
+    questions: [],
+    rubric: [],
+    pass: 0,
   };
 }
 

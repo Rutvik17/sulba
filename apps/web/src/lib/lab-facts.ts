@@ -8,6 +8,7 @@ const kindNames: Readonly<Record<Kind, readonly [string, string]>> = {
   catch: ['Catch', 'Catch'],
   ship: ['Ship', 'Ship'],
   problem: ['Problem', 'Problems'],
+  design: ['Design', 'Designs'],
 };
 
 /** "About 45 minutes", or in hours to the nearest half past an hour: "About 4.5 hours". */
@@ -25,11 +26,12 @@ export function minutesOf(lab: Pick<LabView, 'stages'>): number {
 }
 
 /**
- * What the facts under a lab's title say: the files built, the stages, the time, and for a lab that
- * runs on the learner's machine, that it runs there.
+ * What the facts under a lab's title say: the files built, if it builds any, the stages, the time,
+ * and for a lab that runs on the learner's machine, that it runs there. A Design stage builds no
+ * file.
  */
 export function labFacts(lab: Pick<LabView, 'stages'> & Partial<Pick<LabView, 'runs'>>): Fact[] {
-  const files = [...new Set(lab.stages.map((stage) => stage.file))];
+  const files = [...new Set(lab.stages.map((stage) => stage.file).filter((file) => file !== ''))];
   const kinds = Object.entries(kindNames)
     .map(([kind, names]) => ({
       names,
@@ -38,7 +40,7 @@ export function labFacts(lab: Pick<LabView, 'stages'> & Partial<Pick<LabView, 'r
     .filter(({ count }) => count > 0)
     .map(({ names: [one, more], count }) => `${count} ${count === 1 ? one : more}`);
   return [
-    { term: 'You build', value: files.join(', then ') },
+    ...(files.length > 0 ? [{ term: 'You build', value: files.join(', then ') }] : []),
     { term: 'Stages', value: kinds.join(', ') },
     { term: 'Time', value: aboutTime(minutesOf(lab)) },
     ...(lab.runs === 'machine' ? [{ term: 'Runs on', value: 'Your machine' }] : []),

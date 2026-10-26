@@ -1,0 +1,16 @@
+id: stg_demo10
+kind: design
+title: A poll service
+builds: The tallies from Counting.
+minutes: 30
+questions:
+  - Two counts of the same box disagree. What does the service do?
+  - The town doubles its voters. What changes first?
+rubric:
+  - point: Counts each vote once
+    answer: Each ballot has an id, and a count keeps the ids it has seen.
+  - point: Says who reads the results, and when
+    answer: The clerk reads them at {% $fig.close %}, when the polls close.
+  - point: Keeps a record that a recount can check
+    answer: Every ballot is kept, so a recount reads them again.
+pass: 2

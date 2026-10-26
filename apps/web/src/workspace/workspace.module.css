@@ -349,6 +349,85 @@
   resize: vertical;
 }
 
+/*
+  A Design stage has no code or tests: below its head, one column holds the design, then the
+  follow-up questions, then the rubric, each as it opens, and scrolls when they outgrow it.
+*/
+.sheet {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.design {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--space-6);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.write {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.write h3 {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+
+.write label {
+  font-weight: 500;
+  line-height: var(--leading);
+}
+
+.write textarea {
+  min-height: 6rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  line-height: var(--leading);
+  resize: vertical;
+}
+
+.write > textarea {
+  min-height: 14rem;
+}
+
+.write textarea[readonly] {
+  background: transparent;
+  color: var(--dim);
+}
+
+/* Each rubric point, with what a strong design says to it and the learner's mark. */
+.rubric {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rubric li {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.rubric p {
+  margin: 0;
+  line-height: var(--leading);
+}
+
+.point {
+  font-weight: 500;
+}
+
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: minmax(0, 1fr);
@@ -363,6 +442,10 @@
 
   .right {
     grid-template-rows: auto 420px auto;
+  }
+
+  .sheet {
+    grid-template-rows: auto auto;
   }
 
   .dock {

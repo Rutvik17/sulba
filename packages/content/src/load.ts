@@ -19,6 +19,7 @@ import {
   labFile,
   type ModuleFile,
   moduleFile,
+  type RubricPoint,
   type ShipCheck,
   type StageFile,
   stageFile,
@@ -39,18 +40,31 @@ const projectFiles = ['README.md', 'pyproject.toml', 'uv.lock'];
  */
 export const nodeProjectFiles = ['package.json', 'package-lock.json', 'tsconfig.json'];
 
-export type { Card, CatchProblem, ChartFile, ShipCheck } from './schema.ts';
+export type { Card, CatchProblem, ChartFile, RubricPoint, ShipCheck } from './schema.ts';
 
 /** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
 export interface Chart extends ChartFile {
   readonly code: string;
 }
 
-export interface Stage extends Omit<StageFile, 'problems' | 'checks' | 'chart'> {
+/** A stage that writes code, whose file, packages and chart a Design stage doesn't have. */
+type CodeStageFile = Exclude<StageFile, { kind: 'design' }>;
+
+export interface Stage
+  extends Omit<StageFile, 'problems' | 'checks' | 'chart' | 'questions' | 'rubric' | 'pass'> {
+  /** The file the learner works in. A Design stage writes no code, so its file is ''. */
+  readonly file: string;
+  readonly packages: CodeStageFile['packages'];
   /** A Catch stage's problems, in the order its review lists them. Other stages have none. */
   readonly problems: readonly CatchProblem[];
   /** A Ship stage's checks before it ships, in the order they show. Other stages have none. */
   readonly shipChecks: readonly ShipCheck[];
+  /** A Design stage's follow-up questions, in Markdoc, in order. Other stages have none. */
+  readonly questions: readonly string[];
+  /** The points a Design stage's design is marked against. Other stages have none. */
+  readonly rubric: readonly RubricPoint[];
+  /** How many of its rubric's points a Design stage's design must meet to pass, or 0. */
+  readonly pass: number;
   readonly slug: string;
   readonly brief: string;
   /** In the order they open. A stage that needs none has none. */
@@ -320,8 +334,8 @@ class Reader {
 
   /**
    * A lab that runs on the learner's machine runs from its project (decision record 28), and its
-   * stages need nothing a browser draws or times: a chart is drawn in the page, and a Problem
-   * stage's clock runs there. Its download carries the runner as sulba.py, so no learner's file
+   * stages need nothing a browser draws or times: a chart is drawn in the page, and a Problem or
+   * Design stage's clock runs there. Its download carries the runner as sulba.py, so no learner's file
    * may take that name.
    */
   machineLab(folder: string, stages: readonly Stage[], hasProject: boolean) {
@@ -333,10 +347,11 @@ class Reader {
     }
     for (const stage of stages) {
       const path = join(folder, 'stages', stage.slug, 'stage.yaml');
-      if (stage.kind === 'problem') {
+      if (stage.kind === 'problem' || stage.kind === 'design') {
+        const name = stage.kind === 'problem' ? 'Problem' : 'Design';
         this.problem(
           path,
-          "kind: A Problem stage's clock runs in the browser, so a lab that runs on the learner's machine can't have one.",
+          `kind: A ${name} stage's clock runs in the browser, so a lab that runs on the learner's machine can't have one.`,
         );
       }
       if (stage.chart) {
@@ -461,6 +476,10 @@ class Reader {
 
   async stage(folder: string, slug: string): Promise<Stage | null> {
     const file = await this.yaml(join(folder, 'stage.yaml'), stageFile);
+    // A Design stage whose stage.yaml breaks its schema is still held to a Design stage's files.
+    if (file?.kind === 'design' || (!file && (await saysDesign(join(folder, 'stage.yaml'))))) {
+      return this.designStage(folder, slug, file?.kind === 'design' ? file : null);
+    }
     const hasChecks = file?.kind === 'catch' || file?.kind === 'ship';
     await this.entries(
       folder,
@@ -531,6 +550,9 @@ class Reader {
       ...file,
       problems,
       shipChecks,
+      questions: [],
+      rubric: [],
+      pass: 0,
       slug,
       brief,
       hints: hintList,
@@ -542,6 +564,79 @@ class Reader {
       checks,
       figures,
       chart,
+      cards,
+      version,
+    };
+  }
+
+  /**
+   * A Design stage (decision record 42): a brief, follow-up questions and a rubric, with no code, so
+   * no starter, solution or tests.
+   */
+  async designStage(
+    folder: string,
+    slug: string,
+    file: Extract<StageFile, { kind: 'design' }> | null,
+  ): Promise<Stage | null> {
+    await this.entries(
+      folder,
+      ['stage.yaml', 'brief.md', 'explanation.md'],
+      [],
+      ['hints.md', 'figures.py', 'cards.yaml'],
+    );
+    if (!file) return null;
+    const present = new Set(((await this.list(folder)) ?? []).map((entry) => entry.name));
+    const hasHints = present.has('hints.md');
+    const [brief, hints, explanation] = await Promise.all([
+      this.prose(join(folder, 'brief.md')),
+      hasHints ? this.prose(join(folder, 'hints.md')) : Promise.resolve(''),
+      this.prose(join(folder, 'explanation.md')),
+    ]);
+    const figures = present.has('figures.py') ? await this.text(join(folder, 'figures.py')) : null;
+    const cards = present.has('cards.yaml') ? await this.cards(join(folder, 'cards.yaml')) : [];
+    if (brief === null || hints === null || explanation === null) return null;
+    const hintList = hasHints ? hints.split(/^---$/m).map((hint) => hint.trim()) : [];
+    if (hintList.some((hint) => hint === '')) {
+      this.problem(join(folder, 'hints.md'), 'Each hint, between lines of ---, needs text.');
+    }
+    if (/^---$/m.test(explanation)) {
+      this.problem(
+        join(folder, 'explanation.md'),
+        "Only a Catch stage's explanation has a line of ---, where its problems go.",
+      );
+    }
+    const path = join(folder, 'stage.yaml');
+    for (const [index, question] of file.questions.entries()) {
+      this.yamlProse(path, `questions.${index}`, question);
+    }
+    for (const [index, point] of file.rubric.entries()) {
+      for (const field of ['point', 'answer'] as const)
+        this.yamlProse(path, `rubric.${index}.${field}`, point[field]);
+    }
+    const version = hash({
+      'stage.yaml': JSON.stringify(file),
+      brief,
+      hints,
+      explanation,
+      ...(figures === null ? {} : { 'figures.py': figures }),
+    });
+    return {
+      ...file,
+      file: '',
+      packages: [],
+      problems: [],
+      shipChecks: [],
+      slug,
+      brief,
+      hints: hintList,
+      explanation: explanation.trim(),
+      afterProblems: null,
+      starter: '',
+      solution: '',
+      tests: {},
+      checks: {},
+      figures,
+      chart: null,
       cards,
       version,
     };
@@ -813,6 +908,23 @@ function issuesOf(issues: readonly z.core.$ZodIssue[]): z.core.$ZodIssue[] {
 /** A name starting with a dot, such as a tool's cache or a system's own file. */
 function hidden(name: string): boolean {
   return name.startsWith('.');
+}
+
+/** Whether a stage.yaml that broke its schema says it's a Design stage. */
+async function saysDesign(path: string): Promise<boolean> {
+  try {
+    const parsed: unknown = parse(await readFile(path, 'utf8'));
+    return typeof parsed === 'object' && parsed !== null && 'kind' in parsed
+      ? parsed.kind === 'design'
+      : false;
+  } catch {
+    return false;
+  }
+}
+
+/** Whether a stage writes code: every kind but a Design stage (decision record 42). */
+export function writesCode(stage: Pick<Stage, 'kind'>): boolean {
+  return stage.kind !== 'design';
 }
 
 /** A package that only the learner's machine runs, since Pyodide has no build of it. */

@@ -17,6 +17,7 @@ const count = 'demo/modules/counting/labs/tallies/stages/count';
 const check = 'demo/modules/counting/labs/tallies/stages/check';
 const ship = 'demo/modules/counting/labs/tallies/stages/ship';
 const pairs = 'demo/modules/interviews/labs/pairs/stages/pair-sums';
+const poll = 'demo/modules/interviews/labs/poll-design/stages/a-poll-service';
 const ledger = 'demo/modules/ledgers/labs/ledger/stages';
 const folders: string[] = [];
 let runner: Runner;
@@ -228,6 +229,9 @@ test('two courses that share an id is a problem', async () => {
     `The id tst_demo13 is already used by ${pairs}/tests/test_pairs.py.`,
     `The id tst_demo14 is already used by ${pairs}/tests/test_pairs.py.`,
     `The id tst_demo15 is already used by ${pairs}/tests/test_pairs.py.`,
+    'The id lab_demo04 is already used by demo/modules/interviews/labs/poll-design/lab.yaml.',
+    `The id stg_demo10 is already used by ${poll}/stage.yaml.`,
+    `The id crd_demo05 is already used by ${poll}/cards.yaml.`,
     'The id lvl_demo02 is already used by demo/course.yaml (second).',
     'The id mod_demo03 is already used by demo/modules/ledgers/module.yaml.',
     'The id lab_demo03 is already used by demo/modules/ledgers/labs/ledger/lab.yaml.',
@@ -250,7 +254,8 @@ test('two courses that share an id is a problem', async () => {
 });
 
 test('the stages are dealt in turn to the parts of a check, each to one', async () => {
-  // The tallies lab's four stages, the pairs lab's one, then the ledger lab's four.
+  // The tallies lab's four stages, the pairs lab's one, the poll design lab's one, then the ledger
+  // lab's four.
   const course = await load(fixtures);
   const ids = (part: number, parts: number) => [...shard([course], part, parts)];
   expect(ids(1, 1)).toEqual([
@@ -259,14 +264,15 @@ test('the stages are dealt in turn to the parts of a check, each to one', async 
     'stg_demo03',
     'stg_demo04',
     'stg_demo05',
+    'stg_demo10',
     'stg_demo06',
     'stg_demo07',
     'stg_demo08',
     'stg_demo09',
   ]);
-  expect(ids(1, 2)).toEqual(['stg_demo01', 'stg_demo03', 'stg_demo05', 'stg_demo07', 'stg_demo09']);
-  expect(ids(2, 2)).toEqual(['stg_demo02', 'stg_demo04', 'stg_demo06', 'stg_demo08']);
-  expect(ids(3, 4)).toEqual(['stg_demo03', 'stg_demo07']);
+  expect(ids(1, 2)).toEqual(['stg_demo01', 'stg_demo03', 'stg_demo05', 'stg_demo06', 'stg_demo08']);
+  expect(ids(2, 2)).toEqual(['stg_demo02', 'stg_demo04', 'stg_demo10', 'stg_demo07', 'stg_demo09']);
+  expect(ids(3, 4)).toEqual(['stg_demo03', 'stg_demo06']);
 });
 
 test('a proof of some stages runs only theirs, each against its earlier stages too', async () => {

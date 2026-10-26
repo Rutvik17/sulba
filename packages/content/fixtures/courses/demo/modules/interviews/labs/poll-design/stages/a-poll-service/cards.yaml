@@ -1,0 +1,4 @@
+cards:
+  - id: crd_demo05
+    front: How does a poll service count each ballot once?
+    back: It keeps every ballot's id and counts an id it has seen only once.

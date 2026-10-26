@@ -1,0 +1,4 @@
+id: lab_demo04
+title: Poll design
+summary: Design the service that counts a town's poll, then defend it.
+stages: [a-poll-service]
