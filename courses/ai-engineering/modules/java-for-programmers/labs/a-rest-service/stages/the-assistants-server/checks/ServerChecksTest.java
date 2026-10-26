@@ -67,6 +67,16 @@ class ServerChecksTest {
         return send(request(path).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(body)));
     }
 
+    /** The log's lines once it has `count` of them, or after five seconds. A request's line is
+     * written once its reply has gone, so it can come a moment after the caller has the reply. */
+    List<String> lines(int count) throws InterruptedException {
+        var deadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
+        while (log.size() < count && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+        }
+        return List.copyOf(log);
+    }
+
     @Test
     @DisplayName("tst_egd3dw A slow caller holds up no one")
     void slow() throws Exception {
@@ -89,8 +99,9 @@ class ServerChecksTest {
         var reply = post("/messages", "{\"content\":\"Where's my card?\"}");
         assertEquals(200, reply.statusCode(), reply.body());
         assertTrue(reply.body().contains("event: done"), reply.body());
-        assertTrue(log.stream().anyMatch(line -> line.startsWith("POST /tickets 201 ")), log.toString());
-        assertTrue(log.stream().anyMatch(line -> line.startsWith("POST /messages 200 ")), log.toString());
+        var lines = lines(2);
+        assertTrue(lines.stream().anyMatch(line -> line.startsWith("POST /tickets 201 ")), lines.toString());
+        assertTrue(lines.stream().anyMatch(line -> line.startsWith("POST /messages 200 ")), lines.toString());
     }
 
     @Test
