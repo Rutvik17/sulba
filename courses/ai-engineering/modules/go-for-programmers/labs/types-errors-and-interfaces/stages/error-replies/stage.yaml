@@ -1,0 +1,35 @@
+id: stg_t57cv4
+kind: ship
+title: Error replies
+builds: A new `failures.go`, which uses your `request.go`, `routes.go` and `fallback.go`.
+file: failures.go
+minutes: 50
+checks:
+  - check: tst_5puyzg
+    title: An upstream's words stay inside
+    requires: >-
+      No answer carries what an upstream said, whatever its status, from one upstream or
+      several.
+    failure: >-
+      Answer with the gateway's own message for each status, never a `*StatusError`'s.
+  - check: tst_ly8p3s
+    title: The soonest wait
+    requires: >-
+      With several busy upstreams, `Retry-After` is the soonest wait any of them gave, in whole
+      seconds rounded up, and there's no `Retry-After` when none of them said.
+    failure: >-
+      Find every `*StatusError` in the error, take the smallest `RetryAfter` above 0, and round
+      its seconds up with `math.Ceil`.
+  - check: tst_osaqgr
+    title: However it's wrapped
+    requires: >-
+      An error wrapped with `%w` or joined, at any depth, gets the answer it would get alone.
+    failure: >-
+      Use `errors.Is` and `errors.AsType`, and follow a join's errors through its
+      `Unwrap() []error`.
+  - check: tst_6byhx9
+    title: Busy only when all are
+    requires: >-
+      With one upstream busy and another down, the answer is 502, with no `Retry-After`.
+    failure: >-
+      Answer 429 only when every `*StatusError` in the error is a 429.

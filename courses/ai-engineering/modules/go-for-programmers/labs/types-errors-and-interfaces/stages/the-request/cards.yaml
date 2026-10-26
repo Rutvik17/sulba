@@ -1,0 +1,21 @@
+cards:
+  - id: crd_8efm36
+    front: >-
+      Why does the gateway check `errors.Is(err, ErrNoModel)` rather than
+      `err == ErrNoModel`?
+    back: >-
+      `==` matches only the error itself. `errors.Is` also finds `ErrNoModel` when it's wrapped
+      inside another error, as code that passes it up with `%w` will.
+  - id: crd_564zax
+    front: >-
+      A Go struct has a field `MaxTokens int` with no tag. What does `encoding/json` fill it
+      with from `{"max_tokens": 200}`?
+    back: >-
+      Nothing: json matches a key to a field's name exactly or ignoring case, and `max_tokens`
+      isn't `MaxTokens` either way, so the key is ignored and the field stays 0.
+  - id: crd_62dawr
+    front: >-
+      What does `fmt.Errorf("%w: %w", ErrNotJSON, err)` let a caller find?
+    back: >-
+      Both errors: `errors.Is` finds `ErrNotJSON`, and `errors.AsType` finds the type of `err`,
+      such as json's `*SyntaxError`.

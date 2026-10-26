@@ -1,0 +1,21 @@
+cards:
+  - id: crd_zzkaeu
+    front: >-
+      An upstream answers 500 with a message naming its address. Why does the gateway answer
+      its caller with its own message instead?
+    back: >-
+      An upstream's message can give away its address, keys or software. The caller gets a
+      message that gives no details, and the details go to the gateway's own logs.
+  - id: crd_84eg4z
+    front: >-
+      An upstream asks callers to wait 3.1 seconds. What `Retry-After` does the gateway send,
+      and why not 3?
+    back: >-
+      4. `Retry-After` takes whole seconds, and rounded down, the caller would come back before
+      the upstream is ready.
+  - id: crd_wc4bh1
+    front: >-
+      Why does `WriteError` set `Content-Type` before it calls `w.WriteHeader`?
+    back: >-
+      The headers go out with the status, so changing them after `WriteHeader`, or after the
+      first `Write`, has no effect.

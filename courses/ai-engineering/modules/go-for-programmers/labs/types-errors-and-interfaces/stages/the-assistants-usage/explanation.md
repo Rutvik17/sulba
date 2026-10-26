@@ -1,0 +1,9 @@
+Each problem passed the assistant's tests because each test used the counter as the assistant pictured it. Every merge was of keys both servers had seen, no test sorted the keys it was given, every batch stayed within its limit, and every file it read back was one it had just saved.
+
+A map inside a map is two maps, and the inner one has to be made too. The spec: "Assigning to an element of a nil map causes a run-time panic." `u.tokens[key]` for a key the count has never seen is nil, so the first `+=` to it stops the program. `Add` makes the map before it counts, which is why everything that counts goes through it.
+
+A slice passed out of a method shares its array with the slice inside, and Go's blog on slices: "modifying the elements (not the slice itself) of a re-slice modifies the elements of the original slice". Sorting moves elements, so `Busiest`, the first caller to sort, rewrote the count's own order. A type that keeps a slice and gives it out gives a copy, unless every caller is meant to share it.
+
+`errors.Is` exists for the case `ChargeAll` missed. The `errors` package says `errors.Is(err, fs.ErrExist)` "is preferable to `err == fs.ErrExist` because the former will succeed if err wraps io/fs.ErrExist." `Charge` wraps its error so the caller knows which key and day, and `==` can't see inside the wrapping.
+
+`:=` declares, and a block can declare its own names. The spec allows a short declaration to reuse a name "provided they were originally declared earlier in the same block", and the loop's body is a block of its own, so the `err` declared there is a new one: "While the identifier of the inner declaration is in scope, it denotes the entity declared by the inner declaration." The code compiled, both `err`s were used, and the one the function returned never changed.

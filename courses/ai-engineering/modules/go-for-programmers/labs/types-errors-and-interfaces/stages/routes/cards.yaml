@@ -1,0 +1,19 @@
+cards:
+  - id: crd_yoamio
+    front: >-
+      In Go, what happens when code reads a key from a nil map, and when it assigns one?
+    back: >-
+      Reading gives the zero value of the map's element type. Assigning causes a run-time
+      panic, so a map is made, with `make` or a literal, before anything is added to it.
+  - id: crd_29qd3w
+    front: >-
+      Why does `For` return `slices.Clone(upstreams)` rather than `upstreams`?
+    back: >-
+      A slice shares its array with the one it came from. A caller that changed an element of
+      the routes' own slice would change that model's route for every request after it.
+  - id: crd_b1nnli
+    front: >-
+      Why does `Models` sort the map's keys before it returns them?
+    back: >-
+      Go doesn't specify the order of a map's iteration, and it can change from one iteration
+      to the next, so unsorted keys would come back in a different order each time.

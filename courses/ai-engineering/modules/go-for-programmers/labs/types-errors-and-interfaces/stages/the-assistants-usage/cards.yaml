@@ -1,0 +1,15 @@
+cards:
+  - id: crd_jbqq5j
+    front: >-
+      `var err error` comes before a `for` loop, and inside it,
+      `key, err := parse(line)`. Which `err` does the code after the loop see?
+    back: >-
+      The one declared before the loop, unchanged: the loop's body is a block of its own, so
+      `:=` there declares a new `err` that only the loop can see.
+  - id: crd_ybw6zk
+    front: >-
+      Why does `err == ErrOverLimit` miss an error made with
+      `fmt.Errorf("key %s: %w", key, ErrOverLimit)`?
+    back: >-
+      The wrapping error is a different value, and `==` compares only that value.
+      `errors.Is` looks through the wrapping and finds `ErrOverLimit`.
