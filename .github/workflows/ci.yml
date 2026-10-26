@@ -278,7 +278,7 @@ jobs:
   # Java 21 that GitHub's Ubuntu image holds.
   spark:
     name: Spark labs on Spark
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
