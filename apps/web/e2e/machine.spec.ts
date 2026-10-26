@@ -5,8 +5,8 @@ import { strFromU8, unzipSync } from 'fflate';
 import { signedIn, standIn } from './supabase';
 
 // The fixture course's lab Ledger runs on the learner's machine (decision record 28): its stages,
-// balance, audit, close and statement, run from its download, and the runner's links mark them
-// done here.
+// balance, audit, close, statement and receipt, run from its download, and the runner's links
+// mark them done here.
 const path = '/demo/ledgers/ledger/';
 
 /** A link from the runner to the lab's page, carrying `payload` as sulba.py writes it. */
@@ -88,6 +88,18 @@ test('a lab with TypeScript stages says what their first run downloads, and from
   ).toBeVisible();
 });
 
+test('a lab with Go stages says what their first run downloads, and from where', async ({
+  page,
+}) => {
+  await page.goto(path);
+
+  await expect(
+    page.getByText(
+      'Its Go stages run with Go. The first time, it downloads Go for your system from dl.google.com.',
+    ),
+  ).toBeVisible();
+});
+
 test('a lab with models says how to start them and what that downloads, and credits each', async ({
   page,
 }) => {
@@ -129,6 +141,7 @@ test('its download holds the project, the runner, its stages and the first stage
     'ledger/README.md',
     'ledger/data/entries.csv',
     'ledger/entries.py',
+    'ledger/go.mod',
     'ledger/ledger.py',
     'ledger/package-lock.json',
     'ledger/package.json',
@@ -174,6 +187,7 @@ test('its download holds the project, the runner, its stages and the first stage
     'audit',
     'close',
     'statement',
+    'receipt',
   ]);
   // A Ship stage's checks come in plain words, for the terminal.
   expect(lab.stages[2].checks).toEqual([

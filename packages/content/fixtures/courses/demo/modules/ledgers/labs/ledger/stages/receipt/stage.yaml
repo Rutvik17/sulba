@@ -1,0 +1,6 @@
+id: stg_demo11
+kind: build
+title: Receipt
+builds: A new `receipt.go`, in Go.
+file: receipt.go
+minutes: 10

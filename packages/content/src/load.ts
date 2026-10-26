@@ -40,6 +40,16 @@ const projectFiles = ['README.md', 'pyproject.toml', 'uv.lock'];
  */
 export const nodeProjectFiles = ['package.json', 'package-lock.json', 'tsconfig.json'];
 
+/**
+ * The file a lab project holds for Go stages, which every run has beside the learner's files:
+ * the module the tests import the learner's package from, and its Go version (decision record
+ * 43).
+ */
+export const goProjectFiles = ['go.mod'];
+
+/** A test file's name in Python, TypeScript and Go. */
+const testFileNames = [/^test_[a-z0-9_]+\.py$/, /^[a-z0-9_]+\.test\.ts$/, /^[a-z0-9]+_test\.go$/];
+
 export type { Card, CatchProblem, ChartFile, RubricPoint, ShipCheck } from './schema.ts';
 
 /** A stage's chart: what stage.yaml says of it, and chart.py, which draws it. */
@@ -303,6 +313,7 @@ class Reader {
     if (file.runs === 'machine') this.machineLab(folder, stages, hasProject);
     else this.browserLab(folder, file, stages);
     if (usesTypeScript(stages, file.given)) this.typeScriptLab(folder, file, project, hasProject);
+    if (usesGo(stages, file.given)) this.goLab(folder, file, project, hasProject);
     if (file.runs !== 'machine' && stages.some((stage) => stage.file === 'Dockerfile')) {
       this.problem(
         join(folder, 'lab.yaml'),
@@ -395,6 +406,31 @@ class Reader {
   }
 
   /**
+   * Go runs on the learner's machine, with the module the lab's project gives (decision record
+   * 43).
+   */
+  goLab(
+    folder: string,
+    file: LabFile,
+    project: Readonly<Record<string, string>>,
+    hasProject: boolean,
+  ) {
+    if (file.runs !== 'machine') {
+      this.problem(
+        join(folder, 'lab.yaml'),
+        "runs: Go runs on the learner's machine: set runs: machine.",
+      );
+    } else if (hasProject) {
+      for (const name of goProjectFiles.filter((each) => !Object.hasOwn(project, each))) {
+        this.problem(
+          join(folder, 'project', name),
+          `Missing: a lab's Go runs with its project's ${name}.`,
+        );
+      }
+    }
+  }
+
+  /**
    * A lab that runs in the browser loads only packages Pyodide ships, and fetches no files: the site
    * serves its data.
    */
@@ -460,10 +496,11 @@ class Reader {
   /**
    * A lab's project: its pyproject.toml, uv.lock and README.md, a conftest.py if it has one, and
    * for TypeScript, its package.json, package-lock.json and tsconfig.json, with a
-   * tsconfig.build.json for what `uv run sulba.py build` compiles for the browser.
+   * tsconfig.build.json for what `uv run sulba.py build` compiles for the browser, and for Go, its
+   * go.mod.
    */
   async project(folder: string): Promise<Record<string, string>> {
-    const optional = ['conftest.py', ...nodeProjectFiles, 'tsconfig.build.json'];
+    const optional = ['conftest.py', ...nodeProjectFiles, 'tsconfig.build.json', ...goProjectFiles];
     await this.entries(folder, projectFiles, [], optional);
     const present = await this.files(folder);
     const project: Record<string, string> = {};
@@ -680,14 +717,14 @@ class Reader {
     return code === null ? null : { ...described, code };
   }
 
-  /** The test files in a folder, each by name: test_<name>.py, or <name>.test.ts. */
+  /** The test files in a folder, each by name: test_<name>.py, <name>.test.ts or <name>_test.go. */
   async testFiles(folder: string, none: string): Promise<Record<string, string>> {
     const names = (await this.files(folder)).sort();
     for (const name of names) {
-      if (!/^test_[a-z0-9_]+\.py$/.test(name) && !/^[a-z0-9_]+\.test\.ts$/.test(name)) {
+      if (!testFileNames.some((form) => form.test(name))) {
         this.problem(
           join(folder, name),
-          'A test file is named test_<name>.py, or <name>.test.ts in TypeScript.',
+          'A test file is named test_<name>.py, <name>.test.ts in TypeScript, or <name>_test.go in Go.',
         );
       }
     }
@@ -944,14 +981,29 @@ function usesTypeScript(stages: readonly Stage[], given: readonly string[]): boo
   ].some((name) => name.endsWith('.ts'));
 }
 
+/** Whether any of a lab's stages, or any file it gives, is Go. */
+function usesGo(stages: readonly Stage[], given: readonly string[]): boolean {
+  return [
+    ...given,
+    ...stages.flatMap((stage) => [
+      stage.file,
+      ...Object.keys(stage.tests),
+      ...Object.keys(stage.checks),
+    ]),
+  ].some((name) => name.endsWith('.go'));
+}
+
 /**
- * The id of each test in a test file: in Python, its `@pytest.mark.id("tst_...")`, and in
- * TypeScript, the start of its name, as in `test('tst_... Finds the user', ...)`.
+ * The id of each test in a test file: in Python, its `@pytest.mark.id("tst_...")`, in TypeScript,
+ * the start of its name, as in `test('tst_... Finds the user', ...)`, and in Go, the start of its
+ * subtest's name, as in `t.Run("tst_... Waits for a token", ...)`.
  */
 export function testIds(name: string, text: string): string[] {
   const mark = name.endsWith('.ts')
     ? /\b(?:test|it)\(\s*['"`](tst_[0-9a-z]{6}) /g
-    : /@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g;
+    : name.endsWith('.go')
+      ? /\bt\.Run\(\s*"(tst_[0-9a-z]{6}) /g
+      : /@pytest\.mark\.id\(\s*["'](tst_[0-9a-z]{6})["']\s*\)/g;
   return [...text.matchAll(mark)].map((found) => found[1] as string);
 }
 

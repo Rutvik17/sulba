@@ -16,4 +16,6 @@ The lab's Spark tests run on Sail, which starts inside the run, so they need not
 
 The lab's TypeScript stage runs in Node.js. Its first run downloads Node.js for your system from nodejs.org, and the lab's packages from registry.npmjs.org, into `sulba` in your cache folder.
 
+The lab's Go stage runs with Go. Its first run downloads Go for your system from dl.google.com into `sulba` in your cache folder.
+
 `uv run sulba.py build` compiles `statement.ts` into `static/statement.js`, for a browser to load.

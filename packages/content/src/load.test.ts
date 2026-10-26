@@ -1,4 +1,4 @@
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -315,7 +315,8 @@ test.each([
     change: (root: string) => writeFile(join(root, stages, 'count/tests/checks.py'), ''),
     problem: {
       path: `${stages}/count/tests/checks.py`,
-      message: 'A test file is named test_<name>.py, or <name>.test.ts in TypeScript.',
+      message:
+        'A test file is named test_<name>.py, <name>.test.ts in TypeScript, or <name>_test.go in Go.',
     },
   },
   {
@@ -631,6 +632,7 @@ test("a lab that runs on the learner's machine says so, and has its project", as
     ['audit', 'catch'],
     ['close', 'ship'],
     ['statement', 'build'],
+    ['receipt', 'build'],
   ]);
   expect(Object.keys(lab?.project ?? {})).toEqual([
     'README.md',
@@ -640,6 +642,7 @@ test("a lab that runs on the learner's machine says so, and has its project", as
     'package-lock.json',
     'tsconfig.json',
     'tsconfig.build.json',
+    'go.mod',
   ]);
 });
 
@@ -649,6 +652,14 @@ test("a machine lab's stage can be TypeScript, with tests that Node runs", async
   expect(statement?.file).toBe('statement.ts');
   expect(statement?.starter).toContain('export function statement(');
   expect(Object.keys(statement?.tests ?? {})).toEqual(['statement.test.ts']);
+});
+
+test("a machine lab's stage can be Go, with tests that go test runs", async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const receipt = course?.levels[1]?.modules[0]?.labs[0]?.stages[4];
+  expect(receipt?.file).toBe('receipt.go');
+  expect(receipt?.starter).toContain('func Receipt(');
+  expect(Object.keys(receipt?.tests ?? {})).toEqual(['receipt_test.go']);
 });
 
 test("a test's id is its mark in Python, and the start of its name in TypeScript", () => {
@@ -661,6 +672,11 @@ test("a test's id is its mark in Python, and the start of its name in TypeScript
     "test('Has no id', () => {});",
   ].join('\n');
   expect(testIds('tally.test.ts', typescript)).toEqual(['tst_abc123', 'tst_def456']);
+  const go = [
+    't.Run("tst_abc123 Counts the votes", func(t *testing.T) {})',
+    't.Run("Has no id", func(t *testing.T) {})',
+  ].join('\n');
+  expect(testIds('tally_test.go', go)).toEqual(['tst_abc123']);
 });
 
 test("a lab with TypeScript runs on the learner's machine", async () => {
@@ -673,6 +689,36 @@ test("a lab with TypeScript runs on the learner's machine", async () => {
       message: "runs: TypeScript runs in Node on the learner's machine: set runs: machine.",
     },
   ]);
+});
+
+test("a lab with Go runs on the learner's machine", async () => {
+  const { problems } = await loadChanged((root) =>
+    writeFile(join(root, stages, 'count/tests/tally_test.go'), ''),
+  );
+  expect(problems).toEqual([
+    {
+      path: 'demo/modules/counting/labs/tallies/lab.yaml',
+      message: "runs: Go runs on the learner's machine: set runs: machine.",
+    },
+  ]);
+});
+
+test("a Go file's name has no _, which Go reads as a system to build for", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const receipt = join(root, ledger, 'stages/receipt');
+    await edit(join(receipt, 'stage.yaml'), 'file: receipt.go', 'file: receipt_windows.go');
+    for (const folder of ['starter', 'solution']) {
+      await rename(
+        join(receipt, folder, 'receipt.go'),
+        join(receipt, folder, 'receipt_windows.go'),
+      );
+    }
+  });
+  expect(problems).toContainEqual({
+    path: `${ledger}/stages/receipt/stage.yaml`,
+    message:
+      'file: Expected a Python, TypeScript or Go file name, in lowercase, and in Go without _',
+  });
 });
 
 test("a stage's file can be a Dockerfile, in a lab that runs on the learner's machine", async () => {
@@ -698,6 +744,16 @@ test("a lab's TypeScript runs with its project's package.json, package-lock.json
     {
       path: `${ledger}/project/package-lock.json`,
       message: "Missing: a lab's TypeScript runs with its project's package-lock.json.",
+    },
+  ]);
+});
+
+test("a lab's Go runs with its project's go.mod", async () => {
+  const { problems } = await loadChanged((root) => rm(join(root, ledger, 'project/go.mod')));
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/project/go.mod`,
+      message: "Missing: a lab's Go runs with its project's go.mod.",
     },
   ]);
 });

@@ -2,7 +2,14 @@
 // there as the learner left them, and a stage on a file an earlier stage made adds its starter
 // to the end of the learner's code.
 import type { FetchedFile, RunRequest } from '@sulba/lab/protocol';
-import { type CatchProblem, type Lab, nodeProjectFiles, type Stage, writesCode } from './load.ts';
+import {
+  type CatchProblem,
+  goProjectFiles,
+  type Lab,
+  nodeProjectFiles,
+  type Stage,
+  writesCode,
+} from './load.ts';
 
 /** The learner's code with a stage's starter added below it. */
 export function addStarter(code: string, starter: string): string {
@@ -17,14 +24,15 @@ export function withEdit(starter: string, problem: CatchProblem): string {
 /**
  * What every run of a lab's code has beside it, by its path in the run: each dataset in `data/`,
  * each recorded reference in `references/`, and each file the lab gives, beside the learner's,
- * with the project's files for TypeScript (decision record 39).
+ * with the project's files for TypeScript and Go (decision records 39 and 43).
  */
 export function labFiles(lab: Lab): Record<string, string> {
   const files: Record<string, string> = {};
   for (const set of lab.data) files[`data/${set.file}`] = set.text;
   for (const reference of lab.references) files[`references/${reference.file}`] = reference.text;
   for (const given of lab.given) files[given.file] = given.text;
-  for (const name of nodeProjectFiles.filter((each) => Object.hasOwn(lab.project, each))) {
+  const shared = [...nodeProjectFiles, ...goProjectFiles];
+  for (const name of shared.filter((each) => Object.hasOwn(lab.project, each))) {
     files[name] = lab.project[name] as string;
   }
   return files;

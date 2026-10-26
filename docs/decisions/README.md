@@ -46,5 +46,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [40. Let a machine lab's stage be a Dockerfile, read by its tests and built in CI](0040-let-a-machine-labs-stage-be-a-dockerfile.md) | Accepted |
 | [41. Run a lab's Spark code on Sail, and check it against Spark](0041-run-a-labs-spark-code-on-sail-checked-against-spark.md) | Accepted |
 | [42. Practise a design round against the clock, marked against a rubric](0042-practise-a-design-round-against-the-clock-and-a-rubric.md) | Accepted |
+| [43. Run a machine lab's Go stages with Go's own toolchain, pinned by the runner](0043-run-a-machine-labs-go-stages-with-gos-own-toolchain.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

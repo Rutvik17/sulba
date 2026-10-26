@@ -85,6 +85,7 @@ test("a machine lab's download carries the runner and the files the lab gives, e
     'package-lock.json',
     'tsconfig.json',
     'tsconfig.build.json',
+    'go.mod',
     'entries.py',
     'sulba.py',
     '.sulba/sulba_runner.py',
@@ -117,6 +118,7 @@ test("a machine lab's entry carries what it fetches, with each source's credit",
     'package.json',
     'package-lock.json',
     'tsconfig.json',
+    'go.mod',
   ]);
 });
 

@@ -265,6 +265,34 @@ Tests import the learner's files, and the files the lab gives, through `"imports
 
 A lab whose TypeScript makes a page for the browser also has a `tsconfig.build.json` in its project, which names the files to compile, with `"rootDir"` and `"outDir"`, and `"rewriteRelativeImportExtensions": true` so that an import of `./chat.ts` loads `./chat.js`. `uv run sulba.py build` compiles them with the lab's tsc, and `pnpm check:machine` builds the stages' solutions so.
 
+### Go stages
+
+A lab that runs on the learner's machine can have stages in Go (decision record 43): the stage's file is a `.go` file in the learner's package, its tests and checks are `<name>_test.go` files, and the lab can give `.go` files too. A Go file's name has no `_` but the one in `_test.go`, since Go builds a file whose name ends in a system or a processor, such as `limit_windows.go`, only for that one. Its project then holds a `go.mod`, which names the module and its Go version, as `module example/gateway` and `go 1.27`: Go keeps paths that start with `example` for modules of one's own, which its standard library never takes. Every run of the lab has it beside the learner's files. The lab uses the standard library alone, as a run fetches no module. Before a learner's first Go run, the runner fetches Go, the archive for their system that `sulba_runner.py` pins by its size and sha256, into `sulba` in their cache folder.
+
+A run vets every package with `go vet` first, which builds them too: the compiler's first error, or vet's, is the run's problem, and the tests don't run. Then `go test` runs each folder of test files as a package of its own, which imports the learner's package from the module. A test is a subtest whose name starts with its id:
+
+```go
+package tests
+
+import (
+	"slices"
+	"testing"
+
+	"example/ledger"
+)
+
+func TestReceipt(t *testing.T) {
+	t.Run("tst_demo30 Shows each amount in dollars and cents", func(t *testing.T) {
+		got := ledger.Receipt([]int{1250, 5})
+		if len(got) < 2 || !slices.Equal(got[:2], []string{"12.50", "0.05"}) {
+			t.Errorf("got %q, want the lines 12.50 and 0.05", got)
+		}
+	})
+}
+```
+
+A failed test shows its first message from `t.Errorf` or `t.Fatalf`, which says what it got and what it wanted. A panic stops its package's tests: the test that panicked shows the panic, with the line of the learner's code where it started, and each test after it in the package shows that it didn't run, so a starter returns a zero value or an error rather than panicking. A test of time, such as a rate limit's wait or a retry's backoff, runs inside `synctest.Test`, whose clock moves only when every goroutine in it is waiting, so a second's wait takes no time and comes out the same on every machine. The lab's page says that the first run downloads Go from dl.google.com, so the project's `README.md` says so too.
+
 ### Dockerfile stages
 
 A lab that runs on the learner's machine can have a stage whose file is `Dockerfile` (decision record 40), the image of the lab's project. Its tests and checks are pytest files that read the `Dockerfile` in the run's folder, so a run needs no Docker:
