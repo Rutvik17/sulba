@@ -3,7 +3,7 @@
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
-  "packageManager": "pnpm@12.14.0",
+  "packageManager": "pnpm@12.15.0",
   "engines": {
     "node": ">=24"
   },
@@ -24,6 +24,6 @@
     "lint:python": "uv run --directory packages/lab/python ruff check . ../../../courses ../../../tools && uv run --directory packages/lab/python ruff format --check . ../../../courses ../../../tools"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.15"
+    "@biomejs/biome": "2.6.2"
   }
 }

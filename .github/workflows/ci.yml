@@ -66,7 +66,7 @@ jobs:
           key: pyodide-${{ hashFiles('packages/lab/package.json', 'packages/lab/src/assemble.ts', 'packages/lab/src/protocol.ts') }}
       # The lab's Python side runs in CPython at the versions Pyodide ships (packages/lab/python), and
       # a lab that runs on the learner's machine runs in its own project, at the versions it locks.
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
@@ -121,7 +121,7 @@ jobs:
           path: node_modules/.cache/sulba-fetched
           key: ${{ steps.fetched.outputs.key }}
           restore-keys: fetched-
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
@@ -220,7 +220,7 @@ jobs:
           restore-keys: fetched-
       # Only the first lab's job saves what it installs, as only it saves the files: each job's
       # cache holds what its own lab needs, and the first to finish would save its own.
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
@@ -299,7 +299,7 @@ jobs:
           path: node_modules/.cache/sulba-fetched
           key: ${{ steps.fetched.outputs.key }}
           restore-keys: fetched-
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
       - run: JAVA_HOME="$JAVA_HOME_21_X64" pnpm check:machine --spark
@@ -327,7 +327,7 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile --filter @sulba/content...
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
       - shell: bash
@@ -363,7 +363,7 @@ jobs:
           restore-keys: fetched-
       # What each make.py installs, such as PyTorch's CPU build, comes from the cache while the
       # make.py files stay the same.
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
@@ -413,7 +413,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The build computes the figures of a lab that runs on the learner's machine in CPython, in its
       # own project.
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: true
