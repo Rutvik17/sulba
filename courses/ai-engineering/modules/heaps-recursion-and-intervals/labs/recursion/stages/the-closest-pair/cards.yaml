@@ -1,0 +1,7 @@
+cards:
+  - id: crd_2oze0j
+    front: >-
+      How do you find the closest pair of n points in n log n time?
+    back: >-
+      Split by x and solve each half. Only points within d of the split, sorted by y, can be
+      closer, and each needs checking against the next 7.

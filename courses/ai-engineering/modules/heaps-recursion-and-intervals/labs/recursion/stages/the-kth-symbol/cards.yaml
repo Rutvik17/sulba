@@ -1,0 +1,8 @@
+cards:
+  - id: crd_6yhfuk
+    front: >-
+      In the table where each 0 is written as 01 and each 1 as 10 in the next row, how do you
+      find a row's symbol at a place without writing the row?
+    back: >-
+      Climb a row: the place's parent is at (place + 1) // 2, and an even place flips the
+      parent's symbol. Row 1's symbol is 0.

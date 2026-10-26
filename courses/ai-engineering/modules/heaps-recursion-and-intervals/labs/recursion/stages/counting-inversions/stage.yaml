@@ -1,0 +1,6 @@
+id: stg_d0sstz
+kind: problem
+title: Counting inversions
+builds: A new `inversions.py`.
+file: inversions.py
+minutes: 25

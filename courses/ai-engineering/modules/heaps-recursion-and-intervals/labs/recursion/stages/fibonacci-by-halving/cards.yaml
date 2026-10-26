@@ -1,0 +1,7 @@
+cards:
+  - id: crd_b2hai8
+    front: >-
+      How do you find F(n) mod m when n is far too large to count up to?
+    back: >-
+      Halve n: the pair F(k), F(k + 1) gives F(2k) and F(2k + 1), and the pair for 2k + 1 is one
+      step on, with every number taken mod m.

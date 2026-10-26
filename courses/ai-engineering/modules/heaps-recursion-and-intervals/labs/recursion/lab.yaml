@@ -1,0 +1,7 @@
+id: lab_v48jrd
+title: Recursion
+summary: >-
+  Six interview problems solved from smaller cases of themselves: a symbol deep in a table of
+  rows, Fibonacci numbers by halving, the last one left in a circle, prefix expressions, a list's
+  inversions counted by merge sort, and the closest pair of points.
+stages: [the-kth-symbol, fibonacci-by-halving, the-last-one-standing, prefix-expressions, counting-inversions, the-closest-pair]
