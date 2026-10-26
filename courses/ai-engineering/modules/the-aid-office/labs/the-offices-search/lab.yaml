@@ -1,0 +1,71 @@
+id: lab_6sfnbm
+title: The office's search
+summary: >-
+  Harbor College's aid office's search, for its own server: the office's passages in Postgres,
+  kept in step as its pages change, a search by meaning and by words that gives pages, a limit
+  that turns away questions the pages don't answer, a review of an assistant's search, and the
+  search the office's assistant calls.
+data:
+  - file: passages.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The dataset's federal student aid pages in passages: each page's text taken from its HTML,
+      with its headings marked by #s and its list items by -, and its blocks joined into
+      passages of up to 200 words. Each passage has its page, and the page's title without the
+      part number the dataset adds.
+  - file: questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue about those pages whose next turn answers it from
+      the same page, with that page: from 500 of the dataset's training dialogues, chosen at
+      random, and its validation dialogues.
+  - file: other-questions.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      The opening question of each dialogue about the dataset's other pages, Social Security's,
+      Veterans Affairs' and New York State's DMV's, whose next turn answers it from the same
+      page, from the same dialogues.
+  - file: passage-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each passage's vector from nomic-embed-text-v1.5 at 8 bits, embedded after
+      `search_document: `, one text a request, by llama.cpp's server, release b11734, each
+      number times 32,767, rounded.
+  - file: question-vectors.csv
+    title: MultiDoc2Dial
+    creators: [Song Feng, Siva Sankalp Patel, Hui Wan, Sachindra Joshi]
+    url: https://doc2dial.github.io/multidoc2dial/
+    licence:
+      name: CC BY 3.0
+      url: https://creativecommons.org/licenses/by/3.0/
+    changes: >-
+      Each question's vector, the office's and the others', from nomic-embed-text-v1.5 at 8
+      bits, embedded after `search_query: `, one text a request, by llama.cpp's server, release
+      b11734, each number times 32,767, rounded.
+runs: machine
+stages:
+  - the-offices-index
+  - pages-best-first
+  - questions-the-pages-dont-answer
+  - the-assistants-search
+  - ready-for-the-office

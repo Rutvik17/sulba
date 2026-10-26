@@ -1,0 +1,13 @@
+cards:
+  - id: crd_39gkzh
+    front: >-
+      Why keep a digest of each passage's text beside its vector?
+    back: >-
+      It tells a sync which texts have changed since they were embedded, so it embeds only
+      those, and a passage whose text is the same keeps the vector it has.
+  - id: crd_texwje
+    front: >-
+      Why embed every changed text before changing the table?
+    back: >-
+      A request that fails then fails before any write, and with the writes in one transaction,
+      the table is either brought up to date or left as it was.

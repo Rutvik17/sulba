@@ -1,0 +1,13 @@
+cards:
+  - id: crd_5wkaxf
+    front: >-
+      Why turn away a question whose nearest passage isn't close enough to it?
+    back: >-
+      A search always gives the nearest passages there are, even for a question the pages don't
+      cover, and an answer from them would be wrong.
+  - id: crd_05uzbp
+    front: >-
+      Why give a customer a threshold's rates on questions other than the ones it was chosen on?
+    back: >-
+      Chosen to keep a share of those questions, it keeps that share of them by construction;
+      questions that had no say in it show what it will do.

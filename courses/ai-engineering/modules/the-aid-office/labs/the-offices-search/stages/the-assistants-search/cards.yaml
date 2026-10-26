@@ -1,0 +1,13 @@
+cards:
+  - id: crd_c8pwfg
+    front: >-
+      Why does a search by the words of a typed question join them with | rather than &?
+    back: >-
+      Few passages hold every word of a sentence. With |, any of its words match, and ts_rank
+      puts the passages that hold more of them first.
+  - id: crd_fezoho
+    front: >-
+      Which httpx exception covers both a reply with an error status and a request that failed?
+    back: >-
+      httpx.HTTPError: HTTPStatusError, from raise_for_status, and RequestError, for timeouts
+      and dropped connections, both come from it.

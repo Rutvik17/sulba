@@ -1,0 +1,14 @@
+cards:
+  - id: crd_ved0t2
+    front: >-
+      Why fuse a search's two rankings by their ranks rather than their scores?
+    back: >-
+      Cosine distances and ts_rank's values aren't on one scale, and ranks are: each passage
+      scores the weight over k plus its rank in each ranking that found it.
+  - id: crd_9243tm
+    front: >-
+      Why does a query that keeps each page's best passage with DISTINCT ON need an outer query
+      to give the pages best first?
+    back: >-
+      Postgres needs the DISTINCT ON expressions to match the leftmost ORDER BY ones, so its
+      rows come in page order, and only an outer ORDER BY can sort them by score.

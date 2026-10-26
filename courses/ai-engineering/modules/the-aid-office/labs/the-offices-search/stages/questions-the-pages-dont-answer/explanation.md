@@ -1,0 +1,5 @@
+The office's own questions are nearer its passages than the other services' are. By the recorded vectors, the median closeness of the office's validation questions is {% $fig.office_median %}, and of the others' {% $fig.others_median %}. Keeping {% $fig.keep %} of the office's sets the threshold at {% $fig.limit %}, which turns away {% $fig.declined_validation %} of the others'.
+
+On the test questions, the same threshold keeps {% $fig.kept_test %} of the office's {% $fig.test %} and turns away {% $fig.declined_test %} of the others' {% $fig.others_test %}. It keeps fewer of the office's than of the validation questions it was chosen on, because it sits among the lowest few of {% $fig.validation %} closenesses, and another set of questions has its own lowest few. The figures to give the office are the test questions', which had no say in the threshold.
+
+A question turned away costs the office a reply from its staff, and another service's question kept costs a student an answer the pages don't support. Where the threshold sits is the office's call, made with these figures.

@@ -1,0 +1,56 @@
+id: stg_en0jo1
+kind: catch
+title: The assistant's search
+builds: A new `finder.py`, which uses the table your `index.py` makes.
+file: finder.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 45
+problems:
+  - check: tst_8obe4t
+    title: Its words all had to be in one passage
+    cost: >-
+      `plainto_tsquery` joins the question's words with `&`, so a passage matched only when it
+      held every one of them. When the model was down, a question with a word no passage holds,
+      a name or a typo, got no pages at all.
+    fix: >-
+      The fix: the query with each `&` made `|`, which a passage holding any of the words
+      matches, ranked by `ts_rank`.
+    edit:
+      replace: "    SELECT plainto_tsquery('english', %(question)s) AS query\n"
+      with: "    SELECT replace(plainto_tsquery('english', %(question)s)::text, '&', '|')::tsquery\n        AS query\n"
+  - check: tst_a57n7i
+    title: It gave pages in the order of their names
+    cost: >-
+      `DISTINCT ON (page)` needs its `ORDER BY` to start with `page`, so the rows came out in
+      the order of the pages' names, and `LIMIT 5` kept the pages whose names sort first, of
+      every page either ranking found, rather than the best.
+    fix: >-
+      The fix: the `DISTINCT ON` in a subquery, its rows sorted again outside it by score, best
+      first, before the `LIMIT`.
+    edit:
+      replace: "SELECT DISTINCT ON (page) page, id FROM fused JOIN passages USING (id)\nORDER BY page, score DESC, id\nLIMIT 5\n"
+      with: "SELECT page, id FROM (\n    SELECT DISTINCT ON (page) page, id, score FROM fused JOIN passages USING (id)\n    ORDER BY page, score DESC, id\n) pages\nORDER BY score DESC, id\nLIMIT 5\n"
+  - check: tst_lkc5yv
+    title: It took the nearest passage's distance for its closeness
+    cost: >-
+      `min(embedding <=> %s)` is the least cosine distance, which is small when a passage is
+      near, so `closest >= CLOSE` held only for a question far from every passage. It turned
+      away every one of the office's {% $fig.questions %} questions, as it did the others.
+    fix: >-
+      The fix: `1 - min(embedding <=> %s)`, the cosine similarity of the nearest passage.
+    edit:
+      replace: "\"SELECT min(embedding <=> %s) FROM passages\""
+      with: "\"SELECT 1 - min(embedding <=> %s) FROM passages\""
+  - check: tst_p75a0o
+    title: It searched by words only after an error status
+    cost: >-
+      `httpx.HTTPStatusError` is what `raise_for_status` raises for a reply with an error
+      status. A dropped connection raises `httpx.RemoteProtocolError`, and a reply that doesn't
+      come in time `httpx.ReadTimeout`, which it let through: the office's assistant got an
+      error instead of pages.
+    fix: >-
+      The fix: `except httpx.HTTPError`, the class every one of httpx's request and status
+      errors comes from.
+    edit:
+      replace: "    except httpx.HTTPStatusError:\n"
+      with: "    except httpx.HTTPError:\n"

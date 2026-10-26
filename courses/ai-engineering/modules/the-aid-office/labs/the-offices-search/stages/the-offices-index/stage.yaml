@@ -1,0 +1,7 @@
+id: stg_r3qty9
+kind: build
+title: The office's index
+builds: A new `index.py`.
+file: index.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60

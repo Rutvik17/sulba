@@ -1,0 +1,45 @@
+id: stg_er9niu
+kind: ship
+title: Ready for the office
+builds: A new `office.py`, which uses your `index.py`, `search.py` and `scope.py`.
+file: office.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 90
+checks:
+  - check: tst_k13407
+    title: "Finds the page for {% $fig.found %} of the office's questions"
+    requires: >-
+      Of the office's {% $fig.test %} test questions, at least {% $fig.found %} have their page
+      among the pages `find` gives.
+    failure: >-
+      Weigh meaning more than words, and set the closeness the search needs no higher than the
+      other services' questions call for: choose both on the validation questions.
+  - check: tst_pg5cco
+    title: "Turns away {% $fig.declined %} of the other services' questions"
+    requires: >-
+      Of the other services' {% $fig.others_test %} test questions, `find` gives no pages for at
+      least {% $fig.declined %}.
+    failure: >-
+      Give no pages when the question's closeness, from your `scope.py`, falls below a threshold
+      your `threshold` sets on the office's validation questions.
+  - check: tst_1y9bm9
+    title: "By its words when the model is down"
+    requires: >-
+      When the model answers with an error, drops the connection or never answers, `find` gives
+      the pages `search` gives by the question's words alone.
+    failure: >-
+      Pass a `timeout` to `client.post`, and catch `httpx.HTTPError`, which covers an error
+      status, a dropped connection and a timeout.
+  - check: tst_2sqol0
+    title: "One request a question"
+    requires: >-
+      Each question is embedded once, as a query: one request naming `EMBEDDER`, with the
+      question after `QUERY` as its only input.
+    failure: >-
+      Embed the question once, and use its vector for both the closeness and the search.
+  - check: tst_vkwkrh
+    title: "{% $fig.pages %} pages at most, each once"
+    requires: >-
+      `find` gives at most {% $fig.pages %} pages, each once, each with a passage of its own.
+    failure: >-
+      Give the pages `search` gives, with its default number of them.

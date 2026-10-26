@@ -1,0 +1,13 @@
+cards:
+  - id: crd_s2bfsd
+    front: >-
+      Why does a search service set a timeout on each call it makes to its model?
+    back: >-
+      A request with no timeout waits for ever on a model that never answers, and the student's
+      question waits with it.
+  - id: crd_uf8kti
+    front: >-
+      Why does the office's search go by words alone when the model can't embed a question?
+    back: >-
+      The words still find pages for nearly every question, and a student is better served by
+      those than by an error.

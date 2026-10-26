@@ -1,0 +1,7 @@
+id: stg_uvm3ry
+kind: build
+title: Pages, best first
+builds: A new `search.py`, which uses your `index.py`.
+file: search.py
+packages: [httpx, numpy, psycopg, pgvector]
+minutes: 60
