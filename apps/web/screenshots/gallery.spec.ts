@@ -1,6 +1,14 @@
 import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from '../e2e/islands';
 
+/** Whether a code editor's last line number sits level with its last line. */
+function numbered(editor: Element) {
+  const top = (nodes: NodeListOf<Element>) =>
+    Array.from(nodes).at(-1)?.getBoundingClientRect().top ?? Number.NaN;
+  const numbers = top(editor.querySelectorAll('.cm-lineNumbers .cm-gutterElement'));
+  return Math.abs(numbers - top(editor.querySelectorAll('.cm-line'))) < 1;
+}
+
 /**
  * Each gallery section, and how a desktop test shows its transient states: one control with
  * keyboard focus and the pointer over another, so a single picture holds both. `ready` waits for
@@ -69,7 +77,16 @@ const sections: {
   {
     id: 'editor',
     name: 'Code editor',
-    ready: (page) => expect(page.locator('.cm-lintRange-error')).toHaveText('bias'),
+    // Ruff's marks come from a Web Worker. An editor measures its lines only once it's on screen,
+    // and places its line numbers by those heights, so on a phone, where the section starts below
+    // the window, each editor is brought into view until its numbers line up.
+    ready: async (page) => {
+      await expect(page.locator('.cm-lintRange-error')).toHaveText('bias');
+      for (const editor of await page.locator('.cm-editor').all()) {
+        await editor.scrollIntoViewIfNeeded();
+        await expect.poll(() => editor.evaluate(numbered)).toBe(true);
+      }
+    },
     states: async () => {},
   },
   {
