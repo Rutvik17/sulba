@@ -95,7 +95,9 @@ def main():
     results["panic output"] = "".join(
         event["Output"]
         for event in events(again)
-        if event.get("Test", "").startswith("TestPanics/tst_ffffff") and event["Action"] == "output"
+        # A panic's message and stack come after the failure of the subtest that panicked, as its
+        # parent's output.
+        if event.get("Test", "").startswith("TestPanics") and event["Action"] == "output"
     )
     results["first exit"] = first.returncode
     bad = timed("go test bad", [str(go), "test", "-json", "-count=1", "./bad"], project, env)
