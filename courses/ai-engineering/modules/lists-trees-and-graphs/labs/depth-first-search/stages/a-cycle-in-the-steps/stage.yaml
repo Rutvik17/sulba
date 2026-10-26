@@ -1,0 +1,6 @@
+id: stg_fc7704
+kind: problem
+title: A cycle in the steps
+builds: A new `cycle.py`.
+file: cycle.py
+minutes: 25

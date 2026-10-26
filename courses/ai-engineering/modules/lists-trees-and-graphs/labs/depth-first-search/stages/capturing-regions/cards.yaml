@@ -1,0 +1,7 @@
+cards:
+  - id: crd_xsqwbk
+    front: >-
+      How do you capture every region of Os that doesn't touch the board's edge?
+    back: >-
+      Search from every O on the edge and mark what you reach: those regions are safe, and every
+      O left unmarked is captured.

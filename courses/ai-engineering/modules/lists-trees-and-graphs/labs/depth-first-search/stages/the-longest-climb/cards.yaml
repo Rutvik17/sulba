@@ -1,0 +1,7 @@
+cards:
+  - id: crd_fvna8h
+    front: >-
+      How do you find the longest strictly rising path in a grid of heights?
+    back: >-
+      The longest from a square is 1 more than its best higher neighbour's: work the squares out
+      from highest to lowest, or search depth first with a memo.

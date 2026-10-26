@@ -1,0 +1,6 @@
+id: stg_ydxevk
+kind: problem
+title: Capturing regions
+builds: A new `regions.py`.
+file: regions.py
+minutes: 20

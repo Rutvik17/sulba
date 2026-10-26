@@ -1,0 +1,6 @@
+id: stg_024gno
+kind: problem
+title: Water to both oceans
+builds: A new `oceans.py`.
+file: oceans.py
+minutes: 25
