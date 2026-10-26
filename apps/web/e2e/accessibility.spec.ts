@@ -337,6 +337,32 @@ for (const scheme of ['dark', 'light'] as const) {
     expect(results.violations).toEqual([]);
   });
 
+  test(`a Design stage, with its rubric being marked, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript(() => {
+      const state = { started: Date.now() - 26 * 60_000, attempts: 1, design: 'One table.' };
+      localStorage.setItem(
+        'sulba:design:stg_demo10',
+        JSON.stringify({
+          ...state,
+          handedIn: true,
+          answers: ['Count it again.', 'The table.'],
+          answered: 25 * 60,
+          marks: [true, false, false],
+          marked: false,
+        }),
+      );
+    });
+    await page.goto('/demo/interviews/poll-design/');
+    await expect(page.getByRole('heading', { name: 'Rubric' })).toBeVisible();
+
+    const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+    expect(results.violations).toEqual([]);
+  });
+
   test(`a lab's explanation, with its formulas, has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,
   }) => {

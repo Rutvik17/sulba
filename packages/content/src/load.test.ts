@@ -1020,3 +1020,55 @@ test("a lab that runs in the browser can't load a package Pyodide doesn't ship",
     },
   ]);
 });
+
+const design = 'demo/modules/interviews/labs/poll-design/stages/a-poll-service';
+
+test('a Design stage has its follow-up questions, its rubric and its pass, and writes no code', async () => {
+  const { course } = await loadCourse(fixtures, 'demo');
+  const stage = course?.levels[0]?.modules[1]?.labs[1]?.stages[0];
+  expect(stage?.kind).toBe('design');
+  expect(stage?.questions).toEqual([
+    'Two counts of the same box disagree. What does the service do?',
+    'The town doubles its voters. What changes first?',
+  ]);
+  expect(stage?.rubric.map(({ point }) => point)).toEqual([
+    'Counts each vote once',
+    'Says who reads the results, and when',
+    'Keeps a record that a recount can check',
+  ]);
+  expect(stage?.pass).toBe(2);
+  expect(stage?.hints).toEqual(['Start from who reads the results, and when.']);
+  expect([stage?.file, stage?.starter, stage?.solution]).toEqual(['', '', '']);
+  expect([stage?.tests, stage?.checks, stage?.packages]).toEqual([{}, {}, []]);
+});
+
+test('a Design stage passes on at most every point of its rubric, and holds no code', async () => {
+  const { problems } = await loadChanged(async (root) => {
+    await edit(join(root, design, 'stage.yaml'), 'pass: 2', 'pass: 4');
+    await mkdir(join(root, design, 'tests'));
+    await writeFile(join(root, design, 'tests', 'test_poll.py'), 'def test_poll():\n    pass\n');
+  });
+  expect(problems).toEqual([
+    {
+      path: `${design}/stage.yaml`,
+      message: 'pass: A design passes on at most every point of its rubric.',
+    },
+    { path: `${design}/tests`, message: 'Not part of the course: list it or remove it.' },
+  ]);
+});
+
+test("a machine lab can't have a Design stage, since its clock runs in the browser", async () => {
+  const { problems } = await loadChanged(async (root) => {
+    const close = join(root, ledger, 'stages/close');
+    await rm(close, { recursive: true });
+    await cp(join(root, design), close, { recursive: true });
+    await edit(join(close, 'stage.yaml'), 'id: stg_demo10', 'id: stg_demo11');
+  });
+  expect(problems).toEqual([
+    {
+      path: `${ledger}/stages/close/stage.yaml`,
+      message:
+        "kind: A Design stage's clock runs in the browser, so a lab that runs on the learner's machine can't have one.",
+    },
+  ]);
+});

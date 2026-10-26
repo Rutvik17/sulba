@@ -1,0 +1,1 @@
+The town clerk wants a service that counts the poll's ballots as they arrive and gives the result when the polls close at {% $fig.close %}. Write your design: what it stores, how it counts, and how a recount works.

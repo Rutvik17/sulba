@@ -26,7 +26,7 @@ A course is a folder of plain files (decision record 7). `pnpm check:content` ch
       stages/<stage>/
         stage.yaml          id, kind, title, what it builds on, the file the learner works in,
                             packages, minutes, a Catch stage's problems or a Ship stage's
-                            checks, and a chart
+                            checks, a chart, or a Design stage's questions and rubric
         brief.md            the task
         hints.md            optional: hints in the order they open, separated by lines of ---
         explanation.md      the explanation
@@ -49,7 +49,7 @@ Every course, level, module, lab, stage, test and review card has a permanent id
 
 A lab's stages build on each other. A stage's tests run with the lab's data and the earlier stages' solutions. A lab that runs on the learner's machine can give code its learner builds on but doesn't write (decision record 37): each file `given` in `lab.yaml` lists, from `given/`, sits beside the learner's files in every run and in the download, and no stage's file may take its name. When an earlier stage made the same file, the stage's starter goes below the learner's code. `builds` in `stage.yaml` says what the stage builds on, in a line of Markdoc above its brief.
 
-A stage's `kind` is `build`, `catch`, `ship` or `problem`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
+A stage's `kind` is `build`, `catch`, `ship`, `problem` or `design`. In a Build stage the learner writes the code. The checks hold each Build stage to three things:
 
 - The solution passes every one of the stage's tests, and every earlier stage's.
 - The starter fails at least one test.
@@ -132,6 +132,23 @@ A Problem stage is an interview problem, solved against the clock (decision reco
 
 The starter is in a file no earlier stage made, since the learner solves the problem from nothing. `pnpm check:content` holds a Problem stage to what it holds a Build stage to. A test with a large input holds the code to the cost the explanation gives: a run stops at its time limit, so a slower way fails it.
 
+## Design stages
+
+A Design stage is a design round against the clock, with no code (decision record 42). Its brief stays hidden until the learner starts, and its `minutes` are the time it has. The learner writes a design and hands it in, then answers the follow-up questions in `stage.yaml`, which show only then. The clock runs from the start until the answers are in. Then the rubric shows, with the explanation, which is the model design: the learner marks each point Met or Not met against what they wrote, each starting as Not met, and the stage passes when they meet at least `pass` of them. A design that falls short starts again, from the design written before.
+
+```yaml
+kind: design
+minutes: 40
+questions:
+  - The town doubles its voters. What changes first?
+rubric:
+  - point: Counts each vote once
+    answer: Each ballot has an id, and a count keeps the ids it has seen.
+pass: 1
+```
+
+Each question, point and answer is a line of Markdoc and can show figures. A Design stage has `brief.md` and `explanation.md`, and may have `hints.md`, `figures.py` and `cards.yaml`, but no file, packages, starter, solution, tests, checks or chart. The stages after it build on the code of the stages before it.
+
 ## Projects
 
 A lab whose code runs on the learner's machine, such as a web service, has a project (decision record 25). Its workspace then offers a download: one zip of the project's files, the lab's data and the learner's files as the stage open in the editor has them, made in the browser. `README.md` tells the learner how to run it with uv. `pyproject.toml` lists what it needs, at the versions the browser runs, and `uv.lock`, which `uv lock` writes, pins them. `pnpm check:content` holds the lock to `uv lock --check`, to the Python version Pyodide runs, to the version Pyodide ships of each package they both have, and to every package the lab's stages load. No learner's file may share a name with a project file.
@@ -140,7 +157,7 @@ A lab whose code runs on the learner's machine, such as a web service, has a pro
 
 A lab whose stages load a package Pyodide doesn't ship, such as `torch`, or need more data or time than a run in the browser has, sets `runs: machine` in `lab.yaml`, and all its stages run on the learner's machine (decision record 28). Its page shows each stage's brief, hints, explanation and solution, with no editor, and its download is the project with the stages' tests and checks and their runner, `sulba.py`, which the learner runs with `uv run sulba.py`. When a stage passes, the runner prints a link back to the lab's page, which marks the stage done there. Its `README.md` says so.
 
-Its project pins torch from PyTorch's CPU index on every platform, through `[tool.uv.sources]` and an index marked `explicit = true`, and Python, pytest and each package its stages load that Pyodide ships at Pyodide's versions; torch's own dependencies are left to uv. `pnpm check:content` runs its stages and figures in CPython alone, in that project, and `pnpm check:machine`, which CI's Machine labs jobs run on Windows, macOS and Linux, runs its download through `uv run sulba.py` with each stage's starter and solution, and CI fails when a stage's figures differ from one system to another. Such a lab has no Problem stages and no charts, which run in the browser, and no learner's file named `sulba.py`.
+Its project pins torch from PyTorch's CPU index on every platform, through `[tool.uv.sources]` and an index marked `explicit = true`, and Python, pytest and each package its stages load that Pyodide ships at Pyodide's versions; torch's own dependencies are left to uv. `pnpm check:content` runs its stages and figures in CPython alone, in that project, and `pnpm check:machine`, which CI's Machine labs jobs run on Windows, macOS and Linux, runs its download through `uv run sulba.py` with each stage's starter and solution, and CI fails when a stage's figures differ from one system to another. Such a lab has no Problem or Design stages and no charts, which run in the browser, and no learner's file named `sulba.py`.
 
 Each figure must come out the same on every system. Counts, sizes and exact roundings do, and so does a float64 run whose results stand clear of the last digits a system's sums can change, which `figures.py` asserts. No figure comes from float32 or bfloat16 training. Float64 training still drifts apart from one system to another, as kernels sum in different orders and each step grows the difference, so a figure read from a long run is stated as a bound that `figures.py` asserts.
 

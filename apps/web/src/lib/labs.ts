@@ -70,6 +70,18 @@ export interface StageView {
   readonly shipChecks: readonly ShipCheckView[];
   /** The chart that draws the learner's code once the stage is passed, if it has one. */
   readonly chart: ChartView | null;
+  /** A Design stage's follow-up questions, each a line of HTML. Other stages have none. */
+  readonly questions: readonly string[];
+  /** A Design stage's rubric, in the order the learner marks it. Other stages have none. */
+  readonly rubric: readonly RubricPointView[];
+  /** How many of a Design stage's rubric points pass it. Other stages have 0. */
+  readonly pass: number;
+}
+
+export interface RubricPointView {
+  /** What a design should do, and what a strong design says to it, each a line of HTML. */
+  readonly point: string;
+  readonly answer: string;
 }
 
 export interface ChartView {
@@ -234,6 +246,9 @@ function stageView(stage: Stage, figures: Figures): StageView {
       sliders: stage.chart.sliders,
       code: stage.chart.code,
     },
+    questions: stage.questions.map(line),
+    rubric: stage.rubric.map(({ point, answer }) => ({ point: line(point), answer: line(answer) })),
+    pass: stage.pass,
   };
 }
 

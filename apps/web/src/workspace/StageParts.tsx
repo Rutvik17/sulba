@@ -1,3 +1,4 @@
+import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { useEffect, useRef } from 'react';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
@@ -16,6 +17,7 @@ const css = classes(
   'kind',
   'state',
   'prose',
+  'hints',
   'problems',
   'caught',
   'missed',
@@ -26,6 +28,7 @@ const kinds: Record<StageView['kind'], string> = {
   catch: 'Catch',
   ship: 'Ship',
   problem: 'Problem',
+  design: 'Design',
 };
 
 /** A lab's stages, each with its kind and state, opening the one the learner picks. */
@@ -84,6 +87,38 @@ export function Prose({ html }: { html: string }) {
       // biome-ignore lint/security/noDangerouslySetInnerHtml: Markdoc made this HTML at build time from course files, which can't contain HTML of their own.
       dangerouslySetInnerHTML={{ __html: html }}
     />
+  );
+}
+
+/** A stage's hints, the first `shown` of them, and a button that shows the next. */
+export function Hints({
+  hints,
+  shown,
+  onShow,
+}: {
+  hints: readonly string[];
+  shown: number;
+  onShow: () => void;
+}) {
+  return (
+    <>
+      {shown > 0 && (
+        <ol className={css.hints}>
+          {hints.slice(0, shown).map((hint) => (
+            <li key={hint}>
+              <Prose html={hint} />
+            </li>
+          ))}
+        </ol>
+      )}
+      {shown < hints.length ? (
+        <Button variant="outline" size="small" onPress={onShow}>
+          {shown === 0 ? 'Show a hint' : 'Show the next hint'}
+        </Button>
+      ) : (
+        <p>No more hints.</p>
+      )}
+    </>
   );
 }
 

@@ -9,13 +9,15 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import type { LabView, ProblemView, StageView } from '../lib/labs';
 import { ChartPanel } from './ChartPanel';
+import DesignWorkspace from './DesignWorkspace';
 import { labData, projectFiles } from './data';
 import MachineWorkspace from './MachineWorkspace';
+import { useNow } from './now';
 import { clock, elapsed, type ProblemState, solvedIn } from './problem';
 import { firstStage, passOf, reviewsOf, takeIn } from './progress';
 import { CatchResults, Line, Output, type Run, ShipResults, TestResults } from './Results';
-import { Problems, Prose, StageNav } from './StageParts';
-import { codeOf, downloadOf, packagesOf, type Review, runOf } from './stages';
+import { Hints, Problems, Prose, StageNav } from './StageParts';
+import { codeOf, downloadOf, packagesOf, type Review, runOf, writesCode } from './stages';
 import { type Stopwatch, stopwatch } from './stopwatch';
 import { kept } from './storage';
 import { type Recorder, startSync } from './sync';
@@ -27,7 +29,6 @@ const css = classes(
   'left',
   'panel',
   'builds',
-  'hints',
   'right',
   'head',
   'file',
@@ -77,7 +78,10 @@ function reviewOf(problems: readonly ProblemView[], result: RunResult): Review {
   return { caught: caught.map((problem) => problem.check), total: problems.length };
 }
 
-/** A lab's stages, and the workspace for the one open. Python stays loaded across stages. */
+/**
+ * A lab's stages, and the workspace for the one open. Python stays loaded across stages, and a lab
+ * whose stages are all Design stages doesn't load it.
+ */
 function BrowserWorkspace({ lab }: { lab: LabView }) {
   const [index, setIndex] = useState(() => firstStage(lab));
   const [passed, setPassed] = useState(() => lab.stages.filter((stage) => kept.passed(stage.id)));
@@ -105,10 +109,11 @@ function BrowserWorkspace({ lab }: { lab: LabView }) {
   }, [lab]);
 
   useEffect(() => {
+    if (!lab.stages.some(writesCode)) return;
     const runner = new Lab({ indexURL: pyodidePath });
     setPython(runner);
     return () => runner.dispose();
-  }, []);
+  }, [lab]);
 
   // The lab's data comes while Python loads, so the first run doesn't wait for it. A run that
   // finds it missing fetches it again.
@@ -145,26 +150,41 @@ function BrowserWorkspace({ lab }: { lab: LabView }) {
   return (
     <>
       <StageNav lab={lab} index={index} passed={passed} reviews={reviews} onOpen={open} />
-      <StageWorkspace
-        key={stage.id}
-        lab={lab}
-        index={index}
-        python={python}
-        loading={loading}
-        passed={isPassed(stage)}
-        review={reviews[stage.id] ?? null}
-        onPass={() => {
-          kept.pass(stage.id);
-          setPassed(lab.stages.filter((each) => kept.passed(each.id)));
-        }}
-        onFinish={(review) => {
-          kept.finish(stage.id, review);
-          setReviews((before) => ({ ...before, [stage.id]: review }));
-          setPassed(lab.stages.filter((each) => kept.passed(each.id)));
-        }}
-        onNext={index + 1 < lab.stages.length ? () => open(index + 1) : null}
-        record={(event, seconds) => recorder.current?.record(stage, event, seconds)}
-      />
+      {stage.kind === 'design' ? (
+        <DesignWorkspace
+          key={stage.id}
+          lab={lab}
+          index={index}
+          passed={isPassed(stage)}
+          onPass={() => {
+            kept.pass(stage.id);
+            setPassed(lab.stages.filter((each) => kept.passed(each.id)));
+          }}
+          onNext={index + 1 < lab.stages.length ? () => open(index + 1) : null}
+          record={(event, seconds) => recorder.current?.record(stage, event, seconds)}
+        />
+      ) : (
+        <StageWorkspace
+          key={stage.id}
+          lab={lab}
+          index={index}
+          python={python}
+          loading={loading}
+          passed={isPassed(stage)}
+          review={reviews[stage.id] ?? null}
+          onPass={() => {
+            kept.pass(stage.id);
+            setPassed(lab.stages.filter((each) => kept.passed(each.id)));
+          }}
+          onFinish={(review) => {
+            kept.finish(stage.id, review);
+            setReviews((before) => ({ ...before, [stage.id]: review }));
+            setPassed(lab.stages.filter((each) => kept.passed(each.id)));
+          }}
+          onNext={index + 1 < lab.stages.length ? () => open(index + 1) : null}
+          record={(event, seconds) => recorder.current?.record(stage, event, seconds)}
+        />
+      )}
     </>
   );
 }
@@ -414,29 +434,14 @@ function StageWorkspace({
           {stage.hints.length > 0 && started && (
             <TabPanel id="hints">
               <div className={css.panel}>
-                {hints > 0 && (
-                  <ol className={css.hints}>
-                    {stage.hints.slice(0, hints).map((hint) => (
-                      <li key={hint}>
-                        <Prose html={hint} />
-                      </li>
-                    ))}
-                  </ol>
-                )}
-                {hints < stage.hints.length ? (
-                  <Button
-                    variant="outline"
-                    size="small"
-                    onPress={() => {
-                      setHints(hints + 1);
-                      record({ kind: 'hint', hint: hints + 1 }, lap());
-                    }}
-                  >
-                    {hints === 0 ? 'Show a hint' : 'Show the next hint'}
-                  </Button>
-                ) : (
-                  <p>No more hints.</p>
-                )}
+                <Hints
+                  hints={stage.hints}
+                  shown={hints}
+                  onShow={() => {
+                    setHints(hints + 1);
+                    record({ kind: 'hint', hint: hints + 1 }, lap());
+                  }}
+                />
               </div>
             </TabPanel>
           )}
@@ -636,18 +641,6 @@ function StageWorkspace({
       </div>
     </section>
   );
-}
-
-/** The time now, in milliseconds since 1970, kept current each second while `running`. */
-function useNow(running: boolean): number {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!running) return;
-    setNow(Date.now());
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, [running]);
-  return now;
 }
 
 /** A Problem stage's plan, which opens the code once it's written, then stays open to change. */

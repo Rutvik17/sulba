@@ -3,8 +3,9 @@ import { signedIn, standIn, supabase } from './supabase';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): the
 // course Demo, whose level First has the module Counting, with the lab Tallies and its 4 stages,
-// and the module Interviews, with the lab Pairs and its one Problem stage, and whose level Second
-// has the module Ledgers, with the lab Ledger, which runs on the learner's machine.
+// and the module Interviews, with the lab Pairs and its one Problem stage and the lab Poll design
+// and its one Design stage, and whose level Second has the module Ledgers, with the lab Ledger,
+// which runs on the learner's machine.
 const path = '/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
 
@@ -36,8 +37,8 @@ test("a course's page lists its levels, with their facts, and their modules, clo
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Demo');
   await expect(level(page).locator('dl').first().getByRole('definition')).toHaveText([
     '2',
-    '2',
-    'About 1 hour',
+    '3',
+    'About 1.5 hours',
     'Any laptop: every lab runs in your browser',
   ]);
   await expect(level(page).getByRole('heading', { level: 3 })).toHaveText([
@@ -95,6 +96,11 @@ test('Show all modules opens every module, and Hide all modules closes them', as
     '1 Problem',
     'About 20 minutes',
   ]);
+  // A lab of designs builds no file, so it names none.
+  await expect(row(page, 'Poll design').getByRole('definition')).toHaveText([
+    '1 Design',
+    'About 30 minutes',
+  ]);
 
   await page.getByRole('button', { name: 'Hide all modules' }).click();
   for (const module of await modules.all())
@@ -121,7 +127,7 @@ test('a lab partway through is the next lab, with how many of its stages are don
   await expect(next(page)).toContainText('Module 1 · Counting · 1 of 4 stages done');
   await expect(next(page)).toContainText('Continue');
   await expect(level(page).getByText('0 of 1 labs done')).toBeVisible();
-  await expect(level(page).locator('dl').first()).toContainText('0 of 2 labs done');
+  await expect(level(page).locator('dl').first()).toContainText('0 of 3 labs done');
   await counting(page).click();
   await expect(tallies(page)).toContainText('1 of 4 stages done');
 });
@@ -144,10 +150,18 @@ test("after a lab that's done, the next lab is the one after it", async ({ page 
 });
 
 test('with every lab done, there is no next lab', async ({ page }) => {
-  await passed(page, ...stages, 'stg_demo05', 'stg_demo06', 'stg_demo07', 'stg_demo08');
+  await passed(
+    page,
+    ...stages,
+    'stg_demo05',
+    'stg_demo10',
+    'stg_demo06',
+    'stg_demo07',
+    'stg_demo08',
+  );
   await page.goto(path);
 
-  await expect(level(page).locator('dl').first()).toContainText('2 of 2 labs done');
+  await expect(level(page).locator('dl').first()).toContainText('3 of 3 labs done');
   await expect(page.getByText('Next lab')).toBeHidden();
 });
 

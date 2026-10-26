@@ -280,11 +280,42 @@ const shipCheck = z.strictObject({
   failure: title,
 });
 
+/** One point a strong design covers, which the learner marks their design against. Markdoc. */
+const rubricPoint = z.strictObject({
+  point: title,
+  /** What the course's own design says on the point. */
+  answer: title,
+});
+
+/**
+ * A Design stage writes no code, so it has no file, packages or chart (decision record 42): the
+ * learner writes a design, answers the follow-up questions, then marks it against the rubric.
+ */
+const designStage = z
+  .strictObject({
+    id: stageFields.id,
+    title,
+    builds: title,
+    minutes: stageFields.minutes,
+    kind: z.literal('design'),
+    /** The follow-up questions, in Markdoc, asked once the design is handed in. */
+    questions: z.array(title).min(1),
+    rubric: z.array(rubricPoint).min(1),
+    /** How many of the rubric's points the design must meet to pass. */
+    pass: z.int().positive(),
+  })
+  .refine((stage) => stage.pass <= stage.rubric.length, {
+    path: ['pass'],
+    message: 'A design passes on at most every point of its rubric.',
+  });
+
 /**
  * Build: the learner writes the core by hand. Catch: the learner reviews an assistant's code that
  * passes its own tests, and hidden checks find its problems. Ship: the learner's code passes
  * hidden tests, then the checks it must pass before it ships. Problem: the learner solves an
- * interview problem against the clock, its minutes, with a plan written before the code.
+ * interview problem against the clock, its minutes, with a plan written before the code. Design:
+ * the learner writes a design against the clock, answers follow-up questions on it, and marks it
+ * against a rubric.
  */
 export const stageFile = z.discriminatedUnion('kind', [
   z.strictObject({ ...stageFields, kind: z.literal('build') }),
@@ -292,6 +323,7 @@ export const stageFile = z.discriminatedUnion('kind', [
   z.strictObject({ ...stageFields, kind: z.literal('catch'), problems: z.array(problem) }),
   z.strictObject({ ...stageFields, kind: z.literal('ship'), checks: z.array(shipCheck).min(1) }),
   z.strictObject({ ...stageFields, kind: z.literal('problem') }),
+  designStage,
 ]);
 
 export type CourseFile = z.infer<typeof courseFile>;
@@ -299,5 +331,6 @@ export type ModuleFile = z.infer<typeof moduleFile>;
 export type LabFile = z.infer<typeof labFile>;
 export type StageFile = z.infer<typeof stageFile>;
 export type CatchProblem = z.infer<typeof problem>;
+export type RubricPoint = z.infer<typeof rubricPoint>;
 export type ShipCheck = z.infer<typeof shipCheck>;
 export type ChartFile = z.infer<typeof chart>;

@@ -12,7 +12,7 @@ import {
 } from '@sulba/lab/protocol';
 import { z } from 'zod';
 import { difference, partOf } from './difference.ts';
-import type { Chart, Course, Lab, Problem } from './load.ts';
+import { type Chart, type Course, type Lab, type Problem, writesCode } from './load.ts';
 import { labFiles } from './runs.ts';
 
 /** Draws charts in one runtime and returns what each drew, in the same order. */
@@ -55,7 +55,9 @@ const drawing = z.strictObject({
  */
 export function chartFiles(lab: Lab, index: number, chart: Chart): RunRequest['files'] {
   const files = labFiles(lab);
-  for (const stage of lab.stages.slice(0, index + 1)) files[stage.file] = stage.solution;
+  for (const stage of lab.stages.slice(0, index + 1).filter(writesCode)) {
+    files[stage.file] = stage.solution;
+  }
   return { ...files, 'chart.py': chart.code };
 }
 

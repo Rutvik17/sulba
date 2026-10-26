@@ -40,6 +40,9 @@ function stage(
     problems: [],
     shipChecks: [],
     chart: null,
+    questions: [],
+    rubric: [],
+    pass: 0,
   };
 }
 
@@ -114,6 +117,29 @@ test('a stage passed on another device carries on its solution in this browser',
   expect(
     runOf(lab, data, 2, 'x = 1\n', keeping({ one: 'A\n' }, ['one', 'two'])).files['model.py'],
   ).toBe(lab.stages[1]?.solution);
+});
+
+test('a Design stage has no code, so the stages after it run as though it were not there', () => {
+  const design: StageView = {
+    ...stage('design', '', ''),
+    kind: 'design',
+    tests: {},
+    solution: '',
+    questions: ['What changes first?'],
+    rubric: [{ point: 'Counts each vote once', answer: 'Each ballot has an id.' }],
+    pass: 1,
+  };
+  const withDesign: LabView = {
+    ...lab,
+    stages: [lab.stages[0] as StageView, design, ...lab.stages.slice(1)],
+  };
+  const kept = keeping({ one: 'A\n' }, ['one', 'design']);
+  expect(codeOf(withDesign, 2, kept)).toBe('A\n\n\ndef b():\n    pass\n');
+  expect(runOf(withDesign, data, 2, 'B\n', kept).files).toEqual({
+    'data/votes.csv': 'choice\nyes\n',
+    'model.py': 'B\n',
+    'tests/test_two.py': '# tests for two\n',
+  });
 });
 
 test("a Catch run has the lab's data, the learner's code, the assistant's tests and the checks", () => {

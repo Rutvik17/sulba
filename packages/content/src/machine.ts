@@ -34,8 +34,10 @@ export function machineLabs(root: string, courses: readonly Course[]): PlacedLab
  * figures and all: the site's download renders it, and CI's runs read only the checks' ids.
  */
 function stageOf(stage: Stage): MachineStage {
-  // The content check keeps Problem stages out of machine labs.
-  if (stage.kind === 'problem') throw new Error(`${stage.slug} is a Problem stage.`);
+  // The content check keeps Problem and Design stages out of machine labs.
+  if (stage.kind === 'problem' || stage.kind === 'design') {
+    throw new Error(`${stage.slug} is a ${stage.kind === 'problem' ? 'Problem' : 'Design'} stage.`);
+  }
   const checks =
     stage.kind === 'catch'
       ? stage.problems.map(({ check, title }) => ({ id: check, title, requires: '', failure: '' }))

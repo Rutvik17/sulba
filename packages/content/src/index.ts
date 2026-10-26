@@ -17,6 +17,7 @@ export {
   type Module,
   type Problem,
   type Reference,
+  type RubricPoint,
   type ShipCheck,
   type Stage,
 } from './load.ts';

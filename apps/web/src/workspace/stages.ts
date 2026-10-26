@@ -62,6 +62,11 @@ export function carriedOn(lab: LabView, index: number, kept: Kept): string {
   return codeOf(lab, index, kept);
 }
 
+/** Whether a stage has code: every kind but a Design stage does (decision record 42). */
+export function writesCode(stage: StageView): boolean {
+  return stage.kind !== 'design';
+}
+
 /** The packages a stage's runs load: its own and every earlier stage's, since it runs their code. */
 export function packagesOf(lab: LabView, index: number): RunRequest['packages'] {
   return [...new Set(lab.stages.slice(0, index + 1).flatMap((each) => each.packages))];
@@ -80,7 +85,7 @@ function filesOf(
   const files: Record<string, string> = { ...data };
   for (let before = 0; before < index; before++) {
     const earlier = lab.stages[before];
-    if (earlier) files[earlier.file] = carriedOn(lab, before, kept);
+    if (earlier && writesCode(earlier)) files[earlier.file] = carriedOn(lab, before, kept);
   }
   return { ...files, [stage.file]: code };
 }
@@ -122,7 +127,9 @@ export function downloadOf(
 
 /** A stage as a machine lab's download holds it, with its checks' text in `plain` words. */
 function machineStageOf(stage: StageView, plain: (html: string) => string): MachineStage {
-  if (stage.kind === 'problem') throw new Error(`${stage.slug} is a Problem stage.`);
+  if (stage.kind === 'problem' || stage.kind === 'design') {
+    throw new Error(`${stage.slug} is a stage with a clock, which runs in the browser.`);
+  }
   const checks =
     stage.kind === 'catch'
       ? stage.problems.map(({ check, title }) => ({ id: check, title, requires: '', failure: '' }))
@@ -209,7 +216,9 @@ export function previewOf(
   const chart = lab.stages[index]?.chart;
   if (!chart) throw new Error(`Stage ${index + 1} has no chart.`);
   const files: Record<string, string> = { ...data };
-  for (const stage of lab.stages.slice(0, index + 1)) files[stage.file] = stage.solution;
+  for (const stage of lab.stages.slice(0, index + 1).filter(writesCode)) {
+    files[stage.file] = stage.solution;
+  }
   return { files: { ...files, 'chart.py': chart.code }, values, packages: packagesOf(lab, index) };
 }
 
