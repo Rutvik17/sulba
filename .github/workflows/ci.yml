@@ -144,7 +144,9 @@ jobs:
           PARTS: ${{ needs.content-part.result }}
 
   # The labs that run on the learner's machine, each by its path in its folder of courses, for the
-  # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch.
+  # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch. A
+  # pull request that changes only courses, docs and tools runs the machine labs it changes, since
+  # each runs from its own folder, and any other change runs them all, as every push to main does.
   machine-labs:
     name: Machine labs to run
     runs-on: ubuntu-26.04
@@ -152,15 +154,28 @@ jobs:
     outputs:
       labs: ${{ steps.list.outputs.labs }}
     steps:
+      # A pull request's merge commit and, as its first parent, the base it merges into.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 1 }}
       - id: list
+        env:
+          EVENT: ${{ github.event_name }}
         run: |
           set -o pipefail
           labs=$(grep -lx 'runs: machine' courses/*/modules/*/labs/*/lab.yaml packages/content/fixtures/courses/*/modules/*/labs/*/lab.yaml \
-            | sed -E 's#^(packages/content/fixtures/)?courses/##; s#/lab\.yaml$##' \
-            | jq -Rc 'split("/") as $p | {path: ., name: "\($p[2])/\($p[4])", key: "\($p[2])-\($p[4])"}' \
+            | sed 's#/lab\.yaml$##')
+          if [ "$EVENT" = pull_request ]; then
+            changed=$(git diff --name-only HEAD^1 HEAD)
+            if ! grep -qvE '^(courses|docs|tools)/|^[^/]+\.md$' <<< "$changed"; then
+              labs=$(while read -r lab; do
+                if grep -qF "$lab/" <<< "$changed"; then echo "$lab"; fi
+              done <<< "$labs")
+            fi
+          fi
+          labs=$(sed -E 's#^(packages/content/fixtures/)?courses/##' <<< "$labs" \
+            | jq -Rc 'select(. != "") | split("/") as $p | {path: ., name: "\($p[2])/\($p[4])", key: "\($p[2])-\($p[4])"}' \
             | jq -sc 'to_entries | map(.value + {keep: (.key == 0)})')
           echo "labs=$labs" >> "$GITHUB_OUTPUT"
 
@@ -172,6 +187,7 @@ jobs:
   machine:
     name: Machine lab ${{ matrix.lab.name }} on ${{ matrix.os }}
     needs: machine-labs
+    if: needs.machine-labs.outputs.labs != '[]'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -231,18 +247,25 @@ jobs:
           retention-days: 1
 
   # A machine lab's prose shows each number as CI computes it, so each stage's figures must come out
-  # the same on every system a learner may run it on.
+  # the same on every system a learner may run it on. A pull request that runs no machine lab passes.
   machine-figures:
     name: Machine labs' figures
-    needs: machine
+    needs: [machine-labs, machine]
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - run: test "$LABS" = success && { test "$MACHINE" = success || test "$MACHINE" = skipped; }
+        env:
+          LABS: ${{ needs.machine-labs.result }}
+          MACHINE: ${{ needs.machine.result }}
+      - if: needs.machine.result == 'success'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: figures-*
       # Each lab's figures on Windows and macOS against its figures on Linux.
-      - run: |
+      - if: needs.machine.result == 'success'
+        run: |
           for linux in figures-ubuntu-24.04-*; do
             lab=${linux#figures-ubuntu-24.04-}
             for os in windows-2025 macos-15; do
@@ -415,11 +438,13 @@ jobs:
     name: Deploy
     needs: [checks, content, machine-figures, model, references, database, spark]
     # main deploys to sulba.dev and pull requests from this repository get a preview. Dependency
-    # updates and pull requests from forks, which have no access to secrets, are tested only.
+    # updates and pull requests from forks, which have no access to secrets, are tested only. A
+    # skipped job would skip every job after it, so the deploy names what it waits for: no failure.
     if: >-
-      github.event_name == 'push' ||
+      (github.event_name == 'push' ||
       (github.event.pull_request.head.repo.full_name == github.repository &&
-      !startsWith(github.head_ref, 'renovate/'))
+      !startsWith(github.head_ref, 'renovate/'))) &&
+      !cancelled() && !failure()
     uses: ./.github/workflows/deploy.yml
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
