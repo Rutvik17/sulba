@@ -1,0 +1,25 @@
+id: stg_env0fk
+kind: design
+title: Scoping from a brief
+builds: Estimating the work and Measuring value, in Working with customers.
+minutes: 30
+questions:
+  - The head of planning asks whether it could also decide which comments are valid objections. What do you say?
+  - Halfway through, the officers say the summaries must follow the committee's own template. What does that do to your estimate?
+  - How will the council know, {% $fig.review_months %} months after launch, whether it was worth it?
+rubric:
+  - point: States the problem in the council's terms
+    answer: Officers spend about {% $fig.officer_hours %} hours a week reading and summarising comments, and the aim is to cut that time without missing a point the committee must hear.
+  - point: Proposes a first version small enough to finish
+    answer: Group each application's comments by theme and draft the summary for an officer to edit, for one kind of application first.
+  - point: Leaves out what needs a person's judgment
+    answer: Deciding which comments are valid objections stays with officers. The tool shows themes and quotes, not verdicts.
+  - point: Asks for what's needed to start
+    answer: Past applications with their comments and officers' summaries, the committee's template, sign-off on handling residents' data, and an officer to review drafts each week.
+  - point: Estimates with a range
+    answer: Each task gets three numbers, and the simulated finish gives a date at a stated chance, set against the {% $fig.weeks %} weeks.
+  - point: Measures value against today
+    answer: Officer hours per application, and the share of points the drafts missed, measured before and after on the same kinds of application.
+  - point: Names the risks
+    answer: Residents' personal data, the council's rules on decisions made by software, and whether officers trust the drafts, each with what would be done about it.
+pass: 5

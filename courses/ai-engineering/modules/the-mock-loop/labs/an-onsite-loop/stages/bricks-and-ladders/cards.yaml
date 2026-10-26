@@ -1,0 +1,7 @@
+cards:
+  - id: crd_lhjar0
+    front: >-
+      With bricks and ladders to climb a row of buildings, which steps should the ladders take?
+    back: >-
+      The highest steps so far. A min-heap holds the ladders' steps, and when it holds one too
+      many, its smallest goes to bricks.

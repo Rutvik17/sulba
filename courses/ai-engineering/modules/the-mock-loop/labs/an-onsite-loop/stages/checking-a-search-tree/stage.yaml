@@ -1,0 +1,6 @@
+id: stg_u8hwm5
+kind: problem
+title: Checking a search tree
+builds: A new `search_tree.py`.
+file: search_tree.py
+minutes: 20

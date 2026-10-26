@@ -1,0 +1,25 @@
+id: stg_d1a5im
+kind: design
+title: A trip planner
+builds: Designing assistants and Designing agents, in the design round.
+minutes: 45
+questions:
+  - The searches for a plan take {% $fig.serial_s %} seconds one after another. What does the customer see meanwhile?
+  - The hotel in a plan sells out before the customer books. What happens?
+  - How do you know the plans are good?
+rubric:
+  - point: Keeps the plan apart from the facts
+    answer: The model turns the request into searches and arranges what they find. Every price, time and room comes from the booking systems.
+  - point: Searches side by side
+    answer: The searches that don't depend on each other run at once, so a plan takes about {% $fig.parallel_s %} seconds rather than {% $fig.serial_s %}.
+  - point: Shows the plan as it's found
+    answer: The outline comes first, then each part as its results arrive.
+  - point: Checks the plan's limits in code
+    answer: Code checks that the dates join up, that each connection leaves time to change, and that the total is within the budget, before the plan is shown.
+  - point: Books every part together
+    answer: Booking holds every part, books them together, and releases the holds if any part fails, so the customer never has half a trip.
+  - point: Handles a part that sells out
+    answer: A part that sells out is searched again for the nearest match, and the customer approves the change before booking.
+  - point: Measures the plans
+    answer: A test set of requests with plans a travel agent judged, checked on the limits met and the agent's ratings, and after launch the share of plans booked.
+pass: 5

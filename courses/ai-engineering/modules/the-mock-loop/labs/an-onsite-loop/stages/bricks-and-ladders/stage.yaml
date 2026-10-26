@@ -1,0 +1,6 @@
+id: stg_3ra7q4
+kind: problem
+title: Bricks and ladders
+builds: A new `climb.py`.
+file: climb.py
+minutes: 25
