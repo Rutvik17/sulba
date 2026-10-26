@@ -1,0 +1,7 @@
+cards:
+  - id: crd_n0zalz
+    front: >-
+      How do you order a text so no two alike letters touch, and when is it impossible?
+    back: >-
+      Place the letter with the most left, from a max-heap, holding back the one just placed.
+      It's impossible when one letter has more than half the letters, rounded up.

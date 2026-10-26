@@ -1,0 +1,6 @@
+id: stg_nosymz
+kind: problem
+title: Joining ropes
+builds: A new `ropes.py`.
+file: ropes.py
+minutes: 20

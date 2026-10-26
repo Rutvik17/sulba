@@ -1,0 +1,6 @@
+id: stg_ss21q0
+kind: problem
+title: A running median
+builds: A new `medians.py`.
+file: medians.py
+minutes: 25

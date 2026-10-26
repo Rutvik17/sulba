@@ -1,0 +1,7 @@
+cards:
+  - id: crd_11jpf0
+    front: >-
+      How do you keep the kth largest of a stream as numbers come?
+    back: >-
+      Keep only the k largest, in a min-heap: its top is the kth largest, and a new number
+      replaces the top only if it's larger.
