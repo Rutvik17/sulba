@@ -1,0 +1,6 @@
+id: stg_hc1n0g
+kind: problem
+title: The smallest interval for each query
+builds: A new `queries.py`.
+file: queries.py
+minutes: 30

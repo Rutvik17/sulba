@@ -1,0 +1,6 @@
+id: stg_c1ktxt
+kind: problem
+title: The fewest to remove
+builds: A new `remove.py`.
+file: remove.py
+minutes: 20

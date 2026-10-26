@@ -1,0 +1,7 @@
+id: lab_r7etgn
+title: Intervals
+summary: >-
+  Six interview problems on spans of time and number: an interval inserted into a sorted list,
+  where two schedules meet, the fewest meetings to cancel, a calendar that refuses double
+  bookings, everyone's free time, and the smallest interval that holds each query.
+stages: [inserting-an-interval, where-two-schedules-meet, the-fewest-to-remove, a-calendar-without-double-bookings, free-time-for-everyone, the-smallest-interval-for-each-query]

@@ -1,0 +1,7 @@
+cards:
+  - id: crd_56zykx
+    front: >-
+      How do you insert an interval into a sorted list of intervals that don't overlap?
+    back: >-
+      Copy those that end before it starts, merge in those that start before it ends, widening
+      its ends, then add it and the rest. One pass, no sort.

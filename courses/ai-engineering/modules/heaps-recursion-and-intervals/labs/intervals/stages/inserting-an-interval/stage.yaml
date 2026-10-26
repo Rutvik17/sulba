@@ -1,0 +1,6 @@
+id: stg_5wbih6
+kind: problem
+title: Inserting an interval
+builds: A new `insert.py`.
+file: insert.py
+minutes: 15
