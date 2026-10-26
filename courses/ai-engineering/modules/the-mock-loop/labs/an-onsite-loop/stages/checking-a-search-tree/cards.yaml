@@ -1,0 +1,8 @@
+cards:
+  - id: crd_6ku1ct
+    front: >-
+      How do you check that a binary tree is a search tree?
+    back: >-
+      Walk it in order, left subtree, node, then right subtree, and check that each value is
+      greater than the one before. Checking each node against its children alone misses values out
+      of place further down.
