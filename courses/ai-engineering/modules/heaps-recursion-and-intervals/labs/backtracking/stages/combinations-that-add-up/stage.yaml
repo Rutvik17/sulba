@@ -1,0 +1,6 @@
+id: stg_7x18en
+kind: problem
+title: Combinations that add up
+builds: A new `totals.py`.
+file: totals.py
+minutes: 25

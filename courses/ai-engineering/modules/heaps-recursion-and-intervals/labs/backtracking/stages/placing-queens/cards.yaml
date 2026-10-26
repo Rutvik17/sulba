@@ -1,0 +1,7 @@
+cards:
+  - id: crd_2a07bl
+    front: >-
+      How do you count the ways to place n queens, none attacking another?
+    back: >-
+      One queen a row: keep sets of the columns, row + column and row - column taken, place a
+      queen, count the rows below, and take it back.

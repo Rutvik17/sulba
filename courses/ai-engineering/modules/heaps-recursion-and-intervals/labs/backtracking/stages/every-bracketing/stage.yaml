@@ -1,0 +1,6 @@
+id: stg_gfr8z1
+kind: problem
+title: Every bracketing
+builds: A new `brackets.py`.
+file: brackets.py
+minutes: 15

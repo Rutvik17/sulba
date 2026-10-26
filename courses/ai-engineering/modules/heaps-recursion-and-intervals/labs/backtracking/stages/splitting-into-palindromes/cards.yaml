@@ -1,0 +1,7 @@
+cards:
+  - id: crd_bgmviz
+    front: >-
+      How do you list every way to split a text into palindromes?
+    back: >-
+      Try each palindrome that starts at the current place, go on from its end, and take it back:
+      reaching the end of the text gives a split.

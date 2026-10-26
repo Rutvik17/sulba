@@ -1,0 +1,6 @@
+id: stg_e9ii8y
+kind: problem
+title: Placing queens
+builds: A new `queens.py`.
+file: queens.py
+minutes: 20

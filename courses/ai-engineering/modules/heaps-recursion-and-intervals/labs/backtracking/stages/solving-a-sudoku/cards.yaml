@@ -1,0 +1,7 @@
+cards:
+  - id: crd_0ojsp8
+    front: >-
+      Solving a sudoku by search, which empty cell should you fill first?
+    back: >-
+      The one with the fewest digits left: one left is forced, and none left ends the branch at
+      once, so the guesses go where there are fewest to make.

@@ -1,0 +1,6 @@
+id: stg_o8s4fi
+kind: problem
+title: Solving a sudoku
+builds: A new `sudoku.py`.
+file: sudoku.py
+minutes: 30

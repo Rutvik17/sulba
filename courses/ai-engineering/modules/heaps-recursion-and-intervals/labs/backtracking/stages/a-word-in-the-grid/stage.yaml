@@ -1,0 +1,6 @@
+id: stg_h3fy31
+kind: problem
+title: A word in the grid
+builds: A new `grid.py`.
+file: grid.py
+minutes: 20
