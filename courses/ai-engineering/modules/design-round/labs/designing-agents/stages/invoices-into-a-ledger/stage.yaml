@@ -1,0 +1,25 @@
+id: stg_08yyaa
+kind: design
+title: Invoices into a ledger
+builds: Structured output, and Testing a pipeline.
+minutes: 45
+questions:
+  - An invoice's lines don't add up to its total. What happens to it?
+  - The same invoice arrives twice, once by email and once by post. What does your design do?
+  - A supplier changes the layout of its invoices. How do you find out its fields are being read wrong?
+rubric:
+  - point: Reads each invoice into a schema
+    answer: The fields come out as structured output in the ledger's schema, with amounts as exact decimals and dates as dates.
+  - point: Checks the arithmetic in code
+    answer: Code checks that the lines add up to the subtotal, the tax to its rate and the total to both, and an invoice that fails goes to staff.
+  - point: Sends invoices to staff by rule
+    answer: Staff check every invoice that fails a check, comes from a new supplier, or is above a set amount. The rest goes in, and a sample of them is checked each day.
+  - point: Catches duplicates
+    answer: The supplier, the invoice number and the total identify an invoice, and a second with the same three is held as a duplicate.
+  - point: Keeps the evidence
+    answer: Each entry keeps its source file and the fields staff changed, so the ledger can show where each number came from.
+  - point: Measures each field
+    answer: Accuracy is measured field by field on a set of typed invoices, and each day's corrections show which suppliers' invoices are read wrong.
+  - point: Works out what it saves
+    answer: Typing every invoice takes {% $fig.typing_hours %} hours a day. Checking the {% $fig.checked %} sent to staff takes {% $fig.checking_hours %}.
+pass: 5

@@ -1,0 +1,25 @@
+id: stg_fu0l37
+kind: design
+title: A bot that reviews pull requests
+builds: Agents, and Securing the assistant.
+minutes: 45
+questions:
+  - Half the bot's comments are about style the linter already checks. What do you change?
+  - A pull request changes {% $fig.big_files %} files. What does the bot read?
+  - How do you know the bot's comments are worth reading?
+rubric:
+  - point: Comments only on what matters
+    answer: Bugs, missing tests and security mistakes, each tied to its lines with a reason, and nothing the linter checks.
+  - point: Gives the model what a reviewer would read
+    answer: The diff, each changed function in full, the code that calls it and its tests, and the repository's own review guidelines.
+  - point: Ranks and limits its comments
+    answer: Each finding has a severity, and the bot posts at most {% $fig.max_comments %} a pull request, the most severe first, so a long list never buries the one that matters.
+  - point: Checks each finding before posting it
+    answer: A second call asks for each finding's evidence in the code, and findings it can't tie to the diff's lines are dropped.
+  - point: Measures how its comments are taken
+    answer: It records whether each comment led to a change, was resolved without one, or was marked wrong, and watches the share that led to a change.
+  - point: Treats the code as text, not instructions
+    answer: Text in the diff, comments or commit messages that reads like instructions is reviewed, never followed, and the bot has no tool to approve or merge.
+  - point: Handles a change too large for one call
+    answer: It reviews a large change file by file with the shared context, and says which files it didn't review.
+pass: 5

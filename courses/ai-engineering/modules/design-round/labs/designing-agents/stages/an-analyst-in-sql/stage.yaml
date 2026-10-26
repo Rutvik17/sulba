@@ -1,0 +1,25 @@
+id: stg_792fb6
+kind: design
+title: An analyst that answers in SQL
+builds: Analytical SQL, and Tools, streaming and MCP.
+minutes: 45
+questions:
+  - A query would read the whole sales table, {% $fig.sales_rows %} rows. What happens?
+  - Two managers get different numbers for last month's sales. How does your design prevent that?
+  - A manager asks for each customer's email address. What happens?
+rubric:
+  - point: Finds the tables by searching their descriptions
+    answer: Each table's description, columns and sample questions are indexed, and a question's best few tables go to the model, not all {% $fig.tables %}.
+  - point: Runs with a read-only role and limits
+    answer: Queries run as a read-only role with a time limit and a row limit, and the planner's cost estimate is checked before a query runs.
+  - point: Uses the agreed definitions
+    answer: Measures such as sales and active customers come from the warehouse's agreed definitions, given to the model as views, so every answer counts them the same way.
+  - point: Shows its working
+    answer: Each answer shows the SQL it ran, the tables it used and the definitions it applied, so a manager or an analyst can check it.
+  - point: Checks the result before answering
+    answer: Code checks that the query ran and returned rows, and that the answer's numbers are in the result. A failure is retried once, then passed to an analyst.
+  - point: Keeps personal data out of reach
+    answer: Columns with personal data are outside the role's access, so no query can return them, whatever the question says.
+  - point: Measures against the analysts' answers
+    answer: A test set of past questions with the analysts' answers, scored on whether the numbers match.
+pass: 5

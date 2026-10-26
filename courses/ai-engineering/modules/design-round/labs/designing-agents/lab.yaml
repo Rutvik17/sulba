@@ -1,0 +1,4 @@
+id: lab_eayhe3
+title: Designing agents
+summary: Design four agents that act for a business in writing, then defend each design against an interviewer's follow-up questions.
+stages: [a-booking-agent, a-review-bot, invoices-into-a-ledger, an-analyst-in-sql]
