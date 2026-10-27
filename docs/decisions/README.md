@@ -49,5 +49,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [43. Run a machine lab's Go stages with Go's own toolchain, pinned by the runner](0043-run-a-machine-labs-go-stages-with-gos-own-toolchain.md) | Accepted |
 | [44. Mark a module optional, and leave it out of the next lab until it's started](0044-mark-a-module-optional-and-leave-it-off-the-next-lab.md) | Accepted |
 | [45. Run a machine lab's Java stages with a JDK and JUnit the runner pins](0045-run-a-machine-labs-java-stages-with-a-pinned-jdk-and-junit.md) | Accepted |
+| [46. Make Sulba where a team specifies its software, agents build it and its tests prove it](0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

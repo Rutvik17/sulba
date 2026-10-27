@@ -1,6 +1,6 @@
 # Sulba
 
-Sulba is the school of the AI era. Engineers learn the fundamentals by hand, then catch what an AI assistant gets wrong and ship code that works in real use. Every lab runs as Build, Catch and Ship, each stage checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
+Sulba is becoming the place where a team specifies its software, agents build it and its tests prove it ([decision record 46](docs/decisions/0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md)). Its Academy teaches engineers the fundamentals by hand, then to catch what an AI assistant gets wrong and ship code that works in real use. Every lab runs as Build, Catch and Ship, each stage checked by real tests, which run in the browser or on the learner's own machine. The first course, AI Engineering, is in development.
 
 ## Run it locally
 
