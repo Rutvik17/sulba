@@ -1,0 +1,16 @@
+.page {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-2xl);
+  text-wrap: balance;
+}
+
+.note {
+  margin: 0;
+  color: var(--dim);
+}

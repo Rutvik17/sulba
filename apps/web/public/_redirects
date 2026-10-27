@@ -8,3 +8,8 @@
 
 # The site's own address opens the Academy until it has a home page of its own.
 / /academy/ 302
+
+# The app draws its pages in the browser (decision record 47). Its files are served as they are,
+# and every other address under /app/ answers with its page.
+/app/assets/* /app/assets/:splat 200
+/app/* /app/ 200

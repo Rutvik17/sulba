@@ -17,6 +17,7 @@ Rules for Claude Code in this repository. They come from the founder and overrid
 | Command | What it does |
 | --- | --- |
 | `pnpm dev` | Runs the site at http://localhost:4321 in workerd |
+| `pnpm dev:app` | Runs the app at http://127.0.0.1:4323/app/, beside `pnpm dev` |
 | `pnpm lint` / `pnpm lint:fix` | Biome: formatting, lint rules, import order |
 | `pnpm lint:python` | Ruff on the Python code: the lab's, the courses' and the tools' |
 | `pnpm typecheck` | `astro check` at TypeScript's strictest settings |
@@ -36,6 +37,7 @@ End-to-end tests are written with each feature, and run only when the founder as
 ## How the project is set up
 
 - `apps/web` is Astro 7 on the Cloudflare Worker `web` (`wrangler.jsonc`). Pages are built ahead of time; a route renders on the server only when it must (decision record 1).
+- `apps/app` is the app, a React app built with Vite and routed in the browser by TanStack Router (decision record 47). Each build of the site builds it into the site's files at `/app/` (`apps/web/app.ts`), and `public/_redirects` answers every address under `/app/` but its files with its page. It shares the site's origin and so its Supabase session: a person signs in at `/sign-in/`, which sends them back, and the app loads supabase-js only once the browser holds a session. Supabase's address and publishable key live in `packages/data/src/project.ts`, for the site and the app alike.
 - Astro sessions are off and images are optimised at build time, so a deploy creates no KV namespace and no Images binding.
 - `public/_headers` sends `X-Robots-Tag: noindex` everywhere until launch (Phase 5). At launch it comes off sulba.dev only; preview addresses keep it.
 - The learning site, the Academy, lives under `/academy/`: its home page, each course's and each lab's page, and `/academy/review/`. The site's links to them come from `apps/web/src/lib/academy.ts`. `public/_redirects` sends their old addresses, `/review/` and `/ai-engineering/…`, there with a 301, which keeps the query and, in the browser, the fragment, so the link an older download's `uv run sulba.py` prints still reaches its lab. `/` sends visitors to `/academy/` with a 302 until the site has a home page of its own.

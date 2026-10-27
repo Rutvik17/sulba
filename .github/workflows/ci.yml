@@ -145,8 +145,9 @@ jobs:
 
   # The labs that run on the learner's machine, each by its path in its folder of courses, for the
   # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch. A
-  # pull request that changes only courses, docs and tools runs the machine labs it changes, since
-  # each runs from its own folder, and any other change runs them all, as every push to main does.
+  # pull request that changes only courses, docs, tools and the app runs the machine labs it changes,
+  # since each runs from its own folder, and any other change runs them all, as every push to main
+  # does.
   machine-labs:
     name: Machine labs to run
     runs-on: ubuntu-26.04
@@ -168,7 +169,7 @@ jobs:
             | sed 's#/lab\.yaml$##')
           if [ "$EVENT" = pull_request ]; then
             changed=$(git diff --name-only HEAD^1 HEAD)
-            if ! grep -qvE '^(courses|docs|tools)/|^[^/]+\.md$' <<< "$changed"; then
+            if ! grep -qvE '^(courses|docs|tools|apps/app)/|^[^/]+\.md$' <<< "$changed"; then
               labs=$(while read -r lab; do
                 if grep -qF "$lab/" <<< "$changed"; then echo "$lab"; fi
               done <<< "$labs")
