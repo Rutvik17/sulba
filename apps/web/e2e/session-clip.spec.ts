@@ -5,7 +5,7 @@ import { expect, type Page, test } from '@playwright/test';
 async function open(page: Page) {
   await page.clock.install({ time: 0 });
   await page.clock.pauseAt(1000);
-  await page.goto('/');
+  await page.goto('/academy/');
   // The clip starts when its IntersectionObserver finds it on screen, at the browser's next
   // rendering update, which a busy machine can deliver after the test has run the clock. An
   // observer made now reports in that same update, after the clip's own, so the clock runs only
@@ -87,7 +87,7 @@ test.describe('with reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
   test('the clip shows the finished review, still, with nothing to pause', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/academy/');
 
     await expect(checks(page)).toHaveText('2 of 2 pass');
     await expect(note(page, 'done')).toHaveCSS('opacity', '1');

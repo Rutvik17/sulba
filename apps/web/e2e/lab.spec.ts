@@ -5,7 +5,7 @@ import { write } from './editor';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts): a lab
 // whose first two stages build tally.py, whose tests read a small CSV of votes.
-const path = '/demo/counting/tallies/';
+const path = '/academy/demo/counting/tallies/';
 
 const solved = {
   count: 'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n',
@@ -264,7 +264,7 @@ test("Download saves the lab's project, its data and the code as it stands, in o
 });
 
 test('a lab without a project has nothing to download', async ({ page }) => {
-  await page.goto('/demo/interviews/pairs/');
+  await page.goto('/academy/demo/interviews/pairs/');
   await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Download' })).toHaveCount(0);
 });

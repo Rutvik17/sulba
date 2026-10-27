@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 // The tests build the site from the content package's fixture course (playwright.config.ts), whose
 // module Interviews has the lab Poll design: one Design stage, with 30 minutes, two follow-up
 // questions and a rubric of three points, two of which pass it.
-const path = '/demo/interviews/poll-design/';
+const path = '/academy/demo/interviews/poll-design/';
 const key = 'sulba:design:stg_demo10';
 const points = [
   'Counts each vote once',

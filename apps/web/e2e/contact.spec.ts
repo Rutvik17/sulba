@@ -120,7 +120,7 @@ test('a message clears as soon as its field is right, and the form then sends', 
 });
 
 test('the landing and the footer lead to the contact page', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
   await page
     .getByRole('region', { name: 'For companies' })
     .getByRole('link', { name: 'Write to us' })

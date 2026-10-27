@@ -2,11 +2,12 @@
 // A lab: its stages and the workspace learners write their code in. One page per lab, built from
 // the course files.
 import { getCollection } from 'astro:content';
-import RunLink from '../../../components/RunLink.astro';
-import Page from '../../../layouts/Page.astro';
-import { labFacts } from '../../../lib/lab-facts';
-import type { LabEntry } from '../../../lib/labs';
-import Workspace from '../../../workspace/Workspace';
+import RunLink from '../../../../components/RunLink.astro';
+import Page from '../../../../layouts/Page.astro';
+import { academyPage } from '../../../../lib/academy';
+import { labFacts } from '../../../../lib/lab-facts';
+import type { LabEntry } from '../../../../lib/labs';
+import Workspace from '../../../../workspace/Workspace';
 
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
@@ -32,14 +33,14 @@ const {
   ...lab
 } = entry;
 const facts = labFacts(lab);
-const [course, module] = lab.path.split('/');
+const [course = '', module = ''] = lab.path.split('/');
 ---
 
 <Page title={`${lab.title} · Sulba`} editor>
   {lab.runs === 'machine' && <RunLink slot="head" />}
   <header class="intro">
     <p class="label">
-      <a href={`/${course}/#${module}`}>{lab.level} · {lab.module}</a>
+      <a href={`${academyPage(course)}#${module}`}>{lab.level} · {lab.module}</a>
     </p>
     <h1>{lab.title}</h1>
     <p class="lede">{lab.summary}</p>

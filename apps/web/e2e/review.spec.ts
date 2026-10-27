@@ -27,7 +27,7 @@ test('with no stage passed, there are no cards, and nothing is asked of Supabase
 }) => {
   const origins = new Set<string>();
   page.on('request', (request) => origins.add(new URL(request.url()).origin));
-  await page.goto('/review/', { waitUntil: 'networkidle' });
+  await page.goto('/academy/review/', { waitUntil: 'networkidle' });
 
   await expect(
     page.getByText('No cards yet. Each stage you pass adds its cards here.'),
@@ -41,13 +41,13 @@ test("a passed stage's cards come up new, and each comes back as its rating says
 }) => {
   await page.clock.setFixedTime(start);
   await passed(page, 'stg_demo01');
-  await page.goto('/review/');
+  await page.goto('/academy/review/');
 
   await expect(counts(page)).toHaveText('0 to review · 2 new');
   await expect(front(page)).toHaveText(firstCard);
   await expect(page.getByRole('link', { name: 'Tallies · Count' })).toHaveAttribute(
     'href',
-    '/demo/counting/tallies/?stage=count',
+    '/academy/demo/counting/tallies/?stage=count',
   );
   await expect(page.getByText('New', { exact: true })).toBeVisible();
 
@@ -107,7 +107,7 @@ test('signed in, cards come from the stages and reviews in the account, and new 
     reviews: [reviewed],
   });
   await signedIn(page);
-  await page.goto('/review/');
+  await page.goto('/academy/review/');
 
   await expect(front(page)).toHaveText("What is a choice's share of the votes?");
   await expect(counts(page)).toHaveText('1 to review · 0 new');

@@ -11,7 +11,7 @@ for (const [scheme, colour] of [
 ] as const) {
   test(`a page follows a ${scheme} device setting`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/');
+    await page.goto('/academy/');
 
     await background(page).toHaveCSS('background-color', colour);
   });
@@ -19,7 +19,7 @@ for (const [scheme, colour] of [
 
 test('a theme a learner picks applies at once and is kept after a reload', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await page.getByRole('button', { name: 'Theme' }).click();
   await page.getByRole('radio', { name: 'Dark' }).check();
@@ -32,7 +32,7 @@ test('a theme a learner picks applies at once and is kept after a reload', async
 
 test('picking System follows the device setting again and forgets the choice', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await page.getByRole('button', { name: 'Theme' }).click();
   await page.getByRole('radio', { name: 'Dark' }).check();
@@ -44,7 +44,7 @@ test('picking System follows the device setting again and forgets the choice', a
 });
 
 test('the theme control works from the keyboard', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
   const toggle = page.getByRole('button', { name: 'Theme' });
   const panel = page.getByRole('group', { name: 'Theme' });
 
@@ -62,7 +62,7 @@ test('the theme control works from the keyboard', async ({ page }) => {
 });
 
 // The fixture course's lab (playwright.config.ts), whose workspace has an editor.
-const lab = '/demo/counting/tallies/';
+const lab = '/academy/demo/counting/tallies/';
 const dracula = 'rgb(40, 42, 54)';
 
 /** Opens the lab and its theme panel, once the workspace's editor is on the page. */
@@ -114,7 +114,7 @@ test('the editor themes are chosen from the keyboard, by the arrow keys', async 
 });
 
 test('a page without an editor offers no editor themes', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
   await page.getByRole('button', { name: 'Theme', exact: true }).click();
 
   await expect(page.getByRole('radio', { name: 'System' })).toBeVisible();

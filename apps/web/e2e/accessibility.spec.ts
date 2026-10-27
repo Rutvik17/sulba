@@ -15,7 +15,7 @@ async function openReview(page: Page) {
       'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n\n\ndef share(choices, choice):\n    return count(choices, choice) / len(choices)\n',
     );
   });
-  await page.goto('/demo/counting/tallies/?stage=check');
+  await page.goto('/academy/demo/counting/tallies/?stage=check');
   await expect(page.getByRole('textbox', { name: 'report.py', exact: true })).toBeVisible();
 }
 
@@ -26,21 +26,21 @@ async function openShip(page: Page) {
       localStorage.setItem(`sulba:passed:${stage}`, '1');
     }
   });
-  await page.goto('/demo/counting/tallies/?stage=ship');
+  await page.goto('/academy/demo/counting/tallies/?stage=ship');
   await expect(page.getByRole('textbox', { name: 'report.py', exact: true })).toBeVisible();
 }
 
 for (const scheme of ['dark', 'light'] as const) {
   for (const path of [
-    '/',
+    '/academy/',
     '/about/',
     '/contact/',
     '/privacy/',
     '/terms/',
     '/sign-in/',
     '/account/',
-    '/review/',
-    '/demo/',
+    '/academy/review/',
+    '/academy/demo/',
     '/no-such-page/',
     '/gallery/',
   ]) {
@@ -81,7 +81,7 @@ for (const scheme of ['dark', 'light'] as const) {
   }) => {
     await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/demo/');
+    await page.goto('/academy/demo/');
     // Every module open, so its labs are checked too.
     await page.getByRole('button', { name: 'Show all modules' }).click();
     await expect(page.getByText('1 of 4 stages done').last()).toBeVisible();
@@ -110,7 +110,7 @@ for (const scheme of ['dark', 'light'] as const) {
     });
     await page.clock.setFixedTime(new Date('2026-10-15T09:00:00Z'));
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/review/');
+    await page.goto('/academy/review/');
     await page.getByRole('button', { name: 'Show answer' }).click();
     await page.getByText('History').click();
     await expect(page.locator('[data-history-list] li')).toHaveCount(1);
@@ -139,7 +139,7 @@ for (const scheme of ['dark', 'light'] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/');
+    await page.goto('/academy/');
     await page.getByRole('button', { name: 'Theme' }).click();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
@@ -151,7 +151,7 @@ for (const scheme of ['dark', 'light'] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/demo/counting/tallies/');
+    await page.goto('/academy/demo/counting/tallies/');
     await expect(page.getByRole('textbox', { name: 'tally.py', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Theme', exact: true }).click();
 
@@ -191,7 +191,7 @@ for (const scheme of ['dark', 'light'] as const) {
   }) => {
     // The fixture course's lab (playwright.config.ts).
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/demo/counting/tallies/');
+    await page.goto('/academy/demo/counting/tallies/');
     await page.getByRole('button', { name: 'Run tests' }).click();
     // The first run waits for Python to load.
     await expect(page.getByText('0 of 2 tests passed.')).toBeVisible({ timeout: 60_000 });
@@ -212,7 +212,7 @@ for (const scheme of ['dark', 'light'] as const) {
         'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n\n\ndef share(choices, choice):\n    return count(choices, choice) / len(choices)\n',
       );
     });
-    await page.goto('/demo/counting/tallies/?stage=share');
+    await page.goto('/academy/demo/counting/tallies/?stage=share');
     await page.getByRole('tab', { name: 'Chart' }).click();
     // The chart is drawn once Python has loaded.
     await expect(page.getByRole('img', { name: /share of yes votes/ })).toBeVisible({
@@ -229,7 +229,7 @@ for (const scheme of ['dark', 'light'] as const) {
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
     await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo01', '1'));
-    await page.goto('/demo/counting/tallies/?stage=share');
+    await page.goto('/academy/demo/counting/tallies/?stage=share');
     await page.getByRole('tab', { name: 'Explanation' }).click();
     await expect(page.locator('[data-scroll]')).toHaveAttribute('tabindex', '0');
 
@@ -295,7 +295,7 @@ for (const scheme of ['dark', 'light'] as const) {
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
     await page.addInitScript(() => localStorage.setItem('sulba:passed:stg_demo06', '1'));
-    await page.goto('/demo/ledgers/ledger/?stage=balance');
+    await page.goto('/academy/demo/ledgers/ledger/?stage=balance');
     await expect(page.getByText('Stage 1 done.')).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
@@ -307,7 +307,7 @@ for (const scheme of ['dark', 'light'] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/demo/interviews/pairs/');
+    await page.goto('/academy/demo/interviews/pairs/');
     await page.getByRole('button', { name: 'Start' }).click();
     await expect(page.getByRole('textbox', { name: 'Your plan' })).toBeVisible();
 
@@ -327,7 +327,7 @@ for (const scheme of ['dark', 'light'] as const) {
         JSON.stringify({ ...state, coding: true, solved: null }),
       );
     });
-    await page.goto('/demo/interviews/pairs/');
+    await page.goto('/academy/demo/interviews/pairs/');
     await page.getByRole('tab', { name: 'Plan', exact: true }).click();
     await expect(page.getByRole('textbox', { name: 'Your plan' })).toBeVisible();
     await expect(page.getByRole('timer')).toHaveText(/^21:0\d of 20:00$/);
@@ -355,7 +355,7 @@ for (const scheme of ['dark', 'light'] as const) {
         }),
       );
     });
-    await page.goto('/demo/interviews/poll-design/');
+    await page.goto('/academy/demo/interviews/poll-design/');
     await expect(page.getByRole('heading', { name: 'Rubric' })).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
@@ -367,7 +367,7 @@ for (const scheme of ['dark', 'light'] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto('/demo/counting/tallies/');
+    await page.goto('/academy/demo/counting/tallies/');
     await page.getByRole('tab', { name: 'Explanation' }).click();
     await expect(page.locator('math[display="block"]')).toBeVisible();
 

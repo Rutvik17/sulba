@@ -5,6 +5,7 @@ import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Tab, TabList, TabPanel, Tabs } from '@sulba/ui/tabs';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { academyPage } from '../lib/academy';
 import { fetchedOf, servedOf } from '../lib/lab-facts';
 import type { LabView, StageView } from '../lib/labs';
 import { labData, projectFiles } from './data';
@@ -222,7 +223,7 @@ function MachineStage({ lab, index, passed, review, notice, onNext, record }: St
         import('./download'),
       ]);
       const folder = lab.path.split('/').at(-1) ?? 'lab';
-      const page = `${location.origin}/${lab.path}/`;
+      const page = `${location.origin}${academyPage(lab.path)}`;
       save(
         `${folder}.zip`,
         zipped(folder, machineDownloadOf(lab, data, kept, project, page, plain)),

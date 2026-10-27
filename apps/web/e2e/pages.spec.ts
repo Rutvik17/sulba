@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('the home page loads', async ({ page }) => {
-  const response = await page.goto('/');
+  const response = await page.goto('/academy/');
 
   expect(response?.status()).toBe(200);
   await expect(page).toHaveTitle('Sulba · The school of the AI era');
@@ -11,7 +11,7 @@ test('the home page loads', async ({ page }) => {
 });
 
 test('the home page lists how a lab runs and the first course', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await expect(
     page.getByRole('region', { name: 'How every lab runs' }).getByRole('heading', { level: 3 }),
@@ -104,7 +104,7 @@ test('the footer and the contact page lead to the Privacy Policy', async ({ page
 });
 
 test('the footer leads to the about page and marks it as the page you are on', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
   const about = page.getByRole('contentinfo').getByRole('link', { name: 'About' });
 
   await expect(about).not.toHaveAttribute('aria-current');
@@ -120,7 +120,7 @@ test('an unknown address shows the not-found page with a 404 status', async ({ p
   expect(response?.status()).toBe(404);
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
   await page.getByRole('link', { name: 'Go to the home page' }).click();
-  await expect(page).toHaveURL('/');
+  await expect(page).toHaveURL('/academy/');
 });
 
 test('a keyboard user can skip past the top bar to the content', async ({ page, browserName }) => {
@@ -128,7 +128,7 @@ test('a keyboard user can skip past the top bar to the content', async ({ page, 
     browserName === 'webkit',
     "WebKit's Tab key skips links, as Safari's does until the user turns on Press Tab to highlight each item",
   );
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await page.keyboard.press('Tab');
   const skip = page.getByRole('link', { name: 'Skip to content' });
@@ -140,7 +140,7 @@ test('a keyboard user can skip past the top bar to the content', async ({ page, 
 });
 
 test('pages never link to the repository', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await expect(page.locator('a[href*="github.com/Rutvik17/sulba"]')).toHaveCount(0);
 });
@@ -149,13 +149,13 @@ test('the home page loads nothing from other sites', async ({ page }) => {
   const origins = new Set<string>();
   page.on('request', (request) => origins.add(new URL(request.url()).origin));
 
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto('/academy/', { waitUntil: 'networkidle' });
 
   expect([...origins]).toEqual([new URL(page.url()).origin]);
 });
 
 test('pages ask search engines not to index them before launch', async ({ request }) => {
-  const response = await request.get('/');
+  const response = await request.get('/academy/');
 
   expect(response.headers()['x-robots-tag']).toBe('noindex');
 });
@@ -164,7 +164,7 @@ test('each page links the icons a browser and a phone show for it, and the site 
   page,
   request,
 }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
 
   await expect(page.locator('link[rel="icon"]')).toHaveCount(2);
   await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);

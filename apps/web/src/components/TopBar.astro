@@ -1,4 +1,5 @@
 ---
+import { academy, academyPage } from '../lib/academy';
 import Mark from './Mark.astro';
 import ThemeControl from './ThemeControl.astro';
 
@@ -14,18 +15,17 @@ const here = Astro.url.pathname;
 const signIn = ['/sign-in/', '/account/'].includes(here)
   ? '/sign-in/'
   : `/sign-in/?next=${encodeURIComponent(here)}`;
+const review = academyPage('review');
 ---
 
 <header class="bar">
   <div class="inner">
-    <a class="brand" href="/">
+    <a class="brand" href={academy}>
       <Mark />
       <span>Sulba</span>
     </a>
     <div class="end">
-      <a class="link" href="/review/" aria-current={here === '/review/' ? 'page' : undefined}>
-        Review
-      </a>
+      <a class="link" href={review} aria-current={here === review ? 'page' : undefined}>Review</a>
       <a class="link signed-out" href={signIn}>Sign in</a>
       <a class="link signed-in" href="/account/">Account</a>
       <ThemeControl editor={editor} />

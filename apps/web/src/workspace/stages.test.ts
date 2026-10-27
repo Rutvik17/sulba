@@ -278,7 +278,7 @@ test("a machine lab's download opens at the first stage not done, on the solutio
   const machine: LabView = { ...lab, runs: 'machine' };
   const data = { 'data/votes.csv': 'choice\nyes\n', 'references/shares.json': '{}\n' };
   const project = { 'README.md': '# Lab\n', 'sulba.py': '# the runner\n' };
-  const page = 'https://sulba.dev/course/module/lab/';
+  const page = 'https://sulba.dev/academy/course/module/lab/';
   const files = machineDownloadOf(machine, data, keeping({}, ['one']), project, page, (html) =>
     html.toUpperCase(),
   );

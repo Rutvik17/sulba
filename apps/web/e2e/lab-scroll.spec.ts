@@ -11,7 +11,7 @@ const stage = (page: Page, name: string) =>
     .getByRole('button', { name: new RegExp(name) });
 
 async function open(page: Page) {
-  await page.goto('/');
+  await page.goto('/academy/');
   // The track's length follows the pinned block, which is measured once the page is laid out.
   await expect(lab(page)).toHaveAttribute('style', /--pin-height/);
 }
@@ -112,7 +112,7 @@ test.describe('on a phone', () => {
   );
 
   test('the three stages stand one under another, each finished', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/academy/');
 
     const stills = lab(page).locator('.stills > li');
     await expect(stills).toHaveCount(3);

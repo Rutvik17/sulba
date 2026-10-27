@@ -3,7 +3,7 @@ import { write } from './editor';
 
 // The tests build the site from the content package's fixture course (playwright.config.ts), whose
 // module Interviews has the lab Pairs: one Problem stage, with 20 minutes to write pair_sum.
-const path = '/demo/interviews/pairs/';
+const path = '/academy/demo/interviews/pairs/';
 
 const solution = [
   'def pair_sum(numbers, target):',
