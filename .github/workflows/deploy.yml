@@ -39,7 +39,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # A lab that runs on the learner's machine computes its figures in CPython, in its own project,
       # with the files it fetches, which the build fetches from their publishers again.
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version-file: packages/lab/python/pyproject.toml
           enable-cache: false
