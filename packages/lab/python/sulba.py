@@ -48,6 +48,7 @@ import http.server
 import json
 import os
 import platform
+import re
 import secrets
 import shutil
 import signal
@@ -89,6 +90,11 @@ TIMEOUT = 60
 # How many times a run asks a publisher for a file, each time for the rest of it, before it leaves
 # what came for the next run to go on from.
 TRIES = 5
+# The longest a fetch waits, in seconds, before asking again a publisher that answered it had been
+# asked too often, and how long when it doesn't say. Hugging Face counts requests in windows of five
+# minutes.
+LONGEST_WAIT = 300
+UNSAID_WAIT = 60
 # The release of llama.cpp whose server serves a lab's models, where its releases are, and its CPU
 # build for each system, by the names Python gives the system and the machine: the build's archive,
 # its size and its sha256.
@@ -420,14 +426,35 @@ def fetch(file: dict[str, Any], path: Path, about: str) -> None:
 
 def receive_all(file: dict[str, Any], partial: Path, about: str) -> None:
     """Receives the file into partial, asking again for the rest when the publisher stops sending
-    or can't be reached, up to TRIES times in all. An answer with an error is final."""
+    or can't be reached, or once the wait it asks for is over when it has been asked too often or
+    is too busy, up to TRIES times in all. Any other answer with an error is final."""
     for tried in range(1, TRIES + 1):
         try:
             receive(file, partial, about)
             return
         except (OSError, http.client.HTTPException) as error:
-            if isinstance(error, urllib.error.HTTPError) or tried == TRIES:
+            wait = wait_asked(error) if isinstance(error, urllib.error.HTTPError) else 0
+            if wait is None or tried == TRIES:
                 raise
+            if wait:
+                host = urlsplit(file["url"]).hostname
+                unit = "second" if wait == 1 else "seconds"
+                print(f", waiting {wait} {unit} as {host} asks", end="", flush=True)
+                time.sleep(wait)
+
+
+def wait_asked(error: urllib.error.HTTPError) -> int | None:
+    """The seconds a publisher that answered 429, asked too often, or 503, too busy, asks to be left
+    before it's asked again: the time to the end of its window in its RateLimit header, or its
+    Retry-After, up to LONGEST_WAIT, and UNSAID_WAIT when it says neither. None for any other
+    answer, which is final."""
+    if error.code not in (429, 503):
+        return None
+    waits = [int(each) for each in re.findall(r";\s*t=(\d+)", error.headers.get("RateLimit", ""))]
+    after = error.headers.get("Retry-After", "").strip()
+    if after.isdigit():
+        waits.append(int(after))
+    return min(max(waits, default=UNSAID_WAIT), LONGEST_WAIT)
 
 
 def receive(file: dict[str, Any], partial: Path, about: str) -> None:
