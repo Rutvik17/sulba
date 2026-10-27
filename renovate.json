@@ -16,6 +16,17 @@
       "enabled": false
     },
     {
+      "description": "Refreshing that lock would move its packages too, and an update to the whole lock has no package name to match",
+      "matchFileNames": ["packages/lab/python/**"],
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "enabled": false
+    },
+    {
+      "description": "The gallery's Dockerfile demo is text in a component, which Renovate takes for a Dockerfile by its name",
+      "matchFileNames": ["apps/web/src/gallery/**"],
+      "enabled": false
+    },
+    {
       "description": "A lab project's packages are those its stages are checked with, and its Python packages move with Pyodide, so learners run what the browser runs",
       "matchFileNames": ["courses/**", "packages/content/fixtures/**"],
       "enabled": false
