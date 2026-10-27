@@ -39,18 +39,29 @@ export async function currentLearner(client: Client): Promise<Learner | null> {
   return data.session ? learnerOf(data.session.user) : null;
 }
 
+/** The id of the person signed in in this browser, or null. */
+export async function signedInId(client: Client): Promise<string | null> {
+  const { data } = await client.auth.getSession();
+  return data.session?.user.id ?? null;
+}
+
 /** Signs out of this browser only; other devices stay signed in. */
 export async function signOut(client: Client): Promise<void> {
   const { error } = await client.auth.signOut({ scope: 'local' });
   if (error) throw error;
 }
 
+/** Closing an account is refused while it's the only owner of a workspace others are in. */
+export class OnlyOwner extends Error {
+  override name = 'OnlyOwner';
+}
+
 /**
- * Deletes the account and everything it recorded, then signs this browser out. What this browser
- * keeps on its own, such as a lab's code, stays.
+ * Deletes the account, everything it recorded and the workspaces it's alone in, then signs this
+ * browser out. What this browser keeps on its own, such as a lab's code, stays.
  */
 export async function closeAccount(client: Client): Promise<void> {
   const { error } = await client.rpc('close_account');
-  if (error) throw error;
+  if (error) throw error.code === '23514' ? new OnlyOwner(error.message) : error;
   await client.auth.signOut({ scope: 'local' });
 }

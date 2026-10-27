@@ -15,6 +15,9 @@
     "./chart": "./src/chart/Chart.tsx",
     "./panel": "./src/panel/SidePanel.tsx",
     "./menu": "./src/menu/Menu.tsx",
+    "./textfield": "./src/textfield/TextField.tsx",
+    "./dialog": "./src/dialog/Dialog.tsx",
+    "./select": "./src/select/Select.tsx",
     "./fonts/noto-sans-math.woff2": "./src/fonts/noto-sans-math/NotoSansMath-Regular.woff2"
   },
   "scripts": {

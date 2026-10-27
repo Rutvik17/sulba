@@ -94,12 +94,37 @@ const sections: {
     name: 'Chart',
     states: async () => {},
   },
+  {
+    id: 'textfield',
+    name: 'Text field',
+    states: async (page) => {
+      await page.getByRole('textbox', { name: 'Workspace name' }).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await page.getByRole('textbox', { name: 'Address', exact: true }).hover();
+    },
+  },
+  {
+    id: 'select',
+    name: 'Select',
+    states: async (page) => {
+      await page.getByRole('button', { name: /^Member/ }).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await page.getByRole('button', { name: /^Viewer/ }).hover();
+    },
+  },
 ];
 
-/** The overlays, pictured open: the side panel, and the menu with its first item focused. */
+/**
+ * The overlays, pictured open: the side panel, the menu with its first item focused, the dialog,
+ * and the select's list with the option after the chosen one focused.
+ */
 const overlays = [
   { id: 'panel', trigger: 'Open the review', role: 'dialog', keys: [] },
   { id: 'menu', trigger: 'Session', role: 'menu', keys: ['ArrowDown'] },
+  { id: 'dialog', trigger: 'Delete workspace', role: 'dialog', keys: [] },
+  { id: 'select-list', trigger: /^Member/, role: 'listbox', keys: ['ArrowDown'] },
 ] as const;
 
 for (const { id, name, states, ready } of sections) {

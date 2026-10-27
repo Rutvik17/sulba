@@ -1,0 +1,139 @@
+/*
+  A workspace page: its title and what it holds on the left, its main action on the right, then
+  sections of tables and settings. Tables are dense, ruled between rows, and scroll sideways
+  inside their own box on a narrow screen.
+*/
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  max-width: 880px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+
+.count {
+  margin: var(--space-1) 0 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.note {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+}
+
+.scroll {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.table th {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line-2);
+  color: var(--dim);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.person {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+}
+
+.name {
+  font-weight: 500;
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: 480px;
+}
+
+.danger {
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--bad) 45%, transparent);
+  border-radius: var(--radius);
+  max-width: none;
+}
+
+.link {
+  display: flex;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.unseen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

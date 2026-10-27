@@ -126,6 +126,23 @@ test('closing an account asks first, then deletes it', async ({ page }) => {
   expect(calls.closed).toBe(1);
 });
 
+test("an account that is a workspace's only owner, with others in it, says why it can't close", async ({
+  page,
+}) => {
+  const calls = await standIn(page, { onlyOwner: true });
+  await signedIn(page);
+  await page.goto('/account/');
+
+  await page.getByRole('button', { name: 'Close account' }).click();
+  await page.getByRole('button', { name: 'Close account' }).last().click();
+
+  await expect(page.getByRole('status')).toHaveText(
+    "You're the only owner of a workspace that has other people in it. Make one of them an owner in the app, then close your account.",
+  );
+  expect(calls.closed).toBe(0);
+  expect(await page.evaluate(() => localStorage.getItem('sulba:session'))).not.toBeNull();
+});
+
 test('signed in, a lab opens the stages passed on another device', async ({ page }) => {
   await standIn(page, { passed: [{ stage_id: 'stg_demo01', caught: null, problems: null }] });
   await signedIn(page);

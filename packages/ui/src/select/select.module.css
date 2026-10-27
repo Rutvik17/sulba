@@ -1,0 +1,153 @@
+/*
+  A select: a button that shows the choice, edged like a text field, and a list that opens under
+  it in a card like a menu's. Each option has its name and, when it needs one, a line that says
+  what it means; the chosen one has a tick. React Aria moves the focus through the list as the
+  pointer passes or the arrow keys are pressed, so the focused option is the highlighted one.
+*/
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  color: var(--fg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 40px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-md);
+  cursor: pointer;
+  transition: border-color var(--duration-quick) var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.small {
+  height: 32px;
+  padding-inline: var(--space-2) var(--space-2);
+  border-color: transparent;
+  font-size: var(--text-sm);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not([data-disabled]) {
+    border-color: var(--fg);
+  }
+
+  .small:hover:not([data-disabled]) {
+    border-color: var(--line-strong);
+  }
+}
+
+.trigger[data-pressed] {
+  background: var(--raise);
+}
+
+.trigger[data-disabled] {
+  color: var(--dim);
+  cursor: default;
+}
+
+.value {
+  white-space: nowrap;
+}
+
+.chevron {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trigger[data-disabled] .chevron {
+  visibility: hidden;
+}
+
+.popover {
+  min-width: max(var(--trigger-width), 240px);
+  max-width: min(360px, calc(100vw - 2 * var(--space-4)));
+  overflow-y: auto;
+  padding: var(--space-1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.popover[data-entering] {
+  animation: open var(--duration-quick) var(--ease);
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+.list {
+  outline: none;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.option[data-focused] {
+  background: var(--raise);
+}
+
+.option:focus-visible {
+  outline-offset: -2px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.description {
+  color: var(--dim);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.check {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-top: 3px;
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

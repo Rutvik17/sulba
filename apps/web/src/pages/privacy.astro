@@ -7,7 +7,7 @@ const providers = [
   {
     name: 'Supabase, Inc.',
     href: 'https://supabase.com/privacy',
-    does: 'Runs accounts and sign-in, and keeps your progress and reviews',
+    does: 'Runs accounts and sign-in, and keeps your progress, reviews and workspaces',
     where: 'United States',
   },
   {
@@ -43,7 +43,7 @@ const providers = [
 ] as const;
 ---
 
-<Legal title="Privacy Policy" updated="26 October 2026">
+<Legal title="Privacy Policy" updated="27 October 2026">
   <p class="lede">
     You can read all of Sulba, and work through every lab, without telling us who you are. Sulba
     sets no cookies and shows no ads. If you sign in, your account keeps your progress; if you write
@@ -168,19 +168,33 @@ const providers = [
       each card is due at the same time on every device.
     </li>
     <li>
+      <strong>Your workspaces.</strong>{' '}
+      In the app, you can create a workspace or join one with an invitation link. Each workspace
+      keeps its name and address, who is in it and each person's role, the invitation links its
+      admins make, and a history of every change to these: what changed, when, and whose account
+      made the change. Everyone in a workspace sees the name and email address of each person in it,
+      and its history. An invitation link lets anyone who has it join, until it's revoked or 7 days
+      pass; we keep only a scrambled form of it, from which the link can't be worked out.
+    </li>
+    <li>
       <strong>In your browser.</strong>{' '}
       Your browser keeps your session, and the one-time code that started each sign-in, under keys
       that start with <code>sulba:session</code>. Attempts not yet sent, such as while you're
       offline, wait as <code>sulba:outbox</code>, and the page to return to after signing in waits
       as{' '}
       <code>sulba:next</code>
-      until you close the tab. Signing out removes your session and anything waiting to be sent.
+      until you close the tab. The app keeps the address of the workspace you opened last as{' '}
+      <code>sulba:workspace</code>, to open it next time. Signing out removes your session and
+      anything waiting to be sent.
     </li>
     <li>
       <strong>Closing your account.</strong>{' '}
-      We keep your account, progress and reviews until you close your account. Closing it, on the{' '}
-      <a href="/account/">Account page</a>, deletes them all at once. What your browser keeps on its
-      own, such as your code and reviews, stays until you clear it.
+      We keep your account, progress, reviews and workspaces until you close your account. Closing
+      it, on the <a href="/account/">Account page</a>, deletes them all at once, with each workspace
+      you're the only member of; you leave the others, whose history keeps what you changed without
+      your name or email address. While you're the only owner of a workspace with other people in
+      it, make one of them an owner first. What your browser keeps on its own, such as your code and
+      reviews, stays until you clear it.
     </li>
   </ul>
 
@@ -245,8 +259,8 @@ const providers = [
   <h2>Our legal basis</h2>
   <ul>
     <li>
-      <strong>Your account, progress and reviews:</strong>{' '}
-      to provide the account you asked for.
+      <strong>Your account, progress, reviews and workspaces:</strong>{' '}
+      to provide the account and the workspaces you asked for.
     </li>
     <li>
       <strong>Answering you:</strong>{' '}
@@ -261,10 +275,10 @@ const providers = [
 
   <h2>Where it's kept</h2>
   <p>
-    Your account, progress and reviews are kept in the United States by Supabase. Your message is
-    processed in the United States by Resend and kept there by Apple, and requests pass through
-    Cloudflare's network. Information kept outside Canada may be accessible to the courts and
-    authorities of the country where it's kept.
+    Your account, progress, reviews and workspaces are kept in the United States by Supabase. Your
+    message is processed in the United States by Resend and kept there by Apple, and requests pass
+    through Cloudflare's network. Information kept outside Canada may be accessible to the courts
+    and authorities of the country where it's kept.
   </p>
 
   <h2>Your rights</h2>

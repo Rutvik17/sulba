@@ -10,7 +10,8 @@
     "./account": "./src/account.ts",
     "./project": "./src/project.ts",
     "./sync": "./src/sync.ts",
-    "./study": "./src/study.ts"
+    "./study": "./src/study.ts",
+    "./workspaces": "./src/workspaces.ts"
   },
   "scripts": {
     "typecheck": "tsc",
