@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tarfile
 import threading
+import time
 import uuid
 import zipfile
 import zlib
@@ -493,12 +494,15 @@ def test_ballots():
 @dataclass
 class Publisher:
     """A publisher's server: the files it sends, by path, whether it sends part of one when asked
-    to, how many bytes it sends before it stops early, and each request's path and Range."""
+    to, how many bytes it sends before it stops early, how many requests it answers 429 first and
+    the headers it answers them with, and each request's path and Range."""
 
     address: str = ""
     files: dict[str, bytes] = field(default_factory=dict)
     ranges: bool = True
     stops: int | None = None
+    limited: int = 0
+    limit: dict[str, str] = field(default_factory=dict)
     requests: list[tuple[str, str | None]] = field(default_factory=list)
 
 
@@ -510,6 +514,14 @@ def publisher() -> Iterator[Publisher]:
         def do_GET(self) -> None:
             asked = self.headers.get("Range")
             served.requests.append((self.path, asked))
+            if served.limited:
+                served.limited -= 1
+                self.send_response(429)
+                for name, value in served.limit.items():
+                    self.send_header(name, value)
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
             body = served.files.get(self.path)
             if body is None:
                 self.send_error(404)
@@ -674,6 +686,46 @@ def test_a_file_of_another_size_is_refused_before_it_comes(
     assert "127.0.0.1 sent a different file from the one the lab was made with." in ran.stdout
     assert len(publisher.requests) == 1
     assert list((folder / "data").iterdir()) == [folder / "data" / "votes.csv"]
+
+
+def test_a_publisher_asked_too_often_is_asked_again_when_its_window_ends(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.limited = 1
+    publisher.limit = {"RateLimit": '"resolvers";r=0;t=1'}
+    started = time.monotonic()
+    ran = command(folder)
+    assert time.monotonic() - started >= 1
+    assert "ballots.bin, 16.4 kB, from 127.0.0.1, waiting 1 second as 127.0.0.1 asks" in ran.stdout
+    assert "✓ Reads the fetched ballots" in ran.stdout
+    assert publisher.requests == [("/ballots.bin", None), ("/ballots.bin", None)]
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_publisher_asked_too_often_is_left_as_long_as_its_retry_after(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.limited = 1
+    publisher.limit = {"Retry-After": "2"}
+    started = time.monotonic()
+    ran = command(folder)
+    assert time.monotonic() - started >= 2
+    assert ", waiting 2 seconds as 127.0.0.1 asks" in ran.stdout
+    assert (folder / "data" / "ballots.bin").read_bytes() == BALLOTS
+
+
+def test_a_publisher_still_asked_too_often_after_every_try_is_said(
+    folder: Path, publisher: Publisher
+) -> None:
+    fetching(folder, f"{publisher.address}/ballots.bin")
+    publisher.limited = 5
+    publisher.limit = {"RateLimit": '"resolvers";r=0;t=0'}
+    ran = command(folder)
+    assert ran.returncode == 1
+    assert "127.0.0.1 answered 429 Too Many Requests. Try again later." in ran.stdout
+    assert len(publisher.requests) == 5
 
 
 def test_a_file_the_publisher_does_not_have_is_said(folder: Path, publisher: Publisher) -> None:
