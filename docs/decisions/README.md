@@ -55,5 +55,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
 | [50. Prove criteria with the test reports a CI run sends, signed by GitHub](0050-prove-criteria-with-test-reports-a-ci-run-signs.md) | Accepted |
 | [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted |
+| [52. Approve specs by named reviewers, and ask them again when a spec changes](0052-approve-specs-by-named-reviewers-and-ask-again-on-change.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

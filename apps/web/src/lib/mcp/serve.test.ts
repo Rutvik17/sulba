@@ -96,6 +96,16 @@ function standIn({
       return json(one ? row : [row]);
     }
     if (path.endsWith('/specs')) return json(one ? spec : [spec]);
+    if (path.endsWith('/spec_reviews')) {
+      return json([
+        { verdict: 'approved', note: null, people: { name: 'Ben Ortiz', email: null } },
+        {
+          verdict: 'changes_requested',
+          note: 'Say how long it waits',
+          people: { name: '', email: 'cy@example.com' },
+        },
+      ]);
+    }
     if (path.endsWith('/criterion_proofs')) {
       return json([
         proof(1, 'proven', { passed: 2, failed: 0 }),
@@ -291,7 +301,7 @@ test('an agent on the 2026-07-28 protocol calls a tool with no handshake, naming
   expect(unnamed.status).toBe(400);
 });
 
-test('get_spec gives the criteria with their proof and what a failing test said, asking as the agent', async () => {
+test('get_spec gives the criteria with their proof, what a failing test said and the review, asking as the agent', async () => {
   const supabase = standIn();
   const { text } = await tool('get_spec', { workspace: 'acme', spec: 'spec-3' }, supabase.fetch);
   expect(text).toContain('# SPEC-3: Retry failed payments');
@@ -300,6 +310,9 @@ test('get_spec gives the criteria with their proof and what a failing test said,
   expect(text).toContain('- SPEC-3/AC-2: Keeps the idempotency key (Failing: 1 of 1 test failed)');
   expect(text).toContain(
     "  - test_SPEC_3_AC_2_keeps_the_key failed in acme-co/payments at a1b2c3d: assert 'k2' == 'k1'",
+  );
+  expect(text).toContain(
+    '## Review\n\n- Ben Ortiz: Approved\n- cy@example.com: Asked for changes: “Say how long it waits”',
   );
   const bearer = `Bearer ${await token()}`.slice(0, 20);
   expect(

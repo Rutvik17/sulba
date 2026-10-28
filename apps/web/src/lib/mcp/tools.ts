@@ -14,6 +14,7 @@ import {
   proofsOfSpec,
   specProofsOf,
 } from '@sulba/data/evidence';
+import { type NamedReview, namedReviewsOf, verdictNames } from '@sulba/data/reviewers';
 import {
   addCriterion,
   createSpec,
@@ -42,7 +43,7 @@ export const instructions = [
   'Sulba holds the team’s specs: what to build, and the numbered acceptance criteria that say when it’s done.',
   'Before building, read the spec with get_spec, and build what its criteria say.',
   'A test proves a criterion by putting the criterion’s ID in its name, such as test_SPEC_12_AC_3_retries_once for SPEC-12/AC-3. When the team’s CI runs it on the repository’s branch, Sulba marks the criterion proven or failing.',
-  'You can draft specs, add and reword criteria, put a spec in review and mark it implemented. People approve, abandon and supersede specs.',
+  'You can draft specs, add and reword criteria, put a spec in review and mark it implemented. People approve, abandon and supersede specs: a spec with reviewers is approved when every one of them approves it, and get_spec shows what a reviewer who asked for changes said.',
 ].join(' ');
 
 const workspaceInput = z
@@ -90,6 +91,15 @@ function criterionNumbers(id: string): { spec: number; criterion: number } {
 }
 
 const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** Each reviewer's answer, and what one who asked for changes said. */
+export function reviewText(reviews: readonly NamedReview[]): string[] {
+  return reviews.map(({ reviewer, verdict, note }) =>
+    note && verdict === 'changes_requested'
+      ? `- ${reviewer}: ${verdictNames[verdict]}: “${note}”`
+      : `- ${reviewer}: ${verdictNames[verdict]}`,
+  );
+}
 
 /** A criterion's proof, as a phrase. */
 export function proofText(proof: CriterionProof | undefined): string {
@@ -184,7 +194,7 @@ export function createServer(agent: Agent): McpServer {
     {
       title: 'Read a spec',
       description:
-        'A spec: its status, its text and its acceptance criteria, each with its ID and whether the team’s tests prove it, and what each failing test said. Read it before building what it describes.',
+        'A spec: its status, its text, its acceptance criteria, each with its ID and whether the team’s tests prove it, what each failing test said, and what its reviewers answered. Read it before building what it describes.',
       inputSchema: z.object({ workspace: workspaceInput, spec: specInput }),
       annotations: read,
     },
@@ -192,9 +202,10 @@ export function createServer(agent: Agent): McpServer {
       run(async () => {
         const workspace = await workspaceOf(agent, slug);
         const spec = await specOf(agent, workspace, id);
-        const [proofs, claims] = await Promise.all([
+        const [proofs, claims, reviews] = await Promise.all([
           proofsOfSpec(agent.client, workspace.id, spec.id),
           claimsOfSpec(agent.client, workspace.id, spec.number),
+          namedReviewsOf(agent.client, spec.id),
         ]);
         return [
           `# ${specKey(spec.number)}: ${spec.title}`,
@@ -207,6 +218,7 @@ export function createServer(agent: Agent): McpServer {
           '',
           ...criteriaText(spec, proofs, claims),
           '',
+          ...(reviews.length ? ['## Review', '', ...reviewText(reviews), ''] : []),
           `A test proves a criterion by putting its ID in its name, with its parts joined by hyphens, underscores, slashes or spaces, such as test_${specKey(spec.number).replace('-', '_')}_AC_1.`,
         ].join('\n');
       }),

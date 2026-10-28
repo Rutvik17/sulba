@@ -216,6 +216,24 @@ export async function proofsOf(client: Client, workspaceId: string): Promise<Cri
   return data.map(proofOf);
 }
 
+/** The criteria failing on a person's specs, most recently checked first: at most 50. */
+export async function failingOn(
+  client: Client,
+  workspaceId: string,
+  ownerId: string,
+): Promise<CriterionProof[]> {
+  const { data, error } = await client
+    .from('criterion_proofs')
+    .select('*')
+    .eq('workspace_id', workspaceId)
+    .eq('spec_owner_id', ownerId)
+    .eq('state', 'failing')
+    .order('checked_at', { ascending: false })
+    .limit(50);
+  if (error) throw refusal(error);
+  return data.map(proofOf);
+}
+
 /** The proofs of one spec's criteria. */
 export async function proofsOfSpec(
   client: Client,

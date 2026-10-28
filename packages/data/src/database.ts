@@ -386,6 +386,65 @@ export type Database = {
         };
         Relationships: [];
       };
+      spec_reviews: {
+        Row: {
+          answered_at: string | null;
+          id: string;
+          note: string | null;
+          requested_at: string;
+          requested_by: string | null;
+          reviewer_id: string;
+          spec_id: string;
+          verdict: Database['public']['Enums']['review_verdict'];
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answered_at?: string | null;
+          id?: string;
+          note?: string | null;
+          requested_at?: string;
+          requested_by?: string | null;
+          reviewer_id: string;
+          spec_id: string;
+          verdict?: Database['public']['Enums']['review_verdict'];
+          workspace_id: string;
+        };
+        Update: {
+          answered_at?: string | null;
+          id?: string;
+          note?: string | null;
+          requested_at?: string;
+          requested_by?: string | null;
+          reviewer_id?: string;
+          spec_id?: string;
+          verdict?: Database['public']['Enums']['review_verdict'];
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'spec_reviews_requested_by_fkey';
+            columns: ['requested_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spec_reviews_reviewer_id_fkey';
+            columns: ['reviewer_id'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spec_reviews_workspace_id_spec_id_fkey';
+            columns: ['workspace_id', 'spec_id'];
+            isOneToOne: false;
+            referencedRelation: 'specs';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       specs: {
         Row: {
           body: string;
@@ -616,6 +675,7 @@ export type Database = {
           skipped: number | null;
           spec_id: string;
           spec_number: number;
+          spec_owner_id: string | null;
           spec_status: Database['public']['Enums']['spec_status'];
           spec_title: string;
           state: Database['public']['Enums']['proof'] | null;
@@ -632,6 +692,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'specs';
             referencedColumns: ['workspace_id', 'id'];
+          },
+          {
+            foreignKeyName: 'specs_owner_id_fkey';
+            columns: ['spec_owner_id'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
           },
         ];
       };
@@ -751,6 +818,16 @@ export type Database = {
         Returns: Json;
       };
       remove_member: { Args: { person: string; workspace: string }; Returns: undefined };
+      remove_reviewer: { Args: { reviewer: string; spec: string }; Returns: undefined };
+      request_review: { Args: { reviewer: string; spec: string }; Returns: undefined };
+      review_spec: {
+        Args: {
+          note?: string;
+          spec: string;
+          verdict: Database['public']['Enums']['review_verdict'];
+        };
+        Returns: Database['public']['Enums']['spec_status'];
+      };
       set_member_role: {
         Args: {
           person: string;
@@ -763,6 +840,7 @@ export type Database = {
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
       proof: 'proven' | 'failing' | 'unproven';
+      review_verdict: 'pending' | 'approved' | 'changes_requested';
       spec_status: 'draft' | 'in_review' | 'approved' | 'implemented' | 'abandoned' | 'superseded';
       test_outcome: 'passed' | 'failed' | 'skipped';
       workspace_role: 'viewer' | 'member' | 'admin' | 'owner';
@@ -883,6 +961,7 @@ export const Constants = {
     Enums: {
       actor_kind: ['person', 'agent', 'github', 'system'],
       proof: ['proven', 'failing', 'unproven'],
+      review_verdict: ['pending', 'approved', 'changes_requested'],
       spec_status: ['draft', 'in_review', 'approved', 'implemented', 'abandoned', 'superseded'],
       test_outcome: ['passed', 'failed', 'skipped'],
       workspace_role: ['viewer', 'member', 'admin', 'owner'],

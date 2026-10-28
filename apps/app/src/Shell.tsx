@@ -64,6 +64,14 @@ export function Shell() {
           <Switcher current={workspace} />
           <nav aria-label="Workspace" className={css.nav}>
             <Link
+              to="/$slug"
+              params={{ slug }}
+              activeOptions={{ exact: true }}
+              className={css.link}
+            >
+              My work
+            </Link>
+            <Link
               to="/$slug/specs"
               params={{ slug }}
               className={css.link}

@@ -7,6 +7,7 @@ const context: Context = {
   spec: 12,
   names: new Map([['b', 'Ben Ortiz']]),
   criteria: new Map([['c3', 3]]),
+  reviewers: new Map([['r1', 'b']]),
 };
 
 function change(partial: Partial<Change>): Change {
@@ -24,6 +25,48 @@ function change(partial: Partial<Change>): Change {
 }
 
 describe('whatOf', () => {
+  test('says who was asked to review the spec, and what each reviewer answered', () => {
+    const review = (partial: Partial<Change>) =>
+      change({ subjectType: 'review', subjectId: 'r1', ...partial });
+    expect(
+      whatOf(review({ action: 'review.created', changes: { reviewer_id: [null, 'b'] } }), context),
+    ).toBe('asked Ben Ortiz to review it');
+    expect(
+      whatOf(
+        review({ action: 'review.updated', changes: { verdict: ['pending', 'approved'] } }),
+        context,
+      ),
+    ).toBe('approved it');
+    expect(
+      whatOf(
+        review({
+          action: 'review.updated',
+          changes: { verdict: ['pending', 'changes_requested'], note: [null, 'Say how long'] },
+        }),
+        context,
+      ),
+    ).toBe('asked for changes');
+    expect(
+      whatOf(
+        review({ action: 'review.updated', changes: { verdict: ['approved', 'pending'] } }),
+        context,
+      ),
+    ).toBe('asked Ben Ortiz to review it again');
+    expect(
+      whatOf(review({ action: 'review.deleted', changes: { reviewer_id: ['b', null] } }), context),
+    ).toBe('took Ben Ortiz off its reviewers');
+    expect(
+      whatOf(
+        review({
+          action: 'review.deleted',
+          subjectId: 'r9',
+          changes: { reviewer_id: ['x', null] },
+        }),
+        context,
+      ),
+    ).toBe('took someone who has left off its reviewers');
+  });
+
   test('says what changed about a spec, in one sentence', () => {
     expect(whatOf(change({ action: 'spec.created' }), context)).toBe('wrote the spec');
     expect(

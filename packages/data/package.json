@@ -9,11 +9,13 @@
     "./evidence": "./src/evidence.ts",
     "./outbox": "./src/outbox.ts",
     "./project": "./src/project.ts",
+    "./reviewers": "./src/reviewers.ts",
     "./reviews": "./src/reviews.ts",
     "./session": "./src/session.ts",
     "./specs": "./src/specs.ts",
     "./study": "./src/study.ts",
     "./sync": "./src/sync.ts",
+    "./work": "./src/work.ts",
     "./workspaces": "./src/workspaces.ts"
   },
   "scripts": {

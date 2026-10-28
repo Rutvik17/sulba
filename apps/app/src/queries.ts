@@ -8,7 +8,9 @@ import {
   repositoriesOf,
   specProofsOf,
 } from '@sulba/data/evidence';
+import { reviewsOf } from '@sulba/data/reviewers';
 import { historyOf, specAt, specsOf } from '@sulba/data/specs';
+import { workOf } from '@sulba/data/work';
 import {
   invitationsOf,
   membersOf,
@@ -29,6 +31,9 @@ export const keys = {
   specs: (workspaceId: string) => ['specs', workspaceId] as const,
   spec: (workspaceId: string, number: number) => ['spec', workspaceId, number] as const,
   history: (specId: string) => ['history', specId] as const,
+  reviews: (specId: string) => ['reviews', specId] as const,
+  /** What needs the signed-in person in a workspace. */
+  work: (workspaceId: string) => ['work', workspaceId] as const,
   repositories: (workspaceId: string) => ['repositories', workspaceId] as const,
   reports: (workspaceId: string) => ['reports', workspaceId] as const,
   /** Every proof in a workspace; a spec's own and the specs list's sit under it. */
@@ -97,6 +102,22 @@ export function useHistory(workspace: Workspace, specId: string) {
   return useQuery({
     queryKey: keys.history(specId),
     queryFn: () => historyOf(client, workspace.id, specId),
+  });
+}
+
+export function useReviews(specId: string) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.reviews(specId),
+    queryFn: () => reviewsOf(client, specId),
+  });
+}
+
+export function useWork(workspace: Workspace) {
+  const { client, personId } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.work(workspace.id),
+    queryFn: () => workOf(client, workspace.id, personId),
   });
 }
 
