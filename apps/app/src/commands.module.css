@@ -1,0 +1,44 @@
+/*
+  The shortcuts dialog's lists: under each heading, a row per command with its keys at the right,
+  the rows ruled apart like a table's.
+*/
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.heading {
+  color: var(--dim);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 36px;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font-size: var(--text-sm);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}

@@ -1,0 +1,131 @@
+/*
+  The command menu: a card a fifth of the way down a veiled page, at most 640px wide, with the
+  search field across its top and the commands under it in titled groups. The highlighted command
+  is the one Enter runs; React Aria moves it as the arrow keys are pressed or the pointer passes,
+  while the focus stays in the field. Each command shows its shortcut at the right.
+*/
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: max(var(--space-4), 18dvh) var(--space-4) var(--space-4);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+}
+
+.modal {
+  width: min(640px, 100%);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.overlay[data-entering] {
+  animation: veil var(--duration-quick) var(--ease);
+}
+
+.modal[data-entering] {
+  animation: rise var(--duration-quick) var(--ease);
+}
+
+@keyframes veil {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.field {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding-inline: var(--space-4);
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-md);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--dim);
+}
+
+.menu {
+  max-height: min(420px, 56dvh);
+  overflow-y: auto;
+  padding: var(--space-2);
+  outline: none;
+  scroll-padding-block: var(--space-8) var(--space-2);
+}
+
+.section + .section {
+  margin-top: var(--space-2);
+}
+
+.header {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--dim);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding-inline: var(--space-3);
+  border-radius: 6px;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.item[data-focused] {
+  background: var(--raise);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note {
+  flex: none;
+  color: var(--dim);
+  font-size: var(--text-xs);
+}
+
+.empty {
+  padding: var(--space-6) var(--space-3);
+  color: var(--dim);
+  font-size: var(--text-sm);
+  text-align: center;
+}

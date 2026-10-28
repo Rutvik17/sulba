@@ -127,6 +127,21 @@ const sections: {
       await page.getByRole('button', { name: /^Viewer/ }).hover();
     },
   },
+  {
+    id: 'keys',
+    name: 'Keys',
+    states: async () => {},
+  },
+  {
+    id: 'switch',
+    name: 'Switch',
+    states: async (page) => {
+      await page.getByRole('switch', { name: 'Single-key shortcuts' }).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await page.getByText('Email me a summary each week').hover();
+    },
+  },
 ];
 
 /**
@@ -186,5 +201,35 @@ for (const scheme of ['dark', 'light'] as const) {
     }
 
     await expect(page.locator('#theme-panel')).toHaveScreenshot(`theme-panel-${scheme}.png`);
+  });
+}
+
+// The command menu with its first command highlighted by the arrow key, opened from the keyboard
+// so the pointer rests on none of its commands.
+for (const scheme of ['dark', 'light'] as const) {
+  test(`the open command menu in the ${scheme} theme`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/gallery/');
+    await islandsHydrated(page);
+    await page.getByRole('button', { name: 'Open the command menu' }).focus();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('ArrowDown');
+
+    const menu = page.getByRole('dialog', { name: 'Commands' }).locator('xpath=..');
+    await expect(menu).toHaveScreenshot(`command-${scheme}.png`);
+  });
+}
+
+// A tooltip, shown as the keyboard reaches its button.
+for (const scheme of ['dark', 'light'] as const) {
+  test(`a tooltip in the ${scheme} theme`, async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Tooltips are for a pointer or a keyboard');
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('/gallery/');
+    await islandsHydrated(page);
+    await page.getByRole('button', { name: 'Search', exact: true }).focus();
+    await page.keyboard.press('Shift+Tab');
+
+    await expect(page.getByRole('tooltip')).toHaveScreenshot(`tooltip-${scheme}.png`);
   });
 }

@@ -1,0 +1,88 @@
+/*
+  A switch: a track with a round thumb before its label. Off, the track is edged like a control
+  and the thumb sits at the start in --dim; on, the track fills with --accent and the thumb moves
+  to the end in --bg. A switch that can't be changed has a fainter edge and thumb. The label and
+  the line under it start at the same edge.
+*/
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg);
+  font-size: var(--text-md);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.track {
+  flex: none;
+  display: flex;
+  align-items: center;
+  width: 36px;
+  height: 20px;
+  padding: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--bg);
+  transition:
+    background var(--duration-quick) var(--ease),
+    border-color var(--duration-quick) var(--ease);
+}
+
+.thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--dim);
+  transition:
+    translate var(--duration-quick) var(--ease),
+    background var(--duration-quick) var(--ease);
+}
+
+@media (hover: hover) {
+  .button[data-hovered] .track {
+    border-color: var(--fg);
+  }
+}
+
+.button[data-selected] .track {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.button[data-selected] .thumb {
+  translate: 16px 0;
+  background: var(--bg);
+}
+
+.button[data-focus-visible] .track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.button[data-disabled] {
+  color: var(--dim);
+  cursor: default;
+}
+
+.button[data-disabled] .track {
+  border-color: var(--line-2);
+}
+
+.button[data-disabled] .thumb {
+  background: var(--faint);
+}
+
+.description {
+  padding-inline-start: calc(36px + var(--space-3));
+  color: var(--dim);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}

@@ -191,7 +191,7 @@ test('a menu opens from its button, moves with the arrow keys and acts on Enter'
   page,
 }) => {
   await openGallery(page);
-  const chosen = page.getByRole('region', { name: 'Menu' }).getByRole('status');
+  const chosen = page.getByRole('region', { name: 'Menu', exact: true }).getByRole('status');
   const menu = page.getByRole('menu');
 
   await page.getByRole('button', { name: 'Session' }).click();
@@ -219,6 +219,76 @@ test('a menu closes with Escape, gives the focus back, and skips an item that is
 
   await expect(page.getByRole('menu')).toBeHidden();
   await expect(trigger).toBeFocused();
+});
+
+test('the command menu filters as one types and runs the highlighted command on Enter', async ({
+  page,
+}) => {
+  await openGallery(page);
+  const ran = page.getByRole('region', { name: 'Command menu' }).getByRole('status');
+  await page.getByRole('button', { name: 'Open the command menu' }).click();
+  const menu = page.getByRole('dialog', { name: 'Commands' });
+  const search = menu.getByRole('textbox', { name: 'Commands' });
+  await expect(search).toBeFocused();
+  await expect(menu.getByRole('menuitem', { name: 'Go to Specs' })).toHaveAccessibleDescription(
+    'G then S',
+  );
+
+  await search.fill('go to');
+  await expect(menu.getByRole('menuitem')).toHaveText([
+    /^Go to My work/,
+    /^Go to Specs/,
+    /^Go to Evidence/,
+  ]);
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+
+  await expect(menu).toBeHidden();
+  await expect(ran).toHaveText('Ran: Go to Specs');
+});
+
+test('the command menu says when nothing matches, and closes with Escape', async ({ page }) => {
+  await openGallery(page);
+  const trigger = page.getByRole('button', { name: 'Open the command menu' });
+  await trigger.click();
+  const menu = page.getByRole('dialog', { name: 'Commands' });
+
+  await menu.getByRole('textbox', { name: 'Commands' }).fill('deploy');
+  await expect(menu).toContainText('No command matches.');
+  await page.keyboard.press('Escape');
+
+  await expect(menu).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
+test('a switch flips with a press or Space, and one that is disabled stays as it is', async ({
+  page,
+}) => {
+  await openGallery(page);
+  const weekly = page.getByRole('switch', { name: 'Email me a summary each week' });
+  await expect(page.getByRole('switch', { name: 'Single-key shortcuts' })).toBeChecked();
+  await expect(weekly).not.toBeChecked();
+
+  await page.getByText('Email me a summary each week').click();
+  await expect(weekly).toBeChecked();
+  await page.keyboard.press('Space');
+  await expect(weekly).not.toBeChecked();
+  await expect(page.getByRole('switch', { name: 'Require two reviewers' })).toBeDisabled();
+});
+
+test('a tooltip shows its shortcut as the keyboard reaches its button, and Escape hides it', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'Tooltips are for a pointer or a keyboard');
+  await openGallery(page);
+  await page.getByRole('button', { name: 'Search', exact: true }).focus();
+  await page.keyboard.press('Shift+Tab');
+
+  const tooltip = page.getByRole('tooltip');
+  await expect(tooltip).toHaveText('C');
+  await page.keyboard.press('Escape');
+  await expect(tooltip).toBeHidden();
 });
 
 /** The editable editor in the gallery, and its code area. */

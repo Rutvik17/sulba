@@ -18,6 +18,10 @@
     "./textfield": "./src/textfield/TextField.tsx",
     "./dialog": "./src/dialog/Dialog.tsx",
     "./select": "./src/select/Select.tsx",
+    "./keys": "./src/keys/Keys.tsx",
+    "./command": "./src/command/CommandMenu.tsx",
+    "./switch": "./src/switch/Switch.tsx",
+    "./tooltip": "./src/tooltip/Tooltip.tsx",
     "./fonts/noto-sans-math.woff2": "./src/fonts/noto-sans-math/NotoSansMath-Regular.woff2"
   },
   "scripts": {

@@ -1,25 +1,14 @@
-import {
-  createSpec,
-  criterionKey,
-  criterionProblem,
-  specKey,
-  statusNames,
-  titleProblem,
-} from '@sulba/data/specs';
+import { criterionKey, specKey, statusNames } from '@sulba/data/specs';
 import { holds } from '@sulba/data/workspaces';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
-import { Dialog } from '@sulba/ui/dialog';
-import { TextField } from '@sulba/ui/textfield';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { type FormEvent, useState } from 'react';
-import { useAccount } from './account';
+import { Tooltip } from '@sulba/ui/tooltip';
+import { Link } from '@tanstack/react-router';
+import { shortcutSteps, useCreateSpec } from './commands';
 import { ago, momentOf } from './format';
-import { Notice } from './Notice';
 import styles from './page.module.css';
 import { specProofText } from './proofs';
-import { keys, useMembers, useSpecProofs, useSpecs } from './queries';
+import { useMembers, useSpecProofs, useSpecs } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
 
@@ -38,7 +27,6 @@ const css = classes(
   'dim',
   'numeric',
   'empty',
-  'form',
 );
 
 /** Every spec in the workspace, newest first, with its status, criteria and owner. */
@@ -48,7 +36,7 @@ export function Specs() {
   const { data: specs } = useSpecs(workspace);
   const { data: members } = useMembers(workspace);
   const { data: proofs } = useSpecProofs(workspace);
-  const [creating, setCreating] = useState(false);
+  const createSpec = useCreateSpec();
   const canWrite = holds(workspace.role, 'member');
   const names = new Map(members.map((member) => [member.personId, member.name || member.email]));
   const count = specs.length === 1 ? '1 spec' : `${specs.length} specs`;
@@ -60,7 +48,13 @@ export function Specs() {
           <h1 className={css.title}>Specs</h1>
           {specs.length ? <p className={css.count}>{count}</p> : null}
         </div>
-        {canWrite ? <Button onPress={() => setCreating(true)}>New spec</Button> : null}
+        {canWrite ? (
+          <Tooltip keys={shortcutSteps(['c'])}>
+            <Button onPress={createSpec} aria-keyshortcuts="C">
+              New spec
+            </Button>
+          </Tooltip>
+        ) : null}
       </header>
 
       {specs.length === 0 ? (
@@ -70,7 +64,7 @@ export function Specs() {
             a criterion by naming its ID, such as <code>{criterionKey(1, 1)}</code>, in its name.
           </p>
           {canWrite ? (
-            <Button onPress={() => setCreating(true)}>Write the first spec</Button>
+            <Button onPress={createSpec}>Write the first spec</Button>
           ) : (
             <p className={css.note}>No one has written a spec here yet.</p>
           )}
@@ -126,87 +120,6 @@ export function Specs() {
           </table>
         </div>
       )}
-
-      <NewSpec isOpen={creating} onClose={() => setCreating(false)} />
     </div>
-  );
-}
-
-/** Writes a spec with its title and first acceptance criterion, then opens it. */
-function NewSpec({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const workspace = useWorkspace();
-  const { client } = useAccount();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const [title, setTitle] = useState('');
-  const [criterion, setCriterion] = useState('');
-  const [checked, setChecked] = useState(false);
-
-  const create = useMutation({
-    mutationFn: () => createSpec(client, workspace.id, title, [criterion]),
-    onSuccess: async (number) => {
-      await queryClient.invalidateQueries({ queryKey: keys.specs(workspace.id) });
-      close();
-      await navigate({
-        to: '/$slug/$spec',
-        params: { slug: workspace.slug, spec: specKey(number) },
-      });
-    },
-  });
-
-  const close = () => {
-    onClose();
-    setTitle('');
-    setCriterion('');
-    setChecked(false);
-    create.reset();
-  };
-  const titleError = checked ? titleProblem(title) : null;
-  const criterionError = checked ? criterionProblem(criterion) : null;
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    setChecked(true);
-    if (titleProblem(title) || criterionProblem(criterion)) return;
-    create.mutate();
-  };
-
-  return (
-    <Dialog
-      title="New spec"
-      isOpen={isOpen}
-      onOpenChange={(open) => {
-        if (!open) close();
-      }}
-      actions={
-        <>
-          <Button slot="close" variant="outline">
-            Cancel
-          </Button>
-          <Button type="submit" form="new-spec" isDisabled={create.isPending}>
-            {create.isPending ? 'Creating…' : 'Create spec'}
-          </Button>
-        </>
-      }
-    >
-      <form id="new-spec" className={css.form} onSubmit={submit} noValidate>
-        <TextField
-          label="Title"
-          value={title}
-          onChange={setTitle}
-          error={titleError}
-          placeholder="Retry failed payments"
-          autoFocus
-        />
-        <TextField
-          label="First acceptance criterion"
-          value={criterion}
-          onChange={setCriterion}
-          error={criterionError}
-          description="One statement a test can check. You can add more on the spec’s page."
-          placeholder="When a payment fails, the system shall retry it once after 30 seconds"
-        />
-        <Notice text={create.error?.message ?? null} />
-      </form>
-    </Dialog>
   );
 }

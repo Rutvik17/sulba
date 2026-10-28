@@ -29,6 +29,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useAccount } from './account';
+import { useCommands } from './commands';
 import { ago, dayOf, momentOf } from './format';
 import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
@@ -138,6 +139,43 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
       name: member.name || member.email || 'Someone',
     })),
   ];
+  const current = (yes: boolean) => (yes ? { note: 'Current' } : {});
+  useCommands(
+    canWrite
+      ? [
+          {
+            id: 'spec-status',
+            label: 'Change status',
+            group: key,
+            keys: ['s'],
+            does: {
+              title: 'Change status',
+              actions: specStatuses.map((status) => ({
+                id: status,
+                label: statusNames[status],
+                ...current(status === spec.status),
+                run: () => change.mutate({ status }),
+              })),
+            },
+          },
+          {
+            id: 'spec-owner',
+            label: 'Change owner',
+            group: key,
+            keys: ['a'],
+            does: {
+              title: 'Change owner',
+              actions: owners.map((owner) => ({
+                id: owner.id,
+                label: owner.name,
+                ...current(owner.id === (spec.ownerId ?? noOwner)),
+                run: () => change.mutate({ ownerId: owner.id === noOwner ? null : owner.id }),
+              })),
+            },
+          },
+        ]
+      : [],
+  );
 
   return (
     <div className={css.spec}>
