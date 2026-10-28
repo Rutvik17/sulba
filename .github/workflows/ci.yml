@@ -144,14 +144,15 @@ jobs:
           PARTS: ${{ needs.content-part.result }}
 
   # The labs that run on the learner's machine, each by its path in its folder of courses, for the
-  # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch. A
-  # pull request that changes only courses, docs, tools and the app runs the machine labs it changes,
-  # since each runs from its own folder, and any other change runs them all, as every push to main
-  # does.
+  # Machine labs jobs to run one each. The first is marked to keep the files machine labs fetch.
+  # Every push to main runs them all. A pull request runs them all when it changes what every lab
+  # runs on: the runner, the content package that builds each download, the packages the lockfile
+  # resolves for it, Node's version, the workspace's settings or this workflow. Otherwise it runs
+  # the machine labs whose folders it changes, since each runs from its own folder.
   machine-labs:
     name: Machine labs to run
     runs-on: ubuntu-26.04
-    timeout-minutes: 2
+    timeout-minutes: 5
     outputs:
       labs: ${{ steps.list.outputs.labs }}
     steps:
@@ -160,6 +161,11 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 1 }}
+      # pnpm reads the packages the lockfile resolves without installing them.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
       - id: list
         env:
           EVENT: ${{ github.event_name }}
@@ -169,7 +175,21 @@ jobs:
             | sed 's#/lab\.yaml$##')
           if [ "$EVENT" = pull_request ]; then
             changed=$(git diff --name-only HEAD^1 HEAD)
-            if ! grep -qvE '^(courses|docs|tools|apps/app)/|^[^/]+\.md$' <<< "$changed"; then
+            shared=$(grep -E '^(packages/(lab|content)/|\.github/workflows/ci\.yml$|\.node-version$|package\.json$|pnpm-workspace\.yaml$)' <<< "$changed" \
+              | grep -v '^packages/content/fixtures/' || true)
+            # A lockfile change counts when it resolves the content package's dependencies, or theirs,
+            # to other versions than the base does.
+            if [ -z "$shared" ] && grep -qx pnpm-lock.yaml <<< "$changed"; then
+              mkdir "$RUNNER_TEMP/base"
+              git archive HEAD^1 pnpm-lock.yaml pnpm-workspace.yaml $(git ls-tree -r --name-only HEAD^1 | grep -E '(^|/)package\.json$') \
+                | tar -x -C "$RUNNER_TEMP/base"
+              resolved() {
+                (cd "$1" && pnpm list --lockfile-only --recursive --filter '@sulba/content...' --depth Infinity --json) \
+                  | jq -S 'walk(if type == "object" then del(.path) else . end)'
+              }
+              if [ "$(resolved .)" != "$(resolved "$RUNNER_TEMP/base")" ]; then shared=pnpm-lock.yaml; fi
+            fi
+            if [ -z "$shared" ]; then
               labs=$(while read -r lab; do
                 if grep -qF "$lab/" <<< "$changed"; then echo "$lab"; fi
               done <<< "$labs")
