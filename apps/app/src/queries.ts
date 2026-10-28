@@ -21,6 +21,8 @@ import { useAccount } from './account';
 
 export const keys = {
   workspaces: ['workspaces'] as const,
+  /** The agents the person has connected, which reach every workspace they're in. */
+  agents: ['agents'] as const,
   workspace: (slug: string) => ['workspace', slug] as const,
   members: (workspaceId: string) => ['members', workspaceId] as const,
   invitations: (workspaceId: string) => ['invitations', workspaceId] as const,

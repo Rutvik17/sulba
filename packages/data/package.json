@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./account": "./src/account.ts",
+    "./agents": "./src/agents.ts",
     "./client": "./src/client.ts",
     "./evidence": "./src/evidence.ts",
     "./outbox": "./src/outbox.ts",

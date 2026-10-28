@@ -242,6 +242,9 @@ importers:
       '@markdoc/markdoc':
         specifier: 0.5.10
         version: 0.5.10(@types/react@19.3.0)(react@19.3.1)
+      '@modelcontextprotocol/server':
+        specifier: 2.4.0
+        version: 2.4.0
       '@sulba/content':
         specifier: workspace:*
         version: link:../../packages/content
@@ -275,6 +278,9 @@ importers:
       ts-fsrs:
         specifier: 5.4.2
         version: 5.4.2
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@astrojs/check':
         specifier: 0.9.12
@@ -1297,6 +1303,14 @@ packages:
         optional: true
       react:
         optional: true
+
+  '@modelcontextprotocol/core@2.4.0':
+    resolution: {integrity: sha512-z8QBKqdfXLPzkLQuG4xp8hrVEMm1PZ1IgxMN2sMbJiFiAKOWXnAzogXn2W4aqIBlP1ea6U5yiqVquvUNM1Cj6Q==}
+    engines: {node: '>=20'}
+
+  '@modelcontextprotocol/server@2.4.0':
+    resolution: {integrity: sha512-rgR9yxSaAJ+bcsi/XroT/S2AfPiIWloXAnrdfYSCms9ivVju0ishu/wW0J21Ho6+ZOR1r7RyeRbjiRuF87ix5Q==}
+    engines: {node: '>=20'}
 
   '@napi-rs/wasm-runtime@1.2.4':
     resolution: {integrity: sha512-AJxoUD2/15ESHbvpcyjU274nsAPLuOtPHCk0vKJM5pj//Fg/B1FXNWjPnXTT9PymCYYiHo4zPj0ZomXBKhoy7g==}
@@ -3730,6 +3744,15 @@ snapshots:
       '@types/markdown-it': 12.2.3
       '@types/react': 19.3.0
       react: 19.3.1
+
+  '@modelcontextprotocol/core@2.4.0':
+    dependencies:
+      zod: 4.6.7
+
+  '@modelcontextprotocol/server@2.4.0':
+    dependencies:
+      '@modelcontextprotocol/core': 2.4.0
+      zod: 4.6.7
 
   '@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:

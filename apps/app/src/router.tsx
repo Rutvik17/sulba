@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router';
 import { type ReactNode, Suspense } from 'react';
 import { RequireAccount } from './account';
+import { Consent } from './Consent';
 import { Evidence } from './Evidence';
 import { Failed, NotFound } from './fallbacks';
 import { Home } from './Home';
@@ -44,6 +45,15 @@ const create = createRoute({
   component: signedIn(() => <NewWorkspace />),
 });
 const join = createRoute({ getParentRoute: () => root, path: '/join/$token', component: Join });
+// Where Supabase's OAuth server sends a person whose agent asks to act for them (decision record 51).
+const consent = createRoute({
+  getParentRoute: () => root,
+  path: '/oauth/consent',
+  validateSearch: (search: Record<string, unknown>) => ({
+    authorization_id: typeof search.authorization_id === 'string' ? search.authorization_id : '',
+  }),
+  component: signedIn(() => <Consent />),
+});
 
 const workspace = createRoute({
   getParentRoute: () => root,
@@ -86,6 +96,7 @@ export const router = createRouter({
     home,
     create,
     join,
+    consent,
     workspace.addChildren([opened, specs, evidence, members, settings, spec]),
   ]),
   basepath: '/app',

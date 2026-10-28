@@ -16,3 +16,20 @@ export function connect(url: string, publishableKey: string): Client {
     auth: { flowType: 'pkce', storageKey: sessionKey },
   });
 }
+
+/**
+ * A client that acts with a token it's given and keeps no session, as Sulba's MCP server does for
+ * an agent (decision record 51). Row-level security sees the agent's person, and Postgres sees
+ * that an agent is acting.
+ */
+export function connectWith(
+  url: string,
+  publishableKey: string,
+  accessToken: string,
+  { fetch }: { fetch?: typeof globalThis.fetch | undefined } = {},
+): Client {
+  return createClient<Database>(url, publishableKey, {
+    accessToken: async () => accessToken,
+    ...(fetch ? { global: { fetch } } : {}),
+  });
+}
