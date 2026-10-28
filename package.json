@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @sulba/web dev",
+    "dev:app": "pnpm --filter @sulba/app dev",
     "build": "pnpm --recursive build",
     "typecheck": "pnpm --recursive typecheck",
     "test": "pnpm --recursive test",

@@ -1,8 +1,9 @@
 import type { Page } from '@playwright/test';
+import { projectUrl } from '@sulba/data/project';
 
 // The hosted project, which the site's build points at. Tests stand in for every request to it,
 // and refuse any they don't expect, so no test ever reaches the real project.
-export const supabase = 'https://cqsfhuxtpkzvlemqkqoa.supabase.co';
+export const supabase = projectUrl;
 
 export const learner = { id: 'a0000000-0000-4000-8000-000000000001', email: 'ada@example.com' };
 
