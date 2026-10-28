@@ -8,3 +8,14 @@ major_version = 17
 
 [db.seed]
 enabled = false
+
+[auth]
+# The site, where the app's pages are, as `pnpm dev` serves it.
+site_url = "http://127.0.0.1:4321"
+
+# Agents sign in through Supabase's OAuth 2.1 server, which sends a person to the app's consent
+# page, and register themselves with it, as MCP clients do (decision record 51).
+[auth.oauth_server]
+enabled = true
+authorization_url_path = "/app/oauth/consent"
+allow_dynamic_registration = true

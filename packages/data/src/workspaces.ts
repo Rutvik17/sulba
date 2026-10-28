@@ -78,6 +78,7 @@ const reserved = new Set([
   'login',
   'logout',
   'new',
+  'oauth',
   'settings',
   'sign-in',
   'sign-out',

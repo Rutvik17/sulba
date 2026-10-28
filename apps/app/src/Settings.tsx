@@ -13,6 +13,7 @@ import { TextField } from '@sulba/ui/textfield';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { type FormEvent, useState } from 'react';
+import { Agents } from './Agents';
 import { useAccount } from './account';
 import { forgetWorkspace } from './last';
 import { Notice } from './Notice';
@@ -37,7 +38,7 @@ const css = classes(
 
 /**
  * The workspace's name and address, the repositories it takes test results from and how to send
- * them, and leaving or deleting it. Admins rename it and add repositories; only an owner deletes
+ * them, the coding agents the person has connected, and leaving or deleting it. Admins rename it and add repositories; only an owner deletes
  * it, after typing its name.
  */
 export function Settings() {
@@ -126,6 +127,7 @@ export function Settings() {
 
       <Repositories />
       <Sending />
+      <Agents />
 
       <section className={css.section} aria-labelledby="leave">
         <h2 id="leave" className={css.heading}>

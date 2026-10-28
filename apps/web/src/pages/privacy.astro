@@ -7,7 +7,7 @@ const providers = [
   {
     name: 'Supabase, Inc.',
     href: 'https://supabase.com/privacy',
-    does: 'Runs accounts and sign-in, and keeps your progress, reviews and workspaces',
+    does: 'Runs accounts and sign-in, signs in the coding agents you connect, and keeps your progress, reviews and workspaces',
     where: 'United States',
   },
   {
@@ -188,6 +188,17 @@ const providers = [
       ended, and the first 500 characters of what a failure said. We keep the last 20 runs of each
       suite of tests. A run on any other branch is answered and not kept. Everyone in the workspace
       sees them, and removing a repository deletes its runs.
+    </li>
+    <li>
+      <strong>Your coding agents.</strong>{' '}
+      You can connect a coding agent, such as Claude Code, to your account. The agent registers
+      itself with Supabase, which keeps the name it gives and the addresses it asks to be sent back
+      to, and you allow or deny it on a page of ours. Once you allow it, Supabase keeps that you did
+      and when, and the agent works in your workspaces as you, within your role: it reads their
+      specs and test results, and writes specs and criteria. The workspace's history names the agent
+      with each change it makes. What it reads goes to the agent, and from there to the AI model it
+      uses, under your agreement with whoever makes them. Disconnecting it in a workspace's Settings
+      ends its access at once.
     </li>
     <li>
       <strong>In your browser.</strong>{' '}

@@ -54,5 +54,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [48. Keep workspaces in shared tables guarded by row-level security, with a log of every change](0048-keep-workspaces-in-shared-tables-guarded-by-row-level-security.md) | Accepted |
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
 | [50. Prove criteria with the test reports a CI run sends, signed by GitHub](0050-prove-criteria-with-test-reports-a-ci-run-signs.md) | Accepted |
+| [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

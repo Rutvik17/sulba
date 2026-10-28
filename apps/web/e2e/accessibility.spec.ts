@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { standInConsent } from './agents';
 import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
 import { criterion, spec, standInSpecs } from './specs';
@@ -86,6 +87,10 @@ for (const scheme of ['dark', 'light'] as const) {
     ['/app/acme/members', 'Members'],
     ['/app/acme/settings', 'Settings'],
     ['/app/new', 'Create a workspace'],
+    [
+      '/app/oauth/consent?authorization_id=f1e2d3c4-0000-4000-8000-000000000001',
+      'Connect Claude Code to Sulba?',
+    ],
   ] as const) {
     test(`the app's ${path} has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
       page,
@@ -140,6 +145,10 @@ for (const scheme of ['dark', 'light'] as const) {
             message: 'assert 2 == 1',
           },
         ],
+      });
+      await standInConsent(page, {
+        id: 'f1e2d3c4-0000-4000-8000-000000000001',
+        agent: 'Claude Code',
       });
       await signedIn(page);
       await page.emulateMedia({ colorScheme: scheme });

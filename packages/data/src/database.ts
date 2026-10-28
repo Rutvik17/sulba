@@ -106,6 +106,7 @@ export type Database = {
       events: {
         Row: {
           action: string;
+          actor_agent: string | null;
           actor_client: string | null;
           actor_id: string | null;
           actor_kind: Database['public']['Enums']['actor_kind'];
@@ -120,6 +121,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           action: string;
+          actor_agent?: string | null;
           actor_client?: string | null;
           actor_id?: string | null;
           actor_kind: Database['public']['Enums']['actor_kind'];
@@ -133,6 +135,7 @@ export type Database = {
         };
         Update: {
           action?: string;
+          actor_agent?: string | null;
           actor_client?: string | null;
           actor_id?: string | null;
           actor_kind?: Database['public']['Enums']['actor_kind'];

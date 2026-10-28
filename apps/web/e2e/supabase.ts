@@ -44,6 +44,8 @@ export interface Calls {
   readonly authorize: URL[];
   readonly attempts: Record<string, unknown>[];
   readonly reviews: Record<string, unknown>[];
+  /** The client ID of each agent disconnected. */
+  readonly disconnected: string[];
   logouts: number;
   closed: number;
 }
@@ -58,6 +60,8 @@ export interface Held {
   readonly reviews?: { id: string; card_id: string; rating: number; reviewed_at: string }[];
   /** Whether the account is the only owner of a workspace others are in, so can't be closed. */
   readonly onlyOwner?: boolean;
+  /** The agents the account has allowed, as Supabase's OAuth server lists its grants. */
+  readonly agents?: { id: string; name: string; grantedAt: string }[];
 }
 
 /**
@@ -66,9 +70,17 @@ export interface Held {
  */
 export async function standIn(
   page: Page,
-  { passed = [], studyDays = [], reviews = [], onlyOwner = false }: Held = {},
+  { passed = [], studyDays = [], reviews = [], onlyOwner = false, agents = [] }: Held = {},
 ): Promise<Calls> {
-  const calls: Calls = { authorize: [], attempts: [], reviews: [], logouts: 0, closed: 0 };
+  const calls: Calls = {
+    authorize: [],
+    attempts: [],
+    reviews: [],
+    disconnected: [],
+    logouts: 0,
+    closed: 0,
+  };
+  const grants = [...agents];
   const answer = (status: number, body?: unknown) => ({
     status,
     headers: { ...cors, 'content-type': 'application/json' },
@@ -95,6 +107,29 @@ export async function standIn(
   await page.route(`${supabase}/auth/v1/logout**`, (route) => {
     if (route.request().method() !== 'OPTIONS') calls.logouts++;
     return route.fulfill(answer(204));
+  });
+  await page.route(`${supabase}/auth/v1/user/oauth/grants**`, (route) => {
+    const method = route.request().method();
+    if (method === 'OPTIONS') return route.fulfill(answer(204));
+    if (method === 'DELETE') {
+      const id = new URL(route.request().url()).searchParams.get('client_id') ?? '';
+      calls.disconnected.push(id);
+      grants.splice(
+        grants.findIndex((each) => each.id === id),
+        1,
+      );
+      return route.fulfill(answer(204));
+    }
+    return route.fulfill(
+      answer(
+        200,
+        grants.map(({ id, name, grantedAt }) => ({
+          client: { id, name, uri: '', logo_uri: '' },
+          scopes: [],
+          granted_at: grantedAt,
+        })),
+      ),
+    );
   });
   await page.route(`${supabase}/rest/v1/progress**`, (route) =>
     route.request().method() === 'OPTIONS'
