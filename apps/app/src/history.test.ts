@@ -69,6 +69,30 @@ describe('whatOf', () => {
       ),
     ).toBe('removed SPEC-12/AC-4');
   });
+
+  test('says when a reworded criterion’s tests are confirmed', () => {
+    const criterion = { subjectType: 'criterion', subjectId: 'c3' } as const;
+    expect(
+      whatOf(
+        change({
+          ...criterion,
+          action: 'criterion.updated',
+          changes: { text: ['a', 'b'], suspect_since: [null, '2026-10-28T09:00:00Z'] },
+        }),
+        context,
+      ),
+    ).toBe('reworded SPEC-12/AC-3');
+    expect(
+      whatOf(
+        change({
+          ...criterion,
+          action: 'criterion.updated',
+          changes: { suspect_since: ['2026-10-28T09:00:00Z', null] },
+        }),
+        context,
+      ),
+    ).toBe('confirmed that SPEC-12/AC-3’s tests check its wording');
+  });
 });
 
 describe('whoOf', () => {

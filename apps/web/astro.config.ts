@@ -46,6 +46,9 @@ export default defineConfig({
         access: 'secret',
         optional: true,
       }),
+      // Supabase's secret key, a Worker secret, with which /api/results records a run's test
+      // report. Without it the route answers that it can't take reports.
+      SUPABASE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },
 });

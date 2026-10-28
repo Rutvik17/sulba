@@ -53,5 +53,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [47. Build the app in React, drawn in the browser and served by the site's Worker under /app/](0047-build-the-app-in-react-served-by-the-sites-worker.md) | Accepted |
 | [48. Keep workspaces in shared tables guarded by row-level security, with a log of every change](0048-keep-workspaces-in-shared-tables-guarded-by-row-level-security.md) | Accepted |
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
+| [50. Prove criteria with the test reports a CI run sends, signed by GitHub](0050-prove-criteria-with-test-reports-a-ci-run-signs.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

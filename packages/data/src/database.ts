@@ -67,6 +67,7 @@ export type Database = {
           id: string;
           number: number;
           spec_id: string;
+          suspect_since: string | null;
           text: string;
           updated_at: string;
           workspace_id: string;
@@ -77,6 +78,7 @@ export type Database = {
           id?: string;
           number: number;
           spec_id: string;
+          suspect_since?: string | null;
           text: string;
           updated_at?: string;
           workspace_id: string;
@@ -86,6 +88,7 @@ export type Database = {
           id?: string;
           number?: number;
           spec_id?: string;
+          suspect_since?: string | null;
           text?: string;
           updated_at?: string;
           workspace_id?: string;
@@ -303,6 +306,55 @@ export type Database = {
         };
         Relationships: [];
       };
+      repositories: {
+        Row: {
+          added_at: string;
+          added_by: string | null;
+          branch: string;
+          github_id: number | null;
+          id: string;
+          name: string;
+          owner_github_id: number | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_at?: string;
+          added_by?: string | null;
+          branch?: string;
+          github_id?: number | null;
+          id?: string;
+          name: string;
+          owner_github_id?: number | null;
+          workspace_id: string;
+        };
+        Update: {
+          added_at?: string;
+          added_by?: string | null;
+          branch?: string;
+          github_id?: number | null;
+          id?: string;
+          name?: string;
+          owner_github_id?: number | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'repositories_added_by_fkey';
+            columns: ['added_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'repositories_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       reviews: {
         Row: {
           card_id: string;
@@ -412,6 +464,121 @@ export type Database = {
         };
         Relationships: [];
       };
+      test_claims: {
+        Row: {
+          classname: string;
+          criterion_number: number;
+          file: string | null;
+          id: number;
+          message: string | null;
+          name: string;
+          outcome: Database['public']['Enums']['test_outcome'];
+          report_id: string;
+          spec_number: number;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          classname?: string;
+          criterion_number: number;
+          file?: string | null;
+          id?: never;
+          message?: string | null;
+          name: string;
+          outcome: Database['public']['Enums']['test_outcome'];
+          report_id: string;
+          spec_number: number;
+          workspace_id: string;
+        };
+        Update: {
+          classname?: string;
+          criterion_number?: number;
+          file?: string | null;
+          id?: never;
+          message?: string | null;
+          name?: string;
+          outcome?: Database['public']['Enums']['test_outcome'];
+          report_id?: string;
+          spec_number?: number;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'test_claims_workspace_id_report_id_fkey';
+            columns: ['workspace_id', 'report_id'];
+            isOneToOne: false;
+            referencedRelation: 'latest_reports';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+          {
+            foreignKeyName: 'test_claims_workspace_id_report_id_fkey';
+            columns: ['workspace_id', 'report_id'];
+            isOneToOne: false;
+            referencedRelation: 'test_reports';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
+      test_reports: {
+        Row: {
+          branch: string;
+          failed: number;
+          id: string;
+          passed: number;
+          received_at: string;
+          repository_id: string;
+          run_attempt: number;
+          run_id: number;
+          sha: string;
+          skipped: number;
+          suite: string;
+          tests: number;
+          workflow: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          branch: string;
+          failed: number;
+          id?: string;
+          passed: number;
+          received_at?: string;
+          repository_id: string;
+          run_attempt: number;
+          run_id: number;
+          sha: string;
+          skipped: number;
+          suite: string;
+          tests: number;
+          workflow: string;
+          workspace_id: string;
+        };
+        Update: {
+          branch?: string;
+          failed?: number;
+          id?: string;
+          passed?: number;
+          received_at?: string;
+          repository_id?: string;
+          run_attempt?: number;
+          run_id?: number;
+          sha?: string;
+          skipped?: number;
+          suite?: string;
+          tests?: number;
+          workflow?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'test_reports_workspace_id_repository_id_fkey';
+            columns: ['workspace_id', 'repository_id'];
+            isOneToOne: false;
+            referencedRelation: 'repositories';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       workspaces: {
         Row: {
           created_at: string;
@@ -436,12 +603,115 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      criterion_proofs: {
+        Row: {
+          checked_at: string | null;
+          criterion_id: string;
+          criterion_number: number;
+          failed: number | null;
+          passed: number | null;
+          skipped: number | null;
+          spec_id: string;
+          spec_number: number;
+          spec_status: Database['public']['Enums']['spec_status'];
+          spec_title: string;
+          state: Database['public']['Enums']['proof'] | null;
+          suspect_since: string | null;
+          tests: number | null;
+          text: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: 'criteria_workspace_id_spec_id_fkey';
+            columns: ['workspace_id', 'spec_id'];
+            isOneToOne: false;
+            referencedRelation: 'specs';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
+      latest_claims: {
+        Row: {
+          classname: string;
+          criterion_number: number;
+          file: string | null;
+          id: number;
+          message: string | null;
+          name: string;
+          outcome: Database['public']['Enums']['test_outcome'];
+          received_at: string;
+          report_id: string;
+          repository: string;
+          run_attempt: number;
+          run_id: number;
+          sha: string;
+          spec_number: number;
+          suite: string;
+          workflow: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      latest_reports: {
+        Row: {
+          branch: string;
+          failed: number;
+          id: string;
+          passed: number;
+          received_at: string;
+          repository_id: string;
+          run_attempt: number;
+          run_id: number;
+          sha: string;
+          skipped: number;
+          suite: string;
+          tests: number;
+          workflow: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: 'test_reports_workspace_id_repository_id_fkey';
+            columns: ['workspace_id', 'repository_id'];
+            isOneToOne: false;
+            referencedRelation: 'repositories';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
+      spec_proofs: {
+        Row: {
+          criteria: number | null;
+          failing: number | null;
+          proven: number | null;
+          spec_id: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: 'criteria_workspace_id_spec_id_fkey';
+            columns: ['workspace_id', 'spec_id'];
+            isOneToOne: false;
+            referencedRelation: 'specs';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
     };
     Functions: {
       accept_invitation: { Args: { token: string }; Returns: string };
       add_criterion: { Args: { spec: string; text: string }; Returns: number };
+      add_repository: {
+        Args: { branch?: string; name: string; workspace: string };
+        Returns: string;
+      };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      confirm_criterion: { Args: { criterion: string }; Returns: undefined };
       create_invitation: {
         Args: { role: Database['public']['Enums']['workspace_role']; workspace: string };
         Returns: string;
@@ -473,6 +743,10 @@ export type Database = {
           workspace_name: string;
         }[];
       };
+      record_report: {
+        Args: { reports: string[]; run: Json; suite: string; workspace: string };
+        Returns: Json;
+      };
       remove_member: { Args: { person: string; workspace: string }; Returns: undefined };
       set_member_role: {
         Args: {
@@ -485,7 +759,9 @@ export type Database = {
     };
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
+      proof: 'proven' | 'failing' | 'unproven';
       spec_status: 'draft' | 'in_review' | 'approved' | 'implemented' | 'abandoned' | 'superseded';
+      test_outcome: 'passed' | 'failed' | 'skipped';
       workspace_role: 'viewer' | 'member' | 'admin' | 'owner';
     };
     CompositeTypes: {
@@ -603,7 +879,9 @@ export const Constants = {
   public: {
     Enums: {
       actor_kind: ['person', 'agent', 'github', 'system'],
+      proof: ['proven', 'failing', 'unproven'],
       spec_status: ['draft', 'in_review', 'approved', 'implemented', 'abandoned', 'superseded'],
+      test_outcome: ['passed', 'failed', 'skipped'],
       workspace_role: ['viewer', 'member', 'admin', 'owner'],
     },
   },

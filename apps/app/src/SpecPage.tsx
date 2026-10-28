@@ -1,3 +1,4 @@
+import { type Claim, type CriterionProof, confirmCriterion } from '@sulba/data/evidence';
 import {
   addCriterion,
   bodyLimit,
@@ -30,7 +31,9 @@ import { useAccount } from './account';
 import { ago, dayOf, momentOf } from './format';
 import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
-import { keys, useHistory, useMembers, useSpecAt } from './queries';
+import { ProofMark } from './ProofMark';
+import { commitUrl, reasonOf, runUrl } from './proofs';
+import { keys, useHistory, useMembers, useSpecAt, useSpecEvidence } from './queries';
 import { useWorkspace } from './Shell';
 import styles from './spec.module.css';
 import { useTitle } from './title';
@@ -59,6 +62,12 @@ const css = classes(
   'history',
   'when',
   'unseen',
+  'tests',
+  'test',
+  'outcome',
+  'where',
+  'message',
+  'suspect',
 );
 
 const noOwner = 'none';
@@ -107,6 +116,7 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
       queryClient.invalidateQueries({ queryKey: keys.spec(workspace.id, spec.number) }),
       queryClient.invalidateQueries({ queryKey: keys.specs(workspace.id) }),
       queryClient.invalidateQueries({ queryKey: keys.history(spec.id) }),
+      queryClient.invalidateQueries({ queryKey: keys.proofs(workspace.id) }),
     ]);
   const change = useMutation({
     mutationFn: (patch: SpecChange) => updateSpec(client, spec.id, patch),
@@ -329,11 +339,17 @@ function Criteria({
   canWrite: boolean;
   onChanged: () => Promise<unknown>;
 }) {
+  const workspace = useWorkspace();
   const { client } = useAccount();
   const [text, setText] = useState('');
   const [checked, setChecked] = useState(false);
   const [removing, setRemoving] = useState<Criterion | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const evidence = useSpecEvidence(workspace, spec.id, spec.number);
+  const confirm = useMutation({
+    mutationFn: (criterion: Criterion) => confirmCriterion(client, criterion.id),
+    onSuccess: onChanged,
+  });
 
   const add = useMutation({
     mutationFn: () => addCriterion(client, spec.id, text),
@@ -380,12 +396,19 @@ function Criteria({
         <ol className={css.criteria}>
           {spec.criteria.map((criterion) => {
             const id = criterionKey(spec.number, criterion.number);
+            const proof = evidence.proofs.data?.find((each) => each.criterionId === criterion.id);
+            const claims = (evidence.claims.data ?? []).filter(
+              (claim) => claim.criterionNumber === criterion.number,
+            );
             return (
-              <li key={criterion.id} className={css.criterion}>
+              <li key={criterion.id} id={`AC-${criterion.number}`} className={css.criterion}>
                 <span className={css.id}>{id}</span>
                 <Wording criterion={criterion} id={id} canWrite={canWrite} onChanged={onChanged} />
-                <span className={css.proof} title="No test that names it has passed yet">
-                  Unproven
+                <span className={css.proof}>
+                  <ProofMark
+                    state={proof?.state ?? 'unproven'}
+                    reason={proof ? reasonOf(proof) : 'No test in the latest runs names it'}
+                  />
                 </span>
                 <span className={css.tools}>
                   <Button variant="ghost" size="small" onPress={() => void copy(id)}>
@@ -397,6 +420,15 @@ function Criteria({
                     </Button>
                   ) : null}
                 </span>
+                {proof?.suspectSince && proof.tests > 0 ? (
+                  <Suspect
+                    id={id}
+                    canWrite={canWrite}
+                    isPending={confirm.isPending}
+                    onConfirm={() => confirm.mutate(criterion)}
+                  />
+                ) : null}
+                {claims.length ? <Tests claims={claims} proof={proof} /> : null}
               </li>
             );
           })}
@@ -419,7 +451,9 @@ function Criteria({
           </Button>
         </form>
       ) : null}
-      <Notice text={add.error?.message ?? remove.error?.message ?? null} />
+      <Notice
+        text={add.error?.message ?? remove.error?.message ?? confirm.error?.message ?? null}
+      />
 
       <Dialog
         title={`Remove ${removing ? criterionKey(spec.number, removing.number) : 'it'}?`}
@@ -447,6 +481,65 @@ function Criteria({
         </p>
       </Dialog>
     </section>
+  );
+}
+
+/** A criterion reworded while tests named it, whose tests a member confirms check the new wording. */
+function Suspect({
+  id,
+  canWrite,
+  isPending,
+  onConfirm,
+}: {
+  id: string;
+  canWrite: boolean;
+  isPending: boolean;
+  onConfirm: () => void;
+}) {
+  return (
+    <span className={css.suspect}>
+      <span>
+        {id} was reworded after its tests ran, so they don’t prove it until someone confirms they
+        check the new wording.
+      </span>
+      {canWrite ? (
+        <Button variant="outline" size="small" onPress={onConfirm} isDisabled={isPending}>
+          Its tests check this wording
+        </Button>
+      ) : null}
+    </span>
+  );
+}
+
+const outcomeNames: Record<Claim['outcome'], string> = {
+  passed: 'Passed',
+  failed: 'Failed',
+  skipped: 'Skipped',
+};
+
+/** The tests in the latest runs that name a criterion, each with its outcome and its run. */
+function Tests({ claims, proof }: { claims: readonly Claim[]; proof: CriterionProof | undefined }) {
+  const count = claims.length === 1 ? '1 test' : `${claims.length} tests`;
+  return (
+    <details className={css.tests} open={proof?.state === 'failing'}>
+      <summary>{count}</summary>
+      <ul>
+        {claims.map((claim) => (
+          <li key={claim.id} className={css.test}>
+            <span className={css.outcome} data-outcome={claim.outcome}>
+              {outcomeNames[claim.outcome]}
+            </span>
+            <code>{claim.name}</code>
+            <span className={css.where}>
+              {claim.repository}, {claim.suite}, at{' '}
+              <a href={commitUrl(claim.repository, claim.sha)}>{claim.sha.slice(0, 7)}</a>,{' '}
+              <a href={runUrl(claim.repository, claim.runId)}>run {claim.runId}</a>
+            </span>
+            {claim.message ? <span className={css.message}>{claim.message}</span> : null}
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
