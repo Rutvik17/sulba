@@ -82,12 +82,25 @@ const sections: {
     // the window, each editor is brought into view until its numbers line up.
     ready: async (page) => {
       await expect(page.locator('.cm-lintRange-error')).toHaveText('bias');
-      for (const editor of await page.locator('.cm-editor').all()) {
+      const code = page.getByRole('region', { name: 'Code editor' });
+      for (const editor of await code.locator('.cm-editor').all()) {
         await editor.scrollIntoViewIfNeeded();
         await expect.poll(() => editor.evaluate(numbered)).toBe(true);
       }
     },
     states: async () => {},
+  },
+  {
+    id: 'markdown',
+    name: 'Markdown editor',
+    ready: async (page) => {
+      await expect(
+        page.getByRole('region', { name: 'Markdown editor' }).locator('.cm-editor'),
+      ).toHaveCount(2);
+    },
+    states: async (page) => {
+      await page.getByRole('textbox', { name: 'SPEC-12’s text' }).focus();
+    },
   },
   {
     id: 'chart',

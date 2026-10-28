@@ -1,0 +1,552 @@
+import {
+  addCriterion,
+  bodyLimit,
+  type Criterion,
+  criterionKey,
+  criterionProblem,
+  removeCriterion,
+  rewordCriterion,
+  type Spec,
+  type SpecChange,
+  specKey,
+  specNumberOf,
+  specStatuses,
+  statusMeanings,
+  statusNames,
+  titleProblem,
+  updateSpec,
+} from '@sulba/data/specs';
+import { holds, type Member } from '@sulba/data/workspaces';
+import { Markdown } from '@sulba/editor/markdown';
+import { Button } from '@sulba/ui/button';
+import { classes } from '@sulba/ui/classes';
+import { Dialog } from '@sulba/ui/dialog';
+import { Select } from '@sulba/ui/select';
+import { TextField } from '@sulba/ui/textfield';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link, useParams } from '@tanstack/react-router';
+import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useAccount } from './account';
+import { ago, dayOf, momentOf } from './format';
+import { whatOf, whoOf } from './history';
+import { Notice } from './Notice';
+import { keys, useHistory, useMembers, useSpecAt } from './queries';
+import { useWorkspace } from './Shell';
+import styles from './spec.module.css';
+import { useTitle } from './title';
+
+const css = classes(
+  styles,
+  'spec',
+  'head',
+  'main',
+  'side',
+  'crumbs',
+  'key',
+  'title',
+  'heading',
+  'section',
+  'note',
+  'saved',
+  'criteria',
+  'criterion',
+  'id',
+  'text',
+  'proof',
+  'tools',
+  'add',
+  'facts',
+  'history',
+  'when',
+  'unseen',
+);
+
+const noOwner = 'none';
+
+/** A spec's page, at its ID: SPEC-12. */
+export function SpecPage() {
+  const { spec: key } = useParams({ from: '/$slug/$spec' });
+  const number = specNumberOf(key);
+  if (number === null) return <NoSpec>There’s no spec at this address.</NoSpec>;
+  return <Loaded number={number} key={number} />;
+}
+
+function NoSpec({ children }: { children: string }) {
+  const workspace = useWorkspace();
+  useTitle('No spec here', workspace.name);
+  return (
+    <div className={css.main}>
+      <h1 className={css.title}>No spec here</h1>
+      <p className={css.note}>{children}</p>
+      <Link to="/$slug/specs" params={{ slug: workspace.slug }}>
+        Go to the specs
+      </Link>
+    </div>
+  );
+}
+
+function Loaded({ number }: { number: number }) {
+  const workspace = useWorkspace();
+  const { data: spec } = useSpecAt(workspace, number);
+  const { data: members } = useMembers(workspace);
+  if (!spec) return <NoSpec>{`${specKey(number)} hasn’t been written in this workspace.`}</NoSpec>;
+  return <Page spec={spec} members={members} />;
+}
+
+function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
+  const workspace = useWorkspace();
+  const { client } = useAccount();
+  const queryClient = useQueryClient();
+  const canWrite = holds(workspace.role, 'member');
+  const key = specKey(spec.number);
+  useTitle(`${key} ${spec.title}`, workspace.name);
+  const [failure, setFailure] = useState<string | null>(null);
+
+  const reread = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: keys.spec(workspace.id, spec.number) }),
+      queryClient.invalidateQueries({ queryKey: keys.specs(workspace.id) }),
+      queryClient.invalidateQueries({ queryKey: keys.history(spec.id) }),
+    ]);
+  const change = useMutation({
+    mutationFn: (patch: SpecChange) => updateSpec(client, spec.id, patch),
+    onMutate: () => setFailure(null),
+    onSuccess: reread,
+    onError: (error) => setFailure(error.message),
+  });
+
+  const owners = [
+    { id: noOwner, name: 'No owner' },
+    ...members.map((member) => ({
+      id: member.personId,
+      name: member.name || member.email || 'Someone',
+    })),
+  ];
+
+  return (
+    <div className={css.spec}>
+      <div className={css.head}>
+        <nav aria-label="Breadcrumb" className={css.crumbs}>
+          <Link to="/$slug/specs" params={{ slug: workspace.slug }}>
+            Specs
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className={css.key}>{key}</span>
+        </nav>
+
+        <Title spec={spec} canWrite={canWrite} onSave={(title) => change.mutate({ title })} />
+        <Notice text={failure} />
+      </div>
+
+      <div className={css.main}>
+        <section className={css.section} aria-labelledby="text">
+          <h2 id="text" className={css.unseen}>
+            Text
+          </h2>
+          <Body spec={spec} canWrite={canWrite} />
+        </section>
+
+        <Criteria spec={spec} canWrite={canWrite} onChanged={reread} />
+        <History spec={spec} members={members} />
+      </div>
+
+      <aside className={css.side} aria-label="Details">
+        <dl className={css.facts}>
+          <div>
+            <dt>Status</dt>
+            <dd>
+              {canWrite ? (
+                <Select
+                  label="Status"
+                  hideLabel
+                  size="small"
+                  options={specStatuses.map((id) => ({
+                    id,
+                    name: statusNames[id],
+                    description: statusMeanings[id],
+                  }))}
+                  value={spec.status}
+                  onChange={(status) => change.mutate({ status })}
+                  isDisabled={change.isPending}
+                />
+              ) : (
+                statusNames[spec.status]
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Owner</dt>
+            <dd>
+              {canWrite ? (
+                <Select
+                  label="Owner"
+                  hideLabel
+                  size="small"
+                  options={owners}
+                  value={spec.ownerId ?? noOwner}
+                  onChange={(owner) => change.mutate({ ownerId: owner === noOwner ? null : owner })}
+                  isDisabled={change.isPending}
+                />
+              ) : (
+                (owners.find((owner) => owner.id === spec.ownerId)?.name ?? 'No owner')
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Written</dt>
+            <dd>{dayOf(spec.createdAt)}</dd>
+          </div>
+          <div>
+            <dt>Updated</dt>
+            <dd title={momentOf(spec.updatedAt)}>{ago(spec.updatedAt)}</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  );
+}
+
+/** The spec's title, which members edit in place and save on Enter or on leaving the field. */
+function Title({
+  spec,
+  canWrite,
+  onSave,
+}: {
+  spec: Spec;
+  canWrite: boolean;
+  onSave: (title: string) => void;
+}) {
+  const [title, setTitle] = useState(spec.title);
+  const problem = titleProblem(title);
+  useEffect(() => setTitle(spec.title), [spec.title]);
+
+  if (!canWrite) return <h1 className={css.title}>{spec.title}</h1>;
+  const save = () => {
+    if (problem || title.trim() === spec.title) return;
+    onSave(title);
+  };
+  return (
+    <>
+      <h1 className={css.unseen}>{spec.title}</h1>
+      <input
+        className={css.title}
+        aria-label="Title"
+        value={title}
+        maxLength={200}
+        onChange={(event) => setTitle(event.target.value)}
+        onBlur={save}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') event.currentTarget.blur();
+          if (event.key === 'Escape') {
+            setTitle(spec.title);
+            event.currentTarget.blur();
+          }
+        }}
+        aria-invalid={problem !== null}
+        aria-describedby={problem ? 'title-problem' : undefined}
+      />
+      {problem ? (
+        <p id="title-problem" className={css.note} role="alert">
+          {problem}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+type Saving = 'saved' | 'saving' | 'unsaved' | 'failed';
+
+/** The spec's text in Markdown, saved a moment after the writer stops typing. */
+function Body({ spec, canWrite }: { spec: Spec; canWrite: boolean }) {
+  const { client } = useAccount();
+  const queryClient = useQueryClient();
+  const [saving, setSaving] = useState<Saving>('saved');
+  const pending = useRef<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const flush = async () => {
+    clearTimeout(timer.current);
+    const body = pending.current;
+    if (body === null) return;
+    pending.current = null;
+    setSaving('saving');
+    try {
+      await updateSpec(client, spec.id, { body });
+      setSaving(pending.current === null ? 'saved' : 'unsaved');
+      await queryClient.invalidateQueries({ queryKey: keys.history(spec.id) });
+    } catch {
+      pending.current ??= body;
+      setSaving('failed');
+    }
+  };
+
+  // What's still unsaved when the page closes is saved on the way out.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: flush reads the latest text from a ref.
+  useEffect(() => () => void flush(), []);
+
+  const said: Record<Saving, string> = {
+    saved: 'Saved',
+    saving: 'Saving…',
+    unsaved: 'Not saved yet',
+    failed: 'Couldn’t save. Check your connection; it saves again as you type.',
+  };
+  return (
+    <>
+      <Markdown
+        defaultValue={spec.body}
+        label={`${specKey(spec.number)}’s text`}
+        placeholder={
+          canWrite
+            ? 'Why this is needed, what it changes, and what it leaves out. Markdown works here.'
+            : 'No text yet.'
+        }
+        limit={bodyLimit}
+        readOnly={!canWrite}
+        onChange={(body) => {
+          pending.current = body;
+          setSaving('unsaved');
+          clearTimeout(timer.current);
+          timer.current = setTimeout(() => void flush(), 1200);
+        }}
+        onBlur={() => void flush()}
+      />
+      {canWrite ? (
+        <p className={css.saved} aria-live="polite">
+          {said[saving]}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+/** The spec's acceptance criteria, each with its ID, which members add, reword and remove. */
+function Criteria({
+  spec,
+  canWrite,
+  onChanged,
+}: {
+  spec: Spec;
+  canWrite: boolean;
+  onChanged: () => Promise<unknown>;
+}) {
+  const { client } = useAccount();
+  const [text, setText] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [removing, setRemoving] = useState<Criterion | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const add = useMutation({
+    mutationFn: () => addCriterion(client, spec.id, text),
+    onSuccess: async () => {
+      setText('');
+      setChecked(false);
+      await onChanged();
+    },
+  });
+  const remove = useMutation({
+    mutationFn: (criterion: Criterion) => removeCriterion(client, criterion.id),
+    onSuccess: async () => {
+      setRemoving(null);
+      await onChanged();
+    },
+  });
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    setChecked(true);
+    if (criterionProblem(text)) return;
+    add.mutate();
+  };
+  const copy = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopied(id);
+    } catch {
+      setCopied(null);
+    }
+  };
+  const count = spec.criteria.length === 1 ? '1 criterion' : `${spec.criteria.length} criteria`;
+
+  return (
+    <section className={css.section} aria-labelledby="criteria">
+      <h2 id="criteria" className={css.heading}>
+        Acceptance criteria <span className={css.note}>{count}</span>
+      </h2>
+      <p className={css.note}>
+        A criterion is unproven until a test that names its ID passes. Put the ID in the test’s
+        name, such as <code>test_{criterionKey(spec.number, 1).replace(/\W/g, '_')}_retries</code>.
+      </p>
+      {spec.criteria.length ? (
+        <ol className={css.criteria}>
+          {spec.criteria.map((criterion) => {
+            const id = criterionKey(spec.number, criterion.number);
+            return (
+              <li key={criterion.id} className={css.criterion}>
+                <span className={css.id}>{id}</span>
+                <Wording criterion={criterion} id={id} canWrite={canWrite} onChanged={onChanged} />
+                <span className={css.proof} title="No test that names it has passed yet">
+                  Unproven
+                </span>
+                <span className={css.tools}>
+                  <Button variant="ghost" size="small" onPress={() => void copy(id)}>
+                    {copied === id ? 'Copied' : 'Copy ID'}
+                  </Button>
+                  {canWrite ? (
+                    <Button variant="ghost" size="small" onPress={() => setRemoving(criterion)}>
+                      Remove
+                    </Button>
+                  ) : null}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <p className={css.note}>This spec has no criteria yet, so nothing can prove it.</p>
+      )}
+
+      {canWrite ? (
+        <form className={css.add} onSubmit={submit} noValidate>
+          <TextField
+            label="New criterion"
+            value={text}
+            onChange={setText}
+            error={checked ? criterionProblem(text) : null}
+            placeholder="When …, the system shall …"
+          />
+          <Button type="submit" variant="outline" isDisabled={add.isPending}>
+            Add criterion
+          </Button>
+        </form>
+      ) : null}
+      <Notice text={add.error?.message ?? remove.error?.message ?? null} />
+
+      <Dialog
+        title={`Remove ${removing ? criterionKey(spec.number, removing.number) : 'it'}?`}
+        isOpen={removing !== null}
+        onOpenChange={(open) => {
+          if (!open) setRemoving(null);
+        }}
+        actions={
+          <>
+            <Button slot="close" variant="outline">
+              Cancel
+            </Button>
+            <Button
+              onPress={() => removing && remove.mutate(removing)}
+              isDisabled={remove.isPending}
+            >
+              Remove
+            </Button>
+          </>
+        }
+      >
+        <p>
+          Tests that name it no longer prove anything here, and its ID won’t be given to another
+          criterion. The spec’s history keeps a record of it.
+        </p>
+      </Dialog>
+    </section>
+  );
+}
+
+/** A criterion's wording, which a member edits in place: Enter saves, Escape cancels. */
+function Wording({
+  criterion,
+  id,
+  canWrite,
+  onChanged,
+}: {
+  criterion: Criterion;
+  id: string;
+  canWrite: boolean;
+  onChanged: () => Promise<unknown>;
+}) {
+  const { client } = useAccount();
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(criterion.text);
+  const reword = useMutation({
+    mutationFn: () => rewordCriterion(client, criterion.id, text),
+    onSuccess: async () => {
+      setEditing(false);
+      await onChanged();
+    },
+  });
+
+  if (!editing) {
+    return canWrite ? (
+      <button
+        type="button"
+        className={css.text}
+        onClick={() => {
+          setText(criterion.text);
+          setEditing(true);
+        }}
+        aria-label={`Edit ${id}: ${criterion.text}`}
+      >
+        {criterion.text}
+      </button>
+    ) : (
+      <span className={css.text}>{criterion.text}</span>
+    );
+  }
+  const onKeys = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') setEditing(false);
+    if (event.key === 'Enter' && !criterionProblem(text)) {
+      event.preventDefault();
+      if (text.trim() === criterion.text) setEditing(false);
+      else reword.mutate();
+    }
+  };
+  return (
+    <span className={css.text}>
+      <TextField
+        label={`${id}’s wording`}
+        value={text}
+        onChange={setText}
+        onKeyDown={onKeys}
+        onBlur={() => {
+          if (!reword.isPending && text.trim() === criterion.text) setEditing(false);
+        }}
+        error={criterionProblem(text) ?? reword.error?.message ?? null}
+        description="Enter saves; Escape cancels."
+        autoFocus
+      />
+    </span>
+  );
+}
+
+/** Who changed the spec and its criteria, and when, newest first. */
+function History({ spec, members }: { spec: Spec; members: readonly Member[] }) {
+  const workspace = useWorkspace();
+  const { data: changes, isPending, isError } = useHistory(workspace, spec.id);
+  const context = {
+    spec: spec.number,
+    names: new Map(members.map((member) => [member.personId, member.name || member.email || ''])),
+    criteria: new Map(spec.criteria.map((criterion) => [criterion.id, criterion.number])),
+  };
+
+  return (
+    <section className={css.section} aria-labelledby="history">
+      <h2 id="history" className={css.heading}>
+        History
+      </h2>
+      {isError ? (
+        <p className={css.note}>The history didn’t load. Reload the page to try again.</p>
+      ) : isPending ? null : (
+        <ol className={css.history}>
+          {changes.map((change) => (
+            <li key={change.id}>
+              <span>
+                <strong>{whoOf(change)}</strong> {whatOf(change, context)}
+              </span>
+              <span className={css.when} title={momentOf(change.at)}>
+                {ago(change.at)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}

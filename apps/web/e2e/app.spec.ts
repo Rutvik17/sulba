@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { standInSpecs } from './specs';
 import { learner, signedIn, standIn, supabase } from './supabase';
 import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
 
@@ -24,7 +25,7 @@ test('signed out, the app offers sign-in that comes back to it, and loads nothin
 test('an address under /app/ is answered with the app, which says when it has no such page', async ({
   page,
 }) => {
-  const response = await page.goto('/app/nothing/here/');
+  const response = await page.goto('/app/nothing/here/at/all/');
 
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
@@ -37,6 +38,7 @@ test('someone in no workspace creates one, whose address follows its name, and b
 }) => {
   await standIn(page);
   const calls = await standInTeam(page, team());
+  await standInSpecs(page);
   await signedIn(page);
 
   await page.goto('/app/');
@@ -45,8 +47,9 @@ test('someone in no workspace creates one, whose address follows its name, and b
   await expect(page.getByLabel('Address')).toHaveValue('acme-robotics');
   await page.getByRole('button', { name: 'Create workspace' }).click();
 
-  await expect(page).toHaveURL(/\/app\/acme-robotics\/members$/);
-  await expect(page).toHaveTitle('Members · Acme Robotics · Sulba');
+  await expect(page).toHaveURL(/\/app\/acme-robotics\/specs$/);
+  await expect(page).toHaveTitle('Specs · Acme Robotics · Sulba');
+  await page.getByRole('link', { name: 'Members' }).click();
   await expect(page.getByRole('row', { name: /Ada Lovelace \(you\)/ })).toContainText('Owner');
   expect(calls.rpc).toEqual([
     { name: 'create_workspace', args: { name: 'Acme Robotics', slug: 'acme-robotics' } },
@@ -84,6 +87,7 @@ test('the front door lists the person’s workspaces, then goes back to the one 
       members: [member(acme, ada, 'owner'), member(other, ada, 'viewer')],
     }),
   );
+  await standInSpecs(page);
   await signedIn(page);
 
   await page.goto('/app/');
@@ -94,12 +98,12 @@ test('the front door lists the person’s workspaces, then goes back to the one 
   );
 
   await page.getByRole('link', { name: /Bolt/ }).click();
-  await expect(page).toHaveURL(/\/app\/bolt\/members$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Members');
+  await expect(page).toHaveURL(/\/app\/bolt\/specs$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Specs');
 
   // The browser remembers the workspace it opened last, and the front door goes back to it.
   await page.goto('/app/');
-  await expect(page).toHaveURL(/\/app\/bolt\/members$/);
+  await expect(page).toHaveURL(/\/app\/bolt\/specs$/);
 });
 
 test('signing out from the workspace menu ends the session', async ({ page }) => {
@@ -174,6 +178,7 @@ test('signed in, accepting an invitation joins the workspace and opens it', asyn
       invitations: [link(acme, 'b'.repeat(64))],
     }),
   );
+  await standInSpecs(page);
   await signedIn(page);
 
   await page.goto(`/app/join/${'b'.repeat(64)}`);
@@ -182,7 +187,8 @@ test('signed in, accepting an invitation joins the workspace and opens it', asyn
   ).toBeVisible();
   await page.getByRole('button', { name: 'Join Acme' }).click();
 
-  await expect(page).toHaveURL(/\/app\/acme\/members$/);
+  await expect(page).toHaveURL(/\/app\/acme\/specs$/);
+  await page.getByRole('link', { name: 'Members' }).click();
   await expect(page.getByRole('row', { name: /Ada Lovelace \(you\)/ })).toContainText('Member');
   expect(calls.rpc.map(({ name }) => name)).toEqual(['invitation', 'accept_invitation']);
 });

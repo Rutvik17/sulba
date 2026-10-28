@@ -3,14 +3,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./session": "./src/session.ts",
-    "./outbox": "./src/outbox.ts",
-    "./reviews": "./src/reviews.ts",
-    "./client": "./src/client.ts",
     "./account": "./src/account.ts",
+    "./client": "./src/client.ts",
+    "./outbox": "./src/outbox.ts",
     "./project": "./src/project.ts",
-    "./sync": "./src/sync.ts",
+    "./reviews": "./src/reviews.ts",
+    "./session": "./src/session.ts",
+    "./specs": "./src/specs.ts",
     "./study": "./src/study.ts",
+    "./sync": "./src/sync.ts",
     "./workspaces": "./src/workspaces.ts"
   },
   "scripts": {

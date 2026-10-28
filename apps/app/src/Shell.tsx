@@ -1,7 +1,7 @@
 import type { Workspace } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Menu, MenuItem, MenuTrigger } from '@sulba/ui/menu';
-import { Link, Outlet, useNavigate, useParams } from '@tanstack/react-router';
+import { Link, Outlet, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
 import { createContext, use, useEffect } from 'react';
 import { Button } from 'react-aria-components/Button';
 import { useSignOut } from './account';
@@ -39,6 +39,8 @@ export function useWorkspace(): Workspace {
 export function Shell() {
   const { slug } = useParams({ from: '/$slug' });
   const { data: workspace } = useWorkspaceAt(slug);
+  // A spec's page sits under Specs in the sidebar, though its address is the spec's ID.
+  const onSpec = Boolean(useMatchRoute()({ to: '/$slug/$spec', params: { slug } }));
 
   useEffect(() => {
     if (workspace) rememberWorkspace(workspace.slug);
@@ -61,6 +63,14 @@ export function Shell() {
         <aside className={css.sidebar}>
           <Switcher current={workspace} />
           <nav aria-label="Workspace" className={css.nav}>
+            <Link
+              to="/$slug/specs"
+              params={{ slug }}
+              className={css.link}
+              {...(onSpec ? { 'aria-current': 'page' as const } : {})}
+            >
+              Specs
+            </Link>
             <Link to="/$slug/members" params={{ slug }} className={css.link}>
               Members
             </Link>

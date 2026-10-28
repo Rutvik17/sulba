@@ -26,7 +26,8 @@ jobs:
         run: |
           # Each table, and a column of it to ask for.
           for check in attempts:learner_id progress:learner_id study_days:learner_id \
-            reviews:learner_id people:id workspaces:id members:person_id invitations:id events:id; do
+            reviews:learner_id people:id workspaces:id members:person_id invitations:id events:id \
+            specs:id criteria:id; do
             table=${check%%:*}
             answer=$(curl --silent --show-error --retry 3 --max-time 30 --write-out '\n%{http_code}' \
               --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \

@@ -103,7 +103,7 @@ const cors = {
   'access-control-allow-methods': 'GET, POST, PATCH, DELETE, OPTIONS',
 };
 
-function answer(route: Route, status: number, body?: unknown) {
+export function answer(route: Route, status: number, body?: unknown) {
   return route.fulfill({
     status,
     headers: { ...cors, 'content-type': 'application/json' },
@@ -112,12 +112,12 @@ function answer(route: Route, status: number, body?: unknown) {
 }
 
 /** PostgREST's answer when a function raises an exception for people to read. */
-function refuse(route: Route, code: string, message: string) {
+export function refuse(route: Route, code: string, message: string) {
   return answer(route, 400, { code, message, details: null, hint: null });
 }
 
 /** The value of a PostgREST filter such as `person_id=eq.<id>`. */
-function equal(url: URL, column: string): string | null {
+export function equal(url: URL, column: string): string | null {
   const filter = url.searchParams.get(column);
   return filter?.startsWith('eq.') ? filter.slice(3) : null;
 }
