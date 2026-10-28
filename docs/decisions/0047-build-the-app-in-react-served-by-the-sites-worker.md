@@ -1,6 +1,6 @@
 # 47. Build the app in React, drawn in the browser and served by the site's Worker under /app/
 
-- Status: accepted
+- Status: accepted, amended by [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md)
 - Date: 2026-10-27
 
 ## Context

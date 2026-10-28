@@ -72,3 +72,8 @@ jobs:
             url=$(jq -r 'select(.type == "preview") | .preview_urls[0]' "$WRANGLER_OUTPUT_FILE_PATH")
           fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
+      # Cloudflare reads the site's routing rules itself when it deploys, so only sulba.dev can show
+      # how it serves the app. Previews sit behind sign-in, so only main is checked.
+      - name: Check the app on sulba.dev
+        if: github.ref_name == 'main'
+        run: bash .github/scripts/check-app.sh https://sulba.dev
