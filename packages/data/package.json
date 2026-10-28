@@ -8,6 +8,7 @@
     "./reviews": "./src/reviews.ts",
     "./client": "./src/client.ts",
     "./account": "./src/account.ts",
+    "./project": "./src/project.ts",
     "./sync": "./src/sync.ts",
     "./study": "./src/study.ts"
   },

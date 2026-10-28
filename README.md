@@ -16,6 +16,7 @@ The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses i
 | Command | What it does |
 | --- | --- |
 | `pnpm dev` | Runs the site locally |
+| `pnpm dev:app` | Runs the app at http://127.0.0.1:4323/app/, passing every other address to `pnpm dev` |
 | `pnpm build` | Builds the site |
 | `pnpm lint` | Checks formatting and lint rules with Biome |
 | `pnpm lint:fix` | Fixes formatting and safe lint issues |

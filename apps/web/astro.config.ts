@@ -1,6 +1,8 @@
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
+import { projectUrl, publishableKey } from '@sulba/data/project';
 import { defineConfig, envField } from 'astro/config';
+import { app } from './app';
 import { fonts } from './fonts';
 import { gallery } from './gallery';
 import { pyodide } from './pyodide';
@@ -9,7 +11,7 @@ export default defineConfig({
   site: 'https://sulba.dev',
   // Images are optimised at build time, so the Worker needs no Cloudflare Images binding.
   adapter: cloudflare({ imageService: 'compile' }),
-  integrations: [react(), gallery(), pyodide()],
+  integrations: [react(), gallery(), pyodide(), app()],
   // Sign-in lives in Supabase, so Astro sessions and the KV namespace they create stay off.
   session: false,
   fonts,
@@ -22,18 +24,17 @@ export default defineConfig({
         access: 'public',
         default: '1x00000000000000000000AA',
       }),
-      // Supabase's address and publishable key are public, and every row they reach is guarded by
-      // row-level security. They default to the hosted project, so sign-in works in development and
-      // previews too; the end-to-end tests stand in for it.
+      // Supabase's address and publishable key, which default to the hosted project
+      // (packages/data/src/project.ts).
       PUBLIC_SUPABASE_URL: envField.string({
         context: 'client',
         access: 'public',
-        default: 'https://cqsfhuxtpkzvlemqkqoa.supabase.co',
+        default: projectUrl,
       }),
       PUBLIC_SUPABASE_PUBLISHABLE_KEY: envField.string({
         context: 'client',
         access: 'public',
-        default: 'sb_publishable_Ra21s8nwLu6-iB6LRLYeCA_q_dU74OB',
+        default: publishableKey,
       }),
       // The contact form's secrets are Worker secrets, read when a message is sent. Without all
       // four the form answers that it can't send, and never sends unchecked.
