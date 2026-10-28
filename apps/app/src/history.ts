@@ -8,6 +8,8 @@ export interface Context {
   readonly names: ReadonlyMap<string, string>;
   /** The spec's criteria's numbers, by id, for a change that doesn't carry its number. */
   readonly criteria: ReadonlyMap<string, number>;
+  /** Who each of the spec's reviews is from, by its id, for a change that doesn't say. */
+  readonly reviewers: ReadonlyMap<string, string>;
 }
 
 /** Who made a change. Agents are always named as agents. */
@@ -29,8 +31,25 @@ function list(parts: readonly string[]): string {
   return `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`;
 }
 
+/** What a change to one of the spec's reviews did, such as "asked Ben to review it". */
+function reviewOf(change: Change, context: Context): string {
+  const reviewer =
+    (after(change, 'reviewer_id') as string | null | undefined) ??
+    (change.changes.reviewer_id?.[0] as string | undefined) ??
+    context.reviewers.get(change.subjectId);
+  const name = (reviewer && context.names.get(reviewer)) || 'someone who has left';
+  if (change.action === 'review.created') return `asked ${name} to review it`;
+  if (change.action === 'review.deleted') return `took ${name} off its reviewers`;
+  const verdict = after(change, 'verdict');
+  if (verdict === 'approved') return 'approved it';
+  if (verdict === 'changes_requested') return 'asked for changes';
+  if (verdict === 'pending') return `asked ${name} to review it again`;
+  return 'changed a review';
+}
+
 /** What the change did, such as "moved it to In review" or "added SPEC-12/AC-3". */
 export function whatOf(change: Change, context: Context): string {
+  if (change.subjectType === 'review') return reviewOf(change, context);
   if (change.subjectType === 'criterion') {
     const number =
       (after(change, 'number') as number | null | undefined) ??

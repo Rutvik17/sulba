@@ -43,6 +43,13 @@
   border-color: var(--bad);
 }
 
+/* Several lines: the box takes the text's height, and the text keeps its own padding. */
+.multiline {
+  align-items: stretch;
+  height: auto;
+  padding: var(--space-2) var(--space-3);
+}
+
 .prefix {
   flex: none;
   color: var(--dim);
@@ -67,6 +74,11 @@
 
 .input::placeholder {
   color: var(--dim);
+}
+
+.multiline .input {
+  resize: vertical;
+  line-height: var(--leading);
 }
 
 .note,

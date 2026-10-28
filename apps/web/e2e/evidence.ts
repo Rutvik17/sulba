@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { supabase } from './supabase';
-import { answer, equal, refuse } from './workspaces';
+import { ada, answer, equal, refuse } from './workspaces';
 
 // Stands in for a workspace's repositories, its CI reports and what they prove, as PostgREST
 // answers them (decision record 50). Postgres works out each proof from the reports; here each
@@ -163,16 +163,22 @@ export async function standInEvidence(
     skipped: proof.skipped,
     state: stateOf(proof),
     checked_at: proof.passed + proof.failed + proof.skipped ? received : null,
+    spec_owner_id: ada.id,
   });
 
   await page.route(`${supabase}/rest/v1/criterion_proofs**`, (route) => {
     if (route.request().method() === 'OPTIONS') return answer(route, 204);
-    const specId = equal(new URL(route.request().url()), 'spec_id');
+    const url = new URL(route.request().url());
+    const specId = equal(url, 'spec_id');
+    const state = equal(url, 'state');
+    // Every spec the stand-in proves is Ada's.
+    if (![null, ada.id].includes(equal(url, 'spec_owner_id'))) return answer(route, 200, []);
     return answer(
       route,
       200,
       held.proofs
         .filter((proof) => specId === null || proof.spec.id === specId)
+        .filter((proof) => state === null || stateOf(proof) === state)
         .sort((a, b) => a.spec.number - b.spec.number || a.number - b.number)
         .map(proofRow),
     );

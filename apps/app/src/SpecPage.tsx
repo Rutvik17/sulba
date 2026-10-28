@@ -1,4 +1,5 @@
 import { type Claim, type CriterionProof, confirmCriterion } from '@sulba/data/evidence';
+import type { Review } from '@sulba/data/reviewers';
 import {
   addCriterion,
   bodyLimit,
@@ -33,7 +34,8 @@ import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
 import { ProofMark } from './ProofMark';
 import { commitUrl, reasonOf, runUrl } from './proofs';
-import { keys, useHistory, useMembers, useSpecAt, useSpecEvidence } from './queries';
+import { keys, useHistory, useMembers, useReviews, useSpecAt, useSpecEvidence } from './queries';
+import { Reviewers, YourReview } from './Review';
 import { useWorkspace } from './Shell';
 import styles from './spec.module.css';
 import { useTitle } from './title';
@@ -104,7 +106,9 @@ function Loaded({ number }: { number: number }) {
 
 function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
   const workspace = useWorkspace();
-  const { client } = useAccount();
+  const { client, personId } = useAccount();
+  const { data: reviews } = useReviews(spec.id);
+  const yours = reviews.find((review) => review.reviewerId === personId);
   const queryClient = useQueryClient();
   const canWrite = holds(workspace.role, 'member');
   const key = specKey(spec.number);
@@ -117,6 +121,8 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
       queryClient.invalidateQueries({ queryKey: keys.specs(workspace.id) }),
       queryClient.invalidateQueries({ queryKey: keys.history(spec.id) }),
       queryClient.invalidateQueries({ queryKey: keys.proofs(workspace.id) }),
+      queryClient.invalidateQueries({ queryKey: keys.reviews(spec.id) }),
+      queryClient.invalidateQueries({ queryKey: keys.work(workspace.id) }),
     ]);
   const change = useMutation({
     mutationFn: (patch: SpecChange) => updateSpec(client, spec.id, patch),
@@ -146,6 +152,9 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
 
         <Title spec={spec} canWrite={canWrite} onSave={(title) => change.mutate({ title })} />
         <Notice text={failure} />
+        {yours && spec.status === 'in_review' ? (
+          <YourReview spec={spec} review={yours} members={members} />
+        ) : null}
       </div>
 
       <div className={css.main}>
@@ -157,7 +166,7 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
         </section>
 
         <Criteria spec={spec} canWrite={canWrite} onChanged={reread} />
-        <History spec={spec} members={members} />
+        <History spec={spec} members={members} reviews={reviews} />
       </div>
 
       <aside className={css.side} aria-label="Details">
@@ -200,6 +209,12 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
               ) : (
                 (owners.find((owner) => owner.id === spec.ownerId)?.name ?? 'No owner')
               )}
+            </dd>
+          </div>
+          <div>
+            <dt>Reviewers</dt>
+            <dd>
+              <Reviewers spec={spec} reviews={reviews} members={members} canWrite={canWrite} />
             </dd>
           </div>
           <div>
@@ -610,13 +625,22 @@ function Wording({
 }
 
 /** Who changed the spec and its criteria, and when, newest first. */
-function History({ spec, members }: { spec: Spec; members: readonly Member[] }) {
+function History({
+  spec,
+  members,
+  reviews,
+}: {
+  spec: Spec;
+  members: readonly Member[];
+  reviews: readonly Review[];
+}) {
   const workspace = useWorkspace();
   const { data: changes, isPending, isError } = useHistory(workspace, spec.id);
   const context = {
     spec: spec.number,
     names: new Map(members.map((member) => [member.personId, member.name || member.email || ''])),
     criteria: new Map(spec.criteria.map((criterion) => [criterion.id, criterion.number])),
+    reviewers: new Map(reviews.map((review) => [review.id, review.reviewerId])),
   };
 
   return (

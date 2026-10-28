@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 import { standInConsent } from './agents';
 import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
-import { criterion, spec, standInSpecs } from './specs';
+import { criterion, review, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
 import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
 
@@ -81,6 +81,7 @@ for (const scheme of ['dark', 'light'] as const) {
   });
 
   for (const [path, heading] of [
+    ['/app/acme', 'My work'],
     ['/app/acme/specs', 'Specs'],
     ['/app/acme/SPEC-3', 'Retry failed payments'],
     ['/app/acme/evidence', 'Evidence'],
@@ -104,9 +105,18 @@ for (const scheme of ['dark', 'light'] as const) {
           invitations: [link(acme, 'd'.repeat(64))],
         }),
       );
-      const written = spec(acme, 3, 'Retry failed payments', { body: '## Context\n\nCards fail.' });
+      // Ben's spec in review, which he asked Ada to review.
+      const written = spec(acme, 3, 'Retry failed payments', {
+        body: '## Context\n\nCards fail.',
+        status: 'in_review',
+        ownerId: ben.id,
+      });
       const retries = criterion(written, 1, 'When a payment fails, the system shall retry it once');
-      await standInSpecs(page, { specs: [written], criteria: [retries] });
+      await standInSpecs(page, {
+        specs: [written],
+        criteria: [retries],
+        reviews: [review(written, ada, { requestedBy: ben.id })],
+      });
       // A failing criterion, so its tests show open with what the failure said.
       const payments = repository(acme, 'acme-co/payments');
       await standInEvidence(page, acme, {

@@ -47,8 +47,8 @@ test('someone in no workspace creates one, whose address follows its name, and b
   await expect(page.getByLabel('Address')).toHaveValue('acme-robotics');
   await page.getByRole('button', { name: 'Create workspace' }).click();
 
-  await expect(page).toHaveURL(/\/app\/acme-robotics\/specs$/);
-  await expect(page).toHaveTitle('Specs · Acme Robotics · Sulba');
+  await expect(page).toHaveURL(/\/app\/acme-robotics$/);
+  await expect(page).toHaveTitle('My work · Acme Robotics · Sulba');
   await page.getByRole('link', { name: 'Members' }).click();
   await expect(page.getByRole('row', { name: /Ada Lovelace \(you\)/ })).toContainText('Owner');
   expect(calls.rpc).toEqual([
@@ -98,12 +98,12 @@ test('the front door lists the person’s workspaces, then goes back to the one 
   );
 
   await page.getByRole('link', { name: /Bolt/ }).click();
-  await expect(page).toHaveURL(/\/app\/bolt\/specs$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Specs');
+  await expect(page).toHaveURL(/\/app\/bolt$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('My work');
 
   // The browser remembers the workspace it opened last, and the front door goes back to it.
   await page.goto('/app/');
-  await expect(page).toHaveURL(/\/app\/bolt\/specs$/);
+  await expect(page).toHaveURL(/\/app\/bolt$/);
 });
 
 test('signing out from the workspace menu ends the session', async ({ page }) => {
@@ -187,7 +187,7 @@ test('signed in, accepting an invitation joins the workspace and opens it', asyn
   ).toBeVisible();
   await page.getByRole('button', { name: 'Join Acme' }).click();
 
-  await expect(page).toHaveURL(/\/app\/acme\/specs$/);
+  await expect(page).toHaveURL(/\/app\/acme$/);
   await page.getByRole('link', { name: 'Members' }).click();
   await expect(page.getByRole('row', { name: /Ada Lovelace \(you\)/ })).toContainText('Member');
   expect(calls.rpc.map(({ name }) => name)).toEqual(['invitation', 'accept_invitation']);
