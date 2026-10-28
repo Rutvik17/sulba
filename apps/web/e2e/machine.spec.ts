@@ -54,7 +54,7 @@ test('a lab that runs on the machine says how to run it there, and loads no Pyth
   await expect(page.getByText('uv run sulba.py', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Download' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Run tests' })).toHaveCount(0);
-  await expect(page.getByText('Runs on')).toBeVisible();
+  await expect(page.getByText('Runs on', { exact: true })).toBeVisible();
   expect(fetched.filter((each) => each.startsWith('/pyodide/'))).toEqual([]);
 });
 

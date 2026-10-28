@@ -120,7 +120,12 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto('/academy/demo/');
     // Every module open, so its labs are checked too.
-    await page.getByRole('button', { name: 'Show all modules' }).click();
+    for (const level of ['First', 'Second']) {
+      await page
+        .getByRole('region', { name: level })
+        .getByRole('button', { name: 'Show all modules' })
+        .click();
+    }
     await expect(page.getByText('1 of 4 stages done').last()).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(wcag).analyze();

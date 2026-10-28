@@ -87,7 +87,7 @@ test('a module opens to its labs, with what each builds, its stages and its time
 
 test('Show all modules opens every module, and Hide all modules closes them', async ({ page }) => {
   await page.goto(path);
-  await page.getByRole('button', { name: 'Show all modules' }).click();
+  await level(page).getByRole('button', { name: 'Show all modules' }).click();
 
   const modules = level(page).getByRole('heading', { level: 3 }).getByRole('button');
   await expect(modules).toHaveCount(2);
@@ -144,7 +144,7 @@ test("after a lab that's done, the next lab is the one after it, past an optiona
     'href',
     '/academy/demo/ledgers/ledger/',
   );
-  await expect(next(page)).toContainText('Module 1 · Ledgers · About 60 minutes');
+  await expect(next(page)).toContainText('Module 1 · Ledgers · About 1 hour');
   // The module's row, under its title.
   await expect(level(page).getByText('1 lab · About 40 minutes').locator('..')).toContainText(
     'Done',
