@@ -1,8 +1,10 @@
 // Workspaces, the people in them and the links that invite people in (decision record 48).
 // Postgres decides what each person may do; these calls ask it, and put its refusals in words.
-import type { PostgrestError } from '@supabase/supabase-js';
 import type { Client } from './client.ts';
 import type { Database } from './database.ts';
+import { refusal } from './refusal.ts';
+
+export { Refusal } from './refusal.ts';
 
 export type Role = Database['public']['Enums']['workspace_role'];
 
@@ -64,11 +66,6 @@ export interface Offer {
   readonly role: Role;
 }
 
-/** A refusal or failure, in words to show the person who asked. */
-export class Refusal extends Error {
-  override name = 'Refusal';
-}
-
 const reserved = new Set([
   'account',
   'admin',
@@ -120,19 +117,6 @@ export function slugProblem(slug: string): string | null {
 /** The address of the page that accepts an invitation link. */
 export function joinLink(origin: string, token: string): string {
   return `${origin}/app/join/${token}`;
-}
-
-/**
- * The words for a refusal. The functions in Postgres raise theirs for people to read, and each
- * becomes a sentence; anything else, such as a lost connection, gets a general one, and `taken`
- * names a duplicate.
- */
-function refusal(error: PostgrestError, taken?: string): Refusal {
-  if (error.code === '23505' && taken) return new Refusal(taken);
-  const said = ['42501', '23514', '54000', 'P0002'].includes(error.code);
-  const technical = /constraint|permission denied|violates/.test(error.message);
-  if (!said || technical) return new Refusal('Sulba couldn’t do that just now. Try again.');
-  return new Refusal(/[.!?]$/.test(error.message) ? error.message : `${error.message}.`);
 }
 
 /** The workspaces the person is in, by name. */

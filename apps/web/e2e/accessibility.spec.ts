@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from './islands';
+import { criterion, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
 import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
 
@@ -78,6 +79,8 @@ for (const scheme of ['dark', 'light'] as const) {
   });
 
   for (const [path, heading] of [
+    ['/app/acme/specs', 'Specs'],
+    ['/app/acme/SPEC-3', 'Retry failed payments'],
     ['/app/acme/members', 'Members'],
     ['/app/acme/settings', 'Settings'],
     ['/app/new', 'Create a workspace'],
@@ -94,10 +97,15 @@ for (const scheme of ['dark', 'light'] as const) {
           invitations: [link(acme, 'd'.repeat(64))],
         }),
       );
+      const written = spec(acme, 3, 'Retry failed payments', { body: '## Context\n\nCards fail.' });
+      await standInSpecs(page, {
+        specs: [written],
+        criteria: [criterion(written, 1, 'When a payment fails, the system shall retry it once')],
+      });
       await signedIn(page);
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto(path);
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+      await expect(page.getByRole('heading', { level: 1, name: heading })).toBeAttached();
 
       const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
 

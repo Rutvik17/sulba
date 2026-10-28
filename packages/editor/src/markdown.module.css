@@ -1,0 +1,64 @@
+/*
+  The Markdown editor: prose in the page's own font and colours, in a quiet frame that shows
+  focus, growing with what's written from a few lines to a page, then scrolling.
+*/
+.markdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.text {
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.text:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.text :global(.cm-editor) {
+  min-height: 160px;
+  max-height: 70vh;
+  color: var(--fg);
+  font-size: var(--text-md);
+}
+
+/* The frame shows focus, so the text area draws no outline of its own. */
+.text :global(.cm-editor.cm-focused) {
+  outline: none;
+}
+
+.text :global(.cm-scroller) {
+  font-family: var(--font-sans);
+  line-height: var(--leading);
+}
+
+.text :global(.cm-content) {
+  min-height: 160px;
+  padding: var(--space-3) var(--space-4);
+  caret-color: var(--fg);
+}
+
+.text :global(.cm-line) {
+  padding: 0;
+}
+
+.text :global(.cm-placeholder) {
+  color: var(--dim);
+}
+
+.text :global(.cm-selectionBackground),
+.text :global(.cm-focused .cm-selectionBackground) {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.count {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+  text-align: right;
+}

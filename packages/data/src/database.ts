@@ -61,6 +61,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      criteria: {
+        Row: {
+          created_at: string;
+          id: string;
+          number: number;
+          spec_id: string;
+          text: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          number: number;
+          spec_id: string;
+          text: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          number?: number;
+          spec_id?: string;
+          text?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'criteria_workspace_id_spec_id_fkey';
+            columns: ['workspace_id', 'spec_id'];
+            isOneToOne: false;
+            referencedRelation: 'specs';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       events: {
         Row: {
           action: string;
@@ -70,6 +109,7 @@ export type Database = {
           at: string;
           changes: NonNullable<Json>;
           id: number;
+          spec_id: string | null;
           subject_id: string;
           subject_type: string;
           workspace_id: string;
@@ -83,6 +123,7 @@ export type Database = {
           at?: string;
           changes?: NonNullable<Json>;
           id?: never;
+          spec_id?: string | null;
           subject_id: string;
           subject_type: string;
           workspace_id: string;
@@ -95,6 +136,7 @@ export type Database = {
           at?: string;
           changes?: NonNullable<Json>;
           id?: never;
+          spec_id?: string | null;
           subject_id?: string;
           subject_type?: string;
           workspace_id?: string;
@@ -289,6 +331,68 @@ export type Database = {
         };
         Relationships: [];
       };
+      specs: {
+        Row: {
+          body: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          number: number;
+          owner_id: string | null;
+          status: Database['public']['Enums']['spec_status'];
+          title: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          number: number;
+          owner_id?: string | null;
+          status?: Database['public']['Enums']['spec_status'];
+          title: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          number?: number;
+          owner_id?: string | null;
+          status?: Database['public']['Enums']['spec_status'];
+          title?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'specs_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'specs_owner_id_fkey';
+            columns: ['owner_id'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'specs_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       study_days: {
         Row: {
           day: string;
@@ -336,10 +440,15 @@ export type Database = {
     };
     Functions: {
       accept_invitation: { Args: { token: string }; Returns: string };
+      add_criterion: { Args: { spec: string; text: string }; Returns: number };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       create_invitation: {
         Args: { role: Database['public']['Enums']['workspace_role']; workspace: string };
         Returns: string;
+      };
+      create_spec: {
+        Args: { criteria?: string[]; title: string; workspace: string };
+        Returns: number;
       };
       create_workspace: {
         Args: { name: string; slug: string };
@@ -376,6 +485,7 @@ export type Database = {
     };
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
+      spec_status: 'draft' | 'in_review' | 'approved' | 'implemented' | 'abandoned' | 'superseded';
       workspace_role: 'viewer' | 'member' | 'admin' | 'owner';
     };
     CompositeTypes: {
@@ -493,6 +603,7 @@ export const Constants = {
   public: {
     Enums: {
       actor_kind: ['person', 'agent', 'github', 'system'],
+      spec_status: ['draft', 'in_review', 'approved', 'implemented', 'abandoned', 'superseded'],
       workspace_role: ['viewer', 'member', 'admin', 'owner'],
     },
   },

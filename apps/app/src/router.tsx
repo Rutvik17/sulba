@@ -3,6 +3,7 @@ import {
   createRoute,
   createRouter,
   type ErrorComponentProps,
+  lazyRouteComponent,
   Outlet,
   redirect,
 } from '@tanstack/react-router';
@@ -16,6 +17,7 @@ import { NewWorkspace } from './NewWorkspace';
 import { Settings } from './Settings';
 import { Shell } from './Shell';
 import { SignIn } from './SignIn';
+import { Specs } from './Specs';
 
 /** A page for someone signed in. A page waits for what it reads without showing a spinner. */
 const signedIn = (page: () => ReactNode) => () => (
@@ -51,8 +53,15 @@ const opened = createRoute({
   getParentRoute: () => workspace,
   path: '/',
   beforeLoad: ({ params }) => {
-    throw redirect({ to: '/$slug/members', params, replace: true });
+    throw redirect({ to: '/$slug/specs', params, replace: true });
   },
+});
+const specs = createRoute({ getParentRoute: () => workspace, path: '/specs', component: Specs });
+// A spec's page brings the Markdown editor, which loads only once a spec is opened.
+const spec = createRoute({
+  getParentRoute: () => workspace,
+  path: '/$spec',
+  component: lazyRouteComponent(() => import('./SpecPage'), 'SpecPage'),
 });
 const members = createRoute({
   getParentRoute: () => workspace,
@@ -71,7 +80,7 @@ export const router = createRouter({
     home,
     create,
     join,
-    workspace.addChildren([opened, members, settings]),
+    workspace.addChildren([opened, specs, members, settings, spec]),
   ]),
   basepath: '/app',
   defaultPreload: 'intent',

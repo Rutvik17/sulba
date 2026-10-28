@@ -6,6 +6,7 @@
     "./choice": "./src/choice.ts",
     "./editor": "./src/Editor.tsx",
     "./language": "./src/language.ts",
+    "./markdown": "./src/Markdown.tsx",
     "./palettes": "./src/palettes.ts",
     "./specimen": "./src/specimen.ts"
   },
@@ -19,6 +20,7 @@
     "@codemirror/commands": "6.11.1",
     "@codemirror/lang-go": "6.0.1",
     "@codemirror/lang-javascript": "6.2.5",
+    "@codemirror/lang-markdown": "6.5.2",
     "@codemirror/lang-python": "6.2.1",
     "@codemirror/language": "6.13.1",
     "@codemirror/legacy-modes": "6.5.5",

@@ -1,5 +1,6 @@
 // What the app reads from Supabase, cached by TanStack Query so pages share it, and the keys a
 // change invalidates so every page that shows it reads it again.
+import { historyOf, specAt, specsOf } from '@sulba/data/specs';
 import {
   invitationsOf,
   membersOf,
@@ -15,6 +16,9 @@ export const keys = {
   workspace: (slug: string) => ['workspace', slug] as const,
   members: (workspaceId: string) => ['members', workspaceId] as const,
   invitations: (workspaceId: string) => ['invitations', workspaceId] as const,
+  specs: (workspaceId: string) => ['specs', workspaceId] as const,
+  spec: (workspaceId: string, number: number) => ['spec', workspaceId, number] as const,
+  history: (specId: string) => ['history', specId] as const,
 };
 
 /** The workspaces the signed-in person is in. */
@@ -50,5 +54,30 @@ export function useInvitations(workspace: Workspace, canSee: boolean) {
     queryKey: keys.invitations(workspace.id),
     queryFn: () => invitationsOf(client, workspace.id),
     enabled: canSee,
+  });
+}
+
+export function useSpecs(workspace: Workspace) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.specs(workspace.id),
+    queryFn: () => specsOf(client, workspace.id),
+  });
+}
+
+/** The spec with a number in the workspace, or null when there's none. */
+export function useSpecAt(workspace: Workspace, number: number) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.spec(workspace.id, number),
+    queryFn: () => specAt(client, workspace.id, number),
+  });
+}
+
+export function useHistory(workspace: Workspace, specId: string) {
+  const { client } = useAccount();
+  return useQuery({
+    queryKey: keys.history(specId),
+    queryFn: () => historyOf(client, workspace.id, specId),
   });
 }

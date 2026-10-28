@@ -12,6 +12,7 @@ import DockerfileEditorDemo from './DockerfileEditorDemo';
 import EditorDemo from './EditorDemo';
 import formulas from './formulas.md?raw';
 import GoEditorDemo from './GoEditorDemo';
+import MarkdownDemo from './MarkdownDemo';
 import MenuDemo from './MenuDemo';
 import PanelDemo from './PanelDemo';
 import PressCount from './PressCount';
@@ -206,6 +207,22 @@ const buttons = [
       <h3>Read only, a Dockerfile</h3>
       <div class="code">
         <DockerfileEditorDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="markdown">
+    <SectionHeading id="markdown" text="Markdown editor" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <MarkdownDemo client:load />
+      </div>
+    </div>
+    <div class="row">
+      <h3>Read only</h3>
+      <div class="island">
+        <MarkdownDemo client:load readOnly />
       </div>
     </div>
   </section>
