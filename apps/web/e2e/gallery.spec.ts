@@ -302,8 +302,10 @@ async function focusCode(page: Page, where: 'start' | 'end' = 'end') {
   const { code } = editor(page);
   const lines = code.locator('.cm-line');
   // A click on the line, then Home or End: the same keys on every platform. Moving to the start
-  // or end of the whole file takes Command on the iPhone project and Control elsewhere.
-  await (where === 'start' ? lines.first() : lines.last()).click();
+  // or end of the whole file takes Command on the iPhone project and Control elsewhere. The click
+  // lands at the line's start: on a phone the longest line is wider than the editor, so a click in
+  // a line's middle would scroll the editor sideways, past the start of what's typed next.
+  await (where === 'start' ? lines.first() : lines.last()).click({ position: { x: 4, y: 4 } });
   await expect(code).toBeFocused();
   await page.keyboard.press(where === 'start' ? 'Home' : 'End');
 }
@@ -396,7 +398,7 @@ test('Tab indents the code, and Escape then Tab leaves the editor', async ({ pag
 test("choosing an editor theme in the top bar's panel repaints every editor", async ({ page }) => {
   await openGallery(page);
   const editors = editor(page).section.locator('.cm-editor');
-  await expect(editors).toHaveCount(2);
+  await expect(editors).toHaveCount(5);
 
   await page.getByRole('button', { name: 'Theme', exact: true }).click();
   await page.getByRole('radio', { name: 'Dracula' }).check();
@@ -406,15 +408,17 @@ test("choosing an editor theme in the top bar's panel repaints every editor", as
   }
 });
 
-test('a read-only editor can be read but not changed', async ({ page }) => {
+test('a read-only editor can be read but not changed, in each language', async ({ page }) => {
   await openGallery(page);
-  const solution = page.getByRole('textbox', { name: 'Solution' });
-  const before = await solution.textContent();
+  const solutions = editor(page).section.getByRole('textbox', { name: 'Solution' });
+  await expect(solutions).toHaveCount(4);
 
-  await solution.click();
-  await page.keyboard.type('x');
-
-  await expect(solution).toHaveText(before ?? '');
+  for (const solution of await solutions.all()) {
+    const before = await solution.textContent();
+    await solution.click();
+    await page.keyboard.type('x');
+    await expect(solution).toHaveText(before ?? '');
+  }
 });
 
 test('the gallery fits the screen without scrolling sideways', async ({ page }) => {
