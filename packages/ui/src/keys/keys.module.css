@@ -1,0 +1,33 @@
+/*
+  A shortcut's keys: each a small cap in the mono face, edged like a control, and the word "then"
+  between the steps of a sequence. The caps keep their width, so a list of shortcuts lines up.
+*/
+.keys {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  font: inherit;
+  color: var(--dim);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.key {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: var(--space-1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1;
+}
+
+.then {
+  color: var(--dim);
+}

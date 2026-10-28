@@ -3,10 +3,12 @@
 // exists only in development and in builds that ask for it (astro.config.ts).
 import { renderProse } from '@sulba/content/prose';
 import { buttonClass } from '@sulba/ui/button';
+import { Keys } from '@sulba/ui/keys';
 import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 import ChartDemo from './ChartDemo';
+import CommandMenuDemo from './CommandMenuDemo';
 import DialogDemo from './DialogDemo';
 import DockerfileEditorDemo from './DockerfileEditorDemo';
 import EditorDemo from './EditorDemo';
@@ -20,12 +22,21 @@ import ReadOnlyEditorDemo from './ReadOnlyEditorDemo';
 import SegmentedDemo from './SegmentedDemo';
 import SelectDemo from './SelectDemo';
 import SliderDemo from './SliderDemo';
+import SwitchDemo from './SwitchDemo';
 import TabsDemo from './TabsDemo';
 import TextFieldDemo from './TextFieldDemo';
+import TooltipDemo from './TooltipDemo';
 import TypeScriptEditorDemo from './TypeScriptEditorDemo';
 
 // Formulas as a lab's prose shows them, made by the same renderer when the site is built.
 const prose = renderProse(formulas, {}).html;
+
+const shortcuts = [
+  { name: 'A key', steps: [['?']] },
+  { name: 'A sequence', steps: [['G'], ['S']] },
+  { name: 'With Ctrl', steps: [['Ctrl', 'K']] },
+  { name: 'With Cmd', steps: [['⌘', 'K']] },
+] as const;
 
 const buttons = [
   { variant: 'primary', name: 'Primary', label: 'Run tests' },
@@ -236,6 +247,51 @@ const buttons = [
       </div>
     </div>
   </section>
+
+  <section aria-labelledby="keys">
+    <SectionHeading id="keys" text="Keys" />
+    <div class="row">
+      <h3>Shortcuts</h3>
+      <ul class="states">
+        {shortcuts.map(({ name, steps }) => (
+          <li>
+            <Keys steps={steps} />
+            <span>{name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="switch">
+    <SectionHeading id="switch" text="Switch" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="switches">
+        <SwitchDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="tooltip">
+    <SectionHeading id="tooltip" text="Tooltip" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <TooltipDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="command">
+    <SectionHeading id="command" text="Command menu" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <CommandMenuDemo client:load />
+      </div>
+    </div>
+  </section>
 </Page>
 
 <style>
@@ -317,6 +373,12 @@ h3 {
   display: grid;
   gap: var(--space-6);
   max-width: 360px;
+}
+
+.switches {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 420px;
 }
 
 .fields {

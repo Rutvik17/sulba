@@ -18,6 +18,7 @@ import { TextField } from '@sulba/ui/textfield';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useAccount } from './account';
+import { useCommands } from './commands';
 import { Notice } from './Notice';
 import { keys } from './queries';
 import { useWorkspace } from './Shell';
@@ -90,6 +91,27 @@ export function Reviewers({
     onSuccess: reread,
     onError: (error) => setFailure(error.message),
   });
+  const adding = choosing && eligible.length > 0 && reviews.length < reviewerLimit;
+  useCommands(
+    adding
+      ? [
+          {
+            id: 'spec-reviewer',
+            label: 'Add a reviewer',
+            group: specKey(spec.number),
+            keys: ['r'],
+            does: {
+              title: 'Add a reviewer',
+              actions: eligible.map((member) => ({
+                id: member.personId,
+                label: nameOf(member),
+                run: () => ask.mutate(member.personId),
+              })),
+            },
+          },
+        ]
+      : [],
+  );
 
   return (
     <>
@@ -135,7 +157,7 @@ export function Reviewers({
       ) : (
         <span className={css.note}>None</span>
       )}
-      {choosing && eligible.length && reviews.length < reviewerLimit ? (
+      {adding ? (
         <MenuTrigger>
           <Button variant="outline" size="small" isDisabled={ask.isPending}>
             Add reviewer
@@ -191,6 +213,25 @@ export function YourReview({
     },
   });
   const problem = answerProblem('changes_requested', note);
+  const key = specKey(spec.number);
+  useCommands([
+    ...(review.verdict === 'approved'
+      ? []
+      : [
+          {
+            id: 'spec-approve',
+            label: `Approve ${key}`,
+            group: key,
+            does: () => answer.mutate('approved'),
+          },
+        ]),
+    {
+      id: 'spec-changes',
+      label: `Request changes to ${key}`,
+      group: key,
+      does: () => setAsking(true),
+    },
+  ]);
 
   return (
     <section className={css.banner} aria-label="Your review">
@@ -211,7 +252,7 @@ export function YourReview({
       </div>
       {asking ? null : <Notice text={answer.error?.message ?? null} />}
       <Dialog
-        title={`Request changes to ${specKey(spec.number)}`}
+        title={`Request changes to ${key}`}
         isOpen={asking}
         onOpenChange={(open) => {
           setAsking(open);

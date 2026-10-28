@@ -1,11 +1,13 @@
 import type { Workspace } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
+import { Keys } from '@sulba/ui/keys';
 import { Menu, MenuItem, MenuTrigger } from '@sulba/ui/menu';
 import { Link, Outlet, useMatchRoute, useNavigate, useParams } from '@tanstack/react-router';
 import { createContext, use, useEffect } from 'react';
 import { Button } from 'react-aria-components/Button';
 import { useSignOut } from './account';
 import { Centered } from './Centered';
+import { Commands, menuShortcut, shortcutSteps, useOpenMenu } from './commands';
 import { rememberWorkspace } from './last';
 import { Mark } from './Mark';
 import { useWorkspaceAt, useWorkspaces } from './queries';
@@ -18,10 +20,21 @@ const css = classes(
   'switcher',
   'current',
   'chevron',
+  'search',
   'nav',
   'link',
+  'keys',
   'main',
 );
+
+/** The sidebar's pages, with the keys that go to each. */
+const pages = [
+  { to: '/$slug', label: 'My work', keys: ['g', 'w'] },
+  { to: '/$slug/specs', label: 'Specs', keys: ['g', 's'] },
+  { to: '/$slug/evidence', label: 'Evidence', keys: ['g', 'e'] },
+  { to: '/$slug/members', label: 'Members', keys: ['g', 'm'] },
+  { to: '/$slug/settings', label: 'Settings', keys: ['g', ','] },
+] as const;
 
 const WorkspaceContext = createContext<Workspace | null>(null);
 
@@ -59,42 +72,50 @@ export function Shell() {
 
   return (
     <WorkspaceContext value={workspace}>
-      <div className={css.shell}>
-        <aside className={css.sidebar}>
-          <Switcher current={workspace} />
-          <nav aria-label="Workspace" className={css.nav}>
-            <Link
-              to="/$slug"
-              params={{ slug }}
-              activeOptions={{ exact: true }}
-              className={css.link}
-            >
-              My work
-            </Link>
-            <Link
-              to="/$slug/specs"
-              params={{ slug }}
-              className={css.link}
-              {...(onSpec ? { 'aria-current': 'page' as const } : {})}
-            >
-              Specs
-            </Link>
-            <Link to="/$slug/evidence" params={{ slug }} className={css.link}>
-              Evidence
-            </Link>
-            <Link to="/$slug/members" params={{ slug }} className={css.link}>
-              Members
-            </Link>
-            <Link to="/$slug/settings" params={{ slug }} className={css.link}>
-              Settings
-            </Link>
-          </nav>
-        </aside>
-        <main className={css.main}>
-          <Outlet />
-        </main>
-      </div>
+      <Commands>
+        <div className={css.shell}>
+          <aside className={css.sidebar}>
+            <Switcher current={workspace} />
+            <Search />
+            <nav aria-label="Workspace" className={css.nav}>
+              {pages.map((page) => (
+                <Link
+                  key={page.to}
+                  to={page.to}
+                  params={{ slug }}
+                  activeOptions={{ exact: page.to === '/$slug' }}
+                  className={css.link}
+                  {...(page.to === '/$slug/specs' && onSpec
+                    ? { 'aria-current': 'page' as const }
+                    : {})}
+                >
+                  {page.label}
+                  <span className={css.keys} aria-hidden="true">
+                    <Keys steps={shortcutSteps(page.keys)} />
+                  </span>
+                </Link>
+              ))}
+            </nav>
+          </aside>
+          <main className={css.main}>
+            <Outlet />
+          </main>
+        </div>
+      </Commands>
     </WorkspaceContext>
+  );
+}
+
+/** The button that opens the command menu, which also finds specs. */
+function Search() {
+  const open = useOpenMenu();
+  return (
+    <Button className={css.search} onPress={open} aria-keyshortcuts={menuShortcut}>
+      <span>Search or run a command</span>
+      <span aria-hidden="true">
+        <Keys steps={shortcutSteps(['mod+k'])} />
+      </span>
+    </Button>
   );
 }
 
