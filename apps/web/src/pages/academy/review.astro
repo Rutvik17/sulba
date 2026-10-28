@@ -3,8 +3,9 @@
 // ones due from the stages this browser, or the learner's account, has passed.
 import { getCollection } from 'astro:content';
 import { buttonClass } from '@sulba/ui/button';
-import Page from '../layouts/Page.astro';
-import { ratings } from '../lib/review';
+import Page from '../../layouts/Page.astro';
+import { academyPage } from '../../lib/academy';
+import { ratings } from '../../lib/review';
 
 const cards = (await getCollection('labs')).flatMap(({ data: lab }) =>
   lab.cards.flatMap((card) => {
@@ -14,7 +15,7 @@ const cards = (await getCollection('labs')).flatMap(({ data: lab }) =>
       {
         ...card,
         source: `${lab.title} · ${stage.title}`,
-        href: `/${lab.path}/?stage=${stage.slug}`,
+        href: `${academyPage(lab.path)}?stage=${stage.slug}`,
       },
     ];
   }),
@@ -92,9 +93,9 @@ import {
   type Scheduled,
   schedule,
   whenDue,
-} from '../lib/review';
-import { keyboardScrollBoxes } from '../lib/scroll-boxes';
-import { kept } from '../workspace/storage';
+} from '../../lib/review';
+import { keyboardScrollBoxes } from '../../lib/scroll-boxes';
+import { kept } from '../../workspace/storage';
 
 interface Card {
   readonly id: string;

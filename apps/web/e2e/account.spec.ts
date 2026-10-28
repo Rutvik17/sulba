@@ -4,7 +4,7 @@ import { islandsHydrated } from './islands';
 import { learner, signedIn, standIn, supabase } from './supabase';
 
 // The content package's fixture course: its lab's first two stages build tally.py.
-const lab = '/demo/counting/tallies/';
+const lab = '/academy/demo/counting/tallies/';
 const solved =
   'def count(choices, choice):\n    return sum(1 for each in choices if each == choice)\n';
 

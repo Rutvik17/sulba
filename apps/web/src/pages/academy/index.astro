@@ -1,15 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
-import LabScroll from '../components/LabScroll.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import SessionClip from '../components/SessionClip.astro';
-import Page from '../layouts/Page.astro';
-import { courseOutlines } from '../lib/course';
+import LabScroll from '../../components/LabScroll.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import SessionClip from '../../components/SessionClip.astro';
+import Page from '../../layouts/Page.astro';
+import { academyPage } from '../../lib/academy';
+import { courseOutlines } from '../../lib/course';
 
 const levels = ['Beginner', 'Intermediate', 'Advanced', 'Master', 'Elite'];
 // The first course, whose name links its page once it has labs to list.
 const [course] = courseOutlines((await getCollection('labs')).map(({ data }) => data));
-const href = course && `/${course.slug}/`;
+const href = course && academyPage(course.slug);
 const title = course?.title ?? 'AI Engineering';
 ---
 

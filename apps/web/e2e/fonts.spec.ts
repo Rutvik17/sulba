@@ -6,7 +6,7 @@ test('text is set in Geist, served by the site itself', async ({ page }) => {
     if (response.request().resourceType() === 'font') fonts.push(response.url());
   });
 
-  await page.goto('/');
+  await page.goto('/academy/');
   const loaded = await page.evaluate(async () => {
     await document.fonts.ready;
     return [...document.fonts]

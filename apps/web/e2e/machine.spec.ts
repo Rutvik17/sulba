@@ -7,7 +7,7 @@ import { signedIn, standIn } from './supabase';
 // The fixture course's lab Ledger runs on the learner's machine (decision record 28): its stages,
 // balance, audit, close, statement, receipt and invoice, run from its download, and the runner's
 // links mark them done here.
-const path = '/demo/ledgers/ledger/';
+const path = '/academy/demo/ledgers/ledger/';
 
 /** A link from the runner to the lab's page, carrying `payload` as sulba.py writes it. */
 function linkOf(payload: object): string {
@@ -168,7 +168,7 @@ test('its download holds the project, the runner, its stages and the first stage
   expect(text('sulba.py')).toContain('uv run sulba.py next');
   const lab = JSON.parse(text('.sulba/lab.json'));
   expect(lab).toMatchObject({ format: 1, id: 'lab_demo03', start: 0 });
-  expect(lab.page).toMatch(/\/demo\/ledgers\/ledger\/$/);
+  expect(lab.page).toMatch(/\/academy\/demo\/ledgers\/ledger\/$/);
   // The runner fetches the lab's larger files itself, so the zip doesn't carry them.
   expect(lab.data).toEqual(['data/entries.csv']);
   expect(lab.fetch).toEqual([

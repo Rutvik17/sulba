@@ -1,0 +1,10 @@
+# The learning site's pages moved under /academy/, and their old addresses lead to them for good,
+# with the query and fragment they came with: a lab's download prints a link to its page, whose
+# fragment carries the stages done on the learner's machine.
+/review /academy/review/ 301
+/review/ /academy/review/ 301
+/ai-engineering /academy/ai-engineering/ 301
+/ai-engineering/* /academy/ai-engineering/:splat 301
+
+# The site's own address opens the Academy until it has a home page of its own.
+/ /academy/ 302

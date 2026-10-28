@@ -8,10 +8,11 @@
 
 import { getCollection } from 'astro:content';
 import { buttonClass } from '@sulba/ui/button';
-import SectionHeading from '../../components/SectionHeading.astro';
-import Page from '../../layouts/Page.astro';
-import { type CourseOutline, courseOutlines } from '../../lib/course';
-import { aboutTime, labFacts, levelFacts, minutesOf, moduleFacts } from '../../lib/lab-facts';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import Page from '../../../layouts/Page.astro';
+import { academyPage } from '../../../lib/academy';
+import { type CourseOutline, courseOutlines } from '../../../lib/course';
+import { aboutTime, labFacts, levelFacts, minutesOf, moduleFacts } from '../../../lib/lab-facts';
 
 export async function getStaticPaths() {
   const labs = (await getCollection('labs')).map(({ data }) => data);
@@ -38,7 +39,7 @@ const chevron = 'M4 6l4 4 4-4';
       <div class="nextText">
         <p class="label">Next lab</p>
         <p class="nextTitle">
-          <a href={`/${firstLab.path}/`} data-next-link>
+          <a href={academyPage(firstLab.path)} data-next-link>
             {firstLab.title}
           </a>
         </p>
@@ -144,7 +145,7 @@ const chevron = 'M4 6l4 4 4-4';
             <ul class="titles" aria-label={`Labs in ${module.title}`}>
               {module.labs.map((lab) => (
                 <li>
-                  <a href={`/${lab.path}/`} data-title-of={lab.path}>
+                  <a href={academyPage(lab.path)} data-title-of={lab.path}>
                     {lab.title}
                   </a>
                 </li>
@@ -164,7 +165,7 @@ const chevron = 'M4 6l4 4 4-4';
                     </span>
                     <div class="labText">
                       <h4>
-                        <a href={`/${lab.path}/`}>{lab.title}</a>
+                        <a href={academyPage(lab.path)}>{lab.title}</a>
                       </h4>
                       <p class="summary">{lab.summary}</p>
                       <dl class="labFacts">
@@ -191,7 +192,7 @@ const chevron = 'M4 6l4 4 4-4';
 <script>
 import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
 import { hasSession, localStore } from '@sulba/data/session';
-import { kept } from '../../workspace/storage';
+import { kept } from '../../../workspace/storage';
 
 const levels = [...document.querySelectorAll<HTMLElement>('[data-level]')];
 const modules = [...document.querySelectorAll<HTMLElement>('[data-module]')];

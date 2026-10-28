@@ -6,7 +6,7 @@ import { signedIn, standIn, supabase } from './supabase';
 // and the optional module Interviews, with the lab Pairs and its one Problem stage and the lab Poll
 // design and its one Design stage, and whose level Second has the module Ledgers, with the lab
 // Ledger and its 6 stages, which runs on the learner's machine.
-const path = '/demo/';
+const path = '/academy/demo/';
 const stages = ['stg_demo01', 'stg_demo02', 'stg_demo03', 'stg_demo04'];
 const ledger = ['stg_demo06', 'stg_demo07', 'stg_demo08', 'stg_demo09', 'stg_demo11', 'stg_demo12'];
 
@@ -54,7 +54,7 @@ test("a course's page lists its levels, with their facts, and their modules, clo
     level(page)
       .getByRole('list', { name: 'Labs in Counting' })
       .getByRole('link', { name: 'Tallies' }),
-  ).toHaveAttribute('href', '/demo/counting/tallies/');
+  ).toHaveAttribute('href', '/academy/demo/counting/tallies/');
   await expect(
     page.getByText("Count the votes in a small poll, then work out each choice's share."),
   ).toBeHidden();
@@ -76,7 +76,7 @@ test('a module opens to its labs, with what each builds, its stages and its time
   await expect(tallies(page).getByRole('definition')).toHaveText(facts);
   await expect(tallies(page).getByRole('link', { name: 'Tallies' })).toHaveAttribute(
     'href',
-    '/demo/counting/tallies/',
+    '/academy/demo/counting/tallies/',
   );
   await expect(level(page).getByRole('list', { name: 'Labs in Counting' })).toBeHidden();
 
@@ -113,7 +113,7 @@ test("a new learner's next lab is the course's first", async ({ page }) => {
   await page.goto(path);
   await expect(next(page).getByRole('link', { name: 'Tallies' })).toHaveAttribute(
     'href',
-    '/demo/counting/tallies/',
+    '/academy/demo/counting/tallies/',
   );
   await expect(next(page)).toContainText('Module 1 · Counting · About 40 minutes');
   await expect(next(page)).toContainText('Start');
@@ -142,7 +142,7 @@ test("after a lab that's done, the next lab is the one after it, past an optiona
 
   await expect(next(page).getByRole('link', { name: 'Ledger' })).toHaveAttribute(
     'href',
-    '/demo/ledgers/ledger/',
+    '/academy/demo/ledgers/ledger/',
   );
   await expect(next(page)).toContainText('Module 1 · Ledgers · About 60 minutes');
   // The module's row, under its title.
@@ -159,7 +159,7 @@ test("an optional module's lab is next once one of its labs is started", async (
 
   await expect(next(page).getByRole('link', { name: 'Poll design' })).toHaveAttribute(
     'href',
-    '/demo/interviews/poll-design/',
+    '/academy/demo/interviews/poll-design/',
   );
   await expect(next(page)).toContainText('Module 2 · Interviews · About 30 minutes');
 });
@@ -170,7 +170,7 @@ test("with every other lab done, an optional module's first lab is next", async 
 
   await expect(next(page).getByRole('link', { name: 'Pairs' })).toHaveAttribute(
     'href',
-    '/demo/interviews/pairs/',
+    '/academy/demo/interviews/pairs/',
   );
   await expect(next(page)).toContainText('Module 2 · Interviews · About 20 minutes');
 });
@@ -197,7 +197,7 @@ test('signed in, the stages passed on other devices count too', async ({ page })
 test('the home page links the course, and a lab page links back to its module, open', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/academy/');
   const card = page.getByRole('region', { name: 'Courses' }).getByRole('link', { name: 'Demo' });
   await expect(card).toHaveAttribute('href', path);
   await card.click();
@@ -207,9 +207,9 @@ test('the home page links the course, and a lab page links back to its module, o
     .getByRole('list', { name: 'Labs in Counting' })
     .getByRole('link', { name: 'Tallies' })
     .click();
-  await expect(page).toHaveURL('/demo/counting/tallies/');
+  await expect(page).toHaveURL('/academy/demo/counting/tallies/');
   await page.getByRole('link', { name: 'First · Counting' }).click();
-  await expect(page).toHaveURL('/demo/#counting');
+  await expect(page).toHaveURL('/academy/demo/#counting');
   await expect(counting(page)).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('heading', { level: 3, name: /Counting/ })).toBeInViewport();
 });

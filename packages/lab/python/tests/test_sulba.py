@@ -211,7 +211,7 @@ def folder(tmp_path: Path) -> Path:
         "format": 1,
         "id": "lab_tally1",
         "title": "Tallies",
-        "page": "https://sulba.dev/demo/counting/tallies/",
+        "page": "https://sulba.dev/academy/demo/counting/tallies/",
         "start": 0,
         "data": ["data/votes.csv"],
         "given": [],
@@ -299,7 +299,7 @@ def test_the_next_stage_goes_below_the_learners_code(folder: Path) -> None:
     ran = command(folder, "next")
     assert ran.returncode == 0
     assert "Stage 2 of 4: Share" in ran.stdout
-    assert "https://sulba.dev/demo/counting/tallies/?stage=share" in ran.stdout
+    assert "https://sulba.dev/academy/demo/counting/tallies/?stage=share" in ran.stdout
     expected = SOLUTIONS["stg_count1"].rstrip() + "\n\n\n" + STAGES[1]["starter"]
     assert (folder / "tally.py").read_text(encoding="utf-8") == expected
     assert progress(folder)["stage"] == 1
@@ -759,13 +759,13 @@ def test_a_size_is_shown_in_decimal_units() -> None:
 # A link from the runner, which the lab's page reads in its own tests
 # (apps/web/src/workspace/link.test.ts).
 LINK = (
-    "https://sulba.dev/demo/counting/tallies/"
+    "https://sulba.dev/academy/demo/counting/tallies/"
     "#run=jZDPasMwDMbfRWd7WK7zz8-x00IIsmN3AycpidNRSt69dnbpIYcJ8YEk0PeTnuDnZaQIGhkEMqCz9pFCeCAwuNG6ugH0E9Z47e28TRFBT1sI7Ogs7v7jfvPc0nb9TntaiGvs3RHQpQ3LbIIbV9By3xlQjG68xVS2LQhTeemV48VwsVw5JN5QIXllSy-cHGqDGeLNiME9d5ZtAtYiwy6r7NhBpCQDKWTJUXCsP7HUQqT8EEJ8wfsocbVQkLDVIA1vnEKufEm8tpeBS4NO-IYShDo1zz-BP8dD_nc7q8_g6jO4bn8B"
 )
 
 
 def test_a_link_holds_what_the_page_reads() -> None:
-    lab = {"id": "lab_tally1", "page": "https://sulba.dev/demo/counting/tallies/"}
+    lab = {"id": "lab_tally1", "page": "https://sulba.dev/academy/demo/counting/tallies/"}
     attempts = [
         [
             "0b7f2f4e-5d3c-4e1a-9a52-7c6f0e2d8b11",
@@ -799,13 +799,13 @@ def test_a_link_holds_what_the_page_reads() -> None:
     # DEFLATE's bytes can differ from one build of zlib to another, so the links match in what they
     # carry.
     address = sulba.link(lab, state)
-    assert address.startswith("https://sulba.dev/demo/counting/tallies/#run=")
+    assert address.startswith("https://sulba.dev/academy/demo/counting/tallies/#run=")
     assert carried(address) == carried(LINK)
     assert carried(LINK) == {"format": 1, "lab": "lab_tally1", **state}
 
 
 def test_a_link_holds_the_newest_attempts_that_fit() -> None:
-    lab = {"id": "lab_tally1", "page": "https://sulba.dev/demo/counting/tallies/"}
+    lab = {"id": "lab_tally1", "page": "https://sulba.dev/academy/demo/counting/tallies/"}
     ids = random.Random(0)
     runs = [
         [

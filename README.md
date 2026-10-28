@@ -11,7 +11,7 @@ pnpm install
 pnpm dev
 ```
 
-The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production, and http://localhost:4321/gallery/ shows every component in each of its states. Sign-in uses the hosted Supabase project, which sends a sign-in back to loopback addresses but not to `localhost` by name, so open http://127.0.0.1:4321 to sign in while developing. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
+The site runs at http://localhost:4321 in workerd, the runtime Cloudflare uses in production, with the Academy at http://localhost:4321/academy/, and http://localhost:4321/gallery/ shows every component in each of its states. `pnpm dev` doesn't apply `apps/web/public/_redirects`, so `/` and the Academy's old addresses answer 404 there; `pnpm build`, then `pnpm --filter @sulba/web preview`, serves the built site with them. Sign-in uses the hosted Supabase project, which sends a sign-in back to loopback addresses but not to `localhost` by name, so open http://127.0.0.1:4321 to sign in while developing. The contact form sends mail only with its four secrets in a gitignored `apps/web/.dev.vars` ([decision record 12](docs/decisions/0012-send-contact-messages-through-resend-after-turnstile.md)); without them it answers that it can't send.
 
 | Command | What it does |
 | --- | --- |
