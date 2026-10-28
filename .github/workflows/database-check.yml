@@ -3,7 +3,8 @@ name: Hosted database
 # The hosted Supabase project is on the free plan, which pauses a project after a week with too
 # little use; a few requests to the database each day keep it running
 # (https://supabase.com/docs/guides/platform/free-project-pausing). Each day this asks for every
-# learner table without signing in, and the database must refuse each request.
+# table of learners' and workspaces' data without signing in, and the database must refuse each
+# request.
 on:
   schedule:
     - cron: '23 5 * * *'
@@ -13,7 +14,7 @@ permissions: {}
 
 jobs:
   check:
-    name: Learner tables refuse visitors who aren't signed in
+    name: Tables refuse visitors who aren't signed in
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     env:
@@ -21,12 +22,15 @@ jobs:
       SUPABASE_URL: https://cqsfhuxtpkzvlemqkqoa.supabase.co
       SUPABASE_PUBLISHABLE_KEY: sb_publishable_Ra21s8nwLu6-iB6LRLYeCA_q_dU74OB
     steps:
-      - name: Ask for each learner table
+      - name: Ask for each table
         run: |
-          for table in attempts progress study_days reviews; do
+          # Each table, and a column of it to ask for.
+          for check in attempts:learner_id progress:learner_id study_days:learner_id \
+            reviews:learner_id people:id workspaces:id members:person_id invitations:id events:id; do
+            table=${check%%:*}
             answer=$(curl --silent --show-error --retry 3 --max-time 30 --write-out '\n%{http_code}' \
               --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \
-              "$SUPABASE_URL/rest/v1/$table?select=learner_id&limit=1")
+              "$SUPABASE_URL/rest/v1/$table?select=${check#*:}&limit=1")
             status=${answer##*$'\n'}
             body=${answer%$'\n'*}
             printf '%s: HTTP %s %s\n' "$table" "$status" "$body"

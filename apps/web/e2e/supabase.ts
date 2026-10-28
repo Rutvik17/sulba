@@ -56,6 +56,8 @@ export interface Held {
   readonly studyDays?: { day: string; seconds: number }[];
   /** The reviews given on other devices. */
   readonly reviews?: { id: string; card_id: string; rating: number; reviewed_at: string }[];
+  /** Whether the account is the only owner of a workspace others are in, so can't be closed. */
+  readonly onlyOwner?: boolean;
 }
 
 /**
@@ -64,7 +66,7 @@ export interface Held {
  */
 export async function standIn(
   page: Page,
-  { passed = [], studyDays = [], reviews = [] }: Held = {},
+  { passed = [], studyDays = [], reviews = [], onlyOwner = false }: Held = {},
 ): Promise<Calls> {
   const calls: Calls = { authorize: [], attempts: [], reviews: [], logouts: 0, closed: 0 };
   const answer = (status: number, body?: unknown) => ({
@@ -117,7 +119,18 @@ export async function standIn(
     return route.fulfill(answer(201));
   });
   await page.route(`${supabase}/rest/v1/rpc/close_account**`, (route) => {
-    if (route.request().method() !== 'OPTIONS') calls.closed++;
+    if (route.request().method() === 'OPTIONS') return route.fulfill(answer(204));
+    if (onlyOwner) {
+      return route.fulfill(
+        answer(400, {
+          code: '23514',
+          message: 'Make someone else an owner of each workspace you own first',
+          details: null,
+          hint: null,
+        }),
+      );
+    }
+    calls.closed++;
     return route.fulfill(answer(204));
   });
   return calls;

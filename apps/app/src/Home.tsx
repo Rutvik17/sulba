@@ -1,58 +1,55 @@
-import type { Learner } from '@sulba/data/account';
-import { hasSession, localStore } from '@sulba/data/session';
-import { Button, buttonClass } from '@sulba/ui/button';
+import { roleNames } from '@sulba/data/workspaces';
+import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
-import { useEffect, useState } from 'react';
+import { Link, Navigate } from '@tanstack/react-router';
+import { useAccount, useSignOut } from './account';
+import { Centered } from './Centered';
 import styles from './Home.module.css';
-import { appPath, signInPath } from './session';
+import { lastWorkspace } from './last';
+import { NewWorkspace } from './NewWorkspace';
+import { useWorkspaces } from './queries';
 
-const css = classes(styles, 'page', 'title', 'note');
+const css = classes(styles, 'list', 'row', 'name', 'meta', 'foot', 'who');
 
-type Visitor = { state: 'loading' } | { state: 'out' } | { state: 'in'; learner: Learner };
-
-/** supabase-js and the account's helpers, loaded once the browser holds a session. */
-const account = () => Promise.all([import('@sulba/data/account'), import('./supabase')]);
-
-/** The app's first page: a way to sign in, or who is signed in. */
+/**
+ * The app's front door for someone signed in: back to the workspace they opened last, straight
+ * into their only one, a list to pick from, or, with none yet, a form to create one.
+ */
 export function Home() {
-  const [visitor, setVisitor] = useState<Visitor>(() =>
-    hasSession(localStore()) ? { state: 'loading' } : { state: 'out' },
-  );
+  const { data: workspaces } = useWorkspaces();
+  const { email } = useAccount();
+  const signOut = useSignOut();
 
-  useEffect(() => {
-    if (visitor.state !== 'loading') return;
-    account()
-      .then(([{ currentLearner }, { supabase }]) => currentLearner(supabase()))
-      .then((learner) => setVisitor(learner ? { state: 'in', learner } : { state: 'out' }))
-      .catch(() => setVisitor({ state: 'out' }));
-  }, [visitor.state]);
+  const last = lastWorkspace();
+  const next =
+    workspaces.find(({ slug }) => slug === last) ??
+    (workspaces.length === 1 ? workspaces[0] : undefined);
+  if (next) return <Navigate to="/$slug" params={{ slug: next.slug }} replace />;
+  if (workspaces.length === 0) return <NewWorkspace />;
 
-  if (visitor.state === 'loading') return null;
-  if (visitor.state === 'out') {
-    return (
-      <section className={css.page}>
-        <h1 className={css.title}>Sign in to Sulba</h1>
-        <p className={css.note}>Sign in with GitHub or Google.</p>
-        <a className={buttonClass('primary', 'regular')} href={signInPath(appPath)}>
-          Sign in
-        </a>
-      </section>
-    );
-  }
   return (
-    <section className={css.page}>
-      <h1 className={css.title}>Sulba</h1>
-      <p className={css.note}>Signed in as {visitor.learner.email ?? 'you'}.</p>
-      <Button
-        variant="outline"
-        onPress={async () => {
-          const [{ signOut }, { supabase }] = await account();
-          await signOut(supabase());
-          setVisitor({ state: 'out' });
-        }}
-      >
-        Sign out
-      </Button>
-    </section>
+    <Centered title="Your workspaces">
+      <ul className={css.list}>
+        {workspaces.map(({ slug, name, role }) => (
+          <li key={slug}>
+            <Link to="/$slug" params={{ slug }} className={css.row}>
+              <span className={css.name}>{name}</span>
+              <span className={css.meta}>
+                sulba.dev/app/{slug} · {roleNames[role]}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className={css.foot}>
+        <Link to="/new">Create a workspace</Link>
+        <span className={css.who}>
+          {email ? `Signed in as ${email}` : null}
+          <Button variant="ghost" size="small" onPress={() => void signOut()}>
+            Sign out
+          </Button>
+        </span>
+      </div>
+    </Centered>
   );
 }

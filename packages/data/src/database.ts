@@ -61,6 +61,166 @@ export type Database = {
         };
         Relationships: [];
       };
+      events: {
+        Row: {
+          action: string;
+          actor_client: string | null;
+          actor_id: string | null;
+          actor_kind: Database['public']['Enums']['actor_kind'];
+          at: string;
+          changes: NonNullable<Json>;
+          id: number;
+          subject_id: string;
+          subject_type: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: string;
+          actor_client?: string | null;
+          actor_id?: string | null;
+          actor_kind: Database['public']['Enums']['actor_kind'];
+          at?: string;
+          changes?: NonNullable<Json>;
+          id?: never;
+          subject_id: string;
+          subject_type: string;
+          workspace_id: string;
+        };
+        Update: {
+          action?: string;
+          actor_client?: string | null;
+          actor_id?: string | null;
+          actor_kind?: Database['public']['Enums']['actor_kind'];
+          at?: string;
+          changes?: NonNullable<Json>;
+          id?: never;
+          subject_id?: string;
+          subject_type?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'events_actor_id_fkey';
+            columns: ['actor_id'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'events_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      invitations: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          expires_at: string;
+          id: string;
+          role: Database['public']['Enums']['workspace_role'];
+          token_hash: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          id?: string;
+          role: Database['public']['Enums']['workspace_role'];
+          token_hash: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['workspace_role'];
+          token_hash?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'invitations_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'invitations_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      members: {
+        Row: {
+          joined_at: string;
+          person_id: string;
+          role: Database['public']['Enums']['workspace_role'];
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          joined_at?: string;
+          person_id: string;
+          role: Database['public']['Enums']['workspace_role'];
+          workspace_id: string;
+        };
+        Update: {
+          joined_at?: string;
+          person_id?: string;
+          role?: Database['public']['Enums']['workspace_role'];
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'members_person_id_fkey';
+            columns: ['person_id'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'members_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      people: {
+        Row: {
+          email: string | null;
+          id: string;
+          name: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          email?: string | null;
+          id: string;
+          name?: string;
+          updated_at?: string;
+        };
+        Update: {
+          email?: string | null;
+          id?: string;
+          name?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       progress: {
         Row: {
           caught: string[] | null;
@@ -148,15 +308,75 @@ export type Database = {
         };
         Relationships: [];
       };
+      workspaces: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          slug: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          slug: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          slug?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      accept_invitation: { Args: { token: string }; Returns: string };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      create_invitation: {
+        Args: { role: Database['public']['Enums']['workspace_role']; workspace: string };
+        Returns: string;
+      };
+      create_workspace: {
+        Args: { name: string; slug: string };
+        Returns: {
+          created_at: string;
+          id: string;
+          name: string;
+          slug: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'workspaces';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      delete_workspace: { Args: { workspace: string }; Returns: undefined };
+      invitation: {
+        Args: { token: string };
+        Returns: {
+          role: Database['public']['Enums']['workspace_role'];
+          workspace_name: string;
+        }[];
+      };
+      remove_member: { Args: { person: string; workspace: string }; Returns: undefined };
+      set_member_role: {
+        Args: {
+          person: string;
+          role: Database['public']['Enums']['workspace_role'];
+          workspace: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
-      [_ in never]: never;
+      actor_kind: 'person' | 'agent' | 'github' | 'system';
+      workspace_role: 'viewer' | 'member' | 'admin' | 'owner';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -271,6 +491,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      actor_kind: ['person', 'agent', 'github', 'system'],
+      workspace_role: ['viewer', 'member', 'admin', 'owner'],
+    },
   },
 } as const;

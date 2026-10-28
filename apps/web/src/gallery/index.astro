@@ -7,6 +7,7 @@ import { segmentedClass } from '@sulba/ui/segmented';
 import SectionHeading from '../components/SectionHeading.astro';
 import Page from '../layouts/Page.astro';
 import ChartDemo from './ChartDemo';
+import DialogDemo from './DialogDemo';
 import DockerfileEditorDemo from './DockerfileEditorDemo';
 import EditorDemo from './EditorDemo';
 import formulas from './formulas.md?raw';
@@ -16,8 +17,10 @@ import PanelDemo from './PanelDemo';
 import PressCount from './PressCount';
 import ReadOnlyEditorDemo from './ReadOnlyEditorDemo';
 import SegmentedDemo from './SegmentedDemo';
+import SelectDemo from './SelectDemo';
 import SliderDemo from './SliderDemo';
 import TabsDemo from './TabsDemo';
+import TextFieldDemo from './TextFieldDemo';
 import TypeScriptEditorDemo from './TypeScriptEditorDemo';
 
 // Formulas as a lab's prose shows them, made by the same renderer when the site is built.
@@ -131,6 +134,36 @@ const buttons = [
       <h3>In a React island</h3>
       <div class="island">
         <MenuDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="textfield">
+    <SectionHeading id="textfield" text="Text field" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="fields">
+        <TextFieldDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="select">
+    <SectionHeading id="select" text="Select" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <SelectDemo client:load />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="dialog">
+    <SectionHeading id="dialog" text="Dialog" />
+    <div class="row">
+      <h3>In a React island</h3>
+      <div class="island">
+        <DialogDemo client:load />
       </div>
     </div>
   </section>
@@ -267,6 +300,12 @@ h3 {
   display: grid;
   gap: var(--space-6);
   max-width: 360px;
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 400px;
 }
 
 .charts {

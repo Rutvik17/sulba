@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { islandsHydrated } from './islands';
 import { signedIn, standIn, supabase } from './supabase';
+import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -75,6 +76,34 @@ for (const scheme of ['dark', 'light'] as const) {
 
     expect(results.violations).toEqual([]);
   });
+
+  for (const [path, heading] of [
+    ['/app/acme/members', 'Members'],
+    ['/app/acme/settings', 'Settings'],
+    ['/app/new', 'Create a workspace'],
+  ] as const) {
+    test(`the app's ${path} has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+      page,
+    }) => {
+      await standIn(page);
+      await standInTeam(
+        page,
+        team({
+          workspaces: [acme],
+          members: [member(acme, ada, 'owner'), member(acme, ben, 'member')],
+          invitations: [link(acme, 'd'.repeat(64))],
+        }),
+      );
+      await signedIn(page);
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto(path);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+
+      const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
+
+      expect(results.violations).toEqual([]);
+    });
+  }
 
   test(`a course page with a lab's stages done has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
     page,

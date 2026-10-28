@@ -39,8 +39,9 @@ import Page from '../layouts/Page.astro';
       </div>
       <div class="confirm" data-confirm hidden>
         <p>
-          Close your account? This deletes it and everything it recorded, and can't be undone. What
-          this browser keeps on its own, such as your code, stays here.
+          Close your account? This deletes it, everything it recorded and any workspace you're the
+          only member of, and can't be undone. What this browser keeps on its own, such as your
+          code, stays here.
         </p>
         <div class="actions">
           <button class={buttonClass('primary')} type="button" data-close-confirm>
@@ -62,7 +63,7 @@ import Page from '../layouts/Page.astro';
 
 <script>
 import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from 'astro:env/client';
-import { closeAccount, currentLearner, providers, signOut } from '@sulba/data/account';
+import { closeAccount, currentLearner, OnlyOwner, providers, signOut } from '@sulba/data/account';
 import { connect } from '@sulba/data/client';
 import { localDay, Outbox } from '@sulba/data/outbox';
 import { localStore } from '@sulba/data/session';
@@ -219,12 +220,16 @@ find('[data-close-confirm]')?.addEventListener('click', async () => {
   busy(true);
   say('');
   try {
-    outbox.clear();
     await closeAccount(client);
+    outbox.clear();
     showSignedOut();
     say('Your account is closed, and everything it recorded is deleted.');
-  } catch {
-    say("Couldn't close your account. Check your connection, then try again.");
+  } catch (error) {
+    say(
+      error instanceof OnlyOwner
+        ? "You're the only owner of a workspace that has other people in it. Make one of them an owner in the app, then close your account."
+        : "Couldn't close your account. Check your connection, then try again.",
+    );
   } finally {
     busy(false);
   }

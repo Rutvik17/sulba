@@ -1,13 +1,81 @@
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  type ErrorComponentProps,
+  Outlet,
+  redirect,
+} from '@tanstack/react-router';
+import { type ReactNode, Suspense } from 'react';
+import { RequireAccount } from './account';
+import { Failed, NotFound } from './fallbacks';
 import { Home } from './Home';
-import { Layout } from './Layout';
-import { NotFound } from './NotFound';
+import { Join } from './Join';
+import { Members } from './Members';
+import { NewWorkspace } from './NewWorkspace';
+import { Settings } from './Settings';
+import { Shell } from './Shell';
+import { SignIn } from './SignIn';
 
-const root = createRootRoute({ component: Layout, notFoundComponent: NotFound });
-const home = createRoute({ getParentRoute: () => root, path: '/', component: Home });
+/** A page for someone signed in. A page waits for what it reads without showing a spinner. */
+const signedIn = (page: () => ReactNode) => () => (
+  <RequireAccount signIn={<SignIn />}>
+    <Suspense fallback={null}>{page()}</Suspense>
+  </RequireAccount>
+);
+
+const root = createRootRoute({
+  component: Outlet,
+  notFoundComponent: NotFound,
+  errorComponent: ({ error, reset }: ErrorComponentProps) => <Failed error={error} retry={reset} />,
+});
+
+const home = createRoute({
+  getParentRoute: () => root,
+  path: '/',
+  component: signedIn(() => <Home />),
+});
+const create = createRoute({
+  getParentRoute: () => root,
+  path: '/new',
+  component: signedIn(() => <NewWorkspace />),
+});
+const join = createRoute({ getParentRoute: () => root, path: '/join/$token', component: Join });
+
+const workspace = createRoute({
+  getParentRoute: () => root,
+  path: '/$slug',
+  component: signedIn(() => <Shell />),
+});
+const opened = createRoute({
+  getParentRoute: () => workspace,
+  path: '/',
+  beforeLoad: ({ params }) => {
+    throw redirect({ to: '/$slug/members', params, replace: true });
+  },
+});
+const members = createRoute({
+  getParentRoute: () => workspace,
+  path: '/members',
+  component: Members,
+});
+const settings = createRoute({
+  getParentRoute: () => workspace,
+  path: '/settings',
+  component: Settings,
+});
 
 /** The app's pages, under /app/ on the site. */
-export const router = createRouter({ routeTree: root.addChildren([home]), basepath: '/app' });
+export const router = createRouter({
+  routeTree: root.addChildren([
+    home,
+    create,
+    join,
+    workspace.addChildren([opened, members, settings]),
+  ]),
+  basepath: '/app',
+  defaultPreload: 'intent',
+});
 
 declare module '@tanstack/react-router' {
   interface Register {

@@ -39,11 +39,12 @@ Before the first `pnpm test:e2e`, install the browsers with `pnpm --filter @sulb
 | Path | Contents |
 | --- | --- |
 | `apps/web` | The site: Astro on Cloudflare Workers |
+| `apps/app` | The app, which the site serves at `/app/`: React with Vite and TanStack Router |
 | `packages/ui` | Design tokens, base styles and components |
 | `packages/editor` | The code editor |
 | `packages/lab` | Runs a session's tests: in the browser with Pyodide, or in CPython |
 | `packages/content` | Reads and checks the courses |
-| `packages/data` | The database, its migrations and tests, and the site's connection to Supabase |
+| `packages/data` | The database, its migrations and tests, and the site's and the app's connection to Supabase |
 | `brand` | Profile pictures and banners for Sulba's accounts on other sites |
 | `courses` | Course content, laid out as [its README](courses/README.md) describes |
 | `tools` | Scripts that build course data |
