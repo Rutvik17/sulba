@@ -13,7 +13,7 @@ const providers = [
   {
     name: 'GitHub, Inc.',
     href: 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement',
-    does: 'Confirms who you are when you sign in with GitHub',
+    does: 'Confirms who you are when you sign in with GitHub, and signs the token a workflow run sends its test results with',
     where: 'United States',
   },
   {
@@ -177,6 +177,17 @@ const providers = [
       name and email address of each person in it, and its history. An invitation link lets anyone
       who has it join, until it's revoked or 7 days pass; we keep only a scrambled form of it, from
       which the link can't be worked out.
+    </li>
+    <li>
+      <strong>Your workspace's test results.</strong>{' '}
+      A workspace's admins can add its GitHub repositories. A workflow in one of them can then send
+      the test results of each run on the repository's branch, with a token GitHub makes for the
+      run, which we check and don't keep. For each run we keep the repository, the branch, the
+      commit, the workflow's name and the run's number, and how many tests passed, failed and were
+      skipped. For each test whose name holds a criterion's ID, we keep its name, its file, how it
+      ended, and the first 500 characters of what a failure said. We keep the last 20 runs of each
+      suite of tests. A run on any other branch is answered and not kept. Everyone in the workspace
+      sees them, and removing a repository deletes its runs.
     </li>
     <li>
       <strong>In your browser.</strong>{' '}

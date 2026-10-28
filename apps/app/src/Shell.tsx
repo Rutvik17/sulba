@@ -71,6 +71,9 @@ export function Shell() {
             >
               Specs
             </Link>
+            <Link to="/$slug/evidence" params={{ slug }} className={css.link}>
+              Evidence
+            </Link>
             <Link to="/$slug/members" params={{ slug }} className={css.link}>
               Members
             </Link>

@@ -173,6 +173,74 @@ button.text {
   white-space: nowrap;
 }
 
+/* What a criterion's tests showed, under it and as wide as the row. */
+.suspect,
+.tests {
+  grid-column: 1 / -1;
+  font-size: var(--text-sm);
+}
+
+.suspect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--dim);
+  line-height: var(--leading);
+}
+
+.tests summary {
+  width: fit-content;
+  color: var(--dim);
+  cursor: pointer;
+}
+
+.tests ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.test {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  line-height: var(--leading);
+}
+
+.test code {
+  overflow-wrap: anywhere;
+}
+
+.where,
+.message {
+  grid-column: 2;
+  min-width: 0;
+  color: var(--dim);
+  overflow-wrap: anywhere;
+}
+
+.message {
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.outcome {
+  color: var(--dim);
+}
+
+.outcome[data-outcome="passed"] {
+  color: var(--ok);
+}
+
+.outcome[data-outcome="failed"] {
+  color: var(--bad);
+}
+
 .tools {
   display: inline-flex;
   gap: var(--space-1);

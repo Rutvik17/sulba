@@ -103,6 +103,12 @@
   white-space: nowrap;
 }
 
+/* A cell of running text, which wraps where the others don't. */
+.table td.wrap {
+  min-width: 240px;
+  white-space: normal;
+}
+
 .actions {
   text-align: right;
   white-space: nowrap;
@@ -164,4 +170,45 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+/* Numbered steps, each a sentence and what to paste. */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding-left: var(--space-6);
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.step p {
+  margin: 0;
+}
+
+/* Code to paste. A long line wraps on a narrow screen, so the box never scrolls; Copy gives the
+   code as written. */
+.code {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
 }

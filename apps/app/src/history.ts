@@ -39,6 +39,9 @@ export function whatOf(change: Change, context: Context): string {
     const which = number ? criterionKey(context.spec, number) : 'a criterion';
     if (change.action === 'criterion.created') return `added ${which}`;
     if (change.action === 'criterion.deleted') return `removed ${which}`;
+    if (!('text' in change.changes) && after(change, 'suspect_since') === null) {
+      return `confirmed that ${which}’s tests check its wording`;
+    }
     return `reworded ${which}`;
   }
   if (change.action === 'spec.created') return 'wrote the spec';

@@ -1,0 +1,33 @@
+/* A proof's word, with a dot in its colour: proven in the good colour, failing in the bad one. */
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.mark::before {
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  content: "";
+}
+
+.proven {
+  color: var(--ok);
+}
+
+.proven::before,
+.failing::before {
+  background: currentcolor;
+}
+
+.failing {
+  color: var(--bad);
+}
+
+.unproven {
+  color: var(--dim);
+}

@@ -192,6 +192,14 @@ export async function standInTeam(page: Page, held: Team): Promise<TeamCalls> {
     return answer(route, 200, rows);
   });
 
+  // A workspace with no evidence yet: no repositories, no reports and no proofs. The evidence
+  // stand-in, registered later, answers these when a test needs them.
+  await page.route(
+    /\/rest\/v1\/(repositories|test_reports|criterion_proofs|spec_proofs|latest_claims)/,
+    (route) =>
+      route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
+  );
+
   await page.route(`${supabase}/rest/v1/rpc/**`, (route) => {
     if (route.request().method() === 'OPTIONS') return answer(route, 204);
     const name = new URL(route.request().url()).pathname.split('/').at(-1) ?? '';

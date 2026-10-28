@@ -18,7 +18,8 @@ import { useAccount } from './account';
 import { ago, momentOf } from './format';
 import { Notice } from './Notice';
 import styles from './page.module.css';
-import { keys, useMembers, useSpecs } from './queries';
+import { specProofText } from './proofs';
+import { keys, useMembers, useSpecProofs, useSpecs } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
 
@@ -46,6 +47,7 @@ export function Specs() {
   useTitle('Specs', workspace.name);
   const { data: specs } = useSpecs(workspace);
   const { data: members } = useMembers(workspace);
+  const { data: proofs } = useSpecProofs(workspace);
   const [creating, setCreating] = useState(false);
   const canWrite = holds(workspace.role, 'member');
   const names = new Map(members.map((member) => [member.personId, member.name || member.email]));
@@ -82,6 +84,7 @@ export function Specs() {
                 <th scope="col">Title</th>
                 <th scope="col">Status</th>
                 <th scope="col">Criteria</th>
+                <th scope="col">Proof</th>
                 <th scope="col">Owner</th>
                 <th scope="col">Updated</th>
               </tr>
@@ -103,6 +106,9 @@ export function Specs() {
                     </td>
                     <td>{statusNames[spec.status]}</td>
                     <td className={css.numeric}>{spec.criteria}</td>
+                    <td className={css.numeric}>
+                      {proofs ? specProofText(proofs.get(spec.id)) : null}
+                    </td>
                     <td>
                       {spec.ownerId ? (
                         (names.get(spec.ownerId) ?? '')

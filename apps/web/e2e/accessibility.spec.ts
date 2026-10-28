@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
 import { criterion, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
@@ -81,6 +82,7 @@ for (const scheme of ['dark', 'light'] as const) {
   for (const [path, heading] of [
     ['/app/acme/specs', 'Specs'],
     ['/app/acme/SPEC-3', 'Retry failed payments'],
+    ['/app/acme/evidence', 'Evidence'],
     ['/app/acme/members', 'Members'],
     ['/app/acme/settings', 'Settings'],
     ['/app/new', 'Create a workspace'],
@@ -98,9 +100,46 @@ for (const scheme of ['dark', 'light'] as const) {
         }),
       );
       const written = spec(acme, 3, 'Retry failed payments', { body: '## Context\n\nCards fail.' });
-      await standInSpecs(page, {
-        specs: [written],
-        criteria: [criterion(written, 1, 'When a payment fails, the system shall retry it once')],
+      const retries = criterion(written, 1, 'When a payment fails, the system shall retry it once');
+      await standInSpecs(page, { specs: [written], criteria: [retries] });
+      // A failing criterion, so its tests show open with what the failure said.
+      const payments = repository(acme, 'acme-co/payments');
+      await standInEvidence(page, acme, {
+        repositories: [payments],
+        reports: [
+          {
+            id: 'r1',
+            repository: payments.name,
+            suite: 'unit',
+            sha,
+            runId: 1000,
+            tests: 3,
+            passed: 2,
+            failed: 1,
+            skipped: 0,
+          },
+        ],
+        proofs: [
+          {
+            criterion: retries.id,
+            spec: { id: written.id, number: 3, title: written.title },
+            number: 1,
+            text: retries.text,
+            passed: 0,
+            failed: 1,
+            skipped: 0,
+            suspectSince: null,
+          },
+        ],
+        claims: [
+          {
+            spec: 3,
+            criterion: 1,
+            name: 'test_SPEC_3_AC_1_retries',
+            outcome: 'failed',
+            message: 'assert 2 == 1',
+          },
+        ],
       });
       await signedIn(page);
       await page.emulateMedia({ colorScheme: scheme });

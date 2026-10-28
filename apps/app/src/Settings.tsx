@@ -18,6 +18,7 @@ import { forgetWorkspace } from './last';
 import { Notice } from './Notice';
 import styles from './page.module.css';
 import { keys } from './queries';
+import { Repositories, Sending } from './Repositories';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
 
@@ -35,8 +36,9 @@ const css = classes(
 );
 
 /**
- * The workspace's name and address, and leaving or deleting it. Admins rename it; only an owner
- * deletes it, after typing its name.
+ * The workspace's name and address, the repositories it takes test results from and how to send
+ * them, and leaving or deleting it. Admins rename it and add repositories; only an owner deletes
+ * it, after typing its name.
  */
 export function Settings() {
   const workspace = useWorkspace();
@@ -121,6 +123,9 @@ export function Settings() {
           ) : null}
         </form>
       </section>
+
+      <Repositories />
+      <Sending />
 
       <section className={css.section} aria-labelledby="leave">
         <h2 id="leave" className={css.heading}>

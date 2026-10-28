@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router';
 import { type ReactNode, Suspense } from 'react';
 import { RequireAccount } from './account';
+import { Evidence } from './Evidence';
 import { Failed, NotFound } from './fallbacks';
 import { Home } from './Home';
 import { Join } from './Join';
@@ -63,6 +64,11 @@ const spec = createRoute({
   path: '/$spec',
   component: lazyRouteComponent(() => import('./SpecPage'), 'SpecPage'),
 });
+const evidence = createRoute({
+  getParentRoute: () => workspace,
+  path: '/evidence',
+  component: Evidence,
+});
 const members = createRoute({
   getParentRoute: () => workspace,
   path: '/members',
@@ -80,7 +86,7 @@ export const router = createRouter({
     home,
     create,
     join,
-    workspace.addChildren([opened, specs, members, settings, spec]),
+    workspace.addChildren([opened, specs, evidence, members, settings, spec]),
   ]),
   basepath: '/app',
   defaultPreload: 'intent',
