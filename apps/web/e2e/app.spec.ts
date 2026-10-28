@@ -33,6 +33,18 @@ test('an address under /app/ is answered with the app, which says when it has no
   await expect(page).toHaveURL(/\/app\/$/);
 });
 
+test('the app’s files are served as they are, and a file it doesn’t have is not found', async ({
+  request,
+}) => {
+  const page = await (await request.get('/app/specs/42')).text();
+  const script = /src="(\/app\/assets\/[^"]+\.js)"/.exec(page)?.[1] ?? '';
+
+  const file = await request.get(script);
+  expect(file.status()).toBe(200);
+  expect(file.headers()['content-type']).toMatch(/^text\/javascript/);
+  expect((await request.get('/app/assets/missing.js')).status()).toBe(404);
+});
+
 test('someone in no workspace creates one, whose address follows its name, and becomes its owner', async ({
   page,
 }) => {

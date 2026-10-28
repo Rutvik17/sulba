@@ -5,7 +5,10 @@
   "compatibility_date": "2026-10-06",
   "assets": {
     "binding": "ASSETS",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    // The Worker answers the app's addresses with its page, and its files are served as they are
+    // (record 54).
+    "run_worker_first": ["/app/*", "!/app/assets/*"]
   },
   "routes": [{ "pattern": "sulba.dev", "custom_domain": true }],
   "workers_dev": false,

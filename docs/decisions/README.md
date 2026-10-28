@@ -50,12 +50,13 @@ Each record covers one decision: the context, the options compared, the evidence
 | [44. Mark a module optional, and leave it out of the next lab until it's started](0044-mark-a-module-optional-and-leave-it-off-the-next-lab.md) | Accepted |
 | [45. Run a machine lab's Java stages with a JDK and JUnit the runner pins](0045-run-a-machine-labs-java-stages-with-a-pinned-jdk-and-junit.md) | Accepted |
 | [46. Make Sulba where a team specifies its software, agents build it and its tests prove it](0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md) | Accepted |
-| [47. Build the app in React, drawn in the browser and served by the site's Worker under /app/](0047-build-the-app-in-react-served-by-the-sites-worker.md) | Accepted |
+| [47. Build the app in React, drawn in the browser and served by the site's Worker under /app/](0047-build-the-app-in-react-served-by-the-sites-worker.md) | Accepted, amended by 54 |
 | [48. Keep workspaces in shared tables guarded by row-level security, with a log of every change](0048-keep-workspaces-in-shared-tables-guarded-by-row-level-security.md) | Accepted |
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
 | [50. Prove criteria with the test reports a CI run sends, signed by GitHub](0050-prove-criteria-with-test-reports-a-ci-run-signs.md) | Accepted |
 | [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted |
 | [52. Approve specs by named reviewers, and ask them again when a spec changes](0052-approve-specs-by-named-reviewers-and-ask-again-on-change.md) | Accepted |
 | [53. Run every action from a command menu and from keys, built on React Aria](0053-run-every-action-from-a-command-menu-and-keys.md) | Accepted |
+| [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
