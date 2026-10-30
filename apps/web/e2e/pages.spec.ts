@@ -160,6 +160,16 @@ test('pages ask search engines not to index them before launch', async ({ reques
   expect(response.headers()['x-robots-tag']).toBe('noindex');
 });
 
+test('no other site can show a page in a frame, the app’s pages included', async ({ request }) => {
+  for (const path of ['/academy/', '/app/oauth/consent?authorization_id=x']) {
+    const response = await request.get(path, {
+      headers: { 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Dest': 'document' },
+    });
+    expect(response.headers()['x-frame-options'], path).toBe('DENY');
+    expect(response.headers()['content-security-policy'], path).toBe("frame-ancestors 'none'");
+  }
+});
+
 test('each page links the icons a browser and a phone show for it, and the site serves them', async ({
   page,
   request,

@@ -1,6 +1,10 @@
 # Keeps the site out of search results until launch (Phase 5). Preview addresses keep it after that.
+# No other site may show a page in a frame, where a page laid over it could trick a person into
+# pressing a button, such as Allow on the consent page an agent sends them to.
 /*
   X-Robots-Tag: noindex
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
 
 # Each Pyodide release has its own folder, so its files never change and can be cached for good.
 /pyodide/*
