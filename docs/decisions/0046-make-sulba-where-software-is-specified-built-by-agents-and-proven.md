@@ -1,6 +1,6 @@
 # 46. Make Sulba where a team specifies its software, agents build it and its tests prove it
 
-- Status: accepted
+- Status: accepted, amended by [59. Take a request to proven software with the agents a customer brings](0059-take-a-request-to-proven-software-with-the-agents-a-customer-brings.md)
 - Date: 2026-10-27
 
 ## Context
