@@ -90,7 +90,7 @@ for (const scheme of ['dark', 'light'] as const) {
     ['/app/new', 'Create a workspace'],
     [
       '/app/oauth/consent?authorization_id=f1e2d3c4-0000-4000-8000-000000000001',
-      'Connect Claude Code to Sulba?',
+      'Connect Claude Code to Sulba',
     ],
   ] as const) {
     test(`the app's ${path} has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({

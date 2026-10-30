@@ -4,44 +4,78 @@ import { classes } from '@sulba/ui/classes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useSearch } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { useAccount } from './account';
+import { useAccount, useSignOut } from './account';
 import { Centered } from './Centered';
 import styles from './Consent.module.css';
 import { Notice } from './Notice';
 
-const css = classes(styles, 'terms', 'actions', 'where');
+const css = classes(
+  styles,
+  'account',
+  'request',
+  'agent',
+  'where',
+  'check',
+  'scopes',
+  'scope',
+  'list',
+  'yes',
+  'no',
+  'note',
+  'actions',
+);
 
-/** Where answering sends the person, and when to allow it. */
-function whereTo(destination: Exclude<Destination, { kind: 'refused' }>): [string, string] {
+/** Where allowing returns the person to, and when to allow it. */
+function placeOf(
+  destination: Exclude<Destination, { kind: 'refused' }>,
+  agent: string,
+): [string, string] {
   switch (destination.kind) {
     case 'computer':
       return [
-        `an app on this computer, at ${destination.address}`,
-        'Allow it only if you just connected an agent here.',
+        `${destination.address} on this computer`,
+        `Only allow this if you just started connecting ${agent} on this computer.`,
       ];
     case 'app':
       return [
-        `the app that opens ${destination.scheme}: links on this computer`,
-        'Allow it only if you just connected an agent from that app.',
+        `the app that opens ${destination.scheme}:// links`,
+        `Only allow this if you just started connecting ${agent} from that app.`,
       ];
     case 'website':
       return [
         destination.host,
-        `Allow it only if you just connected an agent on ${destination.host}.`,
+        `Only allow this if you just started connecting ${agent} on ${destination.host}.`,
       ];
   }
 }
 
+function Yes() {
+  return (
+    <svg className={css.yes} viewBox="0 0 16 16" aria-hidden="true">
+      <path d="m3.5 8.5 3 3 6-7" />
+    </svg>
+  );
+}
+
+function No() {
+  return (
+    <svg className={css.no} viewBox="0 0 16 16" aria-hidden="true">
+      <path d="m4.5 4.5 7 7m0-7-7 7" />
+    </svg>
+  );
+}
+
 /**
  * Where an agent's request to act for the person leads, from Supabase's OAuth server: who is
- * asking, what it may and may not do, and where answering sends the person back to (decision
- * record 51). An agent names itself, so the page shows where the answer goes, and refuses an
- * address that is neither an app on the person's computer nor a website on HTTPS (decision record
- * 56). An agent allowed before is sent straight back.
+ * asking, where allowing returns them, and what it may and may not do (decision record 51). An
+ * agent names itself, so the page leads with where it returns the person, and refuses an address
+ * that is neither an app on their computer nor a website on HTTPS (decision records 56 and 58). An
+ * agent allowed before is sent straight back.
  */
 export function Consent() {
   const { authorization_id: id } = useSearch({ from: '/oauth/consent' });
   const { client, email } = useAccount();
+  const signOut = useSignOut();
 
   const asked = useQuery({
     queryKey: ['consent', id],
@@ -70,7 +104,7 @@ export function Consent() {
     return (
       <Centered
         title="This link is incomplete"
-        lead="Connect again from your agent, which opens this page with its request."
+        lead="Start connecting again from your agent. It opens this page with its request."
       >
         <Link to="/">Go to Sulba</Link>
       </Centered>
@@ -86,8 +120,8 @@ export function Consent() {
   if (destination?.kind === 'refused') {
     return (
       <Centered
-        title="This request can’t be allowed"
-        lead={`It would send your answer to ${destination.address}, which is neither an app on this computer nor a website on HTTPS.`}
+        title="This agent can’t be connected"
+        lead={`It asked to return you to ${destination.address}. Sulba only returns you to an app on this computer or to a website over HTTPS.`}
       >
         <Link to="/">Go to Sulba</Link>
       </Centered>
@@ -96,39 +130,78 @@ export function Consent() {
   if (!asked.data || !('request' in asked.data) || destination === null) return null;
 
   const { agent } = asked.data.request;
-  const [where, advice] = whereTo(destination);
+  const [place, check] = placeOf(destination, agent);
   return (
     <Centered
-      title={`Connect ${agent} to Sulba?`}
+      title={`Connect ${agent} to Sulba`}
       tab="Connect an agent"
-      lead={`${agent} will act for you${email ? `, ${email},` : ''} in every workspace you’re in, within your role.`}
+      lead={
+        <span className={css.account}>
+          {email ? `Signed in as ${email}.` : null}
+          <Button variant="ghost" size="small" onPress={() => void signOut()}>
+            Use another account
+          </Button>
+        </span>
+      }
     >
-      <p className={css.where}>
-        <strong>Answering sends you to {where}.</strong> {advice} An agent chooses its own name, so
-        this is how to tell who is asking.
+      <section className={css.request} aria-label="Request">
+        <p className={css.agent}>{agent}</p>
+        <p className={css.where}>
+          Returns you to <strong>{place}</strong>
+        </p>
+        <p className={css.check}>{check}</p>
+      </section>
+      <div className={css.scopes}>
+        <section className={css.scope} aria-labelledby="can">
+          <h2 id="can">It will be able to</h2>
+          <ul className={css.list}>
+            <li>
+              <Yes />
+              Read specs and their test evidence
+            </li>
+            <li>
+              <Yes />
+              Write specs and acceptance criteria
+            </li>
+            <li>
+              <Yes />
+              Send specs for review and mark them implemented
+            </li>
+          </ul>
+        </section>
+        <section className={css.scope} aria-labelledby="cannot">
+          <h2 id="cannot">It won’t be able to</h2>
+          <ul className={css.list}>
+            <li>
+              <No />
+              Approve, abandon or supersede specs
+            </li>
+            <li>
+              <No />
+              Remove criteria, or confirm a reworded criterion’s tests
+            </li>
+            <li>
+              <No />
+              Change members, repositories or workspace settings
+            </li>
+          </ul>
+        </section>
+      </div>
+      <p className={css.note}>
+        It works in every workspace you’re in, with your role there, and each spec’s history marks
+        the changes it makes. You can disconnect it at any time in Settings.
       </p>
-      <ul className={css.terms}>
-        <li>
-          It can read specs and their evidence, write specs and criteria, put a spec in review and
-          mark it implemented. Each spec’s history shows its changes as its own.
-        </li>
-        <li>
-          It can’t approve, abandon or supersede a spec, confirm a criterion’s tests, remove a
-          criterion, or change a workspace’s people, repositories or settings.
-        </li>
-        <li>You can disconnect it in any workspace’s Settings.</li>
-      </ul>
       <Notice text={decide.error?.message ?? null} />
       <div className={css.actions}>
-        <Button onPress={() => decide.mutate(true)} isDisabled={decide.isPending}>
-          Allow
-        </Button>
         <Button
           variant="outline"
           onPress={() => decide.mutate(false)}
           isDisabled={decide.isPending}
         >
-          Deny
+          Cancel
+        </Button>
+        <Button onPress={() => decide.mutate(true)} isDisabled={decide.isPending}>
+          Allow
         </Button>
       </div>
     </Centered>

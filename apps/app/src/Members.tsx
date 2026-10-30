@@ -22,12 +22,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useAccount } from './account';
-import { dayOf } from './format';
 import { Notice } from './Notice';
 import styles from './page.module.css';
 import { keys, useInvitations, useMembers } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -169,7 +169,9 @@ export function Members() {
                         roleNames[member.role]
                       )}
                     </td>
-                    <td className={css.numeric}>{dayOf(member.joinedAt)}</td>
+                    <td className={css.numeric}>
+                      <When at={member.joinedAt} day />
+                    </td>
                     <td className={css.actions}>
                       {self || manages(member) ? (
                         <Button variant="ghost" size="small" onPress={() => setRemoving(member)}>
@@ -210,7 +212,9 @@ export function Members() {
                       <td>
                         {invitation.madeBy || <span className={css.dim}>No longer here</span>}
                       </td>
-                      <td className={css.numeric}>{dayOf(invitation.expiresAt)}</td>
+                      <td className={css.numeric}>
+                        <When at={invitation.expiresAt} day />
+                      </td>
                       <td className={css.actions}>
                         <Button
                           variant="ghost"

@@ -1,6 +1,6 @@
 # 56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe
 
-- Status: accepted
+- Status: accepted, amended by [58. Word the consent page like the authorization screens people know](0058-word-the-consent-page-like-the-authorization-screens-people-know.md)
 - Date: 2026-10-30
 - Amends: [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md)
 

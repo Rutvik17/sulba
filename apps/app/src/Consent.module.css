@@ -1,9 +1,104 @@
-.terms {
+/* Who is signed in, with the button that switches accounts. */
+.account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/*
+  The agent and where allowing returns the person: set apart, as it is the one thing on the page
+  that tells them who is asking.
+*/
+.request {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.request p {
+  margin: 0;
+  line-height: var(--leading);
+}
+
+.agent {
+  font-weight: 600;
+}
+
+.where {
+  color: var(--dim);
+}
+
+.where strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.request .check {
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+}
+
+.scopes {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.scope {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.scope h2 {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.list {
   display: grid;
   gap: var(--space-2);
   margin: 0;
-  padding-inline-start: var(--space-5);
+  padding: 0;
+  list-style: none;
+  line-height: var(--leading);
+}
+
+.list li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: start;
+}
+
+.yes,
+.no {
+  width: 16px;
+  height: 16px;
+  margin-top: 0.2em;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.yes {
+  stroke: var(--ok);
+}
+
+.no {
+  stroke: var(--dim);
+}
+
+.note {
+  margin: 0;
   color: var(--dim);
+  font-size: var(--text-sm);
   line-height: var(--leading);
 }
 
@@ -11,15 +106,4 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-}
-
-/* Where answering sends the person: the one thing on the page that tells them who is asking. */
-.where {
-  margin: 0;
-  padding: var(--space-3) var(--space-4);
-  border-inline-start: 3px solid var(--accent);
-  border-radius: var(--radius-sm);
-  background: var(--raise);
-  line-height: var(--leading);
-  overflow-wrap: anywhere;
 }

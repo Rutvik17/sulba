@@ -6,11 +6,11 @@ import { Select } from '@sulba/ui/select';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useAccount } from './account';
-import { dayOf } from './format';
 import { Notice } from './Notice';
 import styles from './page.module.css';
 import { keys } from './queries';
 import { setups } from './setups';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -123,7 +123,9 @@ export function Agents() {
               {agents.data.map((agent) => (
                 <tr key={agent.clientId}>
                   <td className={css.name}>{agent.name}</td>
-                  <td className={css.dim}>{dayOf(agent.connectedAt)}</td>
+                  <td className={css.dim}>
+                    <When at={agent.connectedAt} day />
+                  </td>
                   <td className={css.actions}>
                     <Button variant="ghost" size="small" onPress={() => setLeaving(agent)}>
                       Disconnect

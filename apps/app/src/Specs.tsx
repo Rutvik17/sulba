@@ -5,12 +5,12 @@ import { classes } from '@sulba/ui/classes';
 import { Tooltip } from '@sulba/ui/tooltip';
 import { Link } from '@tanstack/react-router';
 import { shortcutSteps, useCreateSpec } from './commands';
-import { ago, momentOf } from './format';
 import styles from './page.module.css';
 import { specProofText } from './proofs';
 import { useMembers, useSpecProofs, useSpecs } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -110,8 +110,8 @@ export function Specs() {
                         <span className={css.dim}>No owner</span>
                       )}
                     </td>
-                    <td className={css.numeric} title={momentOf(spec.updatedAt)}>
-                      {ago(spec.updatedAt)}
+                    <td className={css.numeric}>
+                      <When at={spec.updatedAt} />
                     </td>
                   </tr>
                 );

@@ -78,6 +78,12 @@ test('someone in no workspace creates one, whose address follows its name, and b
   await expect(page).toHaveTitle('My work · Acme Robotics · Sulba');
   await page.getByRole('link', { name: 'Members' }).click();
   await expect(page.getByRole('row', { name: /Ada Lovelace \(you\)/ })).toContainText('Owner');
+  const sidebar = page.getByRole('navigation', { name: 'Workspace' });
+  await expect(sidebar.getByRole('link', { name: 'Members' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(sidebar.getByRole('link', { name: 'Specs' })).not.toHaveAttribute('aria-current');
   expect(calls.rpc).toEqual([
     { name: 'create_workspace', args: { name: 'Acme Robotics', slug: 'acme-robotics' } },
   ]);

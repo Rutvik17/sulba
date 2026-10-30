@@ -59,6 +59,8 @@ Each record covers one decision: the context, the options compared, the evidence
 | [53. Run every action from a command menu and from keys, built on React Aria](0053-run-every-action-from-a-command-menu-and-keys.md) | Accepted |
 | [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md) | Accepted, amended by 55 |
 | [55. Send every route the Worker renders to it first](0055-send-every-route-the-worker-renders-to-it-first.md) | Accepted |
-| [56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe](0056-tell-the-person-where-an-agents-answer-goes.md) | Accepted |
+| [56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe](0056-tell-the-person-where-an-agents-answer-goes.md) | Accepted, amended by 58 |
+| [57. Show recent times as how long ago, and older ones as dates](0057-show-recent-times-relative-and-older-ones-as-dates.md) | Accepted |
+| [58. Word the consent page like the authorization screens people know](0058-word-the-consent-page-like-the-authorization-screens-people-know.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.
