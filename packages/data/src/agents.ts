@@ -12,12 +12,42 @@ export interface Agent {
   readonly connectedAt: string;
 }
 
+/**
+ * Where answering an agent's request sends the person, with the answer. Anyone can register an
+ * agent, with any name and any address, so the address is what tells the person who is asking. An
+ * agent on their computer waits at a loopback address or opens links of its own scheme, and one on
+ * the web waits at an HTTPS address. Any other address, such as plain HTTP to another computer, is
+ * refused (decision record 56).
+ */
+export type Destination =
+  | { readonly kind: 'computer'; readonly address: string }
+  | { readonly kind: 'app'; readonly scheme: string }
+  | { readonly kind: 'website'; readonly host: string }
+  | { readonly kind: 'refused'; readonly address: string };
+
+const loopback = new Set(['localhost', '127.0.0.1', '[::1]']);
+const unsafe = new Set(['javascript:', 'data:', 'vbscript:', 'blob:', 'file:', 'about:']);
+
+export function destinationOf(address: string): Destination {
+  if (!URL.canParse(address)) return { kind: 'refused', address };
+  const url = new URL(address);
+  if (url.username || url.password) return { kind: 'refused', address };
+  if (url.protocol === 'https:') return { kind: 'website', host: url.host };
+  if (url.protocol === 'http:') {
+    return loopback.has(url.hostname)
+      ? { kind: 'computer', address: url.host }
+      : { kind: 'refused', address };
+  }
+  if (unsafe.has(url.protocol)) return { kind: 'refused', address };
+  return { kind: 'app', scheme: url.protocol.slice(0, -1) };
+}
+
 /** An agent asking to act for the person, as the consent page shows it. */
 export interface Request {
   readonly id: string;
+  /** The name it gave itself when it registered. */
   readonly agent: string;
-  /** Where the person goes back to once they answer: the agent's own address. */
-  readonly returnTo: string;
+  readonly destination: Destination;
 }
 
 /** What the consent page has to show: a request, or the agent's address when it was allowed before. */
@@ -57,7 +87,7 @@ export async function requestOf(client: Client, id: string): Promise<Asked> {
     request: {
       id: data.authorization_id,
       agent: data.client.name || 'An unnamed agent',
-      returnTo: data.redirect_uri,
+      destination: destinationOf(data.redirect_uri),
     },
   };
 }

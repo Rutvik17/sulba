@@ -15,6 +15,8 @@ export interface Asking {
   readonly allowedBefore?: boolean;
   /** Whether the request has expired or was already answered. */
   readonly expired?: boolean;
+  /** Where the agent registered to get its answer, if not Claude Code's address on this machine. */
+  readonly returnTo?: string;
 }
 
 /** What the person answered. */
@@ -25,6 +27,7 @@ export interface Answers {
 export async function standInConsent(page: Page, asking: Asking): Promise<Answers> {
   const answers: Answers = { actions: [] };
   const path = `${supabase}/auth/v1/oauth/authorizations/${asking.id}`;
+  const returnTo = asking.returnTo ?? callback;
 
   await page.route(path, (route) => {
     if (route.request().method() === 'OPTIONS') return answer(route, 204);
@@ -35,10 +38,10 @@ export async function standInConsent(page: Page, asking: Asking): Promise<Answer
         msg: 'authorization not found',
       });
     }
-    if (asking.allowedBefore) return answer(route, 200, { redirect_url: `${callback}?code=again` });
+    if (asking.allowedBefore) return answer(route, 200, { redirect_url: `${returnTo}?code=again` });
     return answer(route, 200, {
       authorization_id: asking.id,
-      redirect_uri: callback,
+      redirect_uri: returnTo,
       client: {
         id: 'e0000000-0000-4000-8000-000000000005',
         name: asking.agent,

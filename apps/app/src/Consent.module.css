@@ -13,9 +13,13 @@
   gap: var(--space-3);
 }
 
+/* Where answering sends the person: the one thing on the page that tells them who is asking. */
 .where {
   margin: 0;
-  color: var(--dim);
-  font-size: var(--text-sm);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--raise);
+  line-height: var(--leading);
   overflow-wrap: anywhere;
 }
