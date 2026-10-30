@@ -54,10 +54,11 @@ Each record covers one decision: the context, the options compared, the evidence
 | [48. Keep workspaces in shared tables guarded by row-level security, with a log of every change](0048-keep-workspaces-in-shared-tables-guarded-by-row-level-security.md) | Accepted |
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
 | [50. Prove criteria with the test reports a CI run sends, signed by GitHub](0050-prove-criteria-with-test-reports-a-ci-run-signs.md) | Accepted |
-| [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted |
+| [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted, amended by 56 |
 | [52. Approve specs by named reviewers, and ask them again when a spec changes](0052-approve-specs-by-named-reviewers-and-ask-again-on-change.md) | Accepted |
 | [53. Run every action from a command menu and from keys, built on React Aria](0053-run-every-action-from-a-command-menu-and-keys.md) | Accepted |
 | [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md) | Accepted, amended by 55 |
 | [55. Send every route the Worker renders to it first](0055-send-every-route-the-worker-renders-to-it-first.md) | Accepted |
+| [56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe](0056-tell-the-person-where-an-agents-answer-goes.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

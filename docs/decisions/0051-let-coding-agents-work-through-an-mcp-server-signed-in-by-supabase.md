@@ -1,6 +1,6 @@
 # 51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server
 
-- Status: accepted
+- Status: accepted, amended by [56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe](0056-tell-the-person-where-an-agents-answer-goes.md)
 - Date: 2026-10-28
 
 ## Context

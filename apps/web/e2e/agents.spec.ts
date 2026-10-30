@@ -23,11 +23,50 @@ test('a person allows an agent, which gets its code back', async ({ page }) => {
   await expect(page.getByRole('listitem').nth(1)).toContainText(
     'It can’t approve, abandon or supersede a spec',
   );
-  await expect(page.getByRole('main')).toContainText('Either way, you go back to 127.0.0.1:33418.');
+  await expect(page.getByRole('main')).toContainText(
+    'Answering sends you to an app on this computer, at 127.0.0.1:33418. Allow it only if you just connected an agent here. An agent chooses its own name, so this is how to tell who is asking.',
+  );
   await page.getByRole('button', { name: 'Allow' }).click();
 
   await expect(page).toHaveURL(`${callback}?code=code-for-the-agent&state=agent-state`);
   expect(answers.actions).toEqual(['approve']);
+});
+
+test('an agent on a website says which, and the page says to allow it only from there', async ({
+  page,
+}) => {
+  await standIn(page);
+  await standInConsent(page, {
+    ...asking,
+    agent: 'Claude',
+    returnTo: 'https://claude.ai/api/mcp/auth_callback',
+  });
+  await signedIn(page);
+
+  await page.goto(consent);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connect Claude to Sulba?');
+  await expect(page.getByRole('main')).toContainText(
+    'Answering sends you to claude.ai. Allow it only if you just connected an agent on claude.ai.',
+  );
+});
+
+test('an agent that would send the answer anywhere but this computer or HTTPS is refused', async ({
+  page,
+}) => {
+  await standIn(page);
+  const answers = await standInConsent(page, {
+    ...asking,
+    returnTo: 'http://agent.example/callback',
+  });
+  await signedIn(page);
+
+  await page.goto(consent);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('This request can’t be allowed');
+  await expect(page.getByRole('main')).toContainText(
+    'It would send your answer to http://agent.example/callback, which is neither an app on this computer nor a website on HTTPS.',
+  );
+  await expect(page.getByRole('button', { name: 'Allow' })).toHaveCount(0);
+  expect(answers.actions).toEqual([]);
 });
 
 test('a person denies an agent, which is told so', async ({ page }) => {

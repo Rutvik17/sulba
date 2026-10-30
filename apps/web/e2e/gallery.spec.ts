@@ -282,8 +282,10 @@ test('a tooltip shows its shortcut as the keyboard reaches its button, and Escap
 }) => {
   test.skip(isMobile, 'Tooltips are for a pointer or a keyboard');
   await openGallery(page);
-  await page.getByRole('button', { name: 'Search', exact: true }).focus();
-  await page.keyboard.press('Shift+Tab');
+  // From a control with no tooltip of its own: leaving Search's tooltip races this one in WebKit.
+  await page.getByRole('switch', { name: 'Email me a summary each week' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'New spec' })).toBeFocused();
 
   const tooltip = page.getByRole('tooltip');
   await expect(tooltip).toHaveText('C');

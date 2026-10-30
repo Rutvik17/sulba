@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { agentsOf, answer, disconnect, requestOf } from './agents.ts';
+import { agentsOf, answer, destinationOf, disconnect, requestOf } from './agents.ts';
 import type { Client } from './client.ts';
 import { Refusal } from './refusal.ts';
 
@@ -46,6 +46,49 @@ describe('disconnect', () => {
   });
 });
 
+describe('destinationOf', () => {
+  it('knows an app on the person’s computer by its loopback address or its own scheme', () => {
+    expect(destinationOf('http://127.0.0.1:33418/callback')).toEqual({
+      kind: 'computer',
+      address: '127.0.0.1:33418',
+    });
+    expect(destinationOf('http://localhost:8080/callback')).toEqual({
+      kind: 'computer',
+      address: 'localhost:8080',
+    });
+    expect(destinationOf('http://[::1]:5000/')).toEqual({
+      kind: 'computer',
+      address: '[::1]:5000',
+    });
+    expect(destinationOf('cursor://anysphere.cursor-mcp/oauth/callback')).toEqual({
+      kind: 'app',
+      scheme: 'cursor',
+    });
+  });
+
+  it('knows a website by its host, over HTTPS only', () => {
+    expect(destinationOf('https://claude.ai/api/mcp/auth_callback')).toEqual({
+      kind: 'website',
+      host: 'claude.ai',
+    });
+  });
+
+  it('refuses plain HTTP to another computer, scripts, credentials and addresses it can’t read', () => {
+    for (const address of [
+      'http://agent.example/callback',
+      'http://localhost.example/callback',
+      'http://127.0.0.1.nip.io/callback',
+      'https://user:secret@agent.example/callback',
+      'javascript:alert(1)',
+      'data:text/html,hello',
+      'file:///etc/passwd',
+      'not an address',
+    ]) {
+      expect(destinationOf(address), address).toEqual({ kind: 'refused', address });
+    }
+  });
+});
+
 describe('requestOf', () => {
   it('gives the agent asking and where answering sends the person back to', async () => {
     const getAuthorizationDetails = async () => ({
@@ -59,7 +102,11 @@ describe('requestOf', () => {
       error: null,
     });
     expect(await requestOf(client({ getAuthorizationDetails }), 'r1')).toEqual({
-      request: { id: 'r1', agent: 'Claude Code', returnTo: 'http://127.0.0.1:33418/callback' },
+      request: {
+        id: 'r1',
+        agent: 'Claude Code',
+        destination: { kind: 'computer', address: '127.0.0.1:33418' },
+      },
     });
   });
 

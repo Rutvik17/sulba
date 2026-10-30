@@ -1,4 +1,4 @@
-import { answer, requestOf } from '@sulba/data/agents';
+import { answer, type Destination, destinationOf, requestOf } from '@sulba/data/agents';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -11,10 +11,33 @@ import { Notice } from './Notice';
 
 const css = classes(styles, 'terms', 'actions', 'where');
 
+/** Where answering sends the person, and when to allow it. */
+function whereTo(destination: Exclude<Destination, { kind: 'refused' }>): [string, string] {
+  switch (destination.kind) {
+    case 'computer':
+      return [
+        `an app on this computer, at ${destination.address}`,
+        'Allow it only if you just connected an agent here.',
+      ];
+    case 'app':
+      return [
+        `the app that opens ${destination.scheme}: links on this computer`,
+        'Allow it only if you just connected an agent from that app.',
+      ];
+    case 'website':
+      return [
+        destination.host,
+        `Allow it only if you just connected an agent on ${destination.host}.`,
+      ];
+  }
+}
+
 /**
  * Where an agent's request to act for the person leads, from Supabase's OAuth server: who is
  * asking, what it may and may not do, and where answering sends the person back to (decision
- * record 51). An agent allowed before is sent straight back.
+ * record 51). An agent names itself, so the page shows where the answer goes, and refuses an
+ * address that is neither an app on the person's computer nor a website on HTTPS (decision record
+ * 56). An agent allowed before is sent straight back.
  */
 export function Consent() {
   const { authorization_id: id } = useSearch({ from: '/oauth/consent' });
@@ -30,7 +53,15 @@ export function Consent() {
     mutationFn: (allow: boolean) => answer(client, id, allow),
     onSuccess: (redirectTo) => window.location.assign(redirectTo),
   });
-  const before = asked.data && 'redirectTo' in asked.data ? asked.data.redirectTo : null;
+  const destination = !asked.data
+    ? null
+    : 'request' in asked.data
+      ? asked.data.request.destination
+      : destinationOf(asked.data.redirectTo);
+  const before =
+    asked.data && 'redirectTo' in asked.data && destination?.kind !== 'refused'
+      ? asked.data.redirectTo
+      : null;
   useEffect(() => {
     if (before) window.location.replace(before);
   }, [before]);
@@ -52,16 +83,30 @@ export function Consent() {
       </Centered>
     );
   }
-  if (!asked.data || !('request' in asked.data)) return null;
+  if (destination?.kind === 'refused') {
+    return (
+      <Centered
+        title="This request can’t be allowed"
+        lead={`It would send your answer to ${destination.address}, which is neither an app on this computer nor a website on HTTPS.`}
+      >
+        <Link to="/">Go to Sulba</Link>
+      </Centered>
+    );
+  }
+  if (!asked.data || !('request' in asked.data) || destination === null) return null;
 
-  const { agent, returnTo } = asked.data.request;
-  const back = URL.canParse(returnTo) ? new URL(returnTo).host : returnTo;
+  const { agent } = asked.data.request;
+  const [where, advice] = whereTo(destination);
   return (
     <Centered
       title={`Connect ${agent} to Sulba?`}
       tab="Connect an agent"
       lead={`${agent} will act for you${email ? `, ${email},` : ''} in every workspace you’re in, within your role.`}
     >
+      <p className={css.where}>
+        <strong>Answering sends you to {where}.</strong> {advice} An agent chooses its own name, so
+        this is how to tell who is asking.
+      </p>
       <ul className={css.terms}>
         <li>
           It can read specs and their evidence, write specs and criteria, put a spec in review and
@@ -86,7 +131,6 @@ export function Consent() {
           Deny
         </Button>
       </div>
-      <p className={css.where}>Either way, you go back to {back}.</p>
     </Centered>
   );
 }
