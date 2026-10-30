@@ -3,13 +3,13 @@ import { criterionKey, specKey } from '@sulba/data/specs';
 import { holds } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Link } from '@tanstack/react-router';
-import { ago, momentOf } from './format';
 import { ProofMark } from './ProofMark';
 import styles from './page.module.css';
 import { commitUrl, proofOrder, reasonOf, reportText, runUrl } from './proofs';
 import { useProofs, useReports, useRepositories } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -160,8 +160,8 @@ export function Evidence() {
                       </a>
                     </td>
                     <td className={css.numeric}>{reportText(report)}</td>
-                    <td className={css.numeric} title={momentOf(report.receivedAt)}>
-                      {ago(report.receivedAt)}
+                    <td className={css.numeric}>
+                      <When at={report.receivedAt} />
                     </td>
                   </tr>
                 ))}
@@ -208,11 +208,8 @@ function Row({ proof }: { proof: CriterionProof }) {
         <ProofMark state={proof.state} reason={reasonOf(proof)} />
       </td>
       <td className={css.numeric}>{tests}</td>
-      <td
-        className={css.numeric}
-        {...(proof.checkedAt ? { title: momentOf(proof.checkedAt) } : {})}
-      >
-        {proof.checkedAt ? ago(proof.checkedAt) : <span className={css.dim}>Never</span>}
+      <td className={css.numeric}>
+        {proof.checkedAt ? <When at={proof.checkedAt} /> : <span className={css.dim}>Never</span>}
       </td>
     </tr>
   );

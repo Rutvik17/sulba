@@ -64,7 +64,7 @@ test('the sidebar’s button opens the menu, whose search finds a spec by its ti
   await inAcme(page);
   await page.goto('/app/acme');
 
-  await page.getByRole('button', { name: 'Search or run a command' }).click();
+  await page.getByRole('button', { name: 'Search…' }).click();
   await page.getByRole('textbox', { name: 'Commands' }).fill('refund');
   await expect(page.getByRole('menuitem', { name: 'SPEC-4 Refund a payment' })).toBeVisible();
   await page.keyboard.press('Enter');

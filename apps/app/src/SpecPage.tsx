@@ -30,7 +30,6 @@ import { Link, useParams } from '@tanstack/react-router';
 import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useAccount } from './account';
 import { useCommands } from './commands';
-import { ago, dayOf, momentOf } from './format';
 import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
 import { ProofMark } from './ProofMark';
@@ -40,6 +39,7 @@ import { Reviewers, YourReview } from './Review';
 import { useWorkspace } from './Shell';
 import styles from './spec.module.css';
 import { useTitle } from './title';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -256,12 +256,16 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
             </dd>
           </div>
           <div>
-            <dt>Written</dt>
-            <dd>{dayOf(spec.createdAt)}</dd>
+            <dt>Created</dt>
+            <dd>
+              <When at={spec.createdAt} day />
+            </dd>
           </div>
           <div>
             <dt>Updated</dt>
-            <dd title={momentOf(spec.updatedAt)}>{ago(spec.updatedAt)}</dd>
+            <dd>
+              <When at={spec.updatedAt} />
+            </dd>
           </div>
         </dl>
       </aside>
@@ -695,8 +699,8 @@ function History({
               <span>
                 <strong>{whoOf(change)}</strong> {whatOf(change, context)}
               </span>
-              <span className={css.when} title={momentOf(change.at)}>
-                {ago(change.at)}
+              <span className={css.when}>
+                <When at={change.at} />
               </span>
             </li>
           ))}

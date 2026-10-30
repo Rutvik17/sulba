@@ -1,6 +1,5 @@
 import type { Change } from '@sulba/data/specs';
 import { describe, expect, test } from 'vitest';
-import { ago } from './format';
 import { type Context, whatOf, whoOf } from './history';
 
 const context: Context = {
@@ -143,16 +142,5 @@ describe('whoOf', () => {
     expect(whoOf(change({}))).toBe('Ada Lovelace');
     expect(whoOf(change({ actorKind: 'agent' }))).toBe('Ada Lovelace’s agent');
     expect(whoOf(change({ actorName: null }))).toBe('Someone who has left');
-  });
-});
-
-describe('ago', () => {
-  const now = Date.parse('2026-10-27T12:00:00Z');
-  test('says how long ago, and past four weeks the day', () => {
-    expect(ago('2026-10-27T11:59:30Z', now)).toBe('just now');
-    expect(ago('2026-10-27T11:55:00Z', now)).toBe('5 minutes ago');
-    expect(ago('2026-10-27T09:00:00Z', now)).toBe('3 hours ago');
-    expect(ago('2026-10-26T11:00:00Z', now)).toBe('yesterday');
-    expect(ago('2026-09-01T12:00:00Z', now)).toMatch(/2026/);
   });
 });

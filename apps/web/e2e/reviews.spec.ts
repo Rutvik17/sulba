@@ -139,9 +139,7 @@ test('My work gathers the specs to review, the person’s own, and their failing
   await page.goto('/app/acme');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My work');
   await expect(page.getByRole('link', { name: 'My work' })).toHaveAttribute('aria-current', 'page');
-  await expect(
-    page.getByText('1 spec to review, 1 spec of yours not yet built, 1 criterion failing'),
-  ).toBeVisible();
+  await expect(page.getByText('1 to review · 1 open spec · 1 criterion failing')).toBeVisible();
   await expect(
     page.getByRole('region', { name: 'To review' }).getByRole('row').nth(1),
   ).toContainText('SPEC-4Refund a paymentBen Ortiz');

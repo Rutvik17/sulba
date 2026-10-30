@@ -3,13 +3,13 @@ import { criterionKey, specKey, statusNames } from '@sulba/data/specs';
 import { holds } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Link } from '@tanstack/react-router';
-import { ago, momentOf } from './format';
 import { ProofMark } from './ProofMark';
 import styles from './page.module.css';
 import { reasonOf } from './proofs';
 import { useMembers, useWork } from './queries';
 import { useWorkspace } from './Shell';
 import { useTitle } from './title';
+import { When } from './When';
 
 const css = classes(
   styles,
@@ -44,11 +44,16 @@ export function MyWork() {
   const { data: members } = useMembers(workspace);
   const names = new Map(members.map((member) => [member.personId, member.name || member.email]));
   const slug = workspace.slug;
-  const summary = [
-    counted(work.asked.length, 'spec to review', 'specs to review'),
-    counted(work.owned.length, 'spec of yours not yet built', 'specs of yours not yet built'),
-    counted(work.failing.length, 'criterion failing', 'criteria failing'),
-  ].join(', ');
+  const summary =
+    [
+      work.asked.length ? counted(work.asked.length, 'to review', 'to review') : '',
+      work.owned.length ? counted(work.owned.length, 'open spec', 'open specs') : '',
+      work.failing.length
+        ? counted(work.failing.length, 'criterion failing', 'criteria failing')
+        : '',
+    ]
+      .filter(Boolean)
+      .join(' · ') || 'Nothing needs you right now.';
 
   return (
     <div className={css.page}>
@@ -99,8 +104,8 @@ export function MyWork() {
                         <span className={css.dim}>Someone who has left</span>
                       )}
                     </td>
-                    <td className={css.numeric} title={momentOf(asked.requestedAt)}>
-                      {ago(asked.requestedAt)}
+                    <td className={css.numeric}>
+                      <When at={asked.requestedAt} />
                     </td>
                   </tr>
                 ))}
@@ -149,8 +154,8 @@ export function MyWork() {
                         <span className={css.dim}>No reviewers</span>
                       )}
                     </td>
-                    <td className={css.numeric} title={momentOf(spec.updatedAt)}>
-                      {ago(spec.updatedAt)}
+                    <td className={css.numeric}>
+                      <When at={spec.updatedAt} />
                     </td>
                   </tr>
                 ))}
@@ -206,11 +211,8 @@ export function MyWork() {
                     <td>
                       <ProofMark state={proof.state} reason={reasonOf(proof)} />
                     </td>
-                    <td
-                      className={css.numeric}
-                      {...(proof.checkedAt ? { title: momentOf(proof.checkedAt) } : {})}
-                    >
-                      {proof.checkedAt ? ago(proof.checkedAt) : null}
+                    <td className={css.numeric}>
+                      {proof.checkedAt ? <When at={proof.checkedAt} /> : null}
                     </td>
                   </tr>
                 ))}
