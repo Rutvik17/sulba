@@ -7,8 +7,15 @@
     "binding": "ASSETS",
     "not_found_handling": "404-page",
     // The Worker answers the app's addresses with its page, and its files are served as they are
-    // (record 54).
-    "run_worker_first": ["/app/*", "!/app/assets/*"]
+    // (record 54). Every other route the Worker renders is named here too, as an address left out
+    // gets the static assets' 404 page (record 55); src/worker-first.test.ts checks the list.
+    "run_worker_first": [
+      "/app/*",
+      "!/app/assets/*",
+      "/api/*",
+      "/mcp",
+      "/.well-known/oauth-protected-resource/*"
+    ]
   },
   "routes": [{ "pattern": "sulba.dev", "custom_domain": true }],
   "workers_dev": false,

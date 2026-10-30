@@ -57,6 +57,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [51. Let coding agents work through an MCP server, signed in by Supabase's OAuth server](0051-let-coding-agents-work-through-an-mcp-server-signed-in-by-supabase.md) | Accepted |
 | [52. Approve specs by named reviewers, and ask them again when a spec changes](0052-approve-specs-by-named-reviewers-and-ask-again-on-change.md) | Accepted |
 | [53. Run every action from a command menu and from keys, built on React Aria](0053-run-every-action-from-a-command-menu-and-keys.md) | Accepted |
-| [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md) | Accepted |
+| [54. Answer the app's addresses from the site's Worker, not from routing rules](0054-answer-the-apps-addresses-from-the-sites-worker.md) | Accepted, amended by 55 |
+| [55. Send every route the Worker renders to it first](0055-send-every-route-the-worker-renders-to-it-first.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

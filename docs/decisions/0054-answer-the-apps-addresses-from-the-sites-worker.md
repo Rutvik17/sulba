@@ -1,6 +1,6 @@
 # 54. Answer the app's addresses from the site's Worker, not from routing rules
 
-- Status: accepted
+- Status: accepted, amended by [55. Send every route the Worker renders to it first](0055-send-every-route-the-worker-renders-to-it-first.md)
 - Date: 2026-10-28
 - Amends: [47. Build the app in React, drawn in the browser and served by the site's Worker under /app/](0047-build-the-app-in-react-served-by-the-sites-worker.md)
 

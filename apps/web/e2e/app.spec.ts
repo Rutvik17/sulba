@@ -45,6 +45,21 @@ test('the app’s files are served as they are, and a file it doesn’t have is 
   expect((await request.get('/app/assets/missing.js')).status()).toBe(404);
 });
 
+test('the MCP server answers from the Worker: its metadata, and a 401 that points to it', async ({
+  request,
+  baseURL,
+}) => {
+  const metadata = await request.get('/.well-known/oauth-protected-resource/mcp');
+  expect(metadata.status()).toBe(200);
+  expect(await metadata.json()).toMatchObject({ resource: `${baseURL}/mcp` });
+
+  const unsigned = await request.post('/mcp', { data: {} });
+  expect(unsigned.status()).toBe(401);
+  expect(unsigned.headers()['www-authenticate']).toContain(
+    `resource_metadata="${baseURL}/.well-known/oauth-protected-resource/mcp"`,
+  );
+});
+
 test('someone in no workspace creates one, whose address follows its name, and becomes its owner', async ({
   page,
 }) => {
