@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 import { standInConsent } from './agents';
 import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
+import { standInReleases } from './releases';
 import { question, request, standInRequests } from './requests';
 import { criterion, review, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
@@ -176,6 +177,20 @@ for (const scheme of ['dark', 'light'] as const) {
           }),
         ],
         specs: [written],
+      });
+      // An earlier release of the request, which Ben approved.
+      await standInReleases(page, {
+        releases: [
+          {
+            id: 'b4000000-0000-4000-8000-000000000001',
+            request: booking.id,
+            number: 1,
+            note: 'For the front desk.',
+            approvedBy: ben.id,
+            approvedAt: new Date().toISOString(),
+            snapshot: [],
+          },
+        ],
       });
       // A task Ben's agent handed in, covering the spec's criterion.
       await standInTasks(page, {

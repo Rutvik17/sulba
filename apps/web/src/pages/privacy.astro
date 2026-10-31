@@ -43,7 +43,7 @@ const providers = [
 ] as const;
 ---
 
-<Legal title="Privacy Policy" updated="30 October 2026">
+<Legal title="Privacy Policy" updated="31 October 2026">
   <p class="lede">
     You can read all of Sulba, and work through every lab, without telling us who you are. Sulba
     sets no cookies and shows no ads. If you sign in, your account keeps your progress; if you write
@@ -175,12 +175,14 @@ const providers = [
       about each request with the answers given, the specs its members write with their acceptance
       criteria, each spec's reviewers with their answers and the notes they give with them, the
       tasks its specs are split into, with who has each, why one is blocked and the address of the
-      pull request that holds its work, and a history of every change to these: what changed, when,
-      and whose account made the change. The history notes when a request's, a spec's or a task's
-      text changed without keeping the text. Everyone in a workspace sees the name and email address
-      of each person in it, and its history. An invitation link lets anyone who has it join, until
-      it's revoked or 7 days pass; we keep only a scrambled form of it, from which the link can't be
-      worked out.
+      pull request that holds its work, each release of a request a member approves, with who
+      approved it, when, the note they left and a copy of the specs, criteria, test counts, tasks
+      and pull requests it was approved on, and a history of every change to these: what changed,
+      when, and whose account made the change. The history notes when a request's, a spec's or a
+      task's text changed without keeping the text. Everyone in a workspace sees the name and email
+      address of each person in it, and its history. An invitation link lets anyone who has it join,
+      until it's revoked or 7 days pass; we keep only a scrambled form of it, from which the link
+      can't be worked out.
     </li>
     <li>
       <strong>Your workspace's test results.</strong>{' '}
@@ -199,10 +201,10 @@ const providers = [
       itself with Supabase, which keeps the name it gives and the addresses it asks to be sent back
       to, and you allow or deny it on a page of ours. Once you allow it, Supabase keeps that you did
       and when, and the agent works in your workspaces as you, within your role: it reads their
-      requests, specs, tasks and test results, asks questions about a request, writes specs,
-      criteria and tasks, and takes tasks and hands them in. The workspace's history names the agent
-      with each change it makes, and each question it asks. What it reads goes to the agent, and
-      from there to the AI model it uses, under your agreement with whoever makes them.
+      requests, releases, specs, tasks and test results, asks questions about a request, writes
+      specs, criteria and tasks, and takes tasks and hands them in. The workspace's history names
+      the agent with each change it makes, and each question it asks. What it reads goes to the
+      agent, and from there to the AI model it uses, under your agreement with whoever makes them.
       Disconnecting it in a workspace's Settings ends its access at once.
     </li>
     <li>
