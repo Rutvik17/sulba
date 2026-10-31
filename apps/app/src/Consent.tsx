@@ -157,7 +157,7 @@ export function Consent() {
           <ul className={css.list}>
             <li>
               <Yes />
-              Read requests, specs, tasks and their test evidence
+              Read requests, releases, specs, tasks and their test evidence
             </li>
             <li>
               <Yes />
@@ -191,6 +191,10 @@ export function Consent() {
             <li>
               <No />
               Mark tasks done or cancel them
+            </li>
+            <li>
+              <No />
+              Approve a release
             </li>
             <li>
               <No />

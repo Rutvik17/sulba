@@ -128,9 +128,11 @@ const proof = (n: number, state: string, counts: { passed: number; failed: numbe
 function standIn({
   refuse,
   disconnected = false,
+  releases = [],
 }: {
   refuse?: { code: string; message: string };
   disconnected?: boolean;
+  releases?: object[];
 } = {}) {
   const sent: Request[] = [];
   const fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -147,6 +149,16 @@ function standIn({
     if (refuse && request.method !== 'GET')
       return json({ ...refuse, details: null, hint: null }, 403);
     if (path.endsWith('/members')) {
+      if (new URL(request.url).searchParams.get('select')?.includes('people')) {
+        return json([
+          {
+            person_id: person,
+            role: 'owner',
+            joined_at: '2026-10-28T00:00:00Z',
+            people: { name: 'Ada Lovelace', email: 'ada@example.com' },
+          },
+        ]);
+      }
       const row = { role: 'member', workspaces: workspace };
       return json(one ? row : [row]);
     }
@@ -157,6 +169,7 @@ function standIn({
       return json([counted ? { ...bookingApp, specs: [{ count: 1 }] } : bookingApp]);
     }
     if (path.endsWith('/rpc/ask_question')) return json('q3');
+    if (path.endsWith('/releases')) return json(releases);
     if (path.endsWith('/tasks')) return json(one ? bookingTask : [bookingTask]);
     if (path.endsWith('/rpc/create_task')) return json(8);
     if (path.endsWith('/rpc/update_task')) return new Response(null, { status: 204 });
@@ -330,6 +343,7 @@ test('an agent on the 2025 protocol starts a session and lists the tools, reads 
     'list_requests',
     'get_request',
     'ask_question',
+    'get_release',
     'list_tasks',
     'get_task',
     'create_task',
@@ -345,6 +359,7 @@ test('an agent on the 2025 protocol starts a session and lists the tools, reads 
     'get_spec',
     'list_requests',
     'get_request',
+    'get_release',
     'list_tasks',
     'get_task',
     'get_evidence',
@@ -457,6 +472,52 @@ test('an agent asks about a request, and drafts a spec that names it', async () 
       },
     ],
   ]);
+});
+
+test('get_release says what stands between a request and its release until one is approved', async () => {
+  const { text } = await tool('get_release', { workspace: 'acme', request: 'REQ-2' });
+  expect(text).toBe(
+    [
+      'REQ-2 has no release yet. A person approves one in Sulba.',
+      '',
+      'Before it can be approved:',
+      '- SPEC-3 has 1 of 2 criteria not proven yet: AC-2.',
+    ].join('\n'),
+  );
+});
+
+test('get_release gives the latest release’s document, naming who approved it', async () => {
+  const supabase = standIn({
+    releases: [
+      {
+        id: 'rel2',
+        number: 2,
+        note: null,
+        approved_by: person,
+        approved_at: '2026-10-31T09:00:00Z',
+        snapshot: [
+          {
+            number: 3,
+            title: 'Retry failed payments',
+            status: 'implemented',
+            criteria: [{ number: 1, text: 'Retries once after 30 seconds', tests: 2 }],
+            tasks: [],
+          },
+        ],
+      },
+    ],
+  });
+  const { text } = await tool(
+    'get_release',
+    { workspace: 'acme', request: 'REQ-2' },
+    supabase.fetch,
+  );
+  expect(text.split('\n').slice(0, 3)).toEqual([
+    '# REQ-2 A booking app: release 2',
+    '',
+    'Approved by Ada Lovelace on October 31, 2026 (UTC).',
+  ]);
+  expect(text).toContain('| AC-1 Retries once after 30 seconds | 2 tests |');
 });
 
 test('get_task gives the task’s spec, status, what blocks it, its instructions and its criteria in order', async () => {

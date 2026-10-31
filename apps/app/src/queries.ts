@@ -8,6 +8,7 @@ import {
   repositoriesOf,
   specProofsOf,
 } from '@sulba/data/evidence';
+import { releasesOf } from '@sulba/data/releases';
 import { requestAt, requestsOf } from '@sulba/data/requests';
 import { reviewsOf } from '@sulba/data/reviewers';
 import { historyOf, specAt, specsOf } from '@sulba/data/specs';
@@ -32,6 +33,7 @@ export const keys = {
   invitations: (workspaceId: string) => ['invitations', workspaceId] as const,
   requests: (workspaceId: string) => ['requests', workspaceId] as const,
   request: (workspaceId: string, number: number) => ['request', workspaceId, number] as const,
+  releases: (requestId: string) => ['releases', requestId] as const,
   /** Every task in a workspace; a spec's own sit under it. */
   tasks: (workspaceId: string) => ['tasks', workspaceId] as const,
   specTasks: (workspaceId: string, specId: string) => ['tasks', workspaceId, specId] as const,
@@ -91,6 +93,15 @@ export function useTaskAt(workspace: Workspace, number: number) {
   return useSuspenseQuery({
     queryKey: keys.task(workspace.id, number),
     queryFn: () => taskAt(client, workspace.id, number),
+  });
+}
+
+/** A request's releases, the newest first. */
+export function useReleases(requestId: string) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.releases(requestId),
+    queryFn: () => releasesOf(client, requestId),
   });
 }
 

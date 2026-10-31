@@ -23,6 +23,7 @@ import { Link } from '@tanstack/react-router';
 import { type FormEvent, useState } from 'react';
 import { useAccount } from './account';
 import { useCommands } from './commands';
+import { Delivery } from './Delivery';
 import { EditableTitle, SavedText } from './Editing';
 import { Notice } from './Notice';
 import { keys, useMembers, useRequestAt } from './queries';
@@ -64,7 +65,8 @@ const own = classes(
 
 /**
  * A request's page, at its ID: REQ-3 (decision record 60). Its writer's words, the questions
- * agents asked about it with the answers people gave, and the specs drafted from it.
+ * agents asked about it with the answers people gave, the specs drafted from it, and its releases
+ * (decision record 62).
  */
 export function RequestPage({ number }: { number: number }) {
   const workspace = useWorkspace();
@@ -215,6 +217,8 @@ function Page({ request, members }: { request: Request; members: readonly Member
             </ul>
           )}
         </section>
+
+        <Delivery request={request} canWrite={canWrite} names={names} />
       </div>
 
       <aside className={css.side} aria-label="Details">
