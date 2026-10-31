@@ -21,8 +21,11 @@ test('a person allows an agent, which gets its code back', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Request' })).toHaveText(
     'Claude CodeReturns you to 127.0.0.1:33418 on this computerOnly allow this if you just started connecting Claude Code on this computer.',
   );
+  await expect(page.getByRole('region', { name: 'It will be able to' })).toContainText(
+    'Ask you questions about a request',
+  );
   await expect(page.getByRole('region', { name: 'It won’t be able to' })).toContainText(
-    'Approve, abandon or supersede specs',
+    'Write or change requests, or answer questions about them',
   );
   await page.getByRole('button', { name: 'Allow' }).click();
 

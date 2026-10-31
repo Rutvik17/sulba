@@ -23,8 +23,21 @@ const spec = (number: number, updatedAt: string) => ({
   updated_at: updatedAt,
 });
 
-it('asks for the reviews waiting, and those whose spec changed after a request for changes', async () => {
+it('asks for the questions and reviews waiting, and reviews whose spec changed after a request for changes', async () => {
   const tables: Record<string, unknown> = {
+    questions: {
+      data: [
+        {
+          id: 'q1',
+          text: 'Do members pay when they book?',
+          asked_by: 'ada',
+          asked_by_agent: 'Claude Code',
+          asked_at: '2026-10-27T08:00:00Z',
+          requests: { number: 2, title: 'A booking app', status: 'open', created_by: 'ben' },
+        },
+      ],
+      error: null,
+    },
     spec_reviews: {
       data: [
         {
@@ -70,6 +83,17 @@ it('asks for the reviews waiting, and those whose spec changed after a request f
 
   const work = await workOf(client, 'w1', 'ben');
 
+  expect(work.questions).toEqual([
+    {
+      id: 'q1',
+      text: 'Do members pay when they book?',
+      requestNumber: 2,
+      requestTitle: 'A booking app',
+      askedBy: 'ada',
+      askedByAgent: 'Claude Code',
+      askedAt: '2026-10-27T08:00:00Z',
+    },
+  ]);
   expect(work.asked.map((each) => [each.specNumber, each.changedSinceAnswer])).toEqual([
     [1, false],
     [2, true],

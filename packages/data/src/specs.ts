@@ -100,6 +100,8 @@ export interface Spec {
   readonly updatedAt: string;
   /** In the order they were added. */
   readonly criteria: readonly Criterion[];
+  /** The request it was drafted from, if any. */
+  readonly request: { readonly number: number; readonly title: string } | null;
 }
 
 /** One change in a spec's history: to the spec or one of its criteria. */
@@ -144,7 +146,7 @@ export async function specAt(
   const { data, error } = await client
     .from('specs')
     .select(
-      'id, number, title, status, body, owner_id, created_at, updated_at, criteria(id, number, text)',
+      'id, number, title, status, body, owner_id, created_at, updated_at, criteria(id, number, text), requests(number, title)',
     )
     .eq('workspace_id', workspaceId)
     .eq('number', number)
@@ -162,20 +164,26 @@ export async function specAt(
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     criteria: data.criteria,
+    request: data.requests,
   };
 }
 
-/** Writes a spec with its first criteria, owned by the person who writes it, and gives its number. */
+/**
+ * Writes a spec with its first criteria, owned by the person who writes it, and gives its number.
+ * A spec drafted from a request names it.
+ */
 export async function createSpec(
   client: Client,
   workspaceId: string,
   title: string,
   criteria: readonly string[],
+  requestId?: string,
 ): Promise<number> {
   const { data, error } = await client.rpc('create_spec', {
     workspace: workspaceId,
     title: title.trim(),
     criteria: criteria.map((text) => text.trim()).filter((text) => text !== ''),
+    ...(requestId === undefined ? {} : { request: requestId }),
   });
   if (error) throw refusal(error);
   return data;

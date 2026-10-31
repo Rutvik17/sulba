@@ -1,0 +1,86 @@
+/*
+  A request's questions: each one, who asked it and when, and its answer or the field to answer
+  it in; and the specs drafted from it. Each is a bordered list like a spec's criteria.
+*/
+.questions,
+.drafted {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  list-style: none;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+
+.spec {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+}
+
+.question + .question,
+.spec + .spec {
+  border-top: 1px solid var(--line);
+}
+
+.asked {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  line-height: var(--leading);
+}
+
+.by {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.answer {
+  margin: 0;
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--line-2);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: var(--leading);
+}
+
+.answered {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.waiting {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--text-sm);
+}
+
+.reply {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.reply > :first-child {
+  align-self: stretch;
+}
+
+.status {
+  margin-inline-start: auto;
+  color: var(--dim);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}

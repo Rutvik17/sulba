@@ -1,10 +1,22 @@
-// What needs a person in a workspace now, as My work shows it: the specs they've been asked to
-// review, the specs they own that aren't built yet, and the criteria failing on their specs.
+// What needs a person in a workspace now, as My work shows it: the questions waiting on the open
+// requests they wrote, the specs they've been asked to review, the specs they own that aren't built
+// yet, and the criteria failing on their specs.
 import type { Client } from './client.ts';
 import { type CriterionProof, failingOn } from './evidence.ts';
 import { refusal } from './refusal.ts';
 import type { Verdict } from './reviewers.ts';
 import type { SpecStatus } from './specs.ts';
+
+/** A question on an open request the person wrote, waiting for their answer. */
+export interface Waiting {
+  readonly id: string;
+  readonly text: string;
+  readonly requestNumber: number;
+  readonly requestTitle: string;
+  readonly askedBy: string | null;
+  readonly askedByAgent: string | null;
+  readonly askedAt: string;
+}
 
 /** A spec the person has been asked to review, or to review again since it changed. */
 export interface Asked {
@@ -29,13 +41,24 @@ export interface Owned {
 }
 
 export interface Work {
+  readonly questions: readonly Waiting[];
   readonly asked: readonly Asked[];
   readonly owned: readonly Owned[];
   readonly failing: readonly CriterionProof[];
 }
 
 export async function workOf(client: Client, workspaceId: string, personId: string): Promise<Work> {
-  const [reviews, specs, failing] = await Promise.all([
+  const [questions, reviews, specs, failing] = await Promise.all([
+    client
+      .from('questions')
+      .select(
+        'id, text, asked_by, asked_by_agent, asked_at, requests!inner(number, title, status, created_by)',
+      )
+      .eq('workspace_id', workspaceId)
+      .is('answer', null)
+      .eq('requests.created_by', personId)
+      .eq('requests.status', 'open')
+      .order('asked_at'),
     client
       .from('spec_reviews')
       .select(
@@ -56,9 +79,19 @@ export async function workOf(client: Client, workspaceId: string, personId: stri
       .limit(50),
     failingOn(client, workspaceId, personId),
   ]);
+  if (questions.error) throw refusal(questions.error);
   if (reviews.error) throw refusal(reviews.error);
   if (specs.error) throw refusal(specs.error);
   return {
+    questions: questions.data.map((row) => ({
+      id: row.id,
+      text: row.text,
+      requestNumber: row.requests.number,
+      requestTitle: row.requests.title,
+      askedBy: row.asked_by,
+      askedByAgent: row.asked_by_agent,
+      askedAt: row.asked_at,
+    })),
     asked: reviews.data
       .map((row) => ({
         specId: row.specs.id,

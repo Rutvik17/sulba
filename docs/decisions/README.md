@@ -63,5 +63,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [57. Show recent times as how long ago, and older ones as dates](0057-show-recent-times-relative-and-older-ones-as-dates.md) | Accepted |
 | [58. Word the consent page like the authorization screens people know](0058-word-the-consent-page-like-the-authorization-screens-people-know.md) | Accepted |
 | [59. Take a request to proven software with the agents a customer brings](0059-take-a-request-to-proven-software-with-the-agents-a-customer-brings.md) | Accepted |
+| [60. Take requests in people's own words, and let agents ask before they draft](0060-take-requests-in-peoples-own-words-and-let-agents-ask-before-they-draft.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

@@ -2,7 +2,7 @@
   A workspace's frame: a quiet sidebar on the left, 232px wide, with the workspace switcher and
   the button that opens the command menu, the workspace's pages with the keys that go to each,
   shown while the pointer is over one or the keyboard is on it, and the page beside it. Under 720px
-  the sidebar is a bar across the top.
+  the sidebar is a bar across the top, with the pages as a row of tabs at its foot.
 */
 .shell {
   display: grid;
@@ -173,6 +173,16 @@
 
   .nav {
     flex-direction: row;
+    flex-basis: 100%;
+    order: 2;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .link {
+    flex: none;
+    white-space: nowrap;
   }
 
   .search {

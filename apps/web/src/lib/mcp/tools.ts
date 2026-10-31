@@ -14,6 +14,15 @@ import {
   proofsOfSpec,
   specProofsOf,
 } from '@sulba/data/evidence';
+import {
+  askQuestion,
+  type Request,
+  requestAt,
+  requestKey,
+  requestNumberOf,
+  requestStatusNames,
+  requestsOf,
+} from '@sulba/data/requests';
 import { type NamedReview, namedReviewsOf, verdictNames } from '@sulba/data/reviewers';
 import {
   addCriterion,
@@ -44,6 +53,7 @@ export const instructions = [
   'Before building, read the spec with get_spec, and build what its criteria say.',
   'A test proves a criterion by putting the criterion’s ID in its name, such as test_SPEC_12_AC_3_retries_once for SPEC-12/AC-3. When the team’s CI runs it on the repository’s branch, Sulba marks the criterion proven or failing.',
   'You can draft specs, add and reword criteria, put a spec in review and mark it implemented. People approve, abandon and supersede specs: a spec with reviewers is approved when every one of them approves it, and get_spec shows what a reviewer who asked for changes said.',
+  'People also write requests: what they want built, in their own words. To turn one into specs, read it with get_request, ask its writer what you need to know with ask_question, and once they have answered, draft its specs with create_spec, naming the request.',
 ].join(' ');
 
 const workspaceInput = z
@@ -52,6 +62,7 @@ const workspaceInput = z
     'The workspace’s address, such as acme for sulba.dev/app/acme. list_workspaces gives them.',
   );
 const specInput = z.string().describe('The spec’s ID, such as SPEC-12.');
+const requestInput = z.string().describe('The request’s ID, such as REQ-3.');
 
 const answer = (text: string): CallToolResult => ({ content: [{ type: 'text', text }] });
 
@@ -81,6 +92,14 @@ async function specOf(agent: Agent, workspace: Workspace, id: string): Promise<S
   const spec = await specAt(agent.client, workspace.id, number);
   if (!spec) throw new Error(`${workspace.name} has no ${specKey(number)}.`);
   return spec;
+}
+
+async function requestOf(agent: Agent, workspace: Workspace, id: string): Promise<Request> {
+  const number = requestNumberOf(id.trim());
+  if (number === null) throw new Error(`${id} isn’t a request’s ID. One looks like REQ-3.`);
+  const request = await requestAt(agent.client, workspace.id, number);
+  if (!request) throw new Error(`${workspace.name} has no ${requestKey(number)}.`);
+  return request;
 }
 
 /** The spec and criterion numbers in an ID such as SPEC-12/AC-3. */
@@ -240,13 +259,17 @@ export function createServer(agent: Agent): McpServer {
             'Its acceptance criteria, each one thing that must be true, testable on its own.',
           ),
         text: z.string().optional().describe('Why it’s needed and what it covers, in Markdown.'),
+        request: requestInput
+          .optional()
+          .describe('The request it’s drafted from, such as REQ-3, if any.'),
       }),
       annotations: write,
     },
-    ({ workspace: slug, title, criteria, text }) =>
+    ({ workspace: slug, title, criteria, text, request: requestId }) =>
       run(async () => {
         const workspace = await workspaceOf(agent, slug);
-        const number = await createSpec(agent.client, workspace.id, title, criteria);
+        const request = requestId ? await requestOf(agent, workspace, requestId) : undefined;
+        const number = await createSpec(agent.client, workspace.id, title, criteria, request?.id);
         if (text?.trim()) {
           const spec = await specOf(agent, workspace, specKey(number));
           await updateSpec(agent.client, spec.id, { body: text });
@@ -335,6 +358,90 @@ export function createServer(agent: Agent): McpServer {
         if (!criterion) throw new Error(`${specKey(spec.number)} has no AC-${numbers.criterion}.`);
         await rewordCriterion(agent.client, criterion.id, text);
         return `Reworded ${criterionKey(spec.number, criterion.number)}.`;
+      }),
+  );
+
+  server.registerTool(
+    'list_requests',
+    {
+      title: 'List requests',
+      description:
+        'The requests in a workspace, newest first: what people want built, in their own words, each with how many of its questions wait for an answer and how many specs were drafted from it.',
+      inputSchema: z.object({ workspace: workspaceInput }),
+      annotations: read,
+    },
+    ({ workspace: slug }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const requests = await requestsOf(agent.client, workspace.id);
+        if (requests.length === 0) return `${workspace.name} has no requests yet.`;
+        return requests
+          .map(
+            (request) =>
+              `- ${requestKey(request.number)}: ${request.title} (${requestStatusNames[request.status]}; ${count(request.unanswered, 'question waits', 'questions wait')} for an answer; ${count(request.specs, 'spec', 'specs')} drafted)`,
+          )
+          .join('\n');
+      }),
+  );
+
+  server.registerTool(
+    'get_request',
+    {
+      title: 'Read a request',
+      description:
+        'A request: what its writer wants built, in their own words, the questions asked about it with their answers, and the specs drafted from it. Read it before asking about it or drafting its specs.',
+      inputSchema: z.object({ workspace: workspaceInput, request: requestInput }),
+      annotations: read,
+    },
+    ({ workspace: slug, request: id }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const request = await requestOf(agent, workspace, id);
+        const questions = request.questions.map((question) =>
+          question.answer === null
+            ? `- ${question.text}\n  Not answered yet.`
+            : `- ${question.text}\n  Answer: ${question.answer}`,
+        );
+        const specs = request.specs.map(
+          (spec) => `- ${specKey(spec.number)}: ${spec.title} (${statusNames[spec.status]})`,
+        );
+        return [
+          `# ${requestKey(request.number)}: ${request.title}`,
+          '',
+          `Status: ${requestStatusNames[request.status]}. ${link(workspace, requestKey(request.number))}`,
+          '',
+          request.body.trim() || 'It has no text beyond its title.',
+          '',
+          '## Questions',
+          '',
+          ...(questions.length ? questions : ['None asked yet.']),
+          '',
+          '## Specs drafted from it',
+          '',
+          ...(specs.length ? specs : ['None yet.']),
+        ].join('\n');
+      }),
+  );
+
+  server.registerTool(
+    'ask_question',
+    {
+      title: 'Ask about a request',
+      description:
+        'Asks a request’s writer one question, while the request is open. They answer in Sulba, and get_request shows the answer. Ask what you need to know to write its specs, one thing at a time.',
+      inputSchema: z.object({
+        workspace: workspaceInput,
+        request: requestInput,
+        question: z.string().describe('One question, in at most 1,000 characters.'),
+      }),
+      annotations: write,
+    },
+    ({ workspace: slug, request: id, question }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const request = await requestOf(agent, workspace, id);
+        await askQuestion(agent.client, request.id, question);
+        return `Asked about ${requestKey(request.number)}. Its writer answers in Sulba. ${link(workspace, requestKey(request.number))}`;
       }),
   );
 

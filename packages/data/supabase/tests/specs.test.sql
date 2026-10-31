@@ -11,7 +11,7 @@ insert into auth.users (id, email, raw_user_meta_data) values
 
 select schema_privs_are('private', 'authenticated', array[]::text[], 'Signed-in people can''t reach the numbers');
 select ok(
-  not has_function_privilege('anon', 'public.create_spec(uuid, text, text[])', 'execute'),
+  not has_function_privilege('anon', 'public.create_spec(uuid, text, text[], uuid)', 'execute'),
   'Visitors can''t call create_spec'
 );
 select ok(

@@ -15,6 +15,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { createContext, type ReactNode, use, useEffect, useId, useRef, useState } from 'react';
 import { useAccount, useSignOut } from './account';
 import styles from './commands.module.css';
+import { NewRequest } from './NewRequest';
 import { NewSpec } from './NewSpec';
 import { keys, useWorkspaces } from './queries';
 import { useWorkspace } from './Shell';
@@ -54,6 +55,7 @@ interface Registry {
   /** Each page's commands, under the page's own key. */
   readonly pages: Map<symbol, readonly Command[]>;
   readonly createSpec: () => void;
+  readonly createRequest: () => void;
   readonly openMenu: () => void;
 }
 
@@ -79,6 +81,11 @@ export function useCommands(commands: readonly Command[]): void {
 /** Opens the dialog that writes a new spec, from the page's button or from C. */
 export function useCreateSpec(): () => void {
   return useRegistry().createSpec;
+}
+
+/** Opens the dialog that writes a new request. */
+export function useCreateRequest(): () => void {
+  return useRegistry().createRequest;
 }
 
 /** Opens the command menu, from the sidebar's button. */
@@ -150,17 +157,27 @@ export function Commands({ children }: { children: ReactNode }) {
   const [menu, setMenu] = useState<{ list: string | null; query: string } | null>(null);
   const [showingKeys, setShowingKeys] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [singleKeys, setSingleKeys] = useState(singleKeysOn);
   const [registry] = useState<Registry>(() => ({
     pages,
     createSpec: () => setCreating(true),
+    createRequest: () => setRequesting(true),
     openMenu: () => setMenu({ list: null, query: '' }),
   }));
   const slug = workspace.slug;
   const canWrite = holds(workspace.role, 'member');
 
   const go =
-    (to: '/$slug' | '/$slug/specs' | '/$slug/evidence' | '/$slug/members' | '/$slug/settings') =>
+    (
+      to:
+        | '/$slug'
+        | '/$slug/requests'
+        | '/$slug/specs'
+        | '/$slug/evidence'
+        | '/$slug/members'
+        | '/$slug/settings',
+    ) =>
     () =>
       void navigate({ to, params: { slug } });
   const own: Command[] = [
@@ -173,6 +190,12 @@ export function Commands({ children }: { children: ReactNode }) {
             keys: ['c'],
             does: () => setCreating(true),
           },
+          {
+            id: 'new-request',
+            label: 'Create a request',
+            group: 'Create',
+            does: () => setRequesting(true),
+          },
         ]
       : []),
     {
@@ -182,6 +205,13 @@ export function Commands({ children }: { children: ReactNode }) {
       does: () => void navigate({ to: '/new' }),
     },
     { id: 'go-work', label: 'Go to My work', group: 'Go to', keys: ['g', 'w'], does: go('/$slug') },
+    {
+      id: 'go-requests',
+      label: 'Go to Requests',
+      group: 'Go to',
+      keys: ['g', 'r'],
+      does: go('/$slug/requests'),
+    },
     {
       id: 'go-specs',
       label: 'Go to Specs',
@@ -310,6 +340,7 @@ export function Commands({ children }: { children: ReactNode }) {
         }}
       />
       <NewSpec isOpen={creating} onClose={() => setCreating(false)} />
+      <NewRequest isOpen={requesting} onClose={() => setRequesting(false)} />
     </RegistryContext>
   );
 }

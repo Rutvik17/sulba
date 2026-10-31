@@ -1,8 +1,8 @@
 import { type Claim, type CriterionProof, confirmCriterion } from '@sulba/data/evidence';
+import { requestKey, requestNumberOf } from '@sulba/data/requests';
 import type { Review } from '@sulba/data/reviewers';
 import {
   addCriterion,
-  bodyLimit,
   type Criterion,
   criterionKey,
   criterionProblem,
@@ -19,7 +19,6 @@ import {
   updateSpec,
 } from '@sulba/data/specs';
 import { holds, type Member } from '@sulba/data/workspaces';
-import { Markdown } from '@sulba/editor/markdown';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
 import { Dialog } from '@sulba/ui/dialog';
@@ -27,14 +26,16 @@ import { Select } from '@sulba/ui/select';
 import { TextField } from '@sulba/ui/textfield';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, type KeyboardEvent, useState } from 'react';
 import { useAccount } from './account';
 import { useCommands } from './commands';
+import { EditableTitle, SavedText } from './Editing';
 import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
 import { ProofMark } from './ProofMark';
 import { commitUrl, reasonOf, runUrl } from './proofs';
 import { keys, useHistory, useMembers, useReviews, useSpecAt, useSpecEvidence } from './queries';
+import { RequestPage } from './RequestPage';
 import { Reviewers, YourReview } from './Review';
 import { useWorkspace } from './Shell';
 import styles from './spec.module.css';
@@ -53,7 +54,6 @@ const css = classes(
   'heading',
   'section',
   'note',
-  'saved',
   'criteria',
   'criterion',
   'id',
@@ -75,9 +75,11 @@ const css = classes(
 
 const noOwner = 'none';
 
-/** A spec's page, at its ID: SPEC-12. */
+/** A spec's page, at its ID: SPEC-12, or a request's, at its own: REQ-3. */
 export function SpecPage() {
   const { spec: key } = useParams({ from: '/$slug/$spec' });
+  const request = requestNumberOf(key);
+  if (request !== null) return <RequestPage number={request} key={`request-${request}`} />;
   const number = specNumberOf(key);
   if (number === null) return <NoSpec>There’s no spec at this address.</NoSpec>;
   return <Loaded number={number} key={number} />;
@@ -188,7 +190,12 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
           <span className={css.key}>{key}</span>
         </nav>
 
-        <Title spec={spec} canWrite={canWrite} onSave={(title) => change.mutate({ title })} />
+        <EditableTitle
+          title={spec.title}
+          canWrite={canWrite}
+          problemOf={titleProblem}
+          onSave={(title) => change.mutate({ title })}
+        />
         <Notice text={failure} />
         {yours && spec.status === 'in_review' ? (
           <YourReview spec={spec} review={yours} members={members} />
@@ -200,7 +207,16 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
           <h2 id="text" className={css.unseen}>
             Text
           </h2>
-          <Body spec={spec} canWrite={canWrite} />
+          <SavedText
+            text={spec.body}
+            label={`${key}’s text`}
+            placeholder="Why this is needed, what it changes, and what it leaves out. Markdown works here."
+            canWrite={canWrite}
+            save={async (body) => {
+              await updateSpec(client, spec.id, { body });
+              await queryClient.invalidateQueries({ queryKey: keys.history(spec.id) });
+            }}
+          />
         </section>
 
         <Criteria spec={spec} canWrite={canWrite} onChanged={reread} />
@@ -255,6 +271,19 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
               <Reviewers spec={spec} reviews={reviews} members={members} canWrite={canWrite} />
             </dd>
           </div>
+          {spec.request ? (
+            <div>
+              <dt>Request</dt>
+              <dd>
+                <Link
+                  to="/$slug/$spec"
+                  params={{ slug: workspace.slug, spec: requestKey(spec.request.number) }}
+                >
+                  {requestKey(spec.request.number)} {spec.request.title}
+                </Link>
+              </dd>
+            </div>
+          ) : null}
           <div>
             <dt>Created</dt>
             <dd>
@@ -270,119 +299,6 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
         </dl>
       </aside>
     </div>
-  );
-}
-
-/** The spec's title, which members edit in place and save on Enter or on leaving the field. */
-function Title({
-  spec,
-  canWrite,
-  onSave,
-}: {
-  spec: Spec;
-  canWrite: boolean;
-  onSave: (title: string) => void;
-}) {
-  const [title, setTitle] = useState(spec.title);
-  const problem = titleProblem(title);
-  useEffect(() => setTitle(spec.title), [spec.title]);
-
-  if (!canWrite) return <h1 className={css.title}>{spec.title}</h1>;
-  const save = () => {
-    if (problem || title.trim() === spec.title) return;
-    onSave(title);
-  };
-  return (
-    <>
-      <h1 className={css.unseen}>{spec.title}</h1>
-      <input
-        className={css.title}
-        aria-label="Title"
-        value={title}
-        maxLength={200}
-        onChange={(event) => setTitle(event.target.value)}
-        onBlur={save}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') event.currentTarget.blur();
-          if (event.key === 'Escape') {
-            setTitle(spec.title);
-            event.currentTarget.blur();
-          }
-        }}
-        aria-invalid={problem !== null}
-        aria-describedby={problem ? 'title-problem' : undefined}
-      />
-      {problem ? (
-        <p id="title-problem" className={css.note} role="alert">
-          {problem}
-        </p>
-      ) : null}
-    </>
-  );
-}
-
-type Saving = 'saved' | 'saving' | 'unsaved' | 'failed';
-
-/** The spec's text in Markdown, saved a moment after the writer stops typing. */
-function Body({ spec, canWrite }: { spec: Spec; canWrite: boolean }) {
-  const { client } = useAccount();
-  const queryClient = useQueryClient();
-  const [saving, setSaving] = useState<Saving>('saved');
-  const pending = useRef<string | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  const flush = async () => {
-    clearTimeout(timer.current);
-    const body = pending.current;
-    if (body === null) return;
-    pending.current = null;
-    setSaving('saving');
-    try {
-      await updateSpec(client, spec.id, { body });
-      setSaving(pending.current === null ? 'saved' : 'unsaved');
-      await queryClient.invalidateQueries({ queryKey: keys.history(spec.id) });
-    } catch {
-      pending.current ??= body;
-      setSaving('failed');
-    }
-  };
-
-  // What's still unsaved when the page closes is saved on the way out.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: flush reads the latest text from a ref.
-  useEffect(() => () => void flush(), []);
-
-  const said: Record<Saving, string> = {
-    saved: 'Saved',
-    saving: 'Saving…',
-    unsaved: 'Not saved yet',
-    failed: 'Couldn’t save. Check your connection; it saves again as you type.',
-  };
-  return (
-    <>
-      <Markdown
-        defaultValue={spec.body}
-        label={`${specKey(spec.number)}’s text`}
-        placeholder={
-          canWrite
-            ? 'Why this is needed, what it changes, and what it leaves out. Markdown works here.'
-            : 'No text yet.'
-        }
-        limit={bodyLimit}
-        readOnly={!canWrite}
-        onChange={(body) => {
-          pending.current = body;
-          setSaving('unsaved');
-          clearTimeout(timer.current);
-          timer.current = setTimeout(() => void flush(), 1200);
-        }}
-        onBlur={() => void flush()}
-      />
-      {canWrite ? (
-        <p className={css.saved} aria-live="polite">
-          {said[saving]}
-        </p>
-      ) : null}
-    </>
   );
 }
 
