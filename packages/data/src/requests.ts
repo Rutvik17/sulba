@@ -50,8 +50,8 @@ export function answerProblem(answer: string): string | null {
   return null;
 }
 
-/** Who asked a question: "Ben Ortiz’s agent, Claude Code", or "Ben Ortiz" when a person asked. */
-export function askerName(person: string | null | undefined, agent: string | null): string {
+/** Who acted: "Ben Ortiz’s agent, Claude Code" for an agent acting for Ben, or "Ben Ortiz" when Ben acted. */
+export function actorName(person: string | null | undefined, agent: string | null): string {
   const who = person || 'Someone who has left';
   return agent ? `${who}’s agent, ${agent}` : who;
 }

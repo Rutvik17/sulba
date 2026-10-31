@@ -64,5 +64,6 @@ Each record covers one decision: the context, the options compared, the evidence
 | [58. Word the consent page like the authorization screens people know](0058-word-the-consent-page-like-the-authorization-screens-people-know.md) | Accepted |
 | [59. Take a request to proven software with the agents a customer brings](0059-take-a-request-to-proven-software-with-the-agents-a-customer-brings.md) | Accepted |
 | [60. Take requests in people's own words, and let agents ask before they draft](0060-take-requests-in-peoples-own-words-and-let-agents-ask-before-they-draft.md) | Accepted |
+| [61. Split approved specs into tasks that agents take on a person's behalf](0061-split-approved-specs-into-tasks-agents-take-on-a-persons-behalf.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

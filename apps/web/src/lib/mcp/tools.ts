@@ -38,6 +38,18 @@ import {
   statusNames,
   updateSpec,
 } from '@sulba/data/specs';
+import {
+  createTask,
+  moveTask,
+  type Task,
+  taskAt,
+  taskKey,
+  taskNumberOf,
+  taskRoleNames,
+  taskRoles,
+  taskStatusNames,
+  tasksOf,
+} from '@sulba/data/tasks';
 import { type Workspace, workspaceAt, workspacesOf } from '@sulba/data/workspaces';
 import { z } from 'zod';
 
@@ -54,6 +66,7 @@ export const instructions = [
   'A test proves a criterion by putting the criterion’s ID in its name, such as test_SPEC_12_AC_3_retries_once for SPEC-12/AC-3. When the team’s CI runs it on the repository’s branch, Sulba marks the criterion proven or failing.',
   'You can draft specs, add and reword criteria, put a spec in review and mark it implemented. People approve, abandon and supersede specs: a spec with reviewers is approved when every one of them approves it, and get_spec shows what a reviewer who asked for changes said.',
   'People also write requests: what they want built, in their own words. To turn one into specs, read it with get_request, ask its writer what you need to know with ask_question, and once they have answered, draft its specs with create_spec, naming the request.',
+  'Approved specs are split into tasks with create_task, each with a role and the criteria it covers. Take a task with take_task before working on it, so no one else does. If you can’t go on, block it with update_task and say why; once its pull request is open, hand it in with update_task, naming the pull request. People mark tasks done.',
 ].join(' ');
 
 const workspaceInput = z
@@ -63,6 +76,7 @@ const workspaceInput = z
   );
 const specInput = z.string().describe('The spec’s ID, such as SPEC-12.');
 const requestInput = z.string().describe('The request’s ID, such as REQ-3.');
+const taskInput = z.string().describe('The task’s ID, such as TASK-7.');
 
 const answer = (text: string): CallToolResult => ({ content: [{ type: 'text', text }] });
 
@@ -100,6 +114,14 @@ async function requestOf(agent: Agent, workspace: Workspace, id: string): Promis
   const request = await requestAt(agent.client, workspace.id, number);
   if (!request) throw new Error(`${workspace.name} has no ${requestKey(number)}.`);
   return request;
+}
+
+async function taskOf(agent: Agent, workspace: Workspace, id: string): Promise<Task> {
+  const number = taskNumberOf(id.trim());
+  if (number === null) throw new Error(`${id} isn’t a task’s ID. One looks like TASK-7.`);
+  const task = await taskAt(agent.client, workspace.id, number);
+  if (!task) throw new Error(`${workspace.name} has no ${taskKey(number)}.`);
+  return task;
 }
 
 /** The spec and criterion numbers in an ID such as SPEC-12/AC-3. */
@@ -442,6 +464,160 @@ export function createServer(agent: Agent): McpServer {
         const request = await requestOf(agent, workspace, id);
         await askQuestion(agent.client, request.id, question);
         return `Asked about ${requestKey(request.number)}. Its writer answers in Sulba. ${link(workspace, requestKey(request.number))}`;
+      }),
+  );
+
+  server.registerTool(
+    'list_tasks',
+    {
+      title: 'List tasks',
+      description:
+        'The tasks in a workspace, newest first, each with its role, its spec, its status and who has it. Open tasks are free to take.',
+      inputSchema: z.object({ workspace: workspaceInput }),
+      annotations: read,
+    },
+    ({ workspace: slug }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const tasks = await tasksOf(agent.client, workspace.id);
+        if (tasks.length === 0) return `${workspace.name} has no tasks yet.`;
+        return tasks
+          .map(
+            (task) =>
+              `- ${taskKey(task.number)}: ${task.title} (${taskRoleNames[task.role]} for ${specKey(task.spec.number)}; ${taskStatusNames[task.status]})`,
+          )
+          .join('\n');
+      }),
+  );
+
+  server.registerTool(
+    'get_task',
+    {
+      title: 'Read a task',
+      description:
+        'A task: its spec, its role, the criteria it covers, what to do, and its status, with its pull request and what blocks it. Read its spec with get_spec too.',
+      inputSchema: z.object({ workspace: workspaceInput, task: taskInput }),
+      annotations: read,
+    },
+    ({ workspace: slug, task: id }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const task = await taskOf(agent, workspace, id);
+        const criteria = task.criteria.map(
+          (criterion) => `- ${criterionKey(task.spec.number, criterion.number)}: ${criterion.text}`,
+        );
+        return [
+          `# ${taskKey(task.number)}: ${task.title}`,
+          '',
+          `${taskRoleNames[task.role]} for ${specKey(task.spec.number)}, ${task.spec.title}. Status: ${taskStatusNames[task.status]}. ${link(workspace, taskKey(task.number))}`,
+          ...(task.pullRequest ? ['', `Pull request: ${task.pullRequest}`] : []),
+          ...(task.note
+            ? ['', `${task.status === 'blocked' ? 'Blocked' : 'Note'}: ${task.note}`]
+            : []),
+          '',
+          task.body.trim() || 'It has no instructions beyond its title.',
+          '',
+          '## Criteria it covers',
+          '',
+          ...(criteria.length ? criteria : ['None named.']),
+        ].join('\n');
+      }),
+  );
+
+  server.registerTool(
+    'create_task',
+    {
+      title: 'Write a task',
+      description:
+        'Writes a task from an approved spec: one piece of work for one pull request, with its role and the spec’s criteria it covers.',
+      inputSchema: z.object({
+        workspace: workspaceInput,
+        spec: specInput,
+        title: z.string().describe('What the task is, in at most 200 characters.'),
+        role: z
+          .enum(taskRoles)
+          .describe(
+            'build writes the code, test writes the tests that prove its criteria, review reviews a pull request, and document writes the documents.',
+          ),
+        instructions: z
+          .string()
+          .optional()
+          .describe('What to do, where, and what done means, in Markdown.'),
+        criteria: z
+          .array(z.number().int().positive())
+          .optional()
+          .describe(
+            'The numbers of the spec’s criteria it covers, such as [1, 3] for AC-1 and AC-3.',
+          ),
+      }),
+      annotations: write,
+    },
+    ({ workspace: slug, spec: id, title, role, instructions: body, criteria }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const spec = await specOf(agent, workspace, id);
+        const number = await createTask(agent.client, spec.id, {
+          title,
+          role,
+          body: body ?? '',
+          criteria: criteria ?? [],
+        });
+        return `Wrote ${taskKey(number)}. ${link(workspace, taskKey(number))}`;
+      }),
+  );
+
+  server.registerTool(
+    'take_task',
+    {
+      title: 'Take a task',
+      description:
+        'Takes an open task for your person, so no one else works on it. Take a task before you start on it.',
+      inputSchema: z.object({ workspace: workspaceInput, task: taskInput }),
+      annotations: write,
+    },
+    ({ workspace: slug, task: id }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const task = await taskOf(agent, workspace, id);
+        await moveTask(agent.client, task.id, 'in_progress');
+        return `Took ${taskKey(task.number)}. ${link(workspace, taskKey(task.number))}`;
+      }),
+  );
+
+  server.registerTool(
+    'update_task',
+    {
+      title: 'Move a task on',
+      description:
+        'Moves a task you have on: blocked, with a note saying why; in_review, naming its pull request in one of the workspace’s repositories; in_progress, to carry on; or open, to let someone else take it. People mark it done.',
+      inputSchema: z.object({
+        workspace: workspaceInput,
+        task: taskInput,
+        status: z.enum(['in_progress', 'blocked', 'in_review', 'open']),
+        note: z
+          .string()
+          .optional()
+          .describe(
+            'Why it’s blocked, or what the pull request does, in at most 2,000 characters.',
+          ),
+        pull_request: z
+          .string()
+          .optional()
+          .describe(
+            'The pull request’s address, such as https://github.com/acme-co/booking/pull/12.',
+          ),
+      }),
+      annotations: write,
+    },
+    ({ workspace: slug, task: id, status, note, pull_request: pullRequest }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const task = await taskOf(agent, workspace, id);
+        await moveTask(agent.client, task.id, status, {
+          ...(note === undefined ? {} : { note }),
+          ...(pullRequest === undefined ? {} : { pullRequest }),
+        });
+        return `${taskKey(task.number)} is ${taskStatusNames[status].toLowerCase()}. ${link(workspace, taskKey(task.number))}`;
       }),
   );
 

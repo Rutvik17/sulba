@@ -14,6 +14,7 @@
     "./reviews": "./src/reviews.ts",
     "./session": "./src/session.ts",
     "./specs": "./src/specs.ts",
+    "./tasks": "./src/tasks.ts",
     "./study": "./src/study.ts",
     "./sync": "./src/sync.ts",
     "./work": "./src/work.ts",

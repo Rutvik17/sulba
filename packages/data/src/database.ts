@@ -653,6 +653,137 @@ export type Database = {
         };
         Relationships: [];
       };
+      task_criteria: {
+        Row: {
+          criterion_id: string;
+          task_id: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          criterion_id: string;
+          task_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          criterion_id?: string;
+          task_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'task_criteria_criterion_id_fkey';
+            columns: ['criterion_id'];
+            isOneToOne: false;
+            referencedRelation: 'criteria';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'task_criteria_criterion_id_fkey';
+            columns: ['criterion_id'];
+            isOneToOne: false;
+            referencedRelation: 'criterion_proofs';
+            referencedColumns: ['criterion_id'];
+          },
+          {
+            foreignKeyName: 'task_criteria_workspace_id_task_id_fkey';
+            columns: ['workspace_id', 'task_id'];
+            isOneToOne: false;
+            referencedRelation: 'tasks';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
+      tasks: {
+        Row: {
+          body: string;
+          created_at: string;
+          created_by: string | null;
+          created_by_agent: string | null;
+          id: string;
+          note: string | null;
+          number: number;
+          pull_request: string | null;
+          role: Database['public']['Enums']['task_role'];
+          spec_id: string;
+          status: Database['public']['Enums']['task_status'];
+          taken_at: string | null;
+          taken_by: string | null;
+          taken_by_agent: string | null;
+          title: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          created_by_agent?: string | null;
+          id?: string;
+          note?: string | null;
+          number: number;
+          pull_request?: string | null;
+          role?: Database['public']['Enums']['task_role'];
+          spec_id: string;
+          status?: Database['public']['Enums']['task_status'];
+          taken_at?: string | null;
+          taken_by?: string | null;
+          taken_by_agent?: string | null;
+          title: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          created_by_agent?: string | null;
+          id?: string;
+          note?: string | null;
+          number?: number;
+          pull_request?: string | null;
+          role?: Database['public']['Enums']['task_role'];
+          spec_id?: string;
+          status?: Database['public']['Enums']['task_status'];
+          taken_at?: string | null;
+          taken_by?: string | null;
+          taken_by_agent?: string | null;
+          title?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tasks_taken_by_fkey';
+            columns: ['taken_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tasks_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tasks_workspace_id_spec_id_fkey';
+            columns: ['workspace_id', 'spec_id'];
+            isOneToOne: false;
+            referencedRelation: 'specs';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       test_claims: {
         Row: {
           classname: string;
@@ -923,6 +1054,16 @@ export type Database = {
         Args: { criteria?: string[]; request?: string; title: string; workspace: string };
         Returns: number;
       };
+      create_task: {
+        Args: {
+          body?: string;
+          criteria?: number[];
+          role?: Database['public']['Enums']['task_role'];
+          spec: string;
+          title: string;
+        };
+        Returns: number;
+      };
       create_workspace: {
         Args: { name: string; slug: string };
         Returns: {
@@ -969,6 +1110,15 @@ export type Database = {
         };
         Returns: undefined;
       };
+      update_task: {
+        Args: {
+          note?: string;
+          pull_request?: string;
+          status: Database['public']['Enums']['task_status'];
+          task: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
@@ -976,6 +1126,8 @@ export type Database = {
       request_status: 'open' | 'planned' | 'closed';
       review_verdict: 'pending' | 'approved' | 'changes_requested';
       spec_status: 'draft' | 'in_review' | 'approved' | 'implemented' | 'abandoned' | 'superseded';
+      task_role: 'build' | 'test' | 'review' | 'document';
+      task_status: 'open' | 'in_progress' | 'blocked' | 'in_review' | 'done' | 'canceled';
       test_outcome: 'passed' | 'failed' | 'skipped';
       workspace_role: 'viewer' | 'member' | 'admin' | 'owner';
     };
@@ -1098,6 +1250,8 @@ export const Constants = {
       request_status: ['open', 'planned', 'closed'],
       review_verdict: ['pending', 'approved', 'changes_requested'],
       spec_status: ['draft', 'in_review', 'approved', 'implemented', 'abandoned', 'superseded'],
+      task_role: ['build', 'test', 'review', 'document'],
+      task_status: ['open', 'in_progress', 'blocked', 'in_review', 'done', 'canceled'],
       test_outcome: ['passed', 'failed', 'skipped'],
       workspace_role: ['viewer', 'member', 'admin', 'owner'],
     },

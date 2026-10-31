@@ -1,4 +1,5 @@
 import { requestNumberOf } from '@sulba/data/requests';
+import { taskNumberOf } from '@sulba/data/tasks';
 import type { Workspace } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Keys } from '@sulba/ui/keys';
@@ -33,6 +34,7 @@ const pages = [
   { to: '/$slug', label: 'My work', keys: ['g', 'w'] },
   { to: '/$slug/requests', label: 'Requests', keys: ['g', 'r'] },
   { to: '/$slug/specs', label: 'Specs', keys: ['g', 's'] },
+  { to: '/$slug/tasks', label: 'Tasks', keys: ['g', 't'] },
   { to: '/$slug/evidence', label: 'Evidence', keys: ['g', 'e'] },
   { to: '/$slug/members', label: 'Members', keys: ['g', 'm'] },
   { to: '/$slug/settings', label: 'Settings', keys: ['g', ','] },
@@ -54,8 +56,8 @@ export function useWorkspace(): Workspace {
 export function Shell() {
   const { slug } = useParams({ from: '/$slug' });
   const { data: workspace } = useWorkspaceAt(slug);
-  // A spec's page sits under Specs in the sidebar, and a request's under Requests, though each
-  // one's address is its ID. Matching the route itself, not its pattern, keeps /$slug/members and
+  // A spec's page sits under Specs in the sidebar, a request's under Requests and a task's under
+  // Tasks, though each one's address is its ID. Matching the route itself, not its pattern, keeps /$slug/members and
   // the others from looking like one.
   const item = useMatches({
     select: (matches) => {
@@ -64,7 +66,13 @@ export function Shell() {
     },
   });
   const itemSection =
-    item === null ? null : requestNumberOf(item) === null ? '/$slug/specs' : '/$slug/requests';
+    item === null
+      ? null
+      : requestNumberOf(item) !== null
+        ? '/$slug/requests'
+        : taskNumberOf(item) !== null
+          ? '/$slug/tasks'
+          : '/$slug/specs';
 
   useEffect(() => {
     if (workspace) rememberWorkspace(workspace.slug);

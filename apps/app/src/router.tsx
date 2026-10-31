@@ -21,6 +21,7 @@ import { Settings } from './Settings';
 import { Shell } from './Shell';
 import { SignIn } from './SignIn';
 import { Specs } from './Specs';
+import { Tasks } from './Tasks';
 
 /** A page for someone signed in. A page waits for what it reads without showing a spinner. */
 const signedIn = (page: () => ReactNode) => () => (
@@ -69,8 +70,9 @@ const requests = createRoute({
   component: Requests,
 });
 const specs = createRoute({ getParentRoute: () => workspace, path: '/specs', component: Specs });
-// A spec's page, at its ID, or a request's, at its own (decision record 60). Each brings the
-// Markdown editor, which loads only once one is opened.
+const tasks = createRoute({ getParentRoute: () => workspace, path: '/tasks', component: Tasks });
+// A spec's page, at its ID, or a request's or a task's, at its own (decision records 60 and 61).
+// Each brings the Markdown editor, which loads only once one is opened.
 const spec = createRoute({
   getParentRoute: () => workspace,
   path: '/$spec',
@@ -99,7 +101,7 @@ export const router = createRouter({
     create,
     join,
     consent,
-    workspace.addChildren([opened, requests, specs, evidence, members, settings, spec]),
+    workspace.addChildren([opened, requests, specs, tasks, evidence, members, settings, spec]),
   ]),
   basepath: '/app',
   defaultPreload: 'intent',

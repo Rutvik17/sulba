@@ -1,6 +1,7 @@
-import { askerName, requestKey } from '@sulba/data/requests';
+import { actorName, requestKey } from '@sulba/data/requests';
 import { standingOf } from '@sulba/data/reviewers';
 import { criterionKey, specKey, statusNames } from '@sulba/data/specs';
+import { pullRequestName, taskKey, taskStatusNames } from '@sulba/data/tasks';
 import { holds } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Link } from '@tanstack/react-router';
@@ -36,8 +37,9 @@ function counted(count: number, one: string, many: string): string {
 
 /**
  * What needs the signed-in person in the workspace now: the questions agents asked about the open
- * requests they wrote, the specs they've been asked to review, the specs they own that aren't built
- * yet, and the criteria failing on their specs.
+ * requests they wrote, the tasks handed in or blocked on the specs they own, the specs they've been
+ * asked to review, the specs they own that aren't built yet, and the criteria failing on their
+ * specs.
  */
 export function MyWork() {
   const workspace = useWorkspace();
@@ -49,6 +51,7 @@ export function MyWork() {
   const summary =
     [
       work.questions.length ? counted(work.questions.length, 'to answer', 'to answer') : '',
+      work.tasks.length ? counted(work.tasks.length, 'task to check', 'tasks to check') : '',
       work.asked.length ? counted(work.asked.length, 'to review', 'to review') : '',
       work.owned.length ? counted(work.owned.length, 'open spec', 'open specs') : '',
       work.failing.length
@@ -101,13 +104,64 @@ export function MyWork() {
                       </span>
                     </td>
                     <td>
-                      {askerName(
+                      {actorName(
                         question.askedBy && names.get(question.askedBy),
                         question.askedByAgent,
                       )}
                     </td>
                     <td className={css.numeric}>
                       <When at={question.askedAt} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
+      {work.tasks.length ? (
+        <section className={css.section} aria-labelledby="to-check">
+          <h2 id="to-check" className={css.heading}>
+            Tasks to check
+          </h2>
+          <div className={css.scroll}>
+            <table className={css.table}>
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Taken by</th>
+                  <th scope="col">Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {work.tasks.map((task) => (
+                  <tr key={task.id}>
+                    <td>
+                      <Link
+                        to="/$slug/$spec"
+                        params={{ slug, spec: taskKey(task.number) }}
+                        className={css.key}
+                      >
+                        {taskKey(task.number)}
+                      </Link>
+                    </td>
+                    <td className={css.wrap}>
+                      <span className={css.person}>
+                        <span>{task.title}</span>
+                        <span className={css.dim}>
+                          {task.status === 'blocked'
+                            ? `${specKey(task.specNumber)} · ${task.note ?? ''}`
+                            : `${specKey(task.specNumber)}${task.pullRequest ? ` · ${pullRequestName(task.pullRequest)}` : ''}`}
+                        </span>
+                      </span>
+                    </td>
+                    <td>{taskStatusNames[task.status]}</td>
+                    <td>{actorName(task.takenBy && names.get(task.takenBy), task.takenByAgent)}</td>
+                    <td className={css.numeric}>
+                      <When at={task.updatedAt} />
                     </td>
                   </tr>
                 ))}

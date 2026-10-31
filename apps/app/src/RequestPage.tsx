@@ -1,7 +1,7 @@
 import {
+  actorName,
   answerProblem,
   answerQuestion,
-  askerName,
   type Question,
   type Request,
   type RequestChange,
@@ -299,7 +299,7 @@ function Asked({
     <li className={own.question}>
       <p className={own.asked}>{question.text}</p>
       <p className={own.by}>
-        {askerName(question.askedBy && names.get(question.askedBy), question.askedByAgent)} ·{' '}
+        {actorName(question.askedBy && names.get(question.askedBy), question.askedByAgent)} ·{' '}
         <When at={question.askedAt} />
       </p>
       {answering ? (

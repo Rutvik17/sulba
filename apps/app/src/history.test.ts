@@ -7,6 +7,7 @@ const context: Context = {
   names: new Map([['b', 'Ben Ortiz']]),
   criteria: new Map([['c3', 3]]),
   reviewers: new Map([['r1', 'b']]),
+  tasks: new Map([['t7', 7]]),
 };
 
 function change(partial: Partial<Change>): Change {
@@ -134,6 +135,44 @@ describe('whatOf', () => {
         context,
       ),
     ).toBe('confirmed that SPEC-12/AC-3’s tests check its wording');
+  });
+});
+
+describe('whatOf for tasks', () => {
+  const task = (partial: Partial<Change>) =>
+    change({ subjectType: 'task', subjectId: 't7', action: 'task.updated', ...partial });
+  const moved = (from: string, to: string) =>
+    whatOf(task({ changes: { status: [from, to] } }), context);
+
+  test('says who wrote, took, blocked and handed in a task', () => {
+    expect(whatOf(task({ action: 'task.created', changes: { number: [null, 7] } }), context)).toBe(
+      'wrote TASK-7',
+    );
+    expect(moved('open', 'in_progress')).toBe('took TASK-7');
+    expect(moved('in_progress', 'blocked')).toBe('blocked TASK-7');
+    expect(moved('blocked', 'in_progress')).toBe('resumed TASK-7');
+    expect(moved('in_progress', 'in_review')).toBe('handed in TASK-7');
+    expect(moved('in_review', 'in_progress')).toBe('sent TASK-7 back');
+  });
+
+  test('says who finished, canceled, released or opened a task again', () => {
+    expect(moved('in_review', 'done')).toBe('marked TASK-7 done');
+    expect(moved('open', 'canceled')).toBe('canceled TASK-7');
+    expect(moved('in_progress', 'open')).toBe('released TASK-7');
+    expect(moved('done', 'open')).toBe('opened TASK-7 again');
+  });
+
+  test('says what was edited', () => {
+    expect(
+      whatOf(
+        task({
+          changes: { title: ['Build it', 'Build the API'], role: ['build', 'test'], body: null },
+        }),
+        context,
+      ),
+    ).toBe(
+      'renamed TASK-7 “Build the API”, made TASK-7 a Test task and edited TASK-7’s instructions',
+    );
   });
 });
 

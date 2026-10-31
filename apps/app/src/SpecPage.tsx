@@ -18,6 +18,7 @@ import {
   titleProblem,
   updateSpec,
 } from '@sulba/data/specs';
+import { taskNumberOf } from '@sulba/data/tasks';
 import { holds, type Member } from '@sulba/data/workspaces';
 import { Button } from '@sulba/ui/button';
 import { classes } from '@sulba/ui/classes';
@@ -34,11 +35,21 @@ import { whatOf, whoOf } from './history';
 import { Notice } from './Notice';
 import { ProofMark } from './ProofMark';
 import { commitUrl, reasonOf, runUrl } from './proofs';
-import { keys, useHistory, useMembers, useReviews, useSpecAt, useSpecEvidence } from './queries';
+import {
+  keys,
+  useHistory,
+  useMembers,
+  useReviews,
+  useSpecAt,
+  useSpecEvidence,
+  useSpecTasks,
+} from './queries';
 import { RequestPage } from './RequestPage';
 import { Reviewers, YourReview } from './Review';
 import { useWorkspace } from './Shell';
+import { SpecTasks } from './SpecTasks';
 import styles from './spec.module.css';
+import { TaskPage } from './TaskPage';
 import { useTitle } from './title';
 import { When } from './When';
 
@@ -75,11 +86,13 @@ const css = classes(
 
 const noOwner = 'none';
 
-/** A spec's page, at its ID: SPEC-12, or a request's, at its own: REQ-3. */
+/** A spec's page, at its ID: SPEC-12, or a request's or a task's, at its own: REQ-3, TASK-7. */
 export function SpecPage() {
   const { spec: key } = useParams({ from: '/$slug/$spec' });
   const request = requestNumberOf(key);
   if (request !== null) return <RequestPage number={request} key={`request-${request}`} />;
+  const task = taskNumberOf(key);
+  if (task !== null) return <TaskPage number={task} key={`task-${task}`} />;
   const number = specNumberOf(key);
   if (number === null) return <NoSpec>There’s no spec at this address.</NoSpec>;
   return <Loaded number={number} key={number} />;
@@ -220,6 +233,7 @@ function Page({ spec, members }: { spec: Spec; members: readonly Member[] }) {
         </section>
 
         <Criteria spec={spec} canWrite={canWrite} onChanged={reread} />
+        <SpecTasks spec={spec} canWrite={canWrite} />
         <History spec={spec} members={members} reviews={reviews} />
       </div>
 
@@ -594,11 +608,13 @@ function History({
 }) {
   const workspace = useWorkspace();
   const { data: changes, isPending, isError } = useHistory(workspace, spec.id);
+  const { data: tasks } = useSpecTasks(workspace, spec.id);
   const context = {
     spec: spec.number,
     names: new Map(members.map((member) => [member.personId, member.name || member.email || ''])),
     criteria: new Map(spec.criteria.map((criterion) => [criterion.id, criterion.number])),
     reviewers: new Map(reviews.map((review) => [review.id, review.reviewerId])),
+    tasks: new Map(tasks.map((task) => [task.id, task.number])),
   };
 
   return (

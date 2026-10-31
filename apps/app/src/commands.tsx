@@ -173,6 +173,7 @@ export function Commands({ children }: { children: ReactNode }) {
       to:
         | '/$slug'
         | '/$slug/requests'
+        | '/$slug/tasks'
         | '/$slug/specs'
         | '/$slug/evidence'
         | '/$slug/members'
@@ -218,6 +219,13 @@ export function Commands({ children }: { children: ReactNode }) {
       group: 'Go to',
       keys: ['g', 's'],
       does: go('/$slug/specs'),
+    },
+    {
+      id: 'go-tasks',
+      label: 'Go to Tasks',
+      group: 'Go to',
+      keys: ['g', 't'],
+      does: go('/$slug/tasks'),
     },
     {
       id: 'go-evidence',

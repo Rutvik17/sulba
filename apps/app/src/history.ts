@@ -1,5 +1,6 @@
 // A spec's history in sentences: who did what, read from the changes Postgres logged.
 import { type Change, criterionKey, type SpecStatus, statusNames } from '@sulba/data/specs';
+import { type TaskRole, type TaskStatus, taskKey, taskRoleNames } from '@sulba/data/tasks';
 
 export interface Context {
   /** The spec's number, for its criteria's IDs. */
@@ -10,6 +11,8 @@ export interface Context {
   readonly criteria: ReadonlyMap<string, number>;
   /** Who each of the spec's reviews is from, by its id, for a change that doesn't say. */
   readonly reviewers: ReadonlyMap<string, string>;
+  /** The spec's tasks' numbers, by id, for a change that doesn't carry its number. */
+  readonly tasks: ReadonlyMap<string, number>;
 }
 
 /** Who made a change. Agents are always named as agents. */
@@ -47,9 +50,50 @@ function reviewOf(change: Change, context: Context): string {
   return 'changed a review';
 }
 
+/** What moving a task to a status did, such as "took TASK-7" or "handed in TASK-7". */
+function movedTo(from: TaskStatus | undefined, to: TaskStatus, which: string): string {
+  switch (to) {
+    case 'in_progress':
+      if (from === 'blocked') return `resumed ${which}`;
+      if (from === 'in_review') return `sent ${which} back`;
+      return `took ${which}`;
+    case 'blocked':
+      return `blocked ${which}`;
+    case 'in_review':
+      return `handed in ${which}`;
+    case 'done':
+      return `marked ${which} done`;
+    case 'canceled':
+      return `canceled ${which}`;
+    default:
+      return from === 'done' || from === 'canceled' ? `opened ${which} again` : `released ${which}`;
+  }
+}
+
+/** What a change to one of the spec's tasks did, such as "wrote TASK-7" or "took TASK-7". */
+function taskOf(change: Change, context: Context): string {
+  const number =
+    (after(change, 'number') as number | null | undefined) ?? context.tasks.get(change.subjectId);
+  const which = number ? taskKey(number) : 'a task';
+  if (change.action === 'task.created') return `wrote ${which}`;
+  if (change.action === 'task.deleted') return `removed ${which}`;
+  const parts: string[] = [];
+  if ('status' in change.changes) {
+    const from = change.changes.status?.[0] as TaskStatus | undefined;
+    parts.push(movedTo(from, after(change, 'status') as TaskStatus, which));
+  }
+  if ('title' in change.changes) parts.push(`renamed ${which} “${String(after(change, 'title'))}”`);
+  if ('role' in change.changes) {
+    parts.push(`made ${which} a ${taskRoleNames[after(change, 'role') as TaskRole]} task`);
+  }
+  if ('body' in change.changes) parts.push(`edited ${which}’s instructions`);
+  return parts.length ? list(parts) : `changed ${which}`;
+}
+
 /** What the change did, such as "moved it to In review" or "added SPEC-12/AC-3". */
 export function whatOf(change: Change, context: Context): string {
   if (change.subjectType === 'review') return reviewOf(change, context);
+  if (change.subjectType === 'task') return taskOf(change, context);
   if (change.subjectType === 'criterion') {
     const number =
       (after(change, 'number') as number | null | undefined) ??

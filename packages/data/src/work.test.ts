@@ -23,7 +23,7 @@ const spec = (number: number, updatedAt: string) => ({
   updated_at: updatedAt,
 });
 
-it('asks for the questions and reviews waiting, and reviews whose spec changed after a request for changes', async () => {
+it('asks for the questions, tasks and reviews waiting, and reviews whose spec changed after a request for changes', async () => {
   const tables: Record<string, unknown> = {
     questions: {
       data: [
@@ -34,6 +34,23 @@ it('asks for the questions and reviews waiting, and reviews whose spec changed a
           asked_by_agent: 'Claude Code',
           asked_at: '2026-10-27T08:00:00Z',
           requests: { number: 2, title: 'A booking app', status: 'open', created_by: 'ben' },
+        },
+      ],
+      error: null,
+    },
+    tasks: {
+      data: [
+        {
+          id: 't1',
+          number: 7,
+          title: 'Build the booking API',
+          status: 'in_review',
+          note: 'Adds POST /bookings.',
+          pull_request: 'https://github.com/acme-co/booking/pull/12',
+          taken_by: 'ben',
+          taken_by_agent: 'Claude Code',
+          updated_at: '2026-10-27T08:30:00Z',
+          specs: { number: 4, owner_id: 'ben' },
         },
       ],
       error: null,
@@ -92,6 +109,20 @@ it('asks for the questions and reviews waiting, and reviews whose spec changed a
       askedBy: 'ada',
       askedByAgent: 'Claude Code',
       askedAt: '2026-10-27T08:00:00Z',
+    },
+  ]);
+  expect(work.tasks).toEqual([
+    {
+      id: 't1',
+      number: 7,
+      title: 'Build the booking API',
+      status: 'in_review',
+      note: 'Adds POST /bookings.',
+      pullRequest: 'https://github.com/acme-co/booking/pull/12',
+      takenBy: 'ben',
+      takenByAgent: 'Claude Code',
+      updatedAt: '2026-10-27T08:30:00Z',
+      specNumber: 4,
     },
   ]);
   expect(work.asked.map((each) => [each.specNumber, each.changedSinceAnswer])).toEqual([

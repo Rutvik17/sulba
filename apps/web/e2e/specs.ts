@@ -303,6 +303,11 @@ export async function standInSpecs(
     return answer(route, 200, rows);
   });
 
+  // The tasks of the workspace's specs, which the tasks stand-in answers when a test holds any.
+  await page.route(`${supabase}/rest/v1/tasks**`, (route) =>
+    route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
+  );
+
   // The questions waiting on a person, which the requests stand-in answers when a test holds any.
   await page.route(`${supabase}/rest/v1/questions**`, (route) =>
     route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
