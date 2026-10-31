@@ -16,6 +16,7 @@ import { Join } from './Join';
 import { Members } from './Members';
 import { MyWork } from './MyWork';
 import { NewWorkspace } from './NewWorkspace';
+import { Requests } from './Requests';
 import { Settings } from './Settings';
 import { Shell } from './Shell';
 import { SignIn } from './SignIn';
@@ -62,8 +63,14 @@ const workspace = createRoute({
 });
 // A workspace opens on My work: what needs the person there now.
 const opened = createRoute({ getParentRoute: () => workspace, path: '/', component: MyWork });
+const requests = createRoute({
+  getParentRoute: () => workspace,
+  path: '/requests',
+  component: Requests,
+});
 const specs = createRoute({ getParentRoute: () => workspace, path: '/specs', component: Specs });
-// A spec's page brings the Markdown editor, which loads only once a spec is opened.
+// A spec's page, at its ID, or a request's, at its own (decision record 60). Each brings the
+// Markdown editor, which loads only once one is opened.
 const spec = createRoute({
   getParentRoute: () => workspace,
   path: '/$spec',
@@ -92,7 +99,7 @@ export const router = createRouter({
     create,
     join,
     consent,
-    workspace.addChildren([opened, specs, evidence, members, settings, spec]),
+    workspace.addChildren([opened, requests, specs, evidence, members, settings, spec]),
   ]),
   basepath: '/app',
   defaultPreload: 'intent',

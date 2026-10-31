@@ -9,6 +9,7 @@
     "./evidence": "./src/evidence.ts",
     "./outbox": "./src/outbox.ts",
     "./project": "./src/project.ts",
+    "./requests": "./src/requests.ts",
     "./reviewers": "./src/reviewers.ts",
     "./reviews": "./src/reviews.ts",
     "./session": "./src/session.ts",

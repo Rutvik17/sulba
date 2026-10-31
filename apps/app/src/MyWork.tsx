@@ -1,3 +1,4 @@
+import { askerName, requestKey } from '@sulba/data/requests';
 import { standingOf } from '@sulba/data/reviewers';
 import { criterionKey, specKey, statusNames } from '@sulba/data/specs';
 import { holds } from '@sulba/data/workspaces';
@@ -34,8 +35,9 @@ function counted(count: number, one: string, many: string): string {
 }
 
 /**
- * What needs the signed-in person in the workspace now: the specs they've been asked to review,
- * the specs they own that aren't built yet, and the criteria failing on their specs.
+ * What needs the signed-in person in the workspace now: the questions agents asked about the open
+ * requests they wrote, the specs they've been asked to review, the specs they own that aren't built
+ * yet, and the criteria failing on their specs.
  */
 export function MyWork() {
   const workspace = useWorkspace();
@@ -46,6 +48,7 @@ export function MyWork() {
   const slug = workspace.slug;
   const summary =
     [
+      work.questions.length ? counted(work.questions.length, 'to answer', 'to answer') : '',
       work.asked.length ? counted(work.asked.length, 'to review', 'to review') : '',
       work.owned.length ? counted(work.owned.length, 'open spec', 'open specs') : '',
       work.failing.length
@@ -63,6 +66,56 @@ export function MyWork() {
           <p className={css.count}>{summary}</p>
         </div>
       </header>
+
+      {work.questions.length ? (
+        <section className={css.section} aria-labelledby="to-answer">
+          <h2 id="to-answer" className={css.heading}>
+            Questions for you
+          </h2>
+          <div className={css.scroll}>
+            <table className={css.table}>
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Question</th>
+                  <th scope="col">Asked by</th>
+                  <th scope="col">Asked</th>
+                </tr>
+              </thead>
+              <tbody>
+                {work.questions.map((question) => (
+                  <tr key={question.id}>
+                    <td>
+                      <Link
+                        to="/$slug/$spec"
+                        params={{ slug, spec: requestKey(question.requestNumber) }}
+                        className={css.key}
+                      >
+                        {requestKey(question.requestNumber)}
+                      </Link>
+                    </td>
+                    <td className={css.wrap}>
+                      <span className={css.person}>
+                        <span>{question.text}</span>
+                        <span className={css.dim}>{question.requestTitle}</span>
+                      </span>
+                    </td>
+                    <td>
+                      {askerName(
+                        question.askedBy && names.get(question.askedBy),
+                        question.askedByAgent,
+                      )}
+                    </td>
+                    <td className={css.numeric}>
+                      <When at={question.askedAt} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
 
       <section className={css.section} aria-labelledby="to-review">
         <h2 id="to-review" className={css.heading}>

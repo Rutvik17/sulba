@@ -49,6 +49,39 @@ const spec = {
     { id: 'c2', number: 2, text: 'Keeps the idempotency key' },
   ],
 };
+const bookingApp = {
+  id: 'r1',
+  number: 2,
+  title: 'A booking app',
+  status: 'open',
+  body: 'Members book classes from their phones.',
+  created_by: person,
+  created_at: '2026-10-30T00:00:00Z',
+  updated_at: '2026-10-30T00:00:00Z',
+  questions: [
+    {
+      id: 'q1',
+      text: 'Do members pay when they book?',
+      answer: 'Yes, by card.',
+      asked_by: person,
+      asked_by_agent: 'Claude Code',
+      answered_by: person,
+      asked_at: '2026-10-30T00:00:00Z',
+      answered_at: '2026-10-30T01:00:00Z',
+    },
+    {
+      id: 'q2',
+      text: 'Can a member cancel?',
+      answer: null,
+      asked_by: person,
+      asked_by_agent: 'Claude Code',
+      answered_by: null,
+      asked_at: '2026-10-30T02:00:00Z',
+      answered_at: null,
+    },
+  ],
+  specs: [{ number: 3, title: 'Retry failed payments', status: 'approved' }],
+};
 const proof = (n: number, state: string, counts: { passed: number; failed: number }) => ({
   criterion_id: `c${n}`,
   workspace_id: 'w1',
@@ -96,6 +129,13 @@ function standIn({
       return json(one ? row : [row]);
     }
     if (path.endsWith('/specs')) return json(one ? spec : [spec]);
+    if (path.endsWith('/requests')) {
+      // The list counts each request's specs; reading one lists them.
+      const counted = new URL(request.url).searchParams.get('select')?.includes('specs(count)');
+      return json([counted ? { ...bookingApp, specs: [{ count: 1 }] } : bookingApp]);
+    }
+    if (path.endsWith('/rpc/ask_question')) return json('q3');
+    if (path.endsWith('/rpc/create_spec')) return json(4);
     if (path.endsWith('/spec_reviews')) {
       return json([
         { verdict: 'approved', note: null, people: { name: 'Ben Ortiz', email: null } },
@@ -262,11 +302,21 @@ test('an agent on the 2025 protocol starts a session and lists the tools, reads 
     'update_spec',
     'add_criterion',
     'reword_criterion',
+    'list_requests',
+    'get_request',
+    'ask_question',
     'get_evidence',
   ]);
   expect(
     list.result.tools.filter((each) => each.annotations.readOnlyHint).map((each) => each.name),
-  ).toEqual(['list_workspaces', 'list_specs', 'get_spec', 'get_evidence']);
+  ).toEqual([
+    'list_workspaces',
+    'list_specs',
+    'get_spec',
+    'list_requests',
+    'get_request',
+    'get_evidence',
+  ]);
 });
 
 test('an agent on the 2026-07-28 protocol calls a tool with no handshake, naming it in a header', async () => {
@@ -318,6 +368,63 @@ test('get_spec gives the criteria with their proof, what a failing test said and
   expect(
     supabase.sent.every((request) => request.headers.get('Authorization')?.startsWith(bearer)),
   ).toBe(true);
+});
+
+test('get_request gives the writer’s words, each question with its answer, and the specs drafted', async () => {
+  const { text } = await tool('get_request', { workspace: 'acme', request: 'req-2' });
+  expect(text).toContain('# REQ-2: A booking app');
+  expect(text).toContain('Status: Open. https://sulba.dev/app/acme/REQ-2');
+  expect(text).toContain('Members book classes from their phones.');
+  expect(text).toContain('- Do members pay when they book?\n  Answer: Yes, by card.');
+  expect(text).toContain('- Can a member cancel?\n  Not answered yet.');
+  expect(text).toContain('## Specs drafted from it\n\n- SPEC-3: Retry failed payments (Approved)');
+});
+
+test('list_requests counts each request’s unanswered questions and drafted specs', async () => {
+  const { text } = await tool('list_requests', { workspace: 'acme' });
+  expect(text).toBe(
+    '- REQ-2: A booking app (Open; 1 question waits for an answer; 1 spec drafted)',
+  );
+});
+
+test('an agent asks about a request, and drafts a spec that names it', async () => {
+  const supabase = standIn();
+  const asked = await tool(
+    'ask_question',
+    { workspace: 'acme', request: 'REQ-2', question: ' Can a member cancel? ' },
+    supabase.fetch,
+  );
+  expect(asked.text).toBe(
+    'Asked about REQ-2. Its writer answers in Sulba. https://sulba.dev/app/acme/REQ-2',
+  );
+  const drafted = await tool(
+    'create_spec',
+    {
+      workspace: 'acme',
+      title: 'Book a class',
+      criteria: ['A member books a class from the timetable'],
+      request: 'REQ-2',
+    },
+    supabase.fetch,
+  );
+  expect(drafted.text).toBe('Wrote SPEC-4 as a draft. https://sulba.dev/app/acme/SPEC-4');
+  const bodies = await Promise.all(
+    supabase.sent
+      .filter((each) => new URL(each.url).pathname.includes('/rpc/'))
+      .map(async (each) => [new URL(each.url).pathname.split('/').at(-1), await each.json()]),
+  );
+  expect(bodies).toEqual([
+    ['ask_question', { request: 'r1', text: 'Can a member cancel?' }],
+    [
+      'create_spec',
+      {
+        workspace: 'w1',
+        title: 'Book a class',
+        criteria: ['A member books a class from the timetable'],
+        request: 'r1',
+      },
+    ],
+  ]);
 });
 
 test('a criterion ID that isn’t one is answered with what one looks like', async () => {

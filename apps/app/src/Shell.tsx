@@ -1,3 +1,4 @@
+import { requestNumberOf } from '@sulba/data/requests';
 import type { Workspace } from '@sulba/data/workspaces';
 import { classes } from '@sulba/ui/classes';
 import { Keys } from '@sulba/ui/keys';
@@ -30,6 +31,7 @@ const css = classes(
 /** The sidebar's pages, with the keys that go to each. */
 const pages = [
   { to: '/$slug', label: 'My work', keys: ['g', 'w'] },
+  { to: '/$slug/requests', label: 'Requests', keys: ['g', 'r'] },
   { to: '/$slug/specs', label: 'Specs', keys: ['g', 's'] },
   { to: '/$slug/evidence', label: 'Evidence', keys: ['g', 'e'] },
   { to: '/$slug/members', label: 'Members', keys: ['g', 'm'] },
@@ -52,11 +54,17 @@ export function useWorkspace(): Workspace {
 export function Shell() {
   const { slug } = useParams({ from: '/$slug' });
   const { data: workspace } = useWorkspaceAt(slug);
-  // A spec's page sits under Specs in the sidebar, though its address is the spec's ID. Matching
-  // the route itself, not its pattern, keeps /$slug/members and the others from looking like one.
-  const onSpec = useMatches({
-    select: (matches) => matches.some((match) => match.routeId === '/$slug/$spec'),
+  // A spec's page sits under Specs in the sidebar, and a request's under Requests, though each
+  // one's address is its ID. Matching the route itself, not its pattern, keeps /$slug/members and
+  // the others from looking like one.
+  const item = useMatches({
+    select: (matches) => {
+      const match = matches.find((each) => each.routeId === '/$slug/$spec');
+      return match && 'spec' in match.params ? match.params.spec : null;
+    },
   });
+  const itemSection =
+    item === null ? null : requestNumberOf(item) === null ? '/$slug/specs' : '/$slug/requests';
 
   useEffect(() => {
     if (workspace) rememberWorkspace(workspace.slug);
@@ -88,9 +96,7 @@ export function Shell() {
                   params={{ slug }}
                   activeOptions={{ exact: page.to === '/$slug' }}
                   className={css.link}
-                  {...(page.to === '/$slug/specs' && onSpec
-                    ? { 'aria-current': 'page' as const }
-                    : {})}
+                  {...(page.to === itemSection ? { 'aria-current': 'page' as const } : {})}
                 >
                   {page.label}
                   <span className={css.keys} aria-hidden="true">

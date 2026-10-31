@@ -24,6 +24,8 @@ export interface HeldSpec {
   ownerId: string | null;
   readonly createdAt: string;
   updatedAt: string;
+  /** The request it was drafted from, if any. */
+  readonly request: { readonly id: string; readonly number: number; readonly title: string } | null;
 }
 
 export interface HeldCriterion {
@@ -104,6 +106,7 @@ export function spec(
     ownerId: ada.id,
     createdAt: written,
     updatedAt: written,
+    request: null,
     ...rest,
   };
 }
@@ -222,6 +225,7 @@ export async function standInSpecs(
         updated_at: each.updatedAt,
         criteria: number === null ? [{ count: criteriaOf(each.id).length }] : criteriaOf(each.id),
         spec_reviews: reviewsOf(each.id).map(({ verdict }) => ({ verdict })),
+        requests: each.request && { number: each.request.number, title: each.request.title },
       }));
     return answer(route, 200, rows);
   });
@@ -298,6 +302,11 @@ export async function standInSpecs(
       });
     return answer(route, 200, rows);
   });
+
+  // The questions waiting on a person, which the requests stand-in answers when a test holds any.
+  await page.route(`${supabase}/rest/v1/questions**`, (route) =>
+    route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
+  );
 
   // The criteria's proofs, which the evidence stand-in answers when a test holds any.
   await page.route(`${supabase}/rest/v1/criterion_proofs**`, (route) =>

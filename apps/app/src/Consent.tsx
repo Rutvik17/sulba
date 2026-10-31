@@ -157,7 +157,11 @@ export function Consent() {
           <ul className={css.list}>
             <li>
               <Yes />
-              Read specs and their test evidence
+              Read requests, specs and their test evidence
+            </li>
+            <li>
+              <Yes />
+              Ask you questions about a request
             </li>
             <li>
               <Yes />
@@ -172,6 +176,10 @@ export function Consent() {
         <section className={css.scope} aria-labelledby="cannot">
           <h2 id="cannot">It won’t be able to</h2>
           <ul className={css.list}>
+            <li>
+              <No />
+              Write or change requests, or answer questions about them
+            </li>
             <li>
               <No />
               Approve, abandon or supersede specs

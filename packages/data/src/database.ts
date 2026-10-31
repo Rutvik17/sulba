@@ -309,6 +309,71 @@ export type Database = {
         };
         Relationships: [];
       };
+      questions: {
+        Row: {
+          answer: string | null;
+          answered_at: string | null;
+          answered_by: string | null;
+          asked_at: string;
+          asked_by: string | null;
+          asked_by_agent: string | null;
+          id: string;
+          request_id: string;
+          text: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer?: string | null;
+          answered_at?: string | null;
+          answered_by?: string | null;
+          asked_at?: string;
+          asked_by?: string | null;
+          asked_by_agent?: string | null;
+          id?: string;
+          request_id: string;
+          text: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          answer?: string | null;
+          answered_at?: string | null;
+          answered_by?: string | null;
+          asked_at?: string;
+          asked_by?: string | null;
+          asked_by_agent?: string | null;
+          id?: string;
+          request_id?: string;
+          text?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'questions_answered_by_fkey';
+            columns: ['answered_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'questions_asked_by_fkey';
+            columns: ['asked_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'questions_workspace_id_request_id_fkey';
+            columns: ['workspace_id', 'request_id'];
+            isOneToOne: false;
+            referencedRelation: 'requests';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       repositories: {
         Row: {
           added_at: string;
@@ -351,6 +416,58 @@ export type Database = {
           },
           {
             foreignKeyName: 'repositories_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      requests: {
+        Row: {
+          body: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          number: number;
+          status: Database['public']['Enums']['request_status'];
+          title: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          number: number;
+          status?: Database['public']['Enums']['request_status'];
+          title: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          number?: number;
+          status?: Database['public']['Enums']['request_status'];
+          title?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'requests_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'requests_workspace_id_fkey';
             columns: ['workspace_id'];
             isOneToOne: false;
             referencedRelation: 'workspaces';
@@ -453,6 +570,7 @@ export type Database = {
           id: string;
           number: number;
           owner_id: string | null;
+          request_id: string | null;
           status: Database['public']['Enums']['spec_status'];
           title: string;
           updated_at: string;
@@ -466,6 +584,7 @@ export type Database = {
           id?: string;
           number: number;
           owner_id?: string | null;
+          request_id?: string | null;
           status?: Database['public']['Enums']['spec_status'];
           title: string;
           updated_at?: string;
@@ -478,6 +597,7 @@ export type Database = {
           id?: string;
           number?: number;
           owner_id?: string | null;
+          request_id?: string | null;
           status?: Database['public']['Enums']['spec_status'];
           title?: string;
           updated_at?: string;
@@ -504,6 +624,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'workspaces';
             referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'specs_workspace_id_request_id_fkey';
+            columns: ['workspace_id', 'request_id'];
+            isOneToOne: false;
+            referencedRelation: 'requests';
+            referencedColumns: ['workspace_id', 'id'];
           },
         ];
       };
@@ -780,14 +907,20 @@ export type Database = {
         Args: { branch?: string; name: string; workspace: string };
         Returns: string;
       };
+      answer_question: { Args: { answer: string; question: string }; Returns: undefined };
+      ask_question: { Args: { request: string; text: string }; Returns: string };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       confirm_criterion: { Args: { criterion: string }; Returns: undefined };
       create_invitation: {
         Args: { role: Database['public']['Enums']['workspace_role']; workspace: string };
         Returns: string;
       };
+      create_request: {
+        Args: { body?: string; title: string; workspace: string };
+        Returns: number;
+      };
       create_spec: {
-        Args: { criteria?: string[]; title: string; workspace: string };
+        Args: { criteria?: string[]; request?: string; title: string; workspace: string };
         Returns: number;
       };
       create_workspace: {
@@ -840,6 +973,7 @@ export type Database = {
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
       proof: 'proven' | 'failing' | 'unproven';
+      request_status: 'open' | 'planned' | 'closed';
       review_verdict: 'pending' | 'approved' | 'changes_requested';
       spec_status: 'draft' | 'in_review' | 'approved' | 'implemented' | 'abandoned' | 'superseded';
       test_outcome: 'passed' | 'failed' | 'skipped';
@@ -961,6 +1095,7 @@ export const Constants = {
     Enums: {
       actor_kind: ['person', 'agent', 'github', 'system'],
       proof: ['proven', 'failing', 'unproven'],
+      request_status: ['open', 'planned', 'closed'],
       review_verdict: ['pending', 'approved', 'changes_requested'],
       spec_status: ['draft', 'in_review', 'approved', 'implemented', 'abandoned', 'superseded'],
       test_outcome: ['passed', 'failed', 'skipped'],

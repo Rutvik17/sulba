@@ -8,6 +8,7 @@ import {
   repositoriesOf,
   specProofsOf,
 } from '@sulba/data/evidence';
+import { requestAt, requestsOf } from '@sulba/data/requests';
 import { reviewsOf } from '@sulba/data/reviewers';
 import { historyOf, specAt, specsOf } from '@sulba/data/specs';
 import { workOf } from '@sulba/data/work';
@@ -28,6 +29,8 @@ export const keys = {
   workspace: (slug: string) => ['workspace', slug] as const,
   members: (workspaceId: string) => ['members', workspaceId] as const,
   invitations: (workspaceId: string) => ['invitations', workspaceId] as const,
+  requests: (workspaceId: string) => ['requests', workspaceId] as const,
+  request: (workspaceId: string, number: number) => ['request', workspaceId, number] as const,
   specs: (workspaceId: string) => ['specs', workspaceId] as const,
   spec: (workspaceId: string, number: number) => ['spec', workspaceId, number] as const,
   history: (specId: string) => ['history', specId] as const,
@@ -43,6 +46,23 @@ export const keys = {
   claims: (workspaceId: string, specNumber: number) =>
     ['proofs', workspaceId, 'claims', specNumber] as const,
 };
+
+export function useRequests(workspace: Workspace) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.requests(workspace.id),
+    queryFn: () => requestsOf(client, workspace.id),
+  });
+}
+
+/** The request with a number in the workspace, or null when there's none. */
+export function useRequestAt(workspace: Workspace, number: number) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.request(workspace.id, number),
+    queryFn: () => requestAt(client, workspace.id, number),
+  });
+}
 
 /** The workspaces the signed-in person is in. */
 export function useWorkspaces() {

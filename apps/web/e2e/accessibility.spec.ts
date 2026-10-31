@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 import { standInConsent } from './agents';
 import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
+import { question, request, standInRequests } from './requests';
 import { criterion, review, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
 import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
@@ -84,6 +85,8 @@ for (const scheme of ['dark', 'light'] as const) {
     ['/app/acme', 'My work'],
     ['/app/acme/specs', 'Specs'],
     ['/app/acme/SPEC-3', 'Retry failed payments'],
+    ['/app/acme/requests', 'Requests'],
+    ['/app/acme/REQ-2', 'A booking app for our gym'],
     ['/app/acme/evidence', 'Evidence'],
     ['/app/acme/members', 'Members'],
     ['/app/acme/settings', 'Settings'],
@@ -105,11 +108,14 @@ for (const scheme of ['dark', 'light'] as const) {
           invitations: [link(acme, 'd'.repeat(64))],
         }),
       );
-      // Ben's spec in review, which he asked Ada to review.
+      // Ben's spec in review, which he asked Ada to review, drafted from a request with a
+      // question to answer and one answered.
+      const booking = request(acme, 2, 'A booking app for our gym', { body: 'For members.' });
       const written = spec(acme, 3, 'Retry failed payments', {
         body: '## Context\n\nCards fail.',
         status: 'in_review',
         ownerId: ben.id,
+        request: { id: booking.id, number: booking.number, title: booking.title },
       });
       const retries = criterion(written, 1, 'When a payment fails, the system shall retry it once');
       await standInSpecs(page, {
@@ -155,6 +161,18 @@ for (const scheme of ['dark', 'light'] as const) {
             message: 'assert 2 == 1',
           },
         ],
+      });
+      await standInRequests(page, {
+        requests: [booking],
+        questions: [
+          question(booking, 1, 'Do members pay when they book?'),
+          question(booking, 2, 'Which card reader do you use?', {
+            answer: 'A Square Terminal.',
+            answeredBy: ada.id,
+            answeredAt: new Date().toISOString(),
+          }),
+        ],
+        specs: [written],
       });
       await standInConsent(page, {
         id: 'f1e2d3c4-0000-4000-8000-000000000001',
