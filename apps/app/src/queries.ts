@@ -11,6 +11,7 @@ import {
 import { requestAt, requestsOf } from '@sulba/data/requests';
 import { reviewsOf } from '@sulba/data/reviewers';
 import { historyOf, specAt, specsOf } from '@sulba/data/specs';
+import { specTasks, taskAt, tasksOf } from '@sulba/data/tasks';
 import { workOf } from '@sulba/data/work';
 import {
   invitationsOf,
@@ -31,6 +32,10 @@ export const keys = {
   invitations: (workspaceId: string) => ['invitations', workspaceId] as const,
   requests: (workspaceId: string) => ['requests', workspaceId] as const,
   request: (workspaceId: string, number: number) => ['request', workspaceId, number] as const,
+  /** Every task in a workspace; a spec's own sit under it. */
+  tasks: (workspaceId: string) => ['tasks', workspaceId] as const,
+  specTasks: (workspaceId: string, specId: string) => ['tasks', workspaceId, specId] as const,
+  task: (workspaceId: string, number: number) => ['task', workspaceId, number] as const,
   specs: (workspaceId: string) => ['specs', workspaceId] as const,
   spec: (workspaceId: string, number: number) => ['spec', workspaceId, number] as const,
   history: (specId: string) => ['history', specId] as const,
@@ -61,6 +66,31 @@ export function useRequestAt(workspace: Workspace, number: number) {
   return useSuspenseQuery({
     queryKey: keys.request(workspace.id, number),
     queryFn: () => requestAt(client, workspace.id, number),
+  });
+}
+
+export function useTasks(workspace: Workspace) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.tasks(workspace.id),
+    queryFn: () => tasksOf(client, workspace.id),
+  });
+}
+
+export function useSpecTasks(workspace: Workspace, specId: string) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.specTasks(workspace.id, specId),
+    queryFn: () => specTasks(client, specId),
+  });
+}
+
+/** The task with a number in the workspace, or null when there's none. */
+export function useTaskAt(workspace: Workspace, number: number) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.task(workspace.id, number),
+    queryFn: () => taskAt(client, workspace.id, number),
   });
 }
 

@@ -6,6 +6,7 @@ import { islandsHydrated } from './islands';
 import { question, request, standInRequests } from './requests';
 import { criterion, review, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
+import { standInTasks, task } from './tasks';
 import { acme, ada, ben, link, member, standInTeam, team } from './workspaces';
 
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
@@ -87,6 +88,8 @@ for (const scheme of ['dark', 'light'] as const) {
     ['/app/acme/SPEC-3', 'Retry failed payments'],
     ['/app/acme/requests', 'Requests'],
     ['/app/acme/REQ-2', 'A booking app for our gym'],
+    ['/app/acme/tasks', 'Tasks'],
+    ['/app/acme/TASK-1', 'Build the retry job'],
     ['/app/acme/evidence', 'Evidence'],
     ['/app/acme/members', 'Members'],
     ['/app/acme/settings', 'Settings'],
@@ -173,6 +176,21 @@ for (const scheme of ['dark', 'light'] as const) {
           }),
         ],
         specs: [written],
+      });
+      // A task Ben's agent handed in, covering the spec's criterion.
+      await standInTasks(page, {
+        tasks: [
+          task(written, 1, 'Build the retry job', {
+            status: 'in_review',
+            takenBy: ben.id,
+            takenByAgent: 'Claude Code',
+            note: 'Adds the job to the payments worker.',
+            pullRequest: 'https://github.com/acme-co/payments/pull/12',
+            criteria: [1],
+          }),
+        ],
+        specs: [written],
+        criteria: [retries],
       });
       await standInConsent(page, {
         id: 'f1e2d3c4-0000-4000-8000-000000000001',

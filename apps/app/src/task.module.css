@@ -1,0 +1,58 @@
+/*
+  A task's page: what its taker said when they blocked it or handed it in, set apart above its
+  instructions; the spec's criteria it covers, a bordered list like a spec's; and the buttons that
+  move it on, under its details.
+*/
+.said {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-2);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.said p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: var(--leading);
+}
+
+.criteria {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  list-style: none;
+}
+
+.criterion {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  overflow-wrap: anywhere;
+  line-height: var(--leading);
+}
+
+.criterion + .criterion {
+  border-top: 1px solid var(--line);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

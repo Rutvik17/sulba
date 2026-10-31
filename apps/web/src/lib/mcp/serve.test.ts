@@ -82,6 +82,28 @@ const bookingApp = {
   ],
   specs: [{ number: 3, title: 'Retry failed payments', status: 'approved' }],
 };
+const bookingTask = {
+  id: 't1',
+  number: 7,
+  title: 'Build the retry job',
+  role: 'build',
+  status: 'blocked',
+  body: 'Add the job to the payments worker.',
+  note: 'Which queue should it use?',
+  taken_by: person,
+  taken_by_agent: 'Claude Code',
+  taken_at: '2026-10-30T03:00:00Z',
+  pull_request: null,
+  created_by: person,
+  created_by_agent: 'Claude Code',
+  created_at: '2026-10-30T02:00:00Z',
+  updated_at: '2026-10-30T03:00:00Z',
+  specs: { id: 's1', number: 3, title: 'Retry failed payments', status: 'approved' },
+  task_criteria: [
+    { criteria: { number: 2, text: 'Keeps the idempotency key' } },
+    { criteria: { number: 1, text: 'Retries once after 30 seconds' } },
+  ],
+};
 const proof = (n: number, state: string, counts: { passed: number; failed: number }) => ({
   criterion_id: `c${n}`,
   workspace_id: 'w1',
@@ -135,6 +157,9 @@ function standIn({
       return json([counted ? { ...bookingApp, specs: [{ count: 1 }] } : bookingApp]);
     }
     if (path.endsWith('/rpc/ask_question')) return json('q3');
+    if (path.endsWith('/tasks')) return json(one ? bookingTask : [bookingTask]);
+    if (path.endsWith('/rpc/create_task')) return json(8);
+    if (path.endsWith('/rpc/update_task')) return new Response(null, { status: 204 });
     if (path.endsWith('/rpc/create_spec')) return json(4);
     if (path.endsWith('/spec_reviews')) {
       return json([
@@ -305,6 +330,11 @@ test('an agent on the 2025 protocol starts a session and lists the tools, reads 
     'list_requests',
     'get_request',
     'ask_question',
+    'list_tasks',
+    'get_task',
+    'create_task',
+    'take_task',
+    'update_task',
     'get_evidence',
   ]);
   expect(
@@ -315,6 +345,8 @@ test('an agent on the 2025 protocol starts a session and lists the tools, reads 
     'get_spec',
     'list_requests',
     'get_request',
+    'list_tasks',
+    'get_task',
     'get_evidence',
   ]);
 });
@@ -425,6 +457,79 @@ test('an agent asks about a request, and drafts a spec that names it', async () 
       },
     ],
   ]);
+});
+
+test('get_task gives the task’s spec, status, what blocks it, its instructions and its criteria in order', async () => {
+  const { text } = await tool('get_task', { workspace: 'acme', task: 'task-7' });
+  expect(text).toBe(
+    [
+      '# TASK-7: Build the retry job',
+      '',
+      'Build for SPEC-3, Retry failed payments. Status: Blocked. https://sulba.dev/app/acme/TASK-7',
+      '',
+      'Blocked: Which queue should it use?',
+      '',
+      'Add the job to the payments worker.',
+      '',
+      '## Criteria it covers',
+      '',
+      '- SPEC-3/AC-1: Retries once after 30 seconds',
+      '- SPEC-3/AC-2: Keeps the idempotency key',
+    ].join('\n'),
+  );
+});
+
+test('an agent writes a task, takes one and hands it in with its pull request', async () => {
+  const supabase = standIn();
+  const wrote = await tool(
+    'create_task',
+    { workspace: 'acme', spec: 'SPEC-3', title: 'Test the retry job', role: 'test', criteria: [1] },
+    supabase.fetch,
+  );
+  expect(wrote.text).toBe('Wrote TASK-8. https://sulba.dev/app/acme/TASK-8');
+  const took = await tool('take_task', { workspace: 'acme', task: 'TASK-7' }, supabase.fetch);
+  expect(took.text).toBe('Took TASK-7. https://sulba.dev/app/acme/TASK-7');
+  const handed = await tool(
+    'update_task',
+    {
+      workspace: 'acme',
+      task: 'TASK-7',
+      status: 'in_review',
+      pull_request: 'https://github.com/acme-co/payments/pull/12',
+    },
+    supabase.fetch,
+  );
+  expect(handed.text).toBe('TASK-7 is in review. https://sulba.dev/app/acme/TASK-7');
+  const bodies = await Promise.all(
+    supabase.sent
+      .filter((each) => new URL(each.url).pathname.includes('/rpc/'))
+      .map(async (each) => [new URL(each.url).pathname.split('/').at(-1), await each.json()]),
+  );
+  expect(bodies).toEqual([
+    [
+      'create_task',
+      { spec: 's1', title: 'Test the retry job', role: 'test', body: '', criteria: [1] },
+    ],
+    ['update_task', { task: 't1', status: 'in_progress' }],
+    [
+      'update_task',
+      {
+        task: 't1',
+        status: 'in_review',
+        pull_request: 'https://github.com/acme-co/payments/pull/12',
+      },
+    ],
+  ]);
+});
+
+test('an agent can’t ask to mark a task done', async () => {
+  const { text, isError } = await tool('update_task', {
+    workspace: 'acme',
+    task: 'TASK-7',
+    status: 'done',
+  });
+  expect(isError).toBe(true);
+  expect(text).toMatch(/status/);
 });
 
 test('a criterion ID that isn’t one is answered with what one looks like', async () => {

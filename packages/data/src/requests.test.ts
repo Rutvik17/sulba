@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { Client } from './client.ts';
 import {
+  actorName,
   answerProblem,
   answerQuestion,
-  askerName,
   createRequest,
   requestKey,
   requestNumberOf,
@@ -40,11 +40,11 @@ describe('answerProblem', () => {
   });
 });
 
-describe('askerName', () => {
+describe('actorName', () => {
   it('names an agent by its person and its name, and someone who left as such', () => {
-    expect(askerName('Ben Ortiz', 'Claude Code')).toBe('Ben Ortiz’s agent, Claude Code');
-    expect(askerName('Ben Ortiz', null)).toBe('Ben Ortiz');
-    expect(askerName(null, 'Claude Code')).toBe('Someone who has left’s agent, Claude Code');
+    expect(actorName('Ben Ortiz', 'Claude Code')).toBe('Ben Ortiz’s agent, Claude Code');
+    expect(actorName('Ben Ortiz', null)).toBe('Ben Ortiz');
+    expect(actorName(null, 'Claude Code')).toBe('Someone who has left’s agent, Claude Code');
   });
 });
 
