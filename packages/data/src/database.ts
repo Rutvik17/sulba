@@ -374,6 +374,55 @@ export type Database = {
           },
         ];
       };
+      releases: {
+        Row: {
+          approved_at: string;
+          approved_by: string | null;
+          id: string;
+          note: string | null;
+          number: number;
+          request_id: string;
+          snapshot: NonNullable<Json>;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          approved_at?: string;
+          approved_by?: string | null;
+          id?: string;
+          note?: string | null;
+          number: number;
+          request_id: string;
+          snapshot: NonNullable<Json>;
+          workspace_id: string;
+        };
+        Update: {
+          approved_at?: string;
+          approved_by?: string | null;
+          id?: string;
+          note?: string | null;
+          number?: number;
+          request_id?: string;
+          snapshot?: NonNullable<Json>;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'releases_approved_by_fkey';
+            columns: ['approved_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'releases_workspace_id_request_id_fkey';
+            columns: ['workspace_id', 'request_id'];
+            isOneToOne: false;
+            referencedRelation: 'requests';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       repositories: {
         Row: {
           added_at: string;
@@ -1039,6 +1088,7 @@ export type Database = {
         Returns: string;
       };
       answer_question: { Args: { answer: string; question: string }; Returns: undefined };
+      approve_release: { Args: { note?: string; request: string }; Returns: number };
       ask_question: { Args: { request: string; text: string }; Returns: string };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       confirm_criterion: { Args: { criterion: string }; Returns: undefined };

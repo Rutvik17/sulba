@@ -24,9 +24,9 @@ test('a person allows an agent, which gets its code back', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'It will be able to' })).toContainText(
     'Ask you questions about a request',
   );
-  await expect(page.getByRole('region', { name: 'It won’t be able to' })).toContainText(
-    'Write or change requests, or answer questions about them',
-  );
+  const cannot = page.getByRole('region', { name: 'It won’t be able to' });
+  await expect(cannot).toContainText('Write or change requests, or answer questions about them');
+  await expect(cannot).toContainText('Approve a release');
   await page.getByRole('button', { name: 'Allow' }).click();
 
   await expect(page).toHaveURL(`${callback}?code=code-for-the-agent&state=agent-state`);

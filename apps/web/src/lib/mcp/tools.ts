@@ -14,6 +14,7 @@ import {
   proofsOfSpec,
   specProofsOf,
 } from '@sulba/data/evidence';
+import { releaseBlockers, releaseDocument, releasesOf } from '@sulba/data/releases';
 import {
   askQuestion,
   type Request,
@@ -50,7 +51,7 @@ import {
   taskStatusNames,
   tasksOf,
 } from '@sulba/data/tasks';
-import { type Workspace, workspaceAt, workspacesOf } from '@sulba/data/workspaces';
+import { membersOf, type Workspace, workspaceAt, workspacesOf } from '@sulba/data/workspaces';
 import { z } from 'zod';
 
 export interface Agent {
@@ -66,6 +67,7 @@ export const instructions = [
   'A test proves a criterion by putting the criterion’s ID in its name, such as test_SPEC_12_AC_3_retries_once for SPEC-12/AC-3. When the team’s CI runs it on the repository’s branch, Sulba marks the criterion proven or failing.',
   'You can draft specs, add and reword criteria, put a spec in review and mark it implemented. People approve, abandon and supersede specs: a spec with reviewers is approved when every one of them approves it, and get_spec shows what a reviewer who asked for changes said.',
   'People also write requests: what they want built, in their own words. To turn one into specs, read it with get_request, ask its writer what you need to know with ask_question, and once they have answered, draft its specs with create_spec, naming the request.',
+  'A person approves a request’s release once every spec drafted from it is approved and every criterion is proven; get_release gives its document, to commit to the repository as a Document task, or what still stands in the way.',
   'Approved specs are split into tasks with create_task, each with a role and the criteria it covers. Take a task with take_task before working on it, so no one else does. If you can’t go on, block it with update_task and say why; once its pull request is open, hand it in with update_task, naming the pull request. People mark tasks done.',
 ].join(' ');
 
@@ -464,6 +466,42 @@ export function createServer(agent: Agent): McpServer {
         const request = await requestOf(agent, workspace, id);
         await askQuestion(agent.client, request.id, question);
         return `Asked about ${requestKey(request.number)}. Its writer answers in Sulba. ${link(workspace, requestKey(request.number))}`;
+      }),
+  );
+
+  server.registerTool(
+    'get_release',
+    {
+      title: 'Read a release',
+      description:
+        'A request’s latest release as a Markdown document: what was asked, the answers given, and each spec with the tests that proved its criteria and the pull requests that built it. Without a release, what still stands between the request and one.',
+      inputSchema: z.object({ workspace: workspaceInput, request: requestInput }),
+      annotations: read,
+    },
+    ({ workspace: slug, request: id }) =>
+      run(async () => {
+        const workspace = await workspaceOf(agent, slug);
+        const request = await requestOf(agent, workspace, id);
+        const [latest] = await releasesOf(agent.client, request.id);
+        if (!latest) {
+          const blockers = releaseBlockers(
+            request.specs,
+            await proofsOf(agent.client, workspace.id),
+          );
+          return [
+            `${requestKey(request.number)} has no release yet. A person approves one in Sulba.`,
+            ...(blockers.length
+              ? ['', 'Before it can be approved:', ...blockers.map((blocker) => `- ${blocker}`)]
+              : ['', 'It can be approved now.']),
+          ].join('\n');
+        }
+        const members = await membersOf(agent.client, workspace.id);
+        const approver = members.find((member) => member.personId === latest.approvedBy);
+        return releaseDocument(
+          request,
+          latest,
+          approver?.name || approver?.email || 'someone who has left',
+        );
       }),
   );
 

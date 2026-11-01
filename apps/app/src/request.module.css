@@ -84,3 +84,47 @@
   font-size: var(--text-sm);
   white-space: nowrap;
 }
+
+/* What still stands between a request and its release, one line each. */
+.blockers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  line-height: var(--leading);
+}
+
+/*
+  A release: its number, who approved it and when with the note they left, and the button that
+  downloads its document.
+*/
+.release {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-4);
+}
+
+.release + .release {
+  border-top: 1px solid var(--line);
+}
+
+.release > :last-child {
+  margin-inline-start: auto;
+}
+
+.made {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.said {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: var(--leading);
+}
