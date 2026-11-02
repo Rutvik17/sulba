@@ -21,6 +21,7 @@ import { TextField } from '@sulba/ui/textfield';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { type FormEvent, useState } from 'react';
+import { AgentRuns } from './AgentRuns';
 import { useAccount } from './account';
 import { useCommands } from './commands';
 import { Delivery } from './Delivery';
@@ -170,14 +171,16 @@ function Page({ request, members }: { request: Request; members: readonly Member
           />
         </section>
 
+        <AgentRuns request={request} canWrite={canWrite} />
+
         <section className={css.section} aria-labelledby="questions">
           <h2 id="questions" className={css.heading}>
             Questions
           </h2>
           {request.questions.length === 0 ? (
             <p className={css.note}>
-              No questions yet. A connected agent asks here what it needs to know before it drafts
-              the specs.
+              No questions yet. Sulba Intake, or a coding agent you connect, asks here what it needs
+              to know before the specs are drafted.
             </p>
           ) : (
             <ol className={own.questions}>

@@ -128,3 +128,27 @@
   white-space: pre-wrap;
   line-height: var(--leading);
 }
+
+/*
+  Sulba's agents on a request: each agent with what it does and the button that starts it, and
+  each run with what it did and what it cost.
+*/
+.agent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.run {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-4);
+}
+
+.run + .run {
+  border-top: 1px solid var(--line);
+}

@@ -308,6 +308,17 @@ export async function standInSpecs(
     route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
   );
 
+  // A request's runs of Sulba's agents, and a workspace with no allowance for them, which the runs
+  // stand-in answers when a test holds any.
+  await page.route(`${supabase}/rest/v1/agent_runs**`, (route) =>
+    route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
+  );
+  await page.route(/\/rest\/v1\/rpc\/agent_spending/, (route) =>
+    route.request().method() === 'OPTIONS'
+      ? answer(route, 204)
+      : answer(route, 200, [{ limit_cents: 0, spent_cents: 0, reserved_cents: 0 }]),
+  );
+
   // The tasks of the workspace's specs, which the tasks stand-in answers when a test holds any.
   await page.route(`${supabase}/rest/v1/tasks**`, (route) =>
     route.request().method() === 'OPTIONS' ? answer(route, 204) : answer(route, 200, []),
