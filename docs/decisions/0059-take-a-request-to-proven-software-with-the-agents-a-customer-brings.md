@@ -1,6 +1,6 @@
 # 59. Take a request to proven software with the agents a customer brings
 
-- Status: accepted
+- Status: accepted, amended by [63. Run Sulba's own agents and charge each team for what they use](0063-run-sulbas-own-agents-and-charge-teams-for-what-they-use.md)
 - Date: 2026-10-30
 - Amends: [46. Make Sulba where a team specifies its software, agents build it and its tests prove it](0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md)
 

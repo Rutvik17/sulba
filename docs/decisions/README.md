@@ -49,7 +49,7 @@ Each record covers one decision: the context, the options compared, the evidence
 | [43. Run a machine lab's Go stages with Go's own toolchain, pinned by the runner](0043-run-a-machine-labs-go-stages-with-gos-own-toolchain.md) | Accepted |
 | [44. Mark a module optional, and leave it out of the next lab until it's started](0044-mark-a-module-optional-and-leave-it-off-the-next-lab.md) | Accepted |
 | [45. Run a machine lab's Java stages with a JDK and JUnit the runner pins](0045-run-a-machine-labs-java-stages-with-a-pinned-jdk-and-junit.md) | Accepted |
-| [46. Make Sulba where a team specifies its software, agents build it and its tests prove it](0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md) | Accepted, amended by 59 |
+| [46. Make Sulba where a team specifies its software, agents build it and its tests prove it](0046-make-sulba-where-software-is-specified-built-by-agents-and-proven.md) | Accepted, amended by 59 and 63 |
 | [47. Build the app in React, drawn in the browser and served by the site's Worker under /app/](0047-build-the-app-in-react-served-by-the-sites-worker.md) | Accepted, amended by 54 |
 | [48. Keep workspaces in shared tables guarded by row-level security, with a log of every change](0048-keep-workspaces-in-shared-tables-guarded-by-row-level-security.md) | Accepted |
 | [49. Write specs in Markdown, edited in CodeMirror, with criteria numbered for tests to name](0049-write-specs-in-markdown-with-numbered-criteria.md) | Accepted |
@@ -62,9 +62,11 @@ Each record covers one decision: the context, the options compared, the evidence
 | [56. Tell the person where an agent's answer goes, and refuse addresses that aren't safe](0056-tell-the-person-where-an-agents-answer-goes.md) | Accepted, amended by 58 |
 | [57. Show recent times as how long ago, and older ones as dates](0057-show-recent-times-relative-and-older-ones-as-dates.md) | Accepted |
 | [58. Word the consent page like the authorization screens people know](0058-word-the-consent-page-like-the-authorization-screens-people-know.md) | Accepted |
-| [59. Take a request to proven software with the agents a customer brings](0059-take-a-request-to-proven-software-with-the-agents-a-customer-brings.md) | Accepted |
+| [59. Take a request to proven software with the agents a customer brings](0059-take-a-request-to-proven-software-with-the-agents-a-customer-brings.md) | Accepted, amended by 63 |
 | [60. Take requests in people's own words, and let agents ask before they draft](0060-take-requests-in-peoples-own-words-and-let-agents-ask-before-they-draft.md) | Accepted |
 | [61. Split approved specs into tasks that agents take on a person's behalf](0061-split-approved-specs-into-tasks-agents-take-on-a-persons-behalf.md) | Accepted |
 | [62. Deliver a request as a release a person approves once it's proven](0062-deliver-a-request-as-a-release-a-person-approves-once-proven.md) | Accepted |
+| [63. Run Sulba's own agents and charge each team for what they use](0063-run-sulbas-own-agents-and-charge-teams-for-what-they-use.md) | Accepted |
+| [64. Run Sulba's agents on Claude Managed Agents](0064-run-sulbas-agents-on-claude-managed-agents.md) | Accepted |
 
 New records start from [the template](template.md) and take the next number.

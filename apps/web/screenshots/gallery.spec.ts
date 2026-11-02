@@ -227,8 +227,16 @@ for (const scheme of ['dark', 'light'] as const) {
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto('/gallery/');
     await islandsHydrated(page);
-    await page.getByRole('button', { name: 'Search', exact: true }).focus();
-    await page.keyboard.press('Shift+Tab');
+    // A tooltip closes when the page scrolls, so the page scrolls before focus can do it, and
+    // focus comes from a control with no tooltip of its own.
+    await page
+      .getByRole('region', { name: 'Tooltip' })
+      .evaluate((section) => section.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await page.evaluate(
+      () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))),
+    );
+    await page.getByRole('switch', { name: 'Email me a summary each week' }).focus();
+    await page.keyboard.press('Tab');
 
     await expect(page.getByRole('tooltip')).toHaveScreenshot(`tooltip-${scheme}.png`);
   });
