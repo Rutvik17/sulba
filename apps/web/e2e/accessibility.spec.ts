@@ -5,6 +5,7 @@ import { repository, sha, standInEvidence } from './evidence';
 import { islandsHydrated } from './islands';
 import { standInReleases } from './releases';
 import { question, request, standInRequests } from './requests';
+import { standInRuns } from './runs';
 import { criterion, review, spec, standInSpecs } from './specs';
 import { signedIn, standIn, supabase } from './supabase';
 import { standInTasks, task } from './tasks';
@@ -189,6 +190,22 @@ for (const scheme of ['dark', 'light'] as const) {
             approvedBy: ben.id,
             approvedAt: new Date().toISOString(),
             snapshot: [],
+          },
+        ],
+      });
+      // A run of Sulba Intake on the request, which asked its question.
+      await standInRuns(page, {
+        runs: [
+          {
+            id: 'c3000000-0000-4000-8000-000000000001',
+            request: booking.id,
+            status: 'done',
+            budgetCents: 100,
+            costCents: 37,
+            note: 'Asked 1 question.',
+            startedBy: ben.id,
+            startedAt: new Date().toISOString(),
+            endedAt: new Date().toISOString(),
           },
         ],
       });
