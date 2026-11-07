@@ -15,7 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@astral-sh/ruff-wasm-web": "0.17.2",
+    "@astral-sh/ruff-wasm-web": "0.17.3",
     "@codemirror/autocomplete": "6.20.4",
     "@codemirror/commands": "6.11.1",
     "@codemirror/lang-go": "6.0.1",
@@ -38,7 +38,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "typescript": "6.0.3",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   },
   "peerDependencies": {
     "react": "^19.3.0",
