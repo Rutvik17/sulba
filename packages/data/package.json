@@ -28,11 +28,11 @@
     "types": "supabase gen types typescript --local --schema public > src/database.ts && biome format --write src/database.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.118.0"
+    "@supabase/supabase-js": "2.119.0"
   },
   "devDependencies": {
-    "supabase": "2.122.0",
+    "supabase": "2.122.1",
     "typescript": "6.0.3",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   }
 }
