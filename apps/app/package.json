@@ -13,7 +13,7 @@
     "@sulba/data": "workspace:*",
     "@sulba/editor": "workspace:*",
     "@sulba/ui": "workspace:*",
-    "@tanstack/react-query": "5.104.5",
+    "@tanstack/react-query": "5.107.1",
     "@tanstack/react-router": "1.170.46",
     "react": "19.3.1",
     "react-aria-components": "1.22.1",
@@ -22,9 +22,9 @@
   "devDependencies": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@vitejs/plugin-react": "6.1.2",
+    "@vitejs/plugin-react": "6.3.0",
     "typescript": "6.0.3",
-    "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
   }
 }
