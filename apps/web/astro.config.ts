@@ -49,6 +49,15 @@ export default defineConfig({
       // Supabase's secret key, a Worker secret, with which /api/results records a run's test
       // report. Without it the route answers that it can't take reports.
       SUPABASE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+      // Anthropic's API key and the secret it signs its notices with, Worker secrets, with which
+      // Sulba runs its own agents (decision record 64). Without them the agent routes answer
+      // that the agents aren't available.
+      ANTHROPIC_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+      ANTHROPIC_WEBHOOK_SIGNING_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
     },
   },
 });

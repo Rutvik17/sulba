@@ -77,6 +77,8 @@ export function question(
 
 /** What the page asked of the stand-in. */
 export interface RequestCalls {
+  /** Asks a question on a request, as an agent's run would. */
+  readonly ask: (question: HeldQuestion) => void;
   readonly rpc: { readonly name: string; readonly args: Record<string, unknown> }[];
   readonly patches: Record<string, unknown>[];
 }
@@ -94,7 +96,11 @@ export async function standInRequests(
     requests: requests.map((each) => ({ ...each })),
     questions: questions.map((each) => ({ ...each })),
   };
-  const calls: RequestCalls = { rpc: [], patches: [] };
+  const calls: RequestCalls = {
+    rpc: [],
+    patches: [],
+    ask: (question) => held.questions.push({ ...question }),
+  };
   const questionsOf = (id: string) => held.questions.filter((each) => each.request === id);
   const questionRow = (each: HeldQuestion) => ({
     id: each.id,

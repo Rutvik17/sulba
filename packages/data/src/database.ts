@@ -3,6 +3,77 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      agent_runs: {
+        Row: {
+          agent_version: number | null;
+          budget_cents: number;
+          cost_cents: number;
+          ended_at: string | null;
+          id: string;
+          note: string | null;
+          request_id: string;
+          role: Database['public']['Enums']['agent_role'];
+          session_id: string | null;
+          started_at: string;
+          started_by: string | null;
+          status: Database['public']['Enums']['agent_run_status'];
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          agent_version?: number | null;
+          budget_cents: number;
+          cost_cents?: number;
+          ended_at?: string | null;
+          id?: string;
+          note?: string | null;
+          request_id: string;
+          role: Database['public']['Enums']['agent_role'];
+          session_id?: string | null;
+          started_at?: string;
+          started_by?: string | null;
+          status?: Database['public']['Enums']['agent_run_status'];
+          workspace_id: string;
+        };
+        Update: {
+          agent_version?: number | null;
+          budget_cents?: number;
+          cost_cents?: number;
+          ended_at?: string | null;
+          id?: string;
+          note?: string | null;
+          request_id?: string;
+          role?: Database['public']['Enums']['agent_role'];
+          session_id?: string | null;
+          started_at?: string;
+          started_by?: string | null;
+          status?: Database['public']['Enums']['agent_run_status'];
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'agent_runs_started_by_fkey';
+            columns: ['started_by'];
+            isOneToOne: false;
+            referencedRelation: 'people';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'agent_runs_workspace_id_fkey';
+            columns: ['workspace_id'];
+            isOneToOne: false;
+            referencedRelation: 'workspaces';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'agent_runs_workspace_id_request_id_fkey';
+            columns: ['workspace_id', 'request_id'];
+            isOneToOne: false;
+            referencedRelation: 'requests';
+            referencedColumns: ['workspace_id', 'id'];
+          },
+        ];
+      };
       attempts: {
         Row: {
           caught: string[] | null;
@@ -950,6 +1021,7 @@ export type Database = {
       };
       workspaces: {
         Row: {
+          agent_limit_cents: number;
           created_at: string;
           id: string;
           name: string;
@@ -957,12 +1029,14 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          agent_limit_cents?: number;
           created_at?: string;
           id?: string;
           name: string;
           slug: string;
         };
         Update: {
+          agent_limit_cents?: number;
           created_at?: string;
           id?: string;
           name?: string;
@@ -1087,9 +1161,26 @@ export type Database = {
         Args: { branch?: string; name: string; workspace: string };
         Returns: string;
       };
+      agent_run_brief: { Args: { run: string }; Returns: Json };
+      agent_run_started: {
+        Args: { run: string; session: string; version: number };
+        Returns: undefined;
+      };
+      agent_spending: {
+        Args: { workspace: string };
+        Returns: {
+          limit_cents: number;
+          reserved_cents: number;
+          spent_cents: number;
+        }[];
+      };
       answer_question: { Args: { answer: string; question: string }; Returns: undefined };
       approve_release: { Args: { note?: string; request: string }; Returns: number };
       ask_question: { Args: { request: string; text: string }; Returns: string };
+      begin_agent_run: {
+        Args: { request: string; role: Database['public']['Enums']['agent_role'] };
+        Returns: string;
+      };
       close_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       confirm_criterion: { Args: { criterion: string }; Returns: undefined };
       create_invitation: {
@@ -1117,6 +1208,7 @@ export type Database = {
       create_workspace: {
         Args: { name: string; slug: string };
         Returns: {
+          agent_limit_cents: number;
           created_at: string;
           id: string;
           name: string;
@@ -1130,6 +1222,19 @@ export type Database = {
         };
       };
       delete_workspace: { Args: { workspace: string }; Returns: undefined };
+      end_agent_run: {
+        Args: {
+          cost_cents: number;
+          note?: string;
+          run: string;
+          status: Database['public']['Enums']['agent_run_status'];
+        };
+        Returns: boolean;
+      };
+      end_intake_run: {
+        Args: { cost_cents: number; questions: string[]; run: string };
+        Returns: boolean;
+      };
       invitation: {
         Args: { token: string };
         Returns: {
@@ -1137,6 +1242,7 @@ export type Database = {
           workspace_name: string;
         }[];
       };
+      managed_agent: { Args: { name: string }; Returns: Json };
       record_report: {
         Args: { reports: string[]; run: Json; suite: string; workspace: string };
         Returns: Json;
@@ -1151,6 +1257,10 @@ export type Database = {
           verdict: Database['public']['Enums']['review_verdict'];
         };
         Returns: Database['public']['Enums']['spec_status'];
+      };
+      save_managed_agent: {
+        Args: { hash: string; name: string; remote_id: string; version: number };
+        Returns: undefined;
       };
       set_member_role: {
         Args: {
@@ -1172,6 +1282,8 @@ export type Database = {
     };
     Enums: {
       actor_kind: 'person' | 'agent' | 'github' | 'system';
+      agent_role: 'intake';
+      agent_run_status: 'running' | 'done' | 'failed' | 'stopped';
       proof: 'proven' | 'failing' | 'unproven';
       request_status: 'open' | 'planned' | 'closed';
       review_verdict: 'pending' | 'approved' | 'changes_requested';
@@ -1296,6 +1408,8 @@ export const Constants = {
   public: {
     Enums: {
       actor_kind: ['person', 'agent', 'github', 'system'],
+      agent_role: ['intake'],
+      agent_run_status: ['running', 'done', 'failed', 'stopped'],
       proof: ['proven', 'failing', 'unproven'],
       request_status: ['open', 'planned', 'closed'],
       review_verdict: ['pending', 'approved', 'changes_requested'],

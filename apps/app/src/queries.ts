@@ -11,6 +11,7 @@ import {
 import { releasesOf } from '@sulba/data/releases';
 import { requestAt, requestsOf } from '@sulba/data/requests';
 import { reviewsOf } from '@sulba/data/reviewers';
+import { runsOf, spendingOf } from '@sulba/data/runs';
 import { historyOf, specAt, specsOf } from '@sulba/data/specs';
 import { specTasks, taskAt, tasksOf } from '@sulba/data/tasks';
 import { workOf } from '@sulba/data/work';
@@ -34,6 +35,9 @@ export const keys = {
   requests: (workspaceId: string) => ['requests', workspaceId] as const,
   request: (workspaceId: string, number: number) => ['request', workspaceId, number] as const,
   releases: (requestId: string) => ['releases', requestId] as const,
+  /** The runs of Sulba's agents on a request, and what a workspace's runs spent this month. */
+  runs: (requestId: string) => ['runs', requestId] as const,
+  spending: (workspaceId: string) => ['spending', workspaceId] as const,
   /** Every task in a workspace; a spec's own sit under it. */
   tasks: (workspaceId: string) => ['tasks', workspaceId] as const,
   specTasks: (workspaceId: string, specId: string) => ['tasks', workspaceId, specId] as const,
@@ -93,6 +97,26 @@ export function useTaskAt(workspace: Workspace, number: number) {
   return useSuspenseQuery({
     queryKey: keys.task(workspace.id, number),
     queryFn: () => taskAt(client, workspace.id, number),
+  });
+}
+
+/** A request's runs of Sulba's agents, the newest first, read again every few seconds while one runs. */
+export function useRuns(requestId: string) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.runs(requestId),
+    queryFn: () => runsOf(client, requestId),
+    refetchInterval: (query) =>
+      query.state.data?.some((run) => run.status === 'running') ? 5000 : false,
+  });
+}
+
+/** What a workspace's runs of Sulba's agents spent this month, against its limit. */
+export function useSpending(workspace: Workspace) {
+  const { client } = useAccount();
+  return useSuspenseQuery({
+    queryKey: keys.spending(workspace.id),
+    queryFn: () => spendingOf(client, workspace.id),
   });
 }
 
